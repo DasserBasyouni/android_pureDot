@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="warm_purple">#662f8f</color>
+    <color name="bluish">#1c75bb</color>
+    <color name="greyish_30">#4daaa4a2</color>
+    <color name="greyish_brown">#4d4c4c</color>
+    <color name="pinkish_grey">#bebebe</color>
+    <color name="slider_unselected_grey">#e3e3e3</color>
+    <color name="latest_product_partial_bg">#f7f7f7</color>
+    <color name="divider">#e9e9e9</color>
+    <color name="textColor">#4D4C4C</color>
+    <color name="driver_bg">#F8F8F8</color>
+    <color name="driverDivider">#E9E9E9</color>
+    <color name="driverEditTextBackground">#E4E4E4</color>
+    <color name="driverRed">#ED1C24</color>
+    <color name="charcoal_grey">#3b3d3f</color>
+    <color name="stroke_color">#d1d1d1</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="warm_grey">#818181</color>
+    <color name="semi_white">#f8f8f8</color>
+    <color name="greyish">#aaa4a2</color>
+    <color name="sick_green">#8abb2b</color>
+    <color name="pumpkin_orange">#f77e0b</color>
+</resources>

@@ -1,0 +1,4 @@
+rootProject.name = "PureDot"
+include ':app'
+include ':simpleplacepicker'
+include ':MeowBottomNavigation'

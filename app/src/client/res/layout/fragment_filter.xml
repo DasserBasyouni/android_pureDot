@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:paddingBottom="56dp"
+            tools:background="@android:color/white"
+            tools:context=".ui.screen.MainActivity">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="3sp"
+                android:text="@string/category"
+                android:textColor="@color/warm_grey"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/categoriesLcee"
+                layout="@layout/layout_lcee"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:emptyText="@{@string/empty_categories}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appCompatTextView12"
+                app:lceeModel="@{viewModel.categoriesLcee}" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoriesRv"
+                android:layout_width="0dp"
+                android:layout_height="212dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:clipToPadding="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:visibility="@{viewModel.categoriesLcee.contentVisibility}"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView12"
+                app:spanCount="3"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_category_list_view" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/categoriesBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="categoriesLcee, categoriesRv"
+                tools:layout_editor_absoluteY="240dp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView13"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="3sp"
+                android:text="@string/stores"
+                android:textColor="@color/warm_grey"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView12"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView12"
+                app:layout_constraintTop_toBottomOf="@id/categoriesBarrier" />
+
+            <include
+                android:id="@+id/storesLcee"
+                layout="@layout/layout_lcee"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:emptyText="@{@string/empty_stores}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appCompatTextView13"
+                app:lceeModel="@{viewModel.storesLcee}" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/storesRv"
+                android:layout_width="0dp"
+                android:layout_height="152dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:clipToPadding="false"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:visibility="@{viewModel.storesLcee.contentVisibility}"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView13"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_store_vertical" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/storesBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="storesLcee, storesRv"
+                tools:layout_editor_absoluteY="435dp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView14"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="3sp"
+                android:text="@string/minimum_rating"
+                android:textColor="@color/warm_grey"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView13"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView13"
+                app:layout_constraintTop_toBottomOf="@id/storesBarrier" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView14"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView14"
+                app:selectionRequired="true">
+
+                <com.google.android.material.chip.Chip
+                    style="@style/SearchFilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={viewModel.doOneStar}"
+                    android:drawablePadding="4dp"
+                    android:text="@string/_1"
+                    app:checkedIconEnabled="false" />
+
+                <com.google.android.material.chip.Chip
+                    style="@style/SearchFilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={viewModel.doTwoStar}"
+                    android:text="@string/_2"
+                    app:checkedIconEnabled="false" />
+
+                <com.google.android.material.chip.Chip
+                    style="@style/SearchFilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={viewModel.doThreeStar}"
+                    android:text="@string/_3"
+                    app:checkedIconEnabled="false" />
+
+                <com.google.android.material.chip.Chip
+                    style="@style/SearchFilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={viewModel.doFourStar}"
+                    android:text="@string/_4"
+                    app:checkedIconEnabled="false" />
+
+                <com.google.android.material.chip.Chip
+                    style="@style/SearchFilterChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={viewModel.doFiveStar}"
+                    android:text="@string/_5"
+                    app:checkedIconEnabled="false" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView15"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="3sp"
+                android:text="@string/price_range"
+                android:textColor="@color/warm_grey"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView14"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView14"
+                app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout3"
+                style="@style/SquareTextInputLayout"
+                app:layout_constraintEnd_toStartOf="@id/appCompatTextView74"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView15"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView15"
+                app:suffixText="@{viewModel.currency}"
+                tools:suffixText="EGP">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="@={viewModel.minPrice}"
+                    tools:text="0" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView74"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="2sp"
+                android:text="@string/to"
+                android:textColor="@color/greyish_brown"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout3"
+                app:layout_constraintEnd_toStartOf="@id/textInputLayout4"
+                app:layout_constraintStart_toEndOf="@+id/textInputLayout3"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout3" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout4"
+                style="@style/SquareTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout3"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView15"
+                app:layout_constraintStart_toEndOf="@+id/appCompatTextView74"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView15"
+                app:suffixText="@{viewModel.currency}"
+                tools:suffixText="EGP">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="@={viewModel.maxPrice}"
+                    tools:text="9999" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/applyBtn"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/apply"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayout3"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout4" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/resetFilterTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="?selectableItemBackground"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="3sp"
+                android:padding="8dp"
+                android:text="@string/reset_filter"
+                android:textColor="@color/bluish"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/applyBtn"
+                app:layout_constraintStart_toStartOf="@+id/applyBtn"
+                app:layout_constraintTop_toBottomOf="@+id/applyBtn" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

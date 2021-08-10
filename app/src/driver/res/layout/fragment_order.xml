@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.order.OrderViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".ui.screen.MainActivity">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView45"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@{@string/conc_order_(viewModel.order.number)}"
+                        android:textColor="@color/greyish_brown"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Order #546" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView46"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_horizontal"
+                        android:lineSpacingExtra="2sp"
+                        android:textColor="@color/warm_grey"
+                        android:textSize="12sp"
+                        android:textStyle="normal"
+                        app:bindDate="@{viewModel.order.dateTime}"
+                        app:bindDateFormat="@{@string/format_order_date_time}"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView45"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView45"
+                        tools:text="15/8/2020 08:00PM" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="4dp"
+                            android:fontFamily="sans-serif"
+                            android:lineSpacingExtra="3sp"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="4dp"
+                            android:textColor="#ffffff"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:bindOrderStatus="@{viewModel.order.status}"
+                            tools:background="@color/bluish"
+                            tools:drawableStart="@drawable/ic_order_placed_small"
+                            tools:text="Order Placed" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView4"
+                        android:layout_width="@dimen/_0dp"
+                        android:layout_height="108dp"
+                        android:layout_marginTop="8dp"
+                        app:cardCornerRadius="15dp"
+                        app:layout_constraintEnd_toEndOf="@+id/cardView6"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView46"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView46">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:bindApiImageUrl="@{viewModel.order.finalRouteImageUrl}"
+                            tools:src="@tools:sample/backgrounds/scenic" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/shop_name"
+                        android:textColor="@color/textColor"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/cardView4"
+                        app:layout_constraintStart_toStartOf="@+id/cardView4"
+                        app:layout_constraintTop_toBottomOf="@+id/cardView4" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/appCompatImageView7"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView7"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView7"
+                        app:srcCompat="@drawable/ring" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView12"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="sans-serif"
+                        android:text="@{viewModel.order.fromAddress}"
+                        android:textColor="@color/textColor"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView7"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView7"
+                        app:layout_constraintStart_toEndOf="@+id/appCompatImageView7"
+                        app:layout_constraintTop_toTopOf="@+id/appCompatImageView7"
+                        tools:text="14 Luran, Alexandria, Egypt." />
+
+                    <FrameLayout
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:background="@color/driverRed"
+                        app:layout_constraintBottom_toTopOf="@+id/appCompatImageView8"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatImageView7"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatImageView7"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView7" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/appCompatImageView8"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView7"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView7"
+                        app:srcCompat="@drawable/ring" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="sans-serif"
+                        android:text="@{viewModel.order.toAddress}"
+                        android:textColor="@color/textColor"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView8"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView12"
+                        app:layout_constraintStart_toEndOf="@+id/appCompatImageView8"
+                        app:layout_constraintTop_toTopOf="@+id/appCompatImageView8"
+                        tools:text="20 Moustafa Kamel st., Roushdy, Alexandria, Egypt." />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView10"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="@+id/cardView3"
+                app:layout_constraintStart_toStartOf="@+id/cardView3"
+                app:layout_constraintTop_toBottomOf="@+id/cardView3">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView52"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@string/payment_method"
+                        android:textColor="@color/driverRed"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView53"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="Credit Card 67**"
+                        android:textColor="#3b3d3f"
+                        android:textSize="14sp"
+                        android:textStyle="normal"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView52"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView52"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView52" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView38"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-black"
+                android:lineSpacingExtra="4sp"
+                android:textColor="@color/driverRed"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                app:bindCurrency="@{viewModel.order.currency}"
+                app:bindPrePriceText="@{@string/total_}"
+                app:bindPrice="@{viewModel.order.price}"
+                app:layout_constraintEnd_toEndOf="@+id/cardView10"
+                app:layout_constraintStart_toStartOf="@+id/cardView10"
+                app:layout_constraintTop_toBottomOf="@+id/cardView10"
+                tools:text="Total: 500 SAR" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancelBtn"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="@string/cancel"
+                android:visibility="@{viewModel.order.isDelivered == true ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="@+id/complaintBtn"
+                app:layout_constraintEnd_toStartOf="@id/complaintBtn"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView38"
+                app:layout_constraintTop_toTopOf="@+id/complaintBtn"
+                app:layout_constraintVertical_bias="1.0"
+                tools:visibility="visible" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/complaintBtn"
+                style="@style/ProjectPurpleStrokeButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                android:text="@string/complaint"
+                app:layoutMarginStart="@{viewModel.order.isDelivered == true ? @dimen/_0dp : @dimen/_4dp}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView38"
+                app:layout_constraintStart_toEndOf="@+id/cancelBtn"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView38"
+                tools:layout_marginStart="4dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

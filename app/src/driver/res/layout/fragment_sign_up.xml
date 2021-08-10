@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.signUp.SignUpViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        app:paddingBottomSystemWindowInsets="@{true}"
+        tools:context=".ui.screen.MainActivity">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/appCompatTextView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/general_details"
+                    android:textColor="@color/bluish"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/firstNameTil"
+                    style="@style/ProjectTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toStartOf="@id/lastNameTil"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/appCompatTextView4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/first_name"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:text="@={viewModel.firstName}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lastNameTil"
+                    style="@style/ProjectTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/firstNameTil"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/firstNameTil"
+                    app:layout_constraintTop_toTopOf="@+id/firstNameTil">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/last_name"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:text="@={viewModel.lastName}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/phoneNumberTil"
+                    style="@style/ProjectTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="@+id/lastNameTil"
+                    app:layout_constraintStart_toStartOf="@+id/firstNameTil"
+                    app:layout_constraintTop_toBottomOf="@+id/firstNameTil">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/mobile_number"
+                        android:imeOptions="actionNext"
+                        android:inputType="phone"
+                        android:text="@={viewModel.phoneNumber}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/emailTil"
+                    style="@style/ProjectTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="@+id/phoneNumberTil"
+                    app:layout_constraintStart_toStartOf="@+id/phoneNumberTil"
+                    app:layout_constraintTop_toBottomOf="@+id/phoneNumberTil">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/email"
+                        android:imeOptions="actionDone"
+                        android:inputType="textEmailAddress"
+                        android:text="@={viewModel.email}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/countriesSpinner"
+                    style="@style/ProjectTheme.Spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_rounded_spinner"
+                    android:selectedItemPosition="@={viewModel.selectedCountryPosition}"
+                    app:layout_constraintEnd_toEndOf="@+id/emailTil"
+                    app:layout_constraintStart_toStartOf="@+id/emailTil"
+                    app:layout_constraintTop_toBottomOf="@id/emailTil" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/citiesSpinner"
+                    style="@style/ProjectTheme.Spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_rounded_spinner"
+                    android:selectedItemPosition="@={viewModel.selectedCityPosition}"
+                    app:layout_constraintEnd_toEndOf="@+id/countriesSpinner"
+                    app:layout_constraintStart_toStartOf="@+id/countriesSpinner"
+                    app:layout_constraintTop_toBottomOf="@+id/countriesSpinner" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/zipCodeSpinner"
+                    style="@style/ProjectTheme.Spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_rounded_spinner"
+                    android:selectedItemPosition="@={viewModel.selectedZipCodePosition}"
+                    app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
+                    app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
+                    app:layout_constraintTop_toBottomOf="@+id/citiesSpinner" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:checkedButton="@id/maleRb"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/zipCodeSpinner"
+                    app:layout_constraintStart_toStartOf="@+id/zipCodeSpinner"
+                    app:layout_constraintTop_toBottomOf="@+id/zipCodeSpinner">
+
+                    <RadioButton
+                        android:id="@+id/maleRb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="@={viewModel.isMale}"
+                        android:fontFamily="sans-serif"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/male"
+                        android:textColor="@color/warm_grey"
+                        android:textSize="16sp"
+                        android:textStyle="normal" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/female"
+                        android:textColor="@color/warm_grey"
+                        android:textSize="16sp"
+                        android:textStyle="normal" />
+
+                </RadioGroup>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="@+id/cardView"
+            app:layout_constraintStart_toStartOf="@+id/cardView"
+            app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+            <!-- todo all uploading images just 1 image limit -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/appCompatTextView5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/car_details"
+                    android:textColor="@color/bluish"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/carBrandTil"
+                    style="@style/ProjectTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="@+id/appCompatTextView5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/appCompatTextView5">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_car_brand"
+                        android:imeOptions="actionNext"
+                        android:text="@={viewModel.carBrand}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/uploadLicenceBtn"
+                    style="@style/ProjectBlueStrokeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/upload_licence"
+                    app:layout_constraintEnd_toEndOf="@+id/carBrandTil"
+                    app:layout_constraintStart_toStartOf="@+id/carBrandTil"
+                    app:layout_constraintTop_toBottomOf="@+id/carBrandTil" />
+
+                <include
+                    android:id="@+id/licencePhotoLayout1"
+                    layout="@layout/uploaded_image_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:visibility="@{viewModel.licenceImages.size() > 0 &amp;&amp; viewModel.licenceImages.get(0) != null ? View.VISIBLE : View.GONE}"
+                    app:filePath="@{viewModel.licenceImages.size() > 0 ? viewModel.licenceImages.get(0) : null}"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadLicenceBtn"
+                    app:layout_constraintStart_toStartOf="@+id/uploadLicenceBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/uploadLicenceBtn" />
+
+                <include
+                    android:id="@+id/licencePhotoLayout2"
+                    layout="@layout/uploaded_image_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:visibility="@{viewModel.licenceImages.size() > 1 &amp;&amp; viewModel.licenceImages.get(1) != null ? View.VISIBLE : View.GONE}"
+                    app:filePath="@{viewModel.licenceImages.size() > 1 ? viewModel.licenceImages.get(1) : null}"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadLicenceBtn"
+                    app:layout_constraintStart_toStartOf="@+id/uploadLicenceBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/licencePhotoLayout1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/uploadCarFrontPlateBtn"
+                    style="@style/ProjectBlueStrokeButton"
+                    android:layout_width="0dp"
+                    android:textSize="14sp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/upload_car_front_with_plate_image"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadLicenceBtn"
+                    app:layout_constraintStart_toStartOf="@+id/uploadLicenceBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/licencePhotoLayout2" />
+
+                <include
+                    android:id="@+id/carFrontPlatePhotoLayout"
+                    layout="@layout/uploaded_image_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:visibility="@{viewModel.carFrontPlateImages.get(0) != null ? View.VISIBLE : View.GONE}"
+                    app:filePath="@{viewModel.carFrontPlateImages.get(0)}"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadCarFrontPlateBtn"
+                    app:layout_constraintStart_toStartOf="@+id/uploadCarFrontPlateBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/uploadCarFrontPlateBtn" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/uploadCarBackPlateBtn"
+                    style="@style/ProjectBlueStrokeButton"
+                    android:layout_width="0dp"
+                    android:textSize="14sp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/upload_car_back_with_plate_image"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadCarFrontPlateBtn"
+                    app:layout_constraintStart_toStartOf="@+id/uploadCarFrontPlateBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/carFrontPlatePhotoLayout" />
+
+                <include
+                    android:id="@+id/carBackPlatePhotoLayout"
+                    layout="@layout/uploaded_image_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:visibility="@{viewModel.carBackPlateImages.get(0) != null ? View.VISIBLE : View.GONE}"
+                    app:filePath="@{viewModel.carBackPlateImages.get(0)}"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadCarBackPlateBtn"
+                    app:layout_constraintStart_toStartOf="@+id/uploadCarBackPlateBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/uploadCarBackPlateBtn" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/uploadNationalIdBtn"
+                    style="@style/ProjectBlueStrokeButton"
+                    android:layout_width="0dp"
+                    android:textSize="14sp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/upload_national_id"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadCarBackPlateBtn"
+                    app:layout_constraintStart_toStartOf="@+id/uploadCarBackPlateBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/carBackPlatePhotoLayout"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <include
+                    android:id="@+id/nationalIdPhotoLayout1"
+                    layout="@layout/uploaded_image_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="@{viewModel.nationalIdImages.get(0) != null ? View.VISIBLE : View.GONE}"
+                    app:filePath="@{viewModel.nationalIdImages.get(0)}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadNationalIdBtn"
+                    app:layout_constraintStart_toStartOf="@+id/uploadNationalIdBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/uploadNationalIdBtn"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <include
+                    android:id="@+id/nationalIdPhotoLayout2"
+                    layout="@layout/uploaded_image_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="@{viewModel.nationalIdImages.get(1) != null ? View.VISIBLE : View.GONE}"
+                    app:filePath="@{viewModel.nationalIdImages.get(1)}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/uploadNationalIdBtn"
+                    app:layout_constraintStart_toStartOf="@+id/uploadNationalIdBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/nationalIdPhotoLayout1"
+                    app:layout_constraintVertical_bias="0.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/acceptTermsCb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:checked="@{viewModel.doAcceptTerms}"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/accept_terms_and_conditions"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintStart_toStartOf="@+id/cardView2"
+            app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/submitRequestBtn"
+            style="@style/ProjectPurpleFilledButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/submit_request"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/cardView2"
+            app:layout_constraintStart_toStartOf="@+id/cardView2"
+            app:layout_constraintTop_toBottomOf="@+id/acceptTermsCb" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

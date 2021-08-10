@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="dataModel"
+            type="com.g7.soft.pureDot.model.NotificationModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@{dataModel.isRead ? @color/semi_white : @android:color/white}"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="12dp"
+        tools:layout_gravity="center">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/statusIv"
+            app:bindNotificationStatus="@{dataModel.isRead}"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/shape_circle"
+            tools:tint="@color/warm_grey" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView58"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:textColor="#3b3d3f"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:bindDate="@{dataModel.dateTime}"
+            app:bindDateFormat="@{@string/format_standard_date}"
+            app:layout_constraintBottom_toBottomOf="@+id/statusIv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/statusIv"
+            app:layout_constraintTop_toTopOf="@+id/statusIv"
+            tools:text="12/7/2021" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@{dataModel.text}"
+            android:textColor="#3b3d3f"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView58"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView58"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView58"
+            tools:text="Your order #456 is in progress" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

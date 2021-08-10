@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="adapterPosition"
+            type="Integer" />
+
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phoneNumberTil"
+            style="@style/ProjectPickerTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/phoneNumberTil1"
+            app:layout_constraintEnd_toStartOf="@id/phoneNumberTil1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/phoneNumberTil1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:hint="Hour"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:maxLength="2"
+                android:imeOptions="actionNext"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/appCompatImageView11"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toTopOf="@id/appCompatImageView17"
+            app:layout_constraintStart_toEndOf="@+id/phoneNumberTil"
+            app:layout_constraintTop_toTopOf="@+id/phoneNumberTil"
+            app:srcCompat="@android:color/black" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/appCompatImageView17"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/phoneNumberTil"
+            app:layout_constraintStart_toEndOf="@+id/phoneNumberTil"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView11"
+            app:srcCompat="@android:color/black" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phoneNumberTil1"
+            style="@style/ProjectPickerTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/radioGroup3"
+            app:layout_constraintEnd_toStartOf="@+id/radioGroup3"
+            app:layout_constraintStart_toEndOf="@+id/phoneNumberTil"
+            app:layout_constraintTop_toTopOf="@+id/radioGroup3">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:hint="Minute"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:maxLength="2"
+                android:imeOptions="actionDone"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroup3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/checkable_date_radio_bg"
+                android:button="@android:color/transparent"
+                android:checked="true"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="12dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:layout_margin="2dp"
+                android:gravity="center"
+                android:text="@string/am" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="12dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:layout_margin="2dp"
+                android:background="@drawable/checkable_date_radio_bg"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:text="@string/pm" />
+
+        </RadioGroup>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.profileEdit.ProfileEditViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:paddingBottomSystemWindowInsets="@{true}"
+            tools:context=".ui.screen.MainActivity">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView12"
+                android:layout_width="0dp"
+                android:layout_height="96dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/app_gradient_scrim_part_2" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView2"
+                android:layout_width="94dp"
+                android:layout_height="94dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="47dp"
+                app:cardElevation="2dp"
+                app:layout_constraintBottom_toBottomOf="@id/appCompatImageView12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatImageView12">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:bindApiImageUrl="@{viewModel.userData.profileImageUrl}"
+                    app:srcCompat="@drawable/ic_user" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView42"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="4sp"
+                android:text="@{viewModel.userData.fullName}"
+                android:textAlignment="center"
+                android:textColor="@color/warm_purple"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
+                tools:text="Abdelrahman Ahmed" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/firstNameTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView42">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/first_name"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName"
+                    android:text="@={viewModel.firstName}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lastNameTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/firstNameTil"
+                app:layout_constraintStart_toStartOf="@+id/firstNameTil"
+                app:layout_constraintTop_toBottomOf="@+id/firstNameTil">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/last_name"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName"
+                    android:text="@={viewModel.lastName}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phoneNumberTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/lastNameTil"
+                app:layout_constraintStart_toStartOf="@+id/firstNameTil"
+                app:layout_constraintTop_toBottomOf="@+id/lastNameTil">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mobile_number"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:text="@={viewModel.phoneNumber}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/phoneNumberTil"
+                app:layout_constraintStart_toStartOf="@+id/phoneNumberTil"
+                app:layout_constraintTop_toBottomOf="@+id/phoneNumberTil">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:text="@={viewModel.email}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/birthDateTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/emailTil"
+                app:layout_constraintStart_toStartOf="@+id/emailTil"
+                app:layout_constraintTop_toBottomOf="@+id/emailTil">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/date_of_birth"
+                    android:imeOptions="actionNext"
+                    android:inputType="date"
+                    android:text="@={viewModel.dateOfBirth}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/genderSpinner"
+                style="@style/ProjectTheme.Spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_rounded_spinner"
+                android:selectedItemPosition="@={viewModel.selectedGenderPosition}"
+                app:layout_constraintEnd_toEndOf="@+id/birthDateTil"
+                app:layout_constraintStart_toStartOf="@+id/birthDateTil"
+                app:layout_constraintTop_toBottomOf="@+id/birthDateTil" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/countriesSpinner"
+                style="@style/ProjectTheme.Spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_rounded_spinner"
+                android:selectedItemPosition="@={viewModel.selectedCountryPosition}"
+                app:layout_constraintEnd_toEndOf="@+id/genderSpinner"
+                app:layout_constraintStart_toStartOf="@+id/genderSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/genderSpinner" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/citiesSpinner"
+                style="@style/ProjectTheme.Spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_rounded_spinner"
+                android:selectedItemPosition="@={viewModel.selectedCityPosition}"
+                app:layout_constraintEnd_toEndOf="@+id/countriesSpinner"
+                app:layout_constraintStart_toStartOf="@+id/countriesSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/countriesSpinner" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saveBtn"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="24dp"
+                android:text="@string/save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/cancelBtn"
+                app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/citiesSpinner"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancelBtn"
+                style="@style/ProjectPurpleStrokeButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/cancel"
+                app:layout_constraintBottom_toBottomOf="@+id/saveBtn"
+                app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
+                app:layout_constraintStart_toEndOf="@+id/saveBtn"
+                app:layout_constraintTop_toTopOf="@+id/saveBtn" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

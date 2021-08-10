@@ -1,0 +1,184 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+    id "com.google.protobuf" version "0.8.12"
+    id 'com.google.firebase.crashlytics'
+    id 'org.jetbrains.kotlin.android.extensions'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
+
+// Semantic Versioning 2.0.0 {@link 'https://semver.org/'}
+def versionMajor = 0
+def versionMinor = 0
+def versionPatch = 9
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.g7.soft.pureDot"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+    }
+    buildFeatures {
+        dataBinding true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    flavorDimensions "version"
+    productFlavors {
+        client {
+            //signingConfig signingConfigs.PureDotClient
+            // Assigns this product flavor to the "version" flavor dimension.
+            // If you are using only one dimension, this property is optional,
+            // and the plugin automatically assigns all the module's flavors to
+            // that dimension.
+            dimension "version"
+            applicationIdSuffix ".client"
+            versionName "${versionMajor}.${versionMinor}.${versionPatch} - client"
+        }
+        shopOwner {
+            //signingConfig signingConfigs.PureDotDriver
+            dimension "version"
+            applicationIdSuffix ".shopOwner"
+            /*manifestPlaceholders = [
+                    appIcon: "@mipmap/ic_launcher_employee"
+            ]*/
+            versionName "${versionMajor}.${versionMinor}.${versionPatch} - shopOwner"
+        }
+        driver {
+            //signingConfig signingConfigs.PureDotDriver
+            dimension "version"
+            applicationIdSuffix ".driver"
+            /*manifestPlaceholders = [
+                    appIcon: "@mipmap/ic_launcher_employee"
+            ]*/
+            versionName "${versionMajor}.${versionMinor}.${versionPatch} - driver"
+        }
+    }
+    androidExtensions {
+        experimental = true
+    }
+}
+
+dependencies {
+    // firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+
+    // android x: core & ui
+    implementation 'androidx.core:core-ktx:1.6.0' // to have clean code of hiding/show status bar, reference: https://stackoverflow.com/a/64828067/5873832
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation "com.google.android.material:material:1.4.0"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    // android x: lifecycle
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
+    // android x: navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.5"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.5"
+    // android x: functionality
+    implementation 'androidx.paging:paging-runtime-ktx:2.1.2'
+
+    // kotlin: coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2"
+
+    // data: persistence
+    //implementation "androidx.datastore:datastore-core:1.0.0-alpha06"
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha06" // when it comes to stable then update project code inorder not to have many migrations project code
+    implementation  "com.google.protobuf:protobuf-javalite:3.10.0"
+
+    // network: retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    // network: scalars converter
+    implementation "com.squareup.retrofit2:converter-scalars:2.9.0"
+    // network: moshi
+    implementation "com.squareup.moshi:moshi-kotlin:1.9.3"
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
+
+    // functionality
+    implementation "androidx.multidex:multidex:2.0.1"
+    implementation 'com.zeugmasolutions.localehelper:locale-helper-android:1.1.4'
+    implementation "com.wajahatkarim3.easyvalidation:easyvalidation-core:1.0.1"
+    implementation 'com.karumi:dexter:6.2.2'
+
+    // user interface: essentials
+    implementation 'com.github.smarteist:autoimageslider:1.3.7' // upper version are not showing indicator for unknown reason
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+
+    // mapBox
+    //implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.2'
+    implementation 'com.mapbox.maps:android:10.0.0-rc.5'
+    implementation "com.mapbox.navigation:android:2.0.0-beta.21"// optimize this and use core?
+    //implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.6'
+
+    // user interface: helpers
+    implementation "dev.chrisbanes.insetter:insetter:0.5.0"
+    implementation "dev.chrisbanes.insetter:insetter-dbx:0.5.0"
+
+    implementation 'com.poovam:pin-edittext-field:1.2.3'
+    //implementation 'com.etebarian:meow-bottom-navigation:1.2.0' // later versions have bugs
+    implementation project(path: ':MeowBottomNavigation')
+    implementation 'com.kofigyan.stateprogressbar:stateprogressbar:1.0.0'
+    implementation 'com.github.vipulasri:timelineview:1.1.5'
+    implementation project(path: ':simpleplacepicker')
+    implementation 'com.skyfishjy.ripplebackground:library:1.0.1'
+
+    // logging & analytics
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    implementation  'com.fxn769:pix:1.5.6'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.10.0"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
+apply plugin: 'com.google.gms.google-services'

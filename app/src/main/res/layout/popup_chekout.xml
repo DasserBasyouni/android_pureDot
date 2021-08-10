@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialogFl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dialogConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/appCompatImageView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_done" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemNameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:textColor="@color/greyish_brown"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/appCompatTextView25"
+            app:layout_constraintStart_toEndOf="@+id/appCompatImageView8"
+            app:layout_constraintTop_toTopOf="@+id/appCompatImageView8"
+            tools:text="Item Name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="2sp"
+            android:text="@string/added_to_card"
+            android:textColor="@color/warm_grey"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView8"
+            app:layout_constraintStart_toStartOf="@+id/itemNameTv"
+            app:layout_constraintTop_toBottomOf="@+id/itemNameTv" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView27"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="2sp"
+            android:textColor="@color/warm_grey"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toTopOf="@id/totalPriceTv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/itemNameTv"
+            android:text="@string/cart_total" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/totalPriceTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="2sp"
+            android:textColor="@color/greyish_brown"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView25"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView27"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView27"
+            tools:text="230 SAR" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/negativeBtn"
+            style="@style/ProjectWhiteStrokeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/continue_shopping"
+            android:textColor="@color/greyish_brown"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/totalPriceTv"
+            app:layout_constraintStart_toStartOf="@+id/appCompatImageView8"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView25"
+            app:strokeColor="@color/greyish_brown" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/positiveBtn"
+            style="@style/ProjectPurpleFilledButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/checkout"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/negativeBtn"
+            app:layout_constraintStart_toStartOf="@+id/negativeBtn"
+            app:layout_constraintTop_toBottomOf="@+id/negativeBtn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

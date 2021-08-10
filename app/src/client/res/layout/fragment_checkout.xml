@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:paddingBottomSystemWindowInsets="@{true}"
+        tools:context=".ui.screen.MainActivity">
+
+        <com.kofigyan.stateprogressbar.StateProgressBar
+            android:id="@+id/checkoutSpb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:spb_animateToCurrentProgressState="true"
+            app:spb_currentStateDescriptionColor="@color/warm_purple"
+            app:spb_currentStateNumber="@={viewModel.currentStateNumber}"
+            app:spb_descriptionTopSpaceIncrementer="8dp"
+            app:spb_maxStateNumber="four"
+            app:spb_stateBackgroundColor="@color/greyish"
+            app:spb_stateDescriptionColor="@color/greyish"
+            app:spb_stateForegroundColor="@color/warm_purple"
+            app:spb_stateNumberBackgroundColor="@android:color/white"
+            app:spb_stateNumberForegroundColor="@android:color/white" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkoutSpb" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

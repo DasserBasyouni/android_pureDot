@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.myWallet.MyWalletViewModel" />
+    </data>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        tools:background="@android:color/white">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            app:paddingBottomSystemWindowInsets="@{true}"
+            tools:context=".ui.screen.MainActivity">
+
+            <include
+                android:id="@+id/walletLcee"
+                layout="@layout/layout_lcee"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:emptyText="@{@string/something_went_wrong}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lceeModel="@{viewModel.walletLcee}" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView11"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginTop="16dp"
+                android:visibility="@{viewModel.walletLcee.contentVisibility}"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="42dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView64"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@string/my_wallet"
+                        android:textColor="@color/greyish_brown"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView65"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="6sp"
+                        android:textColor="@color/warm_purple"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        app:bindCurrency="@{viewModel.walletResponse.data.currency}"
+                        app:bindPrice="@{viewModel.walletResponse.data.balance}"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView64"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView64"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView64"
+                        tools:text="500 SAR" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView63"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@{viewModel.walletResponse.data.ownerName}"
+                        android:textColor="@color/warm_grey"
+                        android:textSize="16sp"
+                        android:textStyle="normal"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView65"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView65"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView65"
+                        tools:text="Abdelrahman Ahmed" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addMoneyBtn"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/add_money"
+                android:textSize="14sp"
+                android:visibility="@{viewModel.walletLcee.contentVisibility}"
+                app:layout_constraintBottom_toBottomOf="@+id/cardView11"
+                app:layout_constraintEnd_toEndOf="@+id/cardView11"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@+id/cardView11"
+                app:layout_constraintTop_toBottomOf="@+id/cardView11"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/transferMoneyBtn"
+                style="@style/ProjectPurpleStrokeButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                android:text="@string/transfer_money"
+                android:textSize="14sp"
+                android:visibility="@{viewModel.walletLcee.contentVisibility}"
+                app:backgroundTint="@android:color/white"
+                app:layout_constraintEnd_toEndOf="@+id/addMoneyBtn"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@+id/addMoneyBtn"
+                app:layout_constraintTop_toBottomOf="@+id/addMoneyBtn"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/myWalletBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="addMoneyBtn, transferMoneyBtn, cardView11, walletLcee" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView66"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3sp"
+                android:text="@string/transaction_list"
+                android:textColor="@color/greyish_brown"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/myWalletBarrier" />
+
+            <include
+                android:id="@+id/transactionLcee"
+                layout="@layout/layout_lcee"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:emptyText="@{@string/empty_transactions}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/appCompatTextView66"
+                app:lceeModel="@{viewModel.transactionLcee}" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/transactionRv"
+                android:visibility="@{viewModel.transactionLcee.contentVisibility}"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="6dp"
+                android:clipToPadding="false"
+                android:paddingBottom="8dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@+id/pointsCv"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView66"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView66"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView66"
+                tools:listitem="@layout/item_transaction" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/pointsCv"
+                style="@style/CustomCardCorners"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewModel.walletLcee.contentVisibility == View.VISIBLE &amp;&amp; viewModel.walletResponse.data.points > 0 ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:strokeColor="@color/bluish"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/appCompatImageView15"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/appCompatTextView67"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_wallet_points" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView67"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@{@string/conc_points_equal_currency(viewModel.walletResponse.data.points, viewModel.walletResponse.data.pointsInCurrency, viewModel.walletResponse.data.currency)}"
+                        android:textColor="@color/greyish_brown"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toEndOf="@+id/appCompatImageView15"
+                        app:layout_constraintTop_toTopOf="@+id/appCompatImageView15"
+                        tools:text="You have 50 points = 5 SAR" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/replacePointsBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/replacement"
+                        android:textAllCaps="false"
+                        android:textSize="14sp"
+                        app:backgroundTint="@color/bluish"
+                        app:cornerRadius="32dp"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView67"
+                        app:layout_constraintStart_toEndOf="@+id/appCompatImageView15"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView67" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

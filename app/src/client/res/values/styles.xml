@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Button -->
+    <style name="ProjectWhiteFilledButton">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?colorPrimary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="backgroundTint">@android:color/white</item>
+        <item name="cornerRadius">15dp</item>
+    </style>
+
+    <style name="ProjectWhiteStrokeButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="cornerRadius">15dp</item>
+        <item name="strokeColor">@android:color/white</item>
+    </style>
+
+    <style name="ProjectBlueStrokeButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/bluish</item>
+        <item name="android:textSize">18sp</item>
+        <item name="cornerRadius">15dp</item>
+        <item name="strokeColor">@color/bluish</item>
+    </style>
+
+    <style name="ProjectPurpleFilledButton">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="backgroundTint">@color/warm_purple</item>
+        <item name="cornerRadius">15dp</item>
+    </style>
+
+    <style name="ProjectPurpleStrokeButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/warm_purple</item>
+        <item name="android:textSize">18sp</item>
+        <item name="strokeColor">@color/warm_purple</item>
+        <item name="cornerRadius">15dp</item>
+    </style>
+
+    <style name="ProjectTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/text_input_layout_boarder_color</item>
+        <item name="boxBackgroundColor">@android:color/white</item>
+        <!--<item name="android:background">@drawable/white_round_15</item>-->
+        <item name="boxCornerRadiusBottomEnd">15dp</item>
+        <item name="boxCornerRadiusBottomStart">15dp</item>
+        <item name="boxCornerRadiusTopEnd">15dp</item>
+        <item name="boxCornerRadiusTopStart">15dp</item>
+    </style>
+
+    <!-- spinner -->
+    <style name="ProjectTheme.Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="SearchFilterChip">
+        <item name="android:checkable">true</item>
+        <item name="android:layoutDirection">rtl</item>
+        <item name="checkedIconEnabled">false</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@color/selectable_chip_stroke</item>
+        <item name="chipCornerRadius">2dp</item>
+        <item name="chipIcon">@drawable/ic_star</item>
+        <item name="chipBackgroundColor">@android:color/white</item>
+        <item name="chipIconSize">14dp</item>
+    </style>
+
+    <style name="SquareTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@android:color/white</item>
+        <item name="boxStrokeColor">@color/warm_purple</item>
+        <item name="hintTextColor">@color/warm_purple</item>
+    </style>
+
+    <!-- chip -->
+    <style name="Project.Chip.Choice.BlackWhite" parent="Base.Widget.MaterialComponents.Chip">
+        <item name="android:checkable">true</item>
+        <item name="chipIconVisible">false</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="closeIconVisible">false</item>
+        <item name="checkedIcon">@drawable/ic_mtrl_chip_checked_black</item>
+
+        <!-- <item name="android:fontFamily">@font/neo_sans_arabic_medium</item> todo add the font-->
+        <item name="android:textSize">12sp</item>
+        <item name="chipStrokeColor">@color/chip_stroke</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">@drawable/black_white_chip_text</item>
+        <item name="chipBackgroundColor">@android:color/white</item>
+        <item name="rippleColor">@android:color/transparent</item>
+    </style>
+
+    <style name="ReviewButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:lineSpacingExtra">2sp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="cornerRadius">15dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/greyish_brown</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="CustomCardCorners" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance_custom_corners</item>
+    </style>
+
+    <style name="ShapeAppearance_custom_corners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">15dp</item>
+        <item name="cornerSizeTopRight">15dp</item>
+    </style>
+
+</resources>

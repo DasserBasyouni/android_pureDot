@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.trackOrder.TrackOrderViewModel" />
+    </data>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:paddingBottom="56dp"
+            tools:context=".ui.screen.MainActivity">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView57"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="4sp"
+                android:text="@{@string/conc_order_id_(viewModel.order.number)}"
+                android:textColor="@color/warm_purple"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="@{viewModel.orderTrackingLcee.contentVisibility}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Order ID : 34567" />
+
+            <include
+                android:id="@+id/orderTrackingLcee"
+                layout="@layout/layout_lcee"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:emptyText="@{@string/something_went_wrong}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView57"
+                app:lceeModel="@{viewModel.orderTrackingLcee}" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/timelineRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingHorizontal="12dp"
+                android:visibility="@{viewModel.orderTrackingLcee.contentVisibility}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView57"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_timeline" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/trackOrRateBtn"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="24dp"
+                android:text="@{viewModel.order.isDelivered == true ? @string/rate_order : @string/cancel}"
+                android:visibility="@{viewModel.order.isDelivered == true || viewModel.order.isCancelable == true? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/complaintBtn"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView57"
+                app:layout_constraintTop_toBottomOf="@+id/timelineRv"
+                app:layout_constraintVertical_bias="1.0"
+                tools:text="@string/cancel"
+                tools:visibility="visible" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/complaintBtn"
+                style="@style/ProjectPurpleStrokeButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/complaint"
+                app:layoutMarginStart="@{viewModel.order.isDelivered == true ? @dimen/_0dp : @dimen/_4dp}"
+                app:layout_constraintBottom_toBottomOf="@+id/trackOrRateBtn"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView57"
+                app:layout_constraintStart_toEndOf="@+id/trackOrRateBtn"
+                app:layout_constraintTop_toTopOf="@+id/trackOrRateBtn"
+                app:layout_constraintVertical_bias="1.0"
+                tools:layout_marginStart="4dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

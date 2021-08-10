@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.contactUs.ContactUsViewModel" />
+    </data>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        tools:background="@android:color/white">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            app:paddingBottomSystemWindowInsets="@{true}"
+            tools:context=".ui.screen.MainActivity">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/your_email"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:text="@={viewModel.email}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/messageTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/emailTil"
+                app:layout_constraintStart_toStartOf="@+id/emailTil"
+                app:layout_constraintTop_toBottomOf="@+id/emailTil">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="154dp"
+                    android:gravity="start"
+                    android:hint="@string/your_message"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:text="@={viewModel.message}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/submitBtn"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/submit"
+                app:layout_constraintEnd_toEndOf="@+id/messageTil"
+                app:layout_constraintStart_toStartOf="@+id/messageTil"
+                app:layout_constraintTop_toBottomOf="@+id/messageTil" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView62"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-black"
+                android:lineSpacingExtra="3sp"
+                android:text="@string/or"
+                android:textColor="@color/bluish"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@id/twitterIb"
+                app:layout_constraintEnd_toEndOf="@+id/submitBtn"
+                app:layout_constraintStart_toStartOf="@+id/submitBtn"
+                app:layout_constraintTop_toBottomOf="@+id/submitBtn"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/twitterIb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/facebookIb"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@+id/messageTil"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView62"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:srcCompat="@drawable/ic_twitter" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/facebookIb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/twitterIb"
+                app:layout_constraintEnd_toStartOf="@id/instagramIb"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/twitterIb"
+                app:layout_constraintTop_toTopOf="@+id/twitterIb"
+                app:srcCompat="@drawable/ic_facebook" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/instagramIb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/facebookIb"
+                app:layout_constraintEnd_toStartOf="@id/linkedinIb"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/facebookIb"
+                app:layout_constraintTop_toTopOf="@+id/facebookIb"
+                app:srcCompat="@drawable/ic_instagram" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/linkedinIb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/instagramIb"
+                app:layout_constraintEnd_toStartOf="@+id/tiktokIb"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/instagramIb"
+                app:layout_constraintTop_toTopOf="@+id/instagramIb"
+                app:srcCompat="@drawable/ic_linkedin" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/tiktokIb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/linkedinIb"
+                app:layout_constraintEnd_toStartOf="@+id/youtubeIb"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/linkedinIb"
+                app:layout_constraintTop_toTopOf="@+id/linkedinIb"
+                app:srcCompat="@drawable/ic_linkedin" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/youtubeIb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tiktokIb"
+                app:layout_constraintEnd_toStartOf="@+id/snapchatIb"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/tiktokIb"
+                app:layout_constraintTop_toTopOf="@+id/tiktokIb"
+                app:srcCompat="@drawable/ic_linkedin" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/snapchatIb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/youtubeIb"
+                app:layout_constraintEnd_toEndOf="@+id/messageTil"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/youtubeIb"
+                app:layout_constraintTop_toTopOf="@+id/youtubeIb"
+                app:srcCompat="@drawable/ic_linkedin" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

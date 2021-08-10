@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="workingHoursTv" type="id" />
+    <item name="workingHoursFragment" type="id" />
+    <item name="bankAccountTv" type="id" />
+    <item name="bankAccountFragment" type="id" />
+</resources>

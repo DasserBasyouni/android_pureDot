@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.home.HomeViewModel" />
+    </data>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        tools:background="@color/bluish">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:descendantFocusability="blocksDescendants"
+            android:paddingBottom="56dp"
+            app:paddingBottomSystemWindowInsets="@{true}"
+            tools:context=".ui.screen.MainActivity">
+
+            <include
+                android:id="@+id/userDataLcee"
+                layout="@layout/layout_lcee"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:emptyText="@{@string/something_went_wrong}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/appCompatTextView42"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lceeModel="@{viewModel.userDataLcee}" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView2"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toTopOf="@id/appCompatTextView42"
+                android:layout_marginTop="8dp"
+                android:visibility="@{viewModel.userDataLcee.contentVisibility}"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="47dp"
+                app:cardElevation="2dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:bindApiImageUrl="@{viewModel.userDataResponse.data.profileImageUrl}"
+                    app:srcCompat="@drawable/ic_user" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView42"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                app:layout_constraintBottom_toTopOf="@id/appCompatRatingBar"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="4sp"
+                android:text="@{viewModel.userDataResponse.data.fullName}"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="@{viewModel.userDataLcee.contentVisibility}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/materialCardView2"
+                app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
+                tools:text="Abdelrahman Ahmed" />
+
+            <androidx.appcompat.widget.AppCompatRatingBar
+                android:id="@+id/appCompatRatingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                app:layout_constraintBottom_toTopOf="@id/navMenuRv"
+                android:numStars="5"
+                android:progressTint="@android:color/white"
+                android:rating="@{viewModel.userDataResponse.data.rating}"
+                android:stepSize=".5"
+                android:visibility="@{viewModel.userDataLcee.contentVisibility}"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView42"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView42"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView42"
+                tools:rating="3.5" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/userDataBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="materialCardView2,userDataLcee,appCompatTextView42,appCompatRatingBar"
+                tools:layout_editor_absoluteY="103dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/navMenuRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="8dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/userDataBarrier"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_side_nav_item" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

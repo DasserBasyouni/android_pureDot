@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="dataModel"
+            type="com.g7.soft.pureDot.model.ReviewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:paddingBottom="@{dataModel.isMarked ? @dimen/_8dp : @dimen/_0dp}"
+        tools:background="@android:color/white"
+        tools:layout_gravity="center">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            app:cardCornerRadius="23dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/pinkish_grey"
+            app:strokeWidth="1dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:bindApiImageUrl="@{dataModel.reviewerImageUrl}"
+                tools:srcCompat="@tools:sample/avatars" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@{dataModel.reviewerName}"
+            android:lineSpacingExtra="3sp"
+            android:textColor="@color/bluish"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/appCompatTextView21"
+            app:layout_constraintStart_toEndOf="@+id/materialCardView"
+            app:layout_constraintTop_toTopOf="@+id/materialCardView"
+            tools:text="Ali Mohamed" />
+
+        <!-- TODO android:fontFamily="@font/neo_sans_arabic" -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="3sp"
+            android:textColor="#5b5252"
+            android:textSize="12sp"
+            app:bindDate="@{dataModel.date}"
+            app:bindDateFormat="@{@string/format_standard_date}"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/materialCardView"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView20"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView20"
+            tools:text="12/5/2020" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="materialCardView, appCompatTextView20, appCompatTextView21" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView22"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="2sp"
+            android:text="@{dataModel.review}"
+            android:textColor="@color/warm_grey"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/materialCardView"
+            app:layout_constraintTop_toBottomOf="@id/barrier"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="2sp"
+            android:textColor="@color/greyish_brown"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:visibility="@{dataModel.isMarked ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@+id/yesBtn"
+            app:layout_constraintTop_toTopOf="@+id/yesBtn"
+            android:text="@string/was_this_review_helpful" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/yesBtn"
+            style="@style/ReviewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            android:text="@string/yes"
+            android:visibility="@{dataModel.isMarked ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@+id/noBtn"
+            app:layout_constraintEnd_toStartOf="@+id/noBtn"
+            app:layout_constraintTop_toTopOf="@+id/noBtn" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/noBtn"
+            style="@style/ReviewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            android:text="@string/no"
+            android:visibility="@{dataModel.isMarked ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView22" />
+
+        <androidx.appcompat.widget.AppCompatRatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:numStars="5"
+            android:stepSize="1"
+            android:progressTint="@color/warm_purple"
+            android:rating="@{dataModel.rating}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView21"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/appCompatTextView20" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

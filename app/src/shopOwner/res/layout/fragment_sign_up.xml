@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.signUp.SignUpViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        app:paddingBottomSystemWindowInsets="@{true}"
+        android:layout_height="wrap_content"
+        tools:context=".ui.screen.MainActivity">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/firstNameTil"
+            style="@style/ProjectTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toStartOf="@id/lastNameTil"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/first_name"
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName"
+                android:text="@={viewModel.firstName}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lastNameTil"
+            style="@style/ProjectTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/firstNameTil"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/firstNameTil"
+            app:layout_constraintTop_toTopOf="@+id/firstNameTil">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/last_name"
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName"
+                android:text="@={viewModel.lastName}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phoneNumberTil"
+            style="@style/ProjectTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/lastNameTil"
+            app:layout_constraintStart_toStartOf="@+id/firstNameTil"
+            app:layout_constraintTop_toBottomOf="@+id/firstNameTil">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/mobile_number"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:text="@={viewModel.phoneNumber}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailTil"
+            style="@style/ProjectTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/phoneNumberTil"
+            app:layout_constraintStart_toStartOf="@+id/phoneNumberTil"
+            app:layout_constraintTop_toBottomOf="@+id/phoneNumberTil">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:text="@={viewModel.email}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/countriesSpinner"
+            style="@style/ProjectTheme.Spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_rounded_spinner"
+            android:selectedItemPosition="@={viewModel.selectedCountryPosition}"
+            app:layout_constraintEnd_toEndOf="@+id/emailTil"
+            app:layout_constraintStart_toStartOf="@+id/emailTil"
+            app:layout_constraintTop_toBottomOf="@id/emailTil" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/citiesSpinner"
+            style="@style/ProjectTheme.Spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_rounded_spinner"
+            android:selectedItemPosition="@={viewModel.selectedCityPosition}"
+            app:layout_constraintEnd_toEndOf="@+id/countriesSpinner"
+            app:layout_constraintStart_toStartOf="@+id/countriesSpinner"
+            app:layout_constraintTop_toBottomOf="@+id/countriesSpinner" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/zipCodeSpinner"
+            style="@style/ProjectTheme.Spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_rounded_spinner"
+            android:selectedItemPosition="@={viewModel.selectedZipCodePosition}"
+            app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
+            app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
+            app:layout_constraintTop_toBottomOf="@+id/citiesSpinner" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordTil"
+            style="@style/ProjectTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/zipCodeSpinner"
+            app:layout_constraintStart_toStartOf="@+id/zipCodeSpinner"
+            app:layout_constraintTop_toBottomOf="@+id/zipCodeSpinner"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword"
+                android:text="@={viewModel.password}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirmPasswordTil"
+            style="@style/ProjectTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/passwordTil"
+            app:layout_constraintStart_toStartOf="@+id/passwordTil"
+            app:layout_constraintTop_toBottomOf="@+id/passwordTil"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/confirm_password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:text="@={viewModel.confirmPassword}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+
+            android:checkedButton="@id/maleRb"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/confirmPasswordTil"
+            app:layout_constraintStart_toStartOf="@+id/confirmPasswordTil"
+            app:layout_constraintTop_toBottomOf="@+id/confirmPasswordTil">
+
+            <RadioButton
+                android:id="@+id/maleRb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@={viewModel.isMale}"
+                android:fontFamily="sans-serif"
+                android:paddingHorizontal="12dp"
+                android:text="@string/male"
+                android:textColor="@color/warm_grey"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:paddingHorizontal="12dp"
+                android:text="@string/female"
+                android:textColor="@color/warm_grey"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+        </RadioGroup>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/acceptTermsCb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:checked="@{viewModel.doAcceptTerms}"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/accept_terms_and_conditions"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintStart_toStartOf="@+id/radioGroup"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/registerBtn"
+            style="@style/ProjectPurpleFilledButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/register"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/passwordTil"
+            app:layout_constraintStart_toStartOf="@+id/passwordTil"
+            app:layout_constraintTop_toBottomOf="@+id/acceptTermsCb" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

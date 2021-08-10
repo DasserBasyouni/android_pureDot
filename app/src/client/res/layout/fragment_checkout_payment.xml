@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".ui.screen.MainActivity">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_checkout_payment" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView6"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatImageView9">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView36"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@string/select_payment_method"
+                        android:textColor="@color/warm_purple"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:checkedButton="@id/cashOnDelivery"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView36"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView36"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView36">
+
+                        <RadioButton
+                            android:id="@+id/cashOnDelivery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:paddingHorizontal="12dp"
+                            android:text="@string/cash_on_delivery"
+                            android:textColor="@color/warm_grey"
+                            android:textSize="16sp"
+                            android:textStyle="normal" />
+
+                        <RadioButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:paddingHorizontal="12dp"
+                            android:text="@string/online_payment"
+                            android:textColor="@color/warm_grey"
+                            android:textSize="16sp"
+                            android:textStyle="normal" />
+
+                    </RadioGroup>
+
+                    <com.g7.soft.pureDot.ui.custom.CheckableImageView
+                        android:id="@+id/stcPayIv"
+                        android:layout_width="92dp"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="14dp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/checkable_stroke_payment_method"
+                        android:padding="8dp"
+                        android:visibility="@{viewModel.isCashOnDelivery == false ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toStartOf="@+id/masterCardIv"
+                        app:layout_constraintStart_toStartOf="@+id/radioGroup"
+                        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+                        app:srcCompat="@drawable/checkable_stc_pay" />
+
+                    <com.g7.soft.pureDot.ui.custom.CheckableImageView
+                        android:id="@+id/masterCardIv"
+                        android:layout_width="92dp"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="8dp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/checkable_stroke_payment_method"
+                        android:padding="8dp"
+                        android:visibility="@{viewModel.isCashOnDelivery == false ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toEndOf="@+id/radioGroup"
+                        app:layout_constraintStart_toEndOf="@id/stcPayIv"
+                        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+                        app:srcCompat="@drawable/checkable_master_card" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/nextBtn"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="24dp"
+                android:text="@string/next"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/cardView6"
+                app:layout_constraintStart_toStartOf="@+id/cardView6"
+                app:layout_constraintTop_toBottomOf="@+id/cardView6"
+                app:layout_constraintVertical_bias="1.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>
