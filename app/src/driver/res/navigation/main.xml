@@ -202,8 +202,4 @@
         android:name="com.g7.soft.pureDot.ui.screen.changeLanguage.ChangeLanguageFragment"
         android:label="@string/change_language"
         tools:layout="@layout/fragment_change_language" />
-    <fragment
-        android:id="@+id/newHomeFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.newHome.NewHomeFragment"
-        android:label="NewHomeFragment" />
 </navigation>

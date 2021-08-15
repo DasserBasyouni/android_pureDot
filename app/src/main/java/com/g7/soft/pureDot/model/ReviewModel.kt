@@ -13,6 +13,6 @@ data class ReviewModel(
     @Json(name = "reviewerImageUrl") val reviewerImageUrl: String?,
     @Json(name = "rating") val rating: Float?,
     @Json(name = "review") val review: String?,
-    @Json(name = "isMarked") var isMarked: Boolean?,
+    //@Json(name = "isMarked") var isMarked: Boolean?,
     @Json(name = "date") val date: Long?,
 ) : Parcelable

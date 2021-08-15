@@ -6,11 +6,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemSideNavItemBinding
-import com.g7.soft.pureDot.ui.screen.newHome.NewHomeFragment
+import com.g7.soft.pureDot.ui.screen.home.HomeFragment
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 
 
-class SideNavMenuAdapter(private val fragment: NewHomeFragment) :
+class SideNavMenuAdapter(private val fragment: HomeFragment) :
     RecyclerView.Adapter<SideNavMenuAdapter.ViewHolder>() {
 
     var walletBalance: Double? = null
@@ -45,7 +45,7 @@ class SideNavMenuAdapter(private val fragment: NewHomeFragment) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             dataModel: Pair<Int, Int>,
-            fragment: NewHomeFragment,
+            fragment: HomeFragment,
             walletBalance: Double?,
             walletCurrency: String?,
         ) {

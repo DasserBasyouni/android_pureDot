@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_order.xml" value="0.22407407407407406" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_product.xml" value="0.3682051282051282" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_home.xml" value="0.21621621621621623" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/bg_language_radio_button.xml" value="0.3175925925925926" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_change_language.xml" value="0.3558974358974359" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/item_review.xml" value="0.362962962962963" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

@@ -22,6 +22,7 @@ data class OrderModel(
     @Json(name = "clientLng") val clientLng: Double?,
     @Json(name = "clientImageUrl") val clientImageUrl: String?,
     @Json(name = "status") var status: Int?,
+    @Json(name = "deliveryStatus") var deliveryStatus: Int?,
     @Json(name = "shopName") val shopName: String?,
     @Json(name = "shopLat") val shopLat: Double?,
     @Json(name = "shopLng") val shopLng: Double?,
@@ -37,5 +38,7 @@ data class OrderModel(
     val isCancelable get() = ApiConstant.OrderStatus.isCancelable(status)
     //val isFullyReviewed get() = products?.firstOrNull { it.userReview == null } == null
     val driverTotal get() = shippingCost?.plus(commission ?: 0.0)
-    val isDriverPendingOrAccepted get() = ApiConstant.OrderStatus.isDriverPendingOrAccepted(status)
+    val isDriverPendingOrAccepted get() = ApiConstant.OrderDeliveryStatus.isDriverPendingOrAccepted(deliveryStatus)
+    val isNewDeliveryOrder get() = deliveryStatus != ApiConstant.OrderDeliveryStatus.NEW.value
+    val deliveryStatusEnum get() = ApiConstant.OrderDeliveryStatus.fromInt(deliveryStatus)
 }

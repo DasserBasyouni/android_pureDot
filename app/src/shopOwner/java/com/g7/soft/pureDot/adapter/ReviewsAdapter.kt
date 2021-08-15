@@ -32,7 +32,7 @@ class ReviewsAdapter(private val fragment: Fragment) :
             binding.dataModel = dataModel
             binding.executePendingBindings()
 
-            val buttonsClickListener = View.OnClickListener {
+            /*val buttonsClickListener = View.OnClickListener {
                 ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).markReview(
                     tokenId = "", // todo
                     reviewId = dataModel.id,
@@ -44,7 +44,7 @@ class ReviewsAdapter(private val fragment: Fragment) :
                 })
             }
             binding.yesBtn.setOnClickListener(buttonsClickListener)
-            binding.noBtn.setOnClickListener(buttonsClickListener)
+            binding.noBtn.setOnClickListener(buttonsClickListener)*/
         }
 
         companion object {

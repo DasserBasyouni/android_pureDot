@@ -77,7 +77,7 @@ class OfflineDemoRepository {
             "reviewerName" to "John Foster",
             "rating" to 5.0,
             "review" to "A review is an evaluation of a publication, service, or company such as a movie, video game, musical composition, book; a piece of hardware like a car, home appliance, or computer; or softwares",
-            "isMarked" to true,
+            //"isMarked" to true,
             "reviewerImageUrl" to "photo-1609010697446-11f2155278f0?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80",
             "date" to Calendar.getInstance().apply {
                 this.set(Calendar.HOUR_OF_DAY, 0)
@@ -92,7 +92,7 @@ class OfflineDemoRepository {
             "reviewerName" to "Jack Max",
             "rating" to 4.5,
             "review" to "A review is an evaluation of a publication, service, or company such as a movie, video game, musical composition, book; a piece of hardware like a car, home appliance, or computer; or softwares",
-            "isMarked" to false,
+            //"isMarked" to false,
             "reviewerImageUrl" to "photo-1492562080023-ab3db95bfbce?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1031&q=80",
             "date" to Calendar.getInstance().apply {
                 this.set(Calendar.DAY_OF_MONTH, this.get(Calendar.DAY_OF_MONTH) - 1)

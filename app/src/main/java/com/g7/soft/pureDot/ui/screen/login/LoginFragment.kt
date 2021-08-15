@@ -1,7 +1,6 @@
 package com.g7.soft.pureDot.ui.screen.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,11 +44,9 @@ class LoginFragment : Fragment() {
         binding.loginBtn.setOnClickListener {
             viewModel.login(requireActivity().currentLocale.toLanguageTag())
                 .observeApiResponse(this, {
-                    if (it?.tokenId != null) {
-                        Log.e("Z_", "here?!")
+                    if (it?.tokenId != null)
                         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                        //findNavController().navigate(R.id.newHomeFragment)
-                    } else
+                    else
                         ProjectDialogUtils.showSimpleMessage(
                             requireContext(),
                             R.string.something_went_wrong,

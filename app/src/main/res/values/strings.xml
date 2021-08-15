@@ -279,4 +279,10 @@
     <string name="mapbox_access_token" translatable="false">sk.eyJ1IjoiZzdzb2Z0d2FyZWhvdXNlIiwiYSI6ImNrczMxczRqeTB4ZXMycHFtY3NzNHFpZHcifQ.Yqd8Fd1Jhgehryl9jgU10w</string>
     <string name="orders">Orders</string>
     <string name="rejected">Rejected</string>
+    <string name="arrived_to_customer">Arrived to customer</string>
+    <string name="oder_placed">Order Placed</string>
+    <string name="started">Started</string>
+    <string name="done">Done</string>
+    <string name="arrived_to_shop">Arrived to shop</string>
+    <string name="picked_up_the_item">Picked up the item</string>
 </resources>

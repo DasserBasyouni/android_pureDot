@@ -9,11 +9,11 @@ import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.databinding.ItemOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.OrderModel
-import com.g7.soft.pureDot.ui.screen.newHome.NewHomeFragment
+import com.g7.soft.pureDot.ui.screen.home.HomeFragment
 import com.zeugmasolutions.localehelper.currentLocale
 
 
-class PendingOrdersAdapter(private val fragment: NewHomeFragment) :
+class PendingOrdersAdapter(private val fragment: HomeFragment) :
     ListAdapter<OrderModel, PendingOrdersAdapter.ViewHolder>(OrdersDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
@@ -23,16 +23,15 @@ class PendingOrdersAdapter(private val fragment: NewHomeFragment) :
         holder.bind(getItem(position), fragment, isLastItem = position + 1 == itemCount)
 
     // a fix @link: https://stackoverflow.com/a/50062174/5873832 todo apply to all pureDot & liveCoach?
-    override fun submitList(list: MutableList<OrderModel>?) {
+    override fun submitList(list: MutableList<OrderModel>?) =
         super.submitList(list?.let { ArrayList(it) })
-    }
 
 
     class ViewHolder private constructor(private val binding: ItemOrderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             dataModel: OrderModel,
-            fragment: NewHomeFragment,
+            fragment: HomeFragment,
             isLastItem: Boolean,
         ) {
             binding.dataModel = dataModel
@@ -51,8 +50,8 @@ class PendingOrdersAdapter(private val fragment: NewHomeFragment) :
                     orderNumber = dataModel.number,
                     status = ApiConstant.OrderDeliveryStatus.ACCEPTED.value
                 ).observeApiResponse(fragment, {
-                    dataModel.status = ApiConstant.OrderDeliveryStatus.ACCEPTED.value
                     fragment.viewModel.selectedOrder.value = dataModel
+                    fragment.binding.positiveBtn.performClick()
                 })
             }
             binding.rejectBtn.setOnClickListener {

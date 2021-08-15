@@ -12,7 +12,7 @@ plugins {
 // Semantic Versioning 2.0.0 {@link 'https://semver.org/'}
 def versionMajor = 0
 def versionMinor = 0
-def versionPatch = 9
+def versionPatch = 11
 
 android {
     compileSdkVersion 30

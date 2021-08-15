@@ -75,10 +75,6 @@ class ApiConstant {
             // todo check this cycle
             fun isBefore(currentStatus: Int?, reachedStatus: Int?): Boolean =
                 currentStatus ?: -1 > reachedStatus ?: 0
-
-            // todo check this cycle
-            fun isDriverPendingOrAccepted(value: Int?): Boolean = true
-                //value == PENDING.value || value == DRIVER_ACCEPT.value || value == OUT_FOR_DELIVERY.value
         }
     }
 
@@ -117,7 +113,7 @@ class ApiConstant {
             fun isBefore(currentStatus: Int?, reachedStatus: Int?): Boolean =
                 currentStatus ?: -1 > reachedStatus ?: 0
 
-            fun isDriverPendingOrAccepted(value: Int?): Boolean = value == NEW.value
+            fun isDriverPendingOrAccepted(value: Int?): Boolean = value == NEW.value || value == ACCEPTED.value
         }
     }
 

@@ -1,18 +1,13 @@
 package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemReviewBinding
-import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ReviewModel
-import com.g7.soft.pureDot.repo.ProductRepository
-import com.zeugmasolutions.localehelper.currentLocale
 
 
 class PagedReviewsAdapter(private val fragment: Fragment) :
@@ -34,7 +29,7 @@ class PagedReviewsAdapter(private val fragment: Fragment) :
             binding.dataModel = dataModel
             binding.executePendingBindings()
 
-            val buttonsClickListener = View.OnClickListener {
+            /*val buttonsClickListener = View.OnClickListener {
                 ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).markReview(
                     tokenId = "", // todo
                     reviewId = dataModel?.id,
@@ -46,7 +41,7 @@ class PagedReviewsAdapter(private val fragment: Fragment) :
                 })
             }
             binding.yesBtn.setOnClickListener(buttonsClickListener)
-            binding.noBtn.setOnClickListener(buttonsClickListener)
+            binding.noBtn.setOnClickListener(buttonsClickListener)*/
         }
 
         companion object {

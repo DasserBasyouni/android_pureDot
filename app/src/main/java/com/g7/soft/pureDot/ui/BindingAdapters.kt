@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
@@ -198,13 +199,84 @@ fun bindSrcCompat(imageView: ImageView, drawable: Drawable?) {
 }
 
 @BindingAdapter("bindOrderStatus")
+fun bindOrderStatus(textView: TextView, orderStatus: Int?) {
+    orderStatus ?: LogEventUtils.logApiError("bindOrderStatus: null orderStatus").run { return }
+
+    val context = textView.context
+    when (ApiConstant.OrderStatus.fromInt(orderStatus)) {
+        ApiConstant.OrderStatus.NEW -> {
+            textView.text = context.getString(R.string.oder_placed)
+            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_order_placed_small,
+                0,
+                0,
+                0
+            )
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.bluish))
+        }
+        ApiConstant.OrderStatus.CONFIRMED -> {
+            textView.text = context.getString(R.string.confirmed)
+            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_order_status_accepted,
+                0,
+                0,
+                0
+            )
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.sick_green))
+        }
+        ApiConstant.OrderStatus.BEING_SHIPPED -> {
+            textView.text = context.getString(R.string.ready_for_delivery)
+            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_order_shipping_small,
+                0,
+                0,
+                0
+            )
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.pumpkin_orange))
+        }
+        ApiConstant.OrderStatus.PICKED -> {
+            textView.text = context.getString(R.string.out_for_delivery)
+            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_out_of_delivery_small,
+                0,
+                0,
+                0
+            )
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.warm_purple))
+        }
+        ApiConstant.OrderStatus.DELIVERED -> {
+            textView.text = context.getString(R.string.delivered)
+            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_deliverd_small,
+                0,
+                0,
+                0
+            )
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.sick_green))
+        }
+        ApiConstant.OrderStatus.CANCELED -> {
+            textView.text = context.getString(R.string.canceled)
+            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_canceled_small,
+                0,
+                0,
+                0
+            )
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.driverRed))
+        }
+    }
+}
+
+@BindingAdapter("bindOrderDeliveryStatus")
 fun bindOrderDeliveryStatus(textView: TextView, orderDeliveryStatus: Int?) {
-    orderDeliveryStatus ?: LogEventUtils.logApiError("bindOrderDeliveryStatus: null orderDeliveryStatus").run { return }
+    orderDeliveryStatus
+        ?: LogEventUtils.logApiError("bindOrderDeliveryStatus: null orderDeliveryStatus")
+            .run { return }
 
     val context = textView.context
     when (ApiConstant.OrderDeliveryStatus.fromInt(orderDeliveryStatus)) {
-        ApiConstant.OrderDeliveryStatus.NEW -> { }
-        ApiConstant.OrderDeliveryStatus.ACCEPTED-> {
+        ApiConstant.OrderDeliveryStatus.NEW -> { /*hidden status*/ }
+        ApiConstant.OrderDeliveryStatus.ACCEPTED -> {
             textView.text = context.getString(R.string.accepted)
             textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.ic_order_status_accepted,
@@ -215,35 +287,34 @@ fun bindOrderDeliveryStatus(textView: TextView, orderDeliveryStatus: Int?) {
             textView.setBackgroundColor(ContextCompat.getColor(context, R.color.sick_green))
         }
         ApiConstant.OrderDeliveryStatus.STARTED -> {
-            // todo
-            /*textView.text = context.getString(R.string.accepted)
+            textView.text = context.getString(R.string.started)
             textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.ic_order_status_accepted,
                 0,
                 0,
                 0
             )
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.sick_green))*/
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.sick_green))
         }
         ApiConstant.OrderDeliveryStatus.PICKED -> {
-            textView.text = context.getString(R.string.shipping)
+            textView.text = context.getString(R.string.picked_up_the_item)
             textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.ic_order_shipping_small,
                 0,
                 0,
                 0
             )
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.warm_purple))
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.lavender_pink))
         }
         ApiConstant.OrderDeliveryStatus.ARRIVED -> {
-            textView.text = context.getString(R.string.out_for_delivery)
+            textView.text = context.getString(R.string.arrived_to_customer)
             textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.ic_out_of_delivery_small,
                 0,
                 0,
                 0
             )
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.pumpkin_orange))
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_sky_blue))
         }
         ApiConstant.OrderDeliveryStatus.DELIVERED -> {
             textView.text = context.getString(R.string.delivered_to_customer)
@@ -253,7 +324,7 @@ fun bindOrderDeliveryStatus(textView: TextView, orderDeliveryStatus: Int?) {
                 0,
                 0
             )
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.sick_green))
+            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.warm_purple))
         }
         ApiConstant.OrderDeliveryStatus.REJECTED -> {
             textView.text = context.getString(R.string.rejected)
@@ -278,67 +349,26 @@ fun bindOrderDeliveryStatus(textView: TextView, orderDeliveryStatus: Int?) {
     }
 }
 
-@BindingAdapter("bindOrderStatus")
-fun bindOrderStatus(textView: TextView, orderStatus: Int?) {
-    orderStatus ?: LogEventUtils.logApiError("bindOrderStatus: null orderStatus").run { return }
+@BindingAdapter("bindOrderDeliveryActionText")
+fun bindOrderDeliveryActionText(button: Button, orderDeliveryStatus: Int?) {
+    orderDeliveryStatus
+        ?: LogEventUtils.logApiError("bindOrderDeliveryActionText: null orderDeliveryStatus")
+            .run { return }
 
-    val context = textView.context
-    when (ApiConstant.OrderStatus.fromInt(orderStatus)) {
-        ApiConstant.OrderStatus.NEW -> {
-
-        }
-        ApiConstant.OrderStatus.CONFIRMED-> {
-            textView.text = context.getString(R.string.accepted)
-            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_order_status_accepted,
-                0,
-                0,
-                0
-            )
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.sick_green))
-        }
-        ApiConstant.OrderStatus.DELIVERED -> {
-            textView.text = context.getString(R.string.delivered)
-            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_deliverd_small,
-                0,
-                0,
-                0
-            )
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.sick_green))
-        }
-        ApiConstant.OrderStatus.CANCELED -> {
-            textView.text = context.getString(R.string.canceled)
-            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_canceled_small,
-                0,
-                0,
-                0
-            )
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.driverRed))
-        }
-        ApiConstant.OrderStatus.BEING_SHIPPED -> {
-            textView.text = context.getString(R.string.out_for_delivery)
-            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_out_of_delivery_small,
-                0,
-                0,
-                0
-            )
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.pumpkin_orange))
-        }
-        ApiConstant.OrderStatus.PICKED -> {
-            textView.text = context.getString(R.string.shipping)
-            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_order_shipping_small,
-                0,
-                0,
-                0
-            )
-            textView.setBackgroundColor(ContextCompat.getColor(context, R.color.warm_purple))
-        }
+    val textResId = when (ApiConstant.OrderDeliveryStatus.fromInt(orderDeliveryStatus)) {
+        ApiConstant.OrderDeliveryStatus.NEW -> R.string.accept
+        ApiConstant.OrderDeliveryStatus.ACCEPTED -> R.string.start_head_to_the_shop
+        ApiConstant.OrderDeliveryStatus.STARTED -> R.string.arrived_to_shop
+        ApiConstant.OrderDeliveryStatus.PICKED -> R.string.picked_up_the_item
+        ApiConstant.OrderDeliveryStatus.ARRIVED -> R.string.delivered_to_customer
+        ApiConstant.OrderDeliveryStatus.DELIVERED -> R.string.done
+        else -> null
     }
+
+    if (textResId != null)
+        button.text = button.context.getString(textResId)
 }
+
 
 @BindingAdapter("layoutMarginStart")
 fun setLayoutMarginStart(view: View, dimen: Float) {

@@ -40,9 +40,8 @@
                 android:layout_height="match_parent"
                 tools:background="@android:color/white">
 
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/pickerMap"
-                    class="com.google.android.gms.maps.SupportMapFragment"
+                <com.mapbox.maps.MapView
+                    android:id="@+id/mapView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -50,16 +49,79 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/tripProgressCard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    app:cardElevation="8dp"
+                    app:cardUseCompatPadding="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <com.mapbox.navigation.ui.tripprogress.view.MapboxTripProgressView
+                        android:id="@+id/tripProgressView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/stop"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="12dp"
+                        app:srcCompat="@drawable/mapbox_ic_end_navigation" />
+                </androidx.cardview.widget.CardView>
+
+                <com.mapbox.navigation.ui.maneuver.view.MapboxManeuverView
+                    android:id="@+id/maneuverView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.mapbox.navigation.ui.voice.view.MapboxSoundButton
+                    android:id="@+id/soundButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/maneuverView" />
+
+                <com.mapbox.navigation.ui.maps.camera.view.MapboxRouteOverviewButton
+                    android:id="@+id/routeOverview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/soundButton" />
+
+                <com.mapbox.navigation.ui.maps.camera.view.MapboxRecenterButton
+                    android:id="@+id/recenter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/routeOverview" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bottomSheet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="72dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:minHeight="384dp"
+                android:paddingTop="72dp"
                 app:behavior_peekHeight="384dp"
                 app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
@@ -95,10 +157,10 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraintLayout2"
-                        app:paddingBottomSystemWindowInsets="@{true}"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:backgroundTint="@{viewModel.selectedOrder != null ? @android:color/white : @color/driver_bg}">
+                        android:backgroundTint="@{viewModel.selectedOrder != null ? @android:color/white : @color/driver_bg}"
+                        app:paddingBottomSystemWindowInsets="@{true}">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/appCompatImageView5"
@@ -177,8 +239,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
+                            android:visibility="@{viewModel.selectedOrder != null &amp;&amp; viewModel.selectedOrder.isNewDeliveryOrder ? View.VISIBLE : View.GONE}"
                             app:cardCornerRadius="15dp"
-                            android:visibility="@{viewModel.selectedOrder == null ? View.GONE : View.VISIBLE}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/availabilityBarrier">
@@ -194,7 +256,7 @@
                                 android:textColor="#ffffff"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
-                                app:bindOrderStatus="@{viewModel.selectedOrder.status}"
+                                app:bindOrderDeliveryStatus="@{viewModel.selectedOrder.deliveryStatus}"
                                 tools:background="@color/bluish"
                                 tools:drawableStart="@drawable/ic_order_placed_small"
                                 tools:text="Order Placed" />
@@ -249,6 +311,7 @@
                             android:textColor="@color/bluish"
                             android:textSize="14sp"
                             android:textStyle="bold"
+                            android:visibility="@{viewModel.selectedOrder == null ? View.GONE : View.VISIBLE }"
                             app:layout_constraintEnd_toStartOf="@+id/appCompatTextView28"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/cardView6"
@@ -264,6 +327,7 @@
                             android:textColor="@color/warm_grey"
                             android:textSize="12sp"
                             android:textStyle="normal"
+                            android:visibility="@{viewModel.selectedOrder == null ? View.GONE : View.VISIBLE }"
                             app:bindDate="@{viewModel.selectedOrder.dateTime}"
                             app:bindDateFormat="@{@string/format_order_date_time}"
                             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView28"
@@ -528,15 +592,18 @@
                             style="@style/ProjectPurpleFilledButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginBottom="16dp"
-                            android:text="@{viewModel.selectedOrder.status == OrderDeliveryStatus.NEW.value ? @string/accept : @string/start_head_to_the_shop}"
-                            app:layoutMarginEnd="@{viewModel.selectedOrder.status == OrderDeliveryStatus.NEW.value ? @dimen/_4dp : @dimen/_0dp}"
+                            android:visibility="@{viewModel.selectedOrder == null ? View.GONE : View.VISIBLE }"
+                            app:bindOrderDeliveryActionText="@{viewModel.selectedOrder.deliveryStatus}"
+                            app:layoutMarginEnd="@{viewModel.selectedOrder.deliveryStatus == OrderDeliveryStatus.NEW.value ? @dimen/_4dp : @dimen/_16dp}"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/rejectBtn"
-                            app:layout_constraintStart_toStartOf="@+id/appCompatTextView19"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView19"
-                            app:layout_constraintVertical_bias="0.0" />
+                            app:layout_constraintVertical_bias="0.0"
+                            tools:text="@string/accepted" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/rejectBtn"
@@ -544,10 +611,11 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/reject"
-                            android:visibility="@{viewModel.selectedOrder.status == OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{viewModel.selectedOrder.deliveryStatus == OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE}"
                             app:layout_constraintBottom_toBottomOf="@+id/positiveBtn"
-                            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView26"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/positiveBtn"
                             app:layout_constraintTop_toTopOf="@+id/positiveBtn"
                             tools:layout_marginStart="4dp" />
@@ -555,8 +623,8 @@
                         <androidx.constraintlayout.widget.Group
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:visibility="@{viewModel.selectedOrder == null ? View.GONE : View.VISIBLE}"
-                            app:constraint_referenced_ids="appCompatTextView9,appCompatTextView10,appCompatTextView12,appCompatTextView14,positiveBtn,appCompatTextView24,appCompatTextView8,appCompatImageView9,appCompatTextView26,appCompatTextView7,productsRv,appCompatTextView17,appCompatTextView46,appCompatTextView28,frameLayout,appCompatTextView19,rejectBtn,appCompatTextView45,appCompatImageView7,appCompatTextView18,appCompatTextView16,appCompatImageView8" />
+                            android:visibility="@{viewModel.selectedOrder != null &amp;&amp; viewModel.selectedOrder.isDriverPendingOrAccepted ? View.VISIBLE : View.GONE}"
+                            app:constraint_referenced_ids="appCompatTextView9,appCompatTextView10,appCompatTextView12,appCompatTextView14,appCompatTextView24,appCompatTextView8,appCompatImageView9,appCompatTextView26,appCompatTextView7,productsRv,appCompatTextView17,appCompatTextView28,frameLayout,appCompatTextView19,rejectBtn,appCompatImageView7,appCompatTextView18,appCompatTextView16,appCompatImageView8" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -572,13 +640,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_marginTopSystemWindowInsets="@{true}"
             android:background="?selectableItemBackgroundBorderless"
             android:elevation="4dp"
             android:padding="8dp"
             app:bindSrcCompat="@{viewModel.isSideNavMenuOpened ? @drawable/ic_up_btn_blue : @drawable/ic_nav_menu}"
             app:layout_constraintStart_toStartOf="@id/coordinatorLayout"
             app:layout_constraintTop_toTopOf="@id/coordinatorLayout"
+            app:layout_marginTopSystemWindowInsets="@{true}"
             tools:srcCompat="@drawable/ic_nav_menu" />
 
         <androidx.appcompat.widget.AppCompatTextView
