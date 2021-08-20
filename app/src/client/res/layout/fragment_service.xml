@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.service.ServiceViewModel" />
@@ -113,6 +115,7 @@
                             android:id="@+id/appCompatTextView76"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
                             android:fontFamily="sans-serif-black"
                             android:lineSpacingExtra="3sp"
                             android:textColor="@color/bluish"
@@ -121,39 +124,10 @@
                             android:visibility="@{viewModel.serviceDetailsLcee.contentVisibility}"
                             app:bindCurrency="@{viewModel.service.currency}"
                             app:bindPrice="@{viewModel.service.price}"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="@+id/appCompatTextView75"
                             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView75"
                             tools:text="250 SAR" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/appCompatTextView77"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="3sp"
-                            android:text="@string/offer_include"
-                            android:textColor="#4d4c4c"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:visibility="@{viewModel.serviceDetailsLcee.contentVisibility}"
-                            app:layout_constraintStart_toStartOf="@+id/appCompatTextView76"
-                            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView76" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="3sp"
-                            android:text="@{viewModel.serviceDetailsResponse.data.includingDescription}"
-                            android:textColor="#4d4c4c"
-                            android:textSize="14sp"
-                            android:textStyle="normal"
-                            android:visibility="@{viewModel.serviceDetailsLcee.contentVisibility}"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="@+id/appCompatTextView77"
-                            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView77" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="50dp"
@@ -170,7 +144,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView9"
+                    android:id="@+id/cardView13"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -185,21 +159,85 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/appCompatTextView80"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:lineSpacingExtra="3sp"
+                            android:text="@string/products"
+                            android:textColor="#662f8f"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/variationsRv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:nestedScrollingEnabled="false"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView80"
+                            app:layout_constraintStart_toStartOf="@+id/appCompatTextView80"
+                            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView80"
+                            tools:itemCount="3"
+                            tools:listitem="@layout/item_service_variation" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView9"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:elevation="4dp"
+                    android:visibility="@{viewModel.serviceDetailsLcee.contentVisibility}"
+                    app:cardCornerRadius="15dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cardView13">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/appCompatTextView77"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="sans-serif"
+                            android:lineSpacingExtra="3sp"
+                            android:text="@string/extra_details"
+                            android:textColor="#662f8f"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <androidx.appcompat.widget.AppCompatSpinner
                             android:id="@+id/servantsSpinner"
                             style="@style/ProjectTheme.Spinner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginEnd="16dp"
+                            android:layout_marginTop="8dp"
                             android:background="@drawable/bg_rounded_spinner"
                             android:selectedItemPosition="@={viewModel.servantsSelectedPosition}"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView77"
+                            app:layout_constraintStart_toStartOf="@+id/appCompatTextView77"
+                            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView77" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/appCompatTextView78"
@@ -257,15 +295,13 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
+                        android:padding="16dp"
                         android:layout_height="wrap_content">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/appCompatTextView17"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginEnd="12dp"
                             android:fontFamily="sans-serif"
                             android:lineSpacingExtra="3sp"
                             android:text="@string/full_description"
@@ -277,10 +313,24 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/appCompatTextView37"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginBottom="12dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:lineSpacingExtra="3sp"
+                            android:paddingVertical="8dp"
+                            android:text="@{viewModel.serviceDetailsResponse.data.includingDescription}"
+                            android:textColor="#4d4c4c"
+                            android:textSize="14sp"
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="@id/appCompatTextView17"
+                            app:layout_constraintStart_toStartOf="@+id/appCompatTextView17"
+                            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView17"
+                            tools:text="1- Item Name + 2- Item Name + 2- Item Name" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
                             android:lineSpacingExtra="2sp"
                             android:text="@{viewModel.serviceDetailsResponse.data.description}"
@@ -290,14 +340,13 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView17"
                             app:layout_constraintStart_toStartOf="@+id/appCompatTextView17"
-                            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView17"
+                            app:layout_constraintTop_toBottomOf="@id/appCompatTextView37"
                             tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
-
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView4"
@@ -340,7 +389,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:fontFamily="sans-serif"
                             android:lineSpacingExtra="2sp"
                             android:text="@{@string/conc_see_all(viewModel.serviceDetailsResponse.data.reviews.totalCount)}"
-                            android:textColor="@color/warm_grey"
+                            android:textColor="@color/warm_purple"
                             android:textSize="12sp"
                             android:textStyle="bold"
                             android:visibility="@{viewModel.serviceDetailsLcee.contentVisibility}"
@@ -353,7 +402,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:id="@+id/reviewsRv"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginBottom="16dp"
                             android:clipToPadding="false"
                             android:nestedScrollingEnabled="false"
                             android:paddingHorizontal="12dp"
@@ -363,8 +412,64 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView19"
+                            app:layout_constraintVertical_bias="0.0"
                             tools:itemCount="2"
                             tools:listitem="@layout/item_review" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/messageTil"
+                            style="@style/ProjectTextInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:visibility="@{viewModel.service.userReview == null ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/reviewsRv">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="96dp"
+                                android:gravity="start"
+                                android:hint="@string/your_message_here"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:text="@={viewModel.reviewComment}" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <androidx.appcompat.widget.AppCompatRatingBar
+                            android:id="@+id/appCompatRatingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:progressTint="@color/warm_purple"
+                            android:rating="@={viewModel.reviewRating}"
+                            android:visibility="@{viewModel.service.userReview == null ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toEndOf="@+id/messageTil"
+                            app:layout_constraintStart_toStartOf="@+id/messageTil"
+                            app:layout_constraintTop_toBottomOf="@+id/messageTil" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/sendBtn"
+                            style="@style/ProjectPurpleStrokeButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="12dp"
+                            android:paddingHorizontal="32dp"
+                            android:text="@string/send"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:visibility="@{viewModel.service.userReview == null ? View.VISIBLE : View.GONE}"
+                            app:cornerRadius="32dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/messageTil"
+                            app:layout_constraintStart_toStartOf="@+id/messageTil"
+                            app:layout_constraintTop_toBottomOf="@+id/appCompatRatingBar" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -411,8 +516,8 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/appCompatTextView18"
-                    tools:itemCount="10"
-                    tools:listitem="@layout/item_staggered_product_small" />
+                    tools:itemCount="4"
+                    tools:listitem="@layout/item_small_service" />
 
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/latestProductsBarrier"
@@ -428,32 +533,32 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/quantityCv"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:visibility="@{viewModel.serviceDetailsLcee.contentVisibility}"
             app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="@id/addToCartBtn"
-            app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/addToCartBtn">
+            app:layout_constraintTop_toTopOf="@+id/addToCartBtn">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:gravity="center">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/decreaseCartQuantityBtn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="3sp"
-                    android:text="@string/qty"
+                    android:layout_height="match_parent"
+                    android:layout_margin="0dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:text="@string/symbol_minus"
                     android:textColor="@color/warm_purple"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textSize="24sp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/quantityInCartTv"
@@ -461,11 +566,24 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="4sp"
-                    android:text="@{@string/format_integer(viewModel.service.quantityInCart == null ? 0 : viewModel.service.quantityInCart)}"
-                    android:textColor="@color/warm_grey"
+                    android:paddingHorizontal="8dp"
+                    android:text="@{@string/format_integer(viewModel.quantityInCart)}"
+                    android:textColor="@color/warm_purple"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     tools:text="3" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/increaseCartQuantityBtn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="0dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:text="@string/symbol_plus"
+                    android:textColor="@color/warm_purple"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 

@@ -39,7 +39,6 @@ class OrderRepository(private val langTag: String) {
         }))
     }
 
-
     fun rateOrder(
         tokenId: String?,
         orderNumber: Int?,
@@ -56,6 +55,34 @@ class OrderRepository(private val langTag: String) {
                 orderComment = orderComment,
                 deliveryRating = deliveryRating,
                 deliveryComment = deliveryComment,
+            )
+        }))
+    }
+
+    fun calculateRefundShipping(
+        orderNumber: Int?,
+        productId: Int?,
+        shippingMethod: Int?,
+    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.calculateRefundShipping(
+                orderNumber = orderNumber,
+                productId = productId,
+                shippingMethod = shippingMethod
+            )
+        }))
+    }
+
+    fun refund(
+        orderNumber: Int?,
+        productId: Int?,
+        shippingMethod: Int?,
+    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.refund(
+                orderNumber = orderNumber,
+                productId = productId,
+                shippingMethod = shippingMethod
             )
         }))
     }

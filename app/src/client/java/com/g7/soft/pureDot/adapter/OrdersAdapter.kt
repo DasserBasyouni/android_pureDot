@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemOrderBinding
-import com.g7.soft.pureDot.model.OrderModel
+import com.g7.soft.pureDot.model.MasterOrderModel
 
 
 class OrdersAdapter(private val fragment: Fragment, private val isGrid: Boolean = true) :
-    ListAdapter<OrderModel, OrdersAdapter.ViewHolder>(OrdersDiffCallback()) {
+    ListAdapter<MasterOrderModel, OrdersAdapter.ViewHolder>(OrdersDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder.from(viewGroup)
@@ -26,7 +26,7 @@ class OrdersAdapter(private val fragment: Fragment, private val isGrid: Boolean 
     class ViewHolder private constructor(private val binding: ItemOrderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            dataModel: OrderModel,
+            dataModel: MasterOrderModel,
             fragment: Fragment,
             isLastItem: Boolean,
         ) {
@@ -35,7 +35,7 @@ class OrdersAdapter(private val fragment: Fragment, private val isGrid: Boolean 
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                val bundle = bundleOf("order" to dataModel)
+                val bundle = bundleOf("masterOrder" to dataModel)
                 fragment.findNavController().navigate(R.id.orderFragment, bundle)
             }
         }
@@ -55,14 +55,14 @@ class OrdersAdapter(private val fragment: Fragment, private val isGrid: Boolean 
 
 }
 
-class OrdersDiffCallback : DiffUtil.ItemCallback<OrderModel>() {
+class OrdersDiffCallback : DiffUtil.ItemCallback<MasterOrderModel>() {
     override fun areItemsTheSame(
-        oldItem: OrderModel,
-        newItem: OrderModel,
+        oldItem: MasterOrderModel,
+        newItem: MasterOrderModel,
     ): Boolean = oldItem == newItem
 
     override fun areContentsTheSame(
-        oldItem: OrderModel,
-        newItem: OrderModel,
+        oldItem: MasterOrderModel,
+        newItem: MasterOrderModel,
     ): Boolean = oldItem == newItem
 }

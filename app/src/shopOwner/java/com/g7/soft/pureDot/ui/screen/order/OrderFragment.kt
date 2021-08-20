@@ -61,7 +61,7 @@ class OrderFragment : Fragment() {
                 ProjectDialogUtils.showOrderRating(this, viewModel = viewModel)
 
             } else {
-                val bundle = bundleOf("order" to args.order)
+                val bundle = bundleOf("order" to args.order, "masterOderNumber" to )
                 findNavController().navigate(R.id.trackOrderFragment, bundle)
             }
         }

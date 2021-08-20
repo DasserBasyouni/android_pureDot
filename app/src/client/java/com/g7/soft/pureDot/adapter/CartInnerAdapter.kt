@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemCartInnerBinding
-import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ProductModel
-import com.g7.soft.pureDot.ui.screen.cart.CartFragment
-import com.zeugmasolutions.localehelper.currentLocale
 
 
 class CartInnerAdapter(
@@ -44,7 +41,8 @@ class CartInnerAdapter(
             binding.root.findViewById<View>(R.id.cartControlLayout)
                 .findViewById<View>(R.id.increaseCartQuantityBtn)
                 .setOnClickListener {
-                    if (fragment is CartFragment) {
+                    // todo
+                    /*if (fragment is CartFragment) {
                         fragment.viewModel.editCartQuantity(
                             fragment.requireActivity().currentLocale.toLanguageTag(),
                             itemId = dataModel.id,
@@ -53,12 +51,13 @@ class CartInnerAdapter(
                             dataModel.quantityInCart = (dataModel.quantityInCart ?: 0) + 1
                             adapter.notifyItemChanged(adapterPosition)
                         })
-                    }
+                    }*/
                 }
 
             binding.root.findViewById<View>(R.id.cartControlLayout)
                 .findViewById<View>(R.id.decreaseCartQuantityBtn).setOnClickListener {
-                    if (fragment is CartFragment) {
+                    //todo
+                    /*if (fragment is CartFragment) {
                         fragment.viewModel.editCartQuantity(
                             fragment.requireActivity().currentLocale.toLanguageTag(),
                             itemId = dataModel.id,
@@ -73,7 +72,7 @@ class CartInnerAdapter(
                                 adapter.notifyItemChanged(adapterPosition)
                             }
                         })
-                    }
+                    }*/
                 }
 
 

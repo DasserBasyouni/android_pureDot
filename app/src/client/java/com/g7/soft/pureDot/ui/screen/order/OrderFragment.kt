@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -34,7 +33,7 @@ class OrderFragment : Fragment() {
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_order, container, false)
 
         viewModelFactory = OrderViewModelFactory(
-            order = args.order,
+            masterOrder = args.masterOrder,
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(OrderViewModel::class.java)
 
@@ -48,22 +47,14 @@ class OrderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //init data
-        CartReviewHeaderAdapter(args.order.products ?: listOf()).let { adapter ->
+        CartReviewHeaderAdapter(args.masterOrder, this).let { adapter ->
             binding.cartReviewItemsRv.adapter = adapter
-            adapter.submitList(args.order.products?.map { product ->
-                product.shop?.name
-            }?.toSet()?.toList())
+            //adapter.submitList(args.masterOrder.orders)
         }
 
         // setup listeners
         binding.trackOrRateBtn.setOnClickListener {
-            if (viewModel.order?.isDelivered == true) {
-                ProjectDialogUtils.showOrderRating(this, viewModel = viewModel)
-
-            } else {
-                val bundle = bundleOf("order" to args.order)
-                findNavController().navigate(R.id.trackOrderFragment, bundle)
-            }
+            ProjectDialogUtils.showOrderRating(this, viewModel = viewModel)
         }
         binding.complaintBtn.setOnClickListener {
             findNavController().navigate(R.id.submitComplainFragment)

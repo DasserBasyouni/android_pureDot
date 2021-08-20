@@ -1,8 +1,6 @@
 package com.g7.soft.pureDot.ui.screen
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import androidx.core.view.ViewCompat
@@ -17,11 +15,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.constant.ApiConstant.OrderStatus.Companion.isCancelable
 import com.g7.soft.pureDot.databinding.ActivityMainBinding
-import com.g7.soft.pureDot.model.OrderModel
 import com.g7.soft.pureDot.ui.screen.checkout.CheckoutFragment
-import com.g7.soft.pureDot.ui.screen.order.OrderFragment
 import com.g7.soft.pureDot.util.UiUtils
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
 
@@ -105,6 +100,7 @@ class MainActivity : LocaleAwareCompatActivity() {
                     R.id.submitComplainFragment,
                     R.id.serviceFragment,
                     R.id.changeLanguageFragment,
+                    R.id.returnFragment,
                 ),
                 collapsingToolBarTitleDestinationIds = arrayListOf(R.id.signUpFragment),
                 collapsingHomeDestinationIds = arrayListOf(R.id.homeFragment),
@@ -206,8 +202,8 @@ class MainActivity : LocaleAwareCompatActivity() {
 
     private fun setupToolbarCancelButton(destination: NavDestination, bundle: Bundle?) {
         when (destination.id) {
-            R.id.orderFragment -> {
-                val order = bundle?.getParcelable<OrderModel>("order")
+            /*R.id.orderFragment -> {
+                val order = bundle?.getParcelable<MasterOrderModel>("order")
                 if (isCancelable(order?.status)) {
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.cancelBtn.apply {
@@ -218,7 +214,7 @@ class MainActivity : LocaleAwareCompatActivity() {
                         }
                     }, 1000)
                 }
-            }
+            }*/
             /*R.id.trackOrderFragment -> {
                 Handler(Looper.getMainLooper()).postDelayed({
                     binding.cancelBtn.apply {

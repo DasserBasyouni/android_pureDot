@@ -195,10 +195,13 @@
         android:name="com.g7.soft.pureDot.ui.screen.checkout.CheckoutFragment"
         android:label="@string/checkout"
         tools:layout="@layout/fragment_checkout">
-        <action
+        <!--<action
             android:id="@+id/action_checkoutFragment_to_trackOrderFragment"
             app:destination="@id/trackOrderFragment"
-            app:popUpTo="@id/homeFragment" />
+            app:popUpTo="@id/homeFragment" />-->
+        <action
+            android:id="@+id/action_checkoutFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackOrderFragment"
@@ -213,6 +216,9 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/nav_root"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="masterOrderNumber"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/myAccountFragment"
@@ -239,8 +245,8 @@
         android:label=""
         tools:layout="@layout/fragment_order">
         <argument
-            android:name="order"
-            app:argType="com.g7.soft.pureDot.model.OrderModel" />
+            android:name="masterOrder"
+            app:argType="com.g7.soft.pureDot.model.MasterOrderModel" />
     </fragment>
     <fragment
         android:id="@+id/notificationFragment"
@@ -339,4 +345,20 @@
         android:name="com.g7.soft.pureDot.ui.screen.changeLanguage.ChangeLanguageFragment"
         android:label="@string/change_language"
         tools:layout="@layout/fragment_change_language" />
+    <fragment
+        android:id="@+id/returnFragment"
+        android:name="com.g7.soft.pureDot.ui.screen.returnFragment.ReturnFragment"
+        android:label="@string/label_return"
+        tools:layout="@layout/fragment_return">
+        <argument
+            android:name="masterOrder"
+            app:argType="com.g7.soft.pureDot.model.MasterOrderModel" />
+        <argument
+            android:name="selectedProduct"
+            app:argType="com.g7.soft.pureDot.model.ProductModel" />
+        <action
+            android:id="@+id/action_refundFragment_to_myOrdersFragment"
+            app:destination="@id/myOrdersFragment"
+            app:popUpTo="@id/homeFragment" />
+    </fragment>
 </navigation>

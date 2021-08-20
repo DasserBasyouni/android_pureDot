@@ -16,6 +16,7 @@ data class ServiceModel(
     @Json(name = "imageUrl") val imageUrl: String?,
     @Json(name = "description") val description: String?,
     @Json(name = "quantityInCart") var quantityInCart: Int? = null,
+    @Json(name = "userReview") var userReview: ReviewModel? = null,
 ) : Parcelable {
     val currency get() = items?.products?.first()?.currency
 }

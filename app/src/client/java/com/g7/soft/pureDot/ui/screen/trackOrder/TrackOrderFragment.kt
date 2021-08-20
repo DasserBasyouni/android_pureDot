@@ -32,6 +32,7 @@ class TrackOrderFragment : Fragment() {
 
         viewModelFactory = TrackOrderViewModelFactory(
             order = args.order,
+            masterOrderNumber = args.masterOrderNumber
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrackOrderViewModel::class.java)
 

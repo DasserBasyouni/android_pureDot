@@ -5,6 +5,7 @@ import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ComplainsAdapter
 import com.g7.soft.pureDot.databinding.FragmentCustomerServiceBinding
@@ -46,7 +47,9 @@ class CustomerServiceFragment : Fragment() {
         })
 
         // setup click listener
-
+        binding.submitComplainBtn.setOnClickListener {
+            findNavController().navigate(R.id.submitComplainFragment)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.adapter.CartReviewHeaderAdapter
+import com.g7.soft.pureDot.adapter.OldCartReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentCheckout3Binding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.util.ProjectDialogUtils
@@ -45,7 +45,7 @@ class CheckoutConfirmationFragment(private val viewModel: CheckoutViewModel) : F
         viewModel.cartItemsResponse.observe(viewLifecycleOwner, {
             viewModel.cartItemsLcee.value!!.response.value = it
 
-            CartReviewHeaderAdapter(it.data?.products ?: mutableListOf()).let { adapter ->
+            OldCartReviewHeaderAdapter(it.data?.products ?: mutableListOf()).let { adapter ->
                 binding.cartReviewItemsRv.adapter = adapter
                 adapter.submitList(it.data?.products?.map { product ->
                     product.shop?.name
@@ -72,8 +72,8 @@ class CheckoutConfirmationFragment(private val viewModel: CheckoutViewModel) : F
                     drawableResId = R.drawable.ic_successfully,
                     positiveBtnTextResId = R.string.track_order
                 ) {
-                    val bundle = bundleOf("order" to it)
-                    findNavController().navigate(R.id.action_checkoutFragment_to_trackOrderFragment, bundle)
+                    val bundle = bundleOf("masterOrder" to it)
+                    findNavController().navigate(R.id.action_checkoutFragment_to_orderFragment, bundle)
                 }
             })
         }

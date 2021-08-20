@@ -16,7 +16,7 @@ import com.g7.soft.pureDot.databinding.FragmentSubmitComplainBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.CategoryModel
 import com.g7.soft.pureDot.model.DataWithCountModel
-import com.g7.soft.pureDot.model.OrderModel
+import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.zeugmasolutions.localehelper.currentLocale
 
@@ -73,7 +73,7 @@ class SubmitComplainFragment : Fragment() {
 
     private fun setupSpinner(
         spinner: AppCompatSpinner,
-        networkResponse: NetworkRequestResponse<List<OrderModel>?>?,
+        networkResponse: NetworkRequestResponse<List<MasterOrderModel>?>?,
         initialText: String
     ) {
         val spinnerData = when (networkResponse?.status) {

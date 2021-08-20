@@ -1,9 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.service
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import android.content.Context
+import androidx.lifecycle.*
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.model.ServiceDetailsModel
 import com.g7.soft.pureDot.model.ServiceModel
@@ -16,6 +14,9 @@ import java.util.*
 
 class ServiceViewModel(val service: ServiceModel?) : ViewModel() {
 
+    val reviewComment = MediatorLiveData<String>()
+    val reviewRating = MediatorLiveData<Float>()
+    val quantityInCart = MediatorLiveData<Int>().apply { this.value = 1 }
     val servantsSelectedPosition = MutableLiveData<Int?>().apply { this.value = 0 }
 
     val serviceDetailsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
@@ -66,12 +67,36 @@ class ServiceViewModel(val service: ServiceModel?) : ViewModel() {
         }
     }
 
-    fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int?) = liveData(Dispatchers.IO) {
+    fun addToCart(langTag: String, context: Context, onComplete: () -> Unit) {
+        CartRepository(langTag).addServiceToCart(
+            viewModelScope,
+            context,
+            service?.id,
+            quantityInCart.value,
+            onComplete
+        )
+    }
+
+    fun addReview(langTag: String, tokenId: String?) =
+        liveData(Dispatchers.IO) {
+            emit(NetworkRequestResponse.loading())
+
+            emitSource(
+                ServiceRepository(langTag).addReview(
+                    tokenId = tokenId,
+                    productId = service?.id,
+                    rating = reviewRating.value,
+                    comment = reviewComment.value
+                )
+            )
+        }
+
+    /*fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
 
         emitSource(
             CartRepository(langTag).editCartQuantity(itemId = itemId,
             quantity = quantity,
             serviceDateTime = null))
-    }
+    }*/
 }

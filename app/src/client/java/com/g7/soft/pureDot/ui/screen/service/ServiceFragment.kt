@@ -15,8 +15,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ImagesSliderAdapter
-import com.g7.soft.pureDot.adapter.ProductsAdapter
 import com.g7.soft.pureDot.adapter.ReviewsAdapter
+import com.g7.soft.pureDot.adapter.ServiceVariantsAdapter
+import com.g7.soft.pureDot.adapter.SmallServicesAdapter
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentServiceBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
@@ -24,7 +25,6 @@ import com.g7.soft.pureDot.model.ServiceDetailsModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
-import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
@@ -77,10 +77,10 @@ class ServiceFragment : Fragment() {
 
         // setup observers
         val imagesOffersAdapter = ImagesSliderAdapter(this)
-        val similarProductsAdapter = ProductsAdapter(this, isGrid = false)
+        val similarServicesAdapter = SmallServicesAdapter(this)
         val reviewsAdapter = ReviewsAdapter(this)
         binding.sliderOffersLceeLayoutVp.adapter = imagesOffersAdapter
-        binding.similarProductsRv.adapter = similarProductsAdapter
+        binding.similarProductsRv.adapter = similarServicesAdapter
         binding.reviewsRv.adapter = reviewsAdapter
         TabLayoutMediator(
             binding.sliderOffersLceeLayoutTl,
@@ -89,8 +89,9 @@ class ServiceFragment : Fragment() {
         viewModel.serviceDetailsResponse.observe(viewLifecycleOwner, {
             viewModel.serviceDetailsLcee.value!!.response.value = it
             imagesOffersAdapter.submitList(it.data?.images)
-            similarProductsAdapter.submitList(it.data?.similarItems)
+            similarServicesAdapter.submitList(it.data?.similarItems)
             reviewsAdapter.submitList(it.data?.reviews?.data)
+            binding.variationsRv.adapter = ServiceVariantsAdapter(it.data?.variations)
         })
         viewModel.sliderOffersPosition.observe(viewLifecycleOwner, {
             binding.sliderOffersLceeLayoutVp.currentItem = it
@@ -110,25 +111,27 @@ class ServiceFragment : Fragment() {
             )
             findNavController().navigate(R.id.allReviewsFragment, bundle)
         }
+        binding.sendBtn.setOnClickListener {
+            val tokenId = "" // todo
+
+            viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
+                .observeApiResponse(this, {
+                    viewModel.service?.userReview = it
+                    binding.invalidateAll()
+                })
+        }
+        binding.decreaseCartQuantityBtn.setOnClickListener {
+            if (viewModel.quantityInCart.value != 1)
+                viewModel.quantityInCart.value = viewModel.quantityInCart.value?.minus(1)
+        }
+        binding.increaseCartQuantityBtn.setOnClickListener {
+            viewModel.quantityInCart.value = viewModel.quantityInCart.value?.plus(1)
+        }
         binding.addToCartBtn.setOnClickListener {
-            val newQuantity = binding.quantityInCartTv.text.toString().toIntOrNull()?.plus(1)
-            viewModel.editCartQuantity(
+            viewModel.addToCart(
                 requireActivity().currentLocale.toLanguageTag(),
-                itemId = args.service.id,
-                quantity = newQuantity
-            ).observeApiResponse(this, {
-                viewModel.service?.quantityInCart = newQuantity
-                binding.quantityInCartTv.text = newQuantity.toString()
-                ProjectDialogUtils.showCheckoutTopPopup(
-                    requireContext(),
-                    itemName = viewModel.service?.name,
-                    totalPriceInCart = it?.totalPriceInCart,
-                    currency = viewModel.service?.items?.products?.first()?.currency,
-                    positiveBtnOnClick = {
-                        findNavController().navigate(R.id.cartFragment)
-                    }
-                )
-            })
+                requireContext()
+            ) { viewModel.quantityInCart.value = 1 }
         }
     }
 
@@ -138,7 +141,7 @@ class ServiceFragment : Fragment() {
         networkResponse: NetworkRequestResponse<ServiceDetailsModel>?,
         initialText: String
     ) {
-        val spinnerData = when (networkResponse?.status)     {
+        val spinnerData = when (networkResponse?.status) {
             ProjectConstant.Companion.Status.IDLE -> {
                 spinner.isEnabled = false
                 arrayListOf(initialText)

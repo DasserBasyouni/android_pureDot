@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.model.CategoryModel
 import com.g7.soft.pureDot.model.DataWithCountModel
-import com.g7.soft.pureDot.model.OrderModel
+import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.CategoriesRepository
 import com.g7.soft.pureDot.repo.ComplainRepository
@@ -18,7 +18,7 @@ class SubmitComplainViewModel : ViewModel() {
     val title = MutableLiveData<String?>()
     val description = MutableLiveData<String?>()
 
-    val ordersResponse = MediatorLiveData<NetworkRequestResponse<List<OrderModel>?>>()
+    val ordersResponse = MediatorLiveData<NetworkRequestResponse<List<MasterOrderModel>?>>()
     val categoriesResponse =
         MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<CategoryModel>?>>>()
     val ordersPosition = MutableLiveData<Int?>().apply { this.value = 0 }

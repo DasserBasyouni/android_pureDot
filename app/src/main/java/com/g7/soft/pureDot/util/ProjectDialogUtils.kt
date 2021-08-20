@@ -202,15 +202,15 @@ class ProjectDialogUtils {
 
             // init data
             dialog.findViewById<TextView>(R.id.orderIdTv).text =
-                fragment.getString(R.string.conc_order_id_, viewModel.order?.number)
+                fragment.getString(R.string.conc_order_id_, viewModel.masterOrder?.number)
             bindPriceWithCurrency(
                 dialog.findViewById(R.id.totalPriceTv),
-                price = viewModel.order?.price,
-                currency = viewModel.order?.currency,
+                price = viewModel.masterOrder?.price,
+                currency = viewModel.masterOrder?.currency,
                 preText = fragment.getString(R.string.total_)
             )
 
-            val review = viewModel.order?.review
+            val review = viewModel.masterOrder?.review
             if (review != null) {
                 dialog.disableClicksIv.visibility = View.VISIBLE
                 dialog.positiveBtn.visibility = View.GONE
@@ -240,7 +240,7 @@ class ProjectDialogUtils {
                         deliveryRating = dialog.deliveryRatingRb.rating,
                         deliveryComment = dialog.deliveryCommentTil.editText?.text?.toString()
                     ).observeApiResponse(fragment, {
-                        viewModel.order?.review = OrderReviewModel(
+                        viewModel.masterOrder?.review = OrderReviewModel(
                             orderRating = dialog.orderRatingRb.rating,
                             orderComment = dialog.orderCommentTil.editText?.text?.toString(),
                             deliveryRating = dialog.deliveryRatingRb.rating,

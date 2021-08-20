@@ -10,7 +10,7 @@ import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.OrderRepository
 import kotlinx.coroutines.Dispatchers
 
-class TrackOrderViewModel(val order: OrderModel?) : ViewModel() {
+class TrackOrderViewModel(val order: OrderModel?, val masterOrderNumber: Int) : ViewModel() {
 
     val orderTrackingLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     val orderTrackingResponse = MediatorLiveData<NetworkRequestResponse<OrderTrackingModel>>()
@@ -28,7 +28,7 @@ class TrackOrderViewModel(val order: OrderModel?) : ViewModel() {
             addSource(
                 OrderRepository(langTag).trackOrder(
                     tokenId = tokenId,
-                    orderNumber = order?.number,
+                    orderNumber = masterOrderNumber,
                 )
             ) { orderTrackingResponse.value = it }
         }
@@ -40,7 +40,7 @@ class TrackOrderViewModel(val order: OrderModel?) : ViewModel() {
         emitSource(
             OrderRepository(langTag).cancelOrder(
                 tokenId = tokenId,
-                orderNumber = order?.number,
+                orderNumber = masterOrderNumber,
             )
         )
     }

@@ -12,7 +12,7 @@ plugins {
 // Semantic Versioning 2.0.0 {@link 'https://semver.org/'}
 def versionMajor = 0
 def versionMinor = 0
-def versionPatch = 11
+def versionPatch = 12
 
 android {
     compileSdkVersion 30
@@ -153,6 +153,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     implementation  'com.fxn769:pix:1.5.6'
+
+    //Room persistence database
+    def room_version = "2.3.0"
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.6.0'

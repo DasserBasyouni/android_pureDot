@@ -53,7 +53,8 @@ class MockInterceptor : Interceptor {
                         uri.contains("driver/getBestSelling") -> OfflineDemoRepository.get10Products
                         uri.contains("driver/rateItem") -> OfflineDemoRepository.getSuccessfulStatus
                         uri.contains("driver/getItemReviews") -> OfflineDemoRepository.getItemReviews
-                        uri.contains("review/mark") -> OfflineDemoRepository.getSuccessfulStatus
+                        //uri.contains("review/mark") -> OfflineDemoRepository.getSuccessfulStatus
+
 
                         // offers
                         uri.contains("driver/getSliderOffers") -> OfflineDemoRepository.getSliderOffers

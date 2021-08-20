@@ -3,6 +3,7 @@ package com.g7.soft.pureDot.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.StaggeredProductsAdapter.ViewHolder.Companion.LARGE_VIEW_TYPE
 import com.g7.soft.pureDot.adapter.StaggeredProductsAdapter.ViewHolder.Companion.SMALL_VIEW_TYPE
 import com.g7.soft.pureDot.databinding.ItemStaggeredProductLargeBinding
@@ -55,7 +57,8 @@ class StaggeredProductsAdapter(private val fragment: Fragment) :
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                fragment.findNavController() // todo
+                val bundle = bundleOf("item" to dataModel)
+                fragment.findNavController().navigate(R.id.productFragment, bundle)
             }
         }
 

@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@string/pickup_location"
+                        android:text="@string/shipping_method"
                         android:textColor="@color/warm_purple"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -98,7 +98,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
                             android:paddingHorizontal="12dp"
-                            android:text="Ship via Aramex"
+                            android:text="Ship via FedEx"
                             android:textColor="@color/warm_grey"
                             android:textSize="16sp"
                             android:textStyle="normal" />

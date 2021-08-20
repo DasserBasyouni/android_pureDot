@@ -17,7 +17,7 @@ class LoginViewModel : ViewModel() {
 
         emit(NetworkRequestResponse.loading())
         emitSource(
-            com.g7.soft.pureDot.repo.ClientRepository(langTag).login(
+            ClientRepository(langTag).login(
                 fcmToken = fcmToken,
                 username = username.value,
                 password = password.value

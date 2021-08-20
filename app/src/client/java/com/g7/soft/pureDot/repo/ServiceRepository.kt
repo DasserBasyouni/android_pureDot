@@ -55,4 +55,21 @@ class ServiceRepository(private val langTag: String) {
             )
         }))
     }
+
+
+    fun addReview(
+        tokenId: String?,
+        productId: Int?,
+        rating: Float?,
+        comment: String?,
+    ) = liveData(Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.addServiceReview(
+                tokenId = tokenId,
+                productId = productId,
+                rating = rating,
+                comment = comment
+            )
+        }))
+    }
 }

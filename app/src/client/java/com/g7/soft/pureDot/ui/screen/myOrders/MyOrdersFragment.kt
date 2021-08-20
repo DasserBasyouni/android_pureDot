@@ -1,6 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.myOrders
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -41,6 +42,7 @@ class MyOrdersFragment : Fragment() {
         val myOrdersAdapter = OrdersAdapter(this)
         binding.ordersRv.adapter = myOrdersAdapter
         viewModel.ordersResponse.observe(viewLifecycleOwner, {
+            Log.e("Z_", "it: ${it.exception}")
             viewModel.ordersLcee.value!!.response.value = it
             myOrdersAdapter.submitList(it.data)
         })

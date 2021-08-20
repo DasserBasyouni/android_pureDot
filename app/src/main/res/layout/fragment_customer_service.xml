@@ -35,6 +35,19 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:lceeModel="@{viewModel.complainLcee}" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/submitComplainBtn"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/submit_a_complain"
+                android:visibility="@{viewModel.complainLcee.contentVisibility}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/complainsRv"
                 android:layout_width="0dp"
@@ -49,7 +62,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/submitComplainBtn"
                 app:layout_constraintVertical_bias="0.0"
                 tools:itemCount="8"
                 tools:listitem="@layout/item_complain" />

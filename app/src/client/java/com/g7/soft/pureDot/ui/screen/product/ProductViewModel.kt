@@ -1,9 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.product
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import android.content.Context
+import androidx.lifecycle.*
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.model.ProductDetailsModel
 import com.g7.soft.pureDot.model.ProductModel
@@ -16,24 +14,15 @@ import java.util.*
 
 class ProductViewModel(val product: ProductModel?) : ViewModel() {
 
+    val selectedBranchPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val reviewComment = MediatorLiveData<String>()
+    val reviewRating = MediatorLiveData<Float>()
+    val quantityInCart = MediatorLiveData<Int>().apply { this.value = 1 }
     val productDetailsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     val productDetailsResponse = MediatorLiveData<NetworkRequestResponse<ProductDetailsModel>>()
 
     private var sliderOffersTimer: Timer? = null
     val sliderOffersPosition = MediatorLiveData<Int>().apply { this.value = 0 }
-
-    val sizes
-        get() = Transformations.map(productDetailsResponse) { response ->
-            response.data?.sizes?.map { it.text }?.toList()
-        }
-    val flavours
-        get() = Transformations.map(productDetailsResponse) { response ->
-            response.data?.flavours?.map { it.name }?.toList()
-        }
-    val colors
-        get() = Transformations.map(productDetailsResponse) { response ->
-            response.data?.colors?.map { it.hexColor }?.toList()
-        }
 
     /*val reviewsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     val reviewsResponse =
@@ -76,12 +65,36 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
         }
     }
 
-    fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int?) = liveData(Dispatchers.IO) {
+    fun addProductToCart(langTag: String, context: Context, onComplete: () -> Unit) {
+        CartRepository(langTag).addProductToCart(
+            viewModelScope,
+            context,
+            product?.id,
+            quantityInCart.value,
+            onComplete
+        )
+    }
+
+    fun addReview(langTag: String, tokenId: String?) =
+        liveData(Dispatchers.IO) {
+            emit(NetworkRequestResponse.loading())
+
+            emitSource(
+                ProductRepository(langTag).addReview(
+                    tokenId = tokenId,
+                    productId = product?.id,
+                    rating = reviewRating.value,
+                    comment = reviewComment.value
+                )
+            )
+        }
+
+    /*fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
 
         emitSource(
             CartRepository(langTag).editCartQuantity(itemId = itemId,
             quantity = quantity,
             serviceDateTime = null))
-    }
+    }*/
 }

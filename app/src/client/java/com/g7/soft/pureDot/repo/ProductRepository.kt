@@ -119,17 +119,20 @@ class ProductRepository(private val langTag: String) {
         }))
     }
 
-    fun markReview(
+    fun addReview(
         tokenId: String?,
-        reviewId: Int?,
-        isHelpful: Boolean?,
+        productId: Int?,
+        rating: Float?,
+        comment: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.markReview(
+            return@handle Fetcher().getInstance(langTag)?.addProductReview(
                 tokenId = tokenId,
-                reviewId = reviewId,
-                isHelpful = isHelpful,
+                productId = productId,
+                rating = rating,
+                comment = comment
             )
         }))
     }
+
 }

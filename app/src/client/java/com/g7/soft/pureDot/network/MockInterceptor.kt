@@ -46,8 +46,9 @@ class MockInterceptor : Interceptor {
                         uri.contains("client/getBestSelling") -> OfflineDemoRepository.get10Products
                         uri.contains("client/rateItem") -> OfflineDemoRepository.getSuccessfulStatus
                         uri.contains("client/getItemReviews") -> OfflineDemoRepository.getItemReviews
-                        uri.contains("review/mark") -> OfflineDemoRepository.getSuccessfulStatus
+                        //uri.contains("review/mark") -> OfflineDemoRepository.getSuccessfulStatus
                         uri.contains("client/getProductDetails") -> OfflineDemoRepository.getProductDetails
+                        uri.contains("client/addProductReview") -> OfflineDemoRepository.addProductReview
 
                         // offers
                         uri.contains("client/getSliderOffers") -> OfflineDemoRepository.getSliderOffers
@@ -62,20 +63,25 @@ class MockInterceptor : Interceptor {
                         uri.contains("client/editCartQuantity") -> OfflineDemoRepository.editCartQuantity
                         uri.contains("client/getCartItems") -> OfflineDemoRepository.getCartItems
                         uri.contains("client/checkoutIsPaid") -> OfflineDemoRepository.checkoutIsPaid
-                        uri.contains("client/checkout") -> OfflineDemoRepository.checkout
+                        uri.contains("client/checkout") -> OfflineDemoRepository.getShippingCost
                         uri.contains("client/checkCoupon") -> OfflineDemoRepository.checkCoupon
                         uri.contains("client/getWishList") -> OfflineDemoRepository.getWishList
+                        uri.contains("client/checkCartProducts") -> OfflineDemoRepository.get4Products
+
 
                         // order
                         uri.contains("client/getMyOrders") -> OfflineDemoRepository.getMyOrders
                         uri.contains("client/trackOrder") -> OfflineDemoRepository.trackOrder
                         uri.contains("client/cancelOrder") -> OfflineDemoRepository.getSuccessfulStatus
                         uri.contains("client/rateOrder") -> OfflineDemoRepository.getSuccessfulStatus
+                        uri.contains("client/calculateRefundShipping") -> OfflineDemoRepository.getShippingCost
+                        uri.contains("client/refund") -> OfflineDemoRepository.getSuccessfulStatus
 
                         // service
                         uri.contains("client/getServices") -> OfflineDemoRepository.getServices
                         uri.contains("client/rateComplainService") -> OfflineDemoRepository.getSuccessfulStatus
                         uri.contains("client/getServiceDetails") -> OfflineDemoRepository.getServiceDetails
+                        uri.contains("client/addServiceReview") -> OfflineDemoRepository.addProductReview
 
                         // wallet
                         uri.contains("client/getWalletData") -> OfflineDemoRepository.getWalletData

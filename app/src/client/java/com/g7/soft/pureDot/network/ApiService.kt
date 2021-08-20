@@ -221,13 +221,21 @@ interface ApiService {
     ): ApiResponseModel<DataWithCountModel<List<CategoryModel>>>?
 
     // cart
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("client/editCartQuantity")
     suspend fun editCartQuantity(
         @Field("itemId") itemId: Int?,
         @Field("quantity") quantity: Int?,
         @Field("serviceDateTime") serviceDateTime: Long?,
-    ): ApiResponseModel<TotalPriceInCartModel>?
+    ): ApiResponseModel<TotalPriceInCartModel>?*/
+
+    @FormUrlEncoded
+    @POST("client/checkCartProducts")
+    suspend fun checkCartProducts(
+        @Field("tokenId") tokenId: String?,
+        @Field("ids") ids: List<Int>?,
+        @Field("quantities") quantities: List<Int>?,
+    ): ApiResponseModel<List<ProductModel>>?
 
     @FormUrlEncoded
     @POST("client/getCartItems")
@@ -244,13 +252,22 @@ interface ApiService {
         @Field("itemPerPage") itemPerPage: Int?,
     ): ApiResponseModel<DataWithCountModel<List<ReviewModel>>>?
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("review/mark")
     suspend fun markReview(
         @Field("tokenId") tokenId: String?,
         @Field("reviewId") reviewId: Int?,
         @Field("isHelpful") isHelpful: Boolean?,
-    ): ApiResponseModel<*>?
+    ): ApiResponseModel<*>?*/
+
+    @FormUrlEncoded
+    @POST("client/addProductReview")
+    suspend fun addProductReview(
+        @Field("tokenId") tokenId: String?,
+        @Field("productId") productId: Int?,
+        @Field("rating") rating: Float?,
+        @Field("comment") comment: String?,
+    ): ApiResponseModel<ReviewModel>?
 
     @FormUrlEncoded
     @POST("client/checkout")
@@ -275,7 +292,7 @@ interface ApiService {
     suspend fun checkoutIsPaid(
         @Field("tokenId") tokenId: String?,
         @Field("paidAmount") paidAmount: Double?,
-    ): ApiResponseModel<OrderModel>?
+    ): ApiResponseModel<MasterOrderModel>?
 
     @FormUrlEncoded
     @POST("client/getWishList")
@@ -288,7 +305,7 @@ interface ApiService {
     @POST("client/getMyOrders")
     suspend fun getMyOrders(
         @Field("tokenId") tokenId: String?,
-    ): ApiResponseModel<List<OrderModel>>?
+    ): ApiResponseModel<List<MasterOrderModel>>?
 
     @FormUrlEncoded
     @POST("client/trackOrder")
@@ -302,6 +319,22 @@ interface ApiService {
     suspend fun cancelOrder(
         @Field("tokenId") tokenId: String?,
         @Field("orderNumber") orderNumber: Int?,
+    ): ApiResponseModel<*>?
+
+    @FormUrlEncoded
+    @POST("client/calculateRefundShipping")
+    suspend fun calculateRefundShipping(
+        @Field("orderNumber") orderNumber: Int?,
+        @Field("productId") productId: Int?,
+        @Field("shippingMethod") shippingMethod: Int?,
+    ): ApiResponseModel<ShippingCostModel>?
+
+    @FormUrlEncoded
+    @POST("client/refund")
+    suspend fun refund(
+        @Field("orderNumber") orderNumber: Int?,
+        @Field("productId") productId: Int?,
+        @Field("shippingMethod") shippingMethod: Int?,
     ): ApiResponseModel<*>?
 
     // service
@@ -331,6 +364,15 @@ interface ApiService {
     suspend fun getServiceDetails(
         @Field("serviceId") serviceId: Int?,
     ): ApiResponseModel<ServiceDetailsModel>?
+
+    @FormUrlEncoded
+    @POST("client/addServiceReview")
+    suspend fun addServiceReview(
+        @Field("tokenId") tokenId: String?,
+        @Field("productId") productId: Int?,
+        @Field("rating") rating: Float?,
+        @Field("comment") comment: String?,
+    ): ApiResponseModel<ReviewModel>?
 
     // wallet
     @FormUrlEncoded

@@ -9,27 +9,27 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class OrderModel(
-    @Json(name = "number") val number: Int?,
+    /*@Json(name = "number") val number: Int?,
     @Json(name = "dateTime") val dateTime: Long?,
     @Json(name = "fromAddress") val fromAddress: String?,
     @Json(name = "toAddress") val toAddress: String?,
     @Json(name = "price") val price: Double?,
-    @Json(name = "note") val note: String?,
+    @Json(name = "note") val note: String?,*/
     @Json(name = "products") val products: List<ProductModel>?,
     @Json(name = "shippingCost") val shippingCost: Double?,
     @Json(name = "commission") val commission: Double?,
-    @Json(name = "clientLat") val clientLat: Double?,
+    /*@Json(name = "clientLat") val clientLat: Double?,
     @Json(name = "clientLng") val clientLng: Double?,
-    @Json(name = "clientImageUrl") val clientImageUrl: String?,
+    @Json(name = "clientImageUrl") val clientImageUrl: String?,*/
     @Json(name = "status") var status: Int?,
     @Json(name = "deliveryStatus") var deliveryStatus: Int?,
     @Json(name = "shopName") val shopName: String?,
     @Json(name = "shopLat") val shopLat: Double?,
     @Json(name = "shopLng") val shopLng: Double?,
-    @Json(name = "finalRouteImageUrl") val finalRouteImageUrl: String?,
+    /*@Json(name = "finalRouteImageUrl") val finalRouteImageUrl: String?,
     @Json(name = "address") val address: AddressModel?,
     @Json(name = "clientPhoneNumber") val clientPhoneNumber: String?,
-    @Json(name = "review") var review: OrderReviewModel?,
+    @Json(name = "review") var review: OrderReviewModel?,*/
 ) : Parcelable {
     val currency get() = products?.first()?.currency
     val totalCost get() = products?.sumOf { it.priceWithDiscount ?: 0.0 }

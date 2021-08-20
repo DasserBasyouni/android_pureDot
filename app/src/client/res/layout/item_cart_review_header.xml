@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="storeName"
             type="String" />
@@ -20,12 +22,16 @@
         <variable
             name="currency"
             type="String" />
+
+        <variable
+            name="order"
+            type="com.g7.soft.pureDot.model.OrderModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:paddingVertical="8dp"
         android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
         tools:background="@android:color/white"
         tools:layout_gravity="center">
 
@@ -33,27 +39,62 @@
             android:id="@+id/appCompatTextView24"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="8dp"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
             android:text="@{storeName}"
             android:textColor="@color/warm_purple"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cardView9"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Store 1 Cart " />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{order == null ? View.GONE : View.VISIBLE}"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:bindOrderStatus="@{order.status}"
+                tools:background="@color/bluish"
+                tools:drawableStart="@drawable/ic_order_placed_small"
+                tools:text="Order Placed" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="cardView9,appCompatTextView24" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:nestedScrollingEnabled="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView24"
+            app:layout_constraintTop_toBottomOf="@+id/barrier"
             tools:itemCount="2"
             tools:listitem="@layout/item_cart_review_inner" />
 
@@ -63,6 +104,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
+            android:visibility="@{subTotal == null ? View.GONE : View.VISIBLE}"
             android:text="@string/sub_total"
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
@@ -71,10 +113,12 @@
             app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView23"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
+            android:visibility="@{vat == null ? View.GONE : View.VISIBLE}"
             android:text="@string/vat"
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
@@ -86,15 +130,16 @@
             android:id="@+id/appCompatTextView26"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{subTotal == null ? View.GONE : View.VISIBLE}"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:bindPrice="@{subTotal}"
             app:bindCurrency="@{currency}"
+            app:bindPrice="@{subTotal}"
             app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView28"
-            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView24"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/appCompatTextView28"
             tools:text="100 SAR" />
 
@@ -103,14 +148,33 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
-            app:bindPrice="@{vat}"
-            app:bindCurrency="@{currency}"
+            android:visibility="@{vat == null ? View.GONE : View.VISIBLE}"
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
+            app:bindCurrency="@{currency}"
+            app:bindPrice="@{vat}"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView26"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView26"
             tools:text="10 SAR" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/trackOrderBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:visibility="@{order == null ? View.GONE : View.VISIBLE}"
+            android:text="@string/track_order"
+            android:textAllCaps="false"
+            android:textColor="#662f8f"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView23"
+            app:strokeColor="@color/warm_purple" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

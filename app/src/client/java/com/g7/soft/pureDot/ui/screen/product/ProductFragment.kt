@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
@@ -13,13 +15,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ImagesSliderAdapter
+import com.g7.soft.pureDot.adapter.ProductVariantsAdapter
 import com.g7.soft.pureDot.adapter.ProductsAdapter
 import com.g7.soft.pureDot.adapter.ReviewsAdapter
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentProductBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.model.ProductDetailsModel
+import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
-import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
@@ -58,7 +63,6 @@ class ProductFragment : Fragment() {
         viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag())
 
         // setup observers
-
         val imagesOffersAdapter = ImagesSliderAdapter(this)
         val similarProductsAdapter = ProductsAdapter(this, isGrid = false)
         val reviewsAdapter = ReviewsAdapter(this)
@@ -74,6 +78,12 @@ class ProductFragment : Fragment() {
             imagesOffersAdapter.submitList(it.data?.images)
             similarProductsAdapter.submitList(it.data?.similarItems)
             reviewsAdapter.submitList(it.data?.reviews?.data)
+            binding.variationsRv.adapter = ProductVariantsAdapter(it.data?.variations)
+            setupSpinner(
+                binding.branchesSpinner,
+                it,
+                initialText = getString(R.string.select_branch)
+            )
         })
         viewModel.sliderOffersPosition.observe(viewLifecycleOwner, {
             binding.sliderOffersLceeLayoutVp.currentItem = it
@@ -93,25 +103,67 @@ class ProductFragment : Fragment() {
             )
             findNavController().navigate(R.id.allReviewsFragment, bundle)
         }
+        binding.sendBtn.setOnClickListener {
+            val tokenId = "" // todo
+
+            viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
+                .observeApiResponse(this, {
+                    viewModel.product?.userReview = it
+                    binding.invalidateAll()
+                })
+        }
+        binding.decreaseCartQuantityBtn.setOnClickListener {
+            if (viewModel.quantityInCart.value != 1)
+                viewModel.quantityInCart.value = viewModel.quantityInCart.value?.minus(1)
+        }
+        binding.increaseCartQuantityBtn.setOnClickListener {
+            viewModel.quantityInCart.value = viewModel.quantityInCart.value?.plus(1)
+        }
         binding.addToCartBtn.setOnClickListener {
-            val newQuantity = binding.quantityInCartTv.text.toString().toIntOrNull()?.plus(1)
-            viewModel.editCartQuantity(
+            viewModel.addProductToCart(
                 requireActivity().currentLocale.toLanguageTag(),
-                itemId = args.item.id,
-                quantity = newQuantity
-            ).observeApiResponse(this, {
-                viewModel.product?.quantityInCart = newQuantity
-                binding.quantityInCartTv.text = newQuantity.toString()
-                ProjectDialogUtils.showCheckoutTopPopup(
-                    requireContext(),
-                    itemName = viewModel.product?.name,
-                    totalPriceInCart = it?.totalPriceInCart,
-                    currency = viewModel.product?.currency,
-                    positiveBtnOnClick = {
-                        findNavController().navigate(R.id.cartFragment)
-                    }
-                )
-            })
+                requireContext()
+            ) { viewModel.quantityInCart.value = 1 }
+        }
+    }
+
+
+    private fun setupSpinner(
+        spinner: AppCompatSpinner,
+        networkResponse: NetworkRequestResponse<ProductDetailsModel>?,
+        initialText: String
+    ) {
+        val spinnerData = when (networkResponse?.status) {
+            ProjectConstant.Companion.Status.IDLE -> {
+                spinner.isEnabled = false
+                arrayListOf(initialText)
+            }
+            ProjectConstant.Companion.Status.LOADING -> {
+                spinner.isEnabled = false
+                arrayListOf(getString(R.string.loading_))
+            }
+            ProjectConstant.Companion.Status.SUCCESS -> {
+                val modelsList = networkResponse.data?.branches
+                val dataList = modelsList?.mapNotNull { it.name }?.toTypedArray()
+                spinner.isEnabled = true
+                arrayListOf(initialText).apply {
+                    this.addAll((dataList ?: arrayOf()))
+                }
+            }
+            else -> {
+                spinner.isEnabled = false
+                arrayListOf(getString(R.string.something_went_wrong))
+            }
+        }
+
+        ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            spinnerData
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+            spinner.setSelection(viewModel.selectedBranchPosition.value!!)
         }
     }
 }

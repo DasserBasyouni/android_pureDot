@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.product.ProductViewModel" />
@@ -14,6 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         app:paddingBottomSystemWindowInsets="@{true}">
 
         <androidx.core.widget.NestedScrollView
@@ -93,97 +96,32 @@
                             app:tabGravity="center"
                             app:tabIndicatorHeight="0dp" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/appCompatTextView37"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="3sp"
-                            android:text="@string/size"
-                            android:textColor="@color/greyish_brown"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
-                            app:layout_constraintBottom_toBottomOf="@id/colorsCg"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/colorsCg" />
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/colorsCg"
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/variations_rv"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="12dp"
                             android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
-                            app:bindAreChecked="@{false}"
-                            app:bindChipData="@{viewModel.sizes}"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="@+id/sizesCg"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintEnd_toEndOf="@+id/sliderOffersLceeLayoutCv"
+                            app:layout_constraintStart_toStartOf="@+id/sliderOffersLceeLayoutCv"
                             app:layout_constraintTop_toBottomOf="@+id/sliderOffersLceeLayoutTl"
-                            app:singleSelection="true"
-                            tools:layout_height="46dp" />
+                            tools:itemCount="3"
+                            tools:listitem="@layout/item_product_variation" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/appCompatTextView39"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="3sp"
-                            android:text="@string/flavour"
-                            android:textColor="@color/greyish_brown"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
-                            app:layout_constraintBottom_toBottomOf="@+id/sizesCg"
-                            app:layout_constraintStart_toStartOf="@+id/appCompatTextView37"
-                            app:layout_constraintTop_toBottomOf="@+id/colorsCg" />
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/sizesCg"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/branchesSpinner"
+                            style="@style/ProjectTheme.Spinner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="12dp"
-                            android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
-                            app:bindAreChecked="@{false}"
-                            app:bindChipData="@{viewModel.flavours}"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="@+id/materialsCg"
-                            app:layout_constraintTop_toBottomOf="@+id/colorsCg"
-                            app:singleSelection="true"
-                            tools:layout_height="46dp" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/appCompatTextView41"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:lineSpacingExtra="3sp"
-                            android:text="@string/color"
-                            android:textColor="@color/greyish_brown"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
-                            app:layout_constraintBottom_toBottomOf="@+id/materialsCg"
-                            app:layout_constraintStart_toStartOf="@+id/appCompatTextView39"
-                            app:layout_constraintTop_toBottomOf="@+id/sizesCg" />
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/materialsCg"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginEnd="12dp"
+                            android:layout_marginTop="8dp"
                             android:layout_marginBottom="16dp"
+                            android:background="@drawable/bg_rounded_spinner"
+                            android:selectedItemPosition="@={viewModel.selectedBranchPosition}"
                             android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
-                            app:bindColoredChipsAreChecked="@{false}"
-                            app:bindColoredChipsData="@{viewModel.colors}"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/appCompatTextView41"
-                            app:layout_constraintTop_toBottomOf="@+id/sizesCg"
-                            app:singleSelection="true"
-                            tools:layout_height="46dp" />
-
+                            app:layout_constraintEnd_toEndOf="@+id/variations_rv"
+                            app:layout_constraintStart_toStartOf="@+id/variations_rv"
+                            app:layout_constraintTop_toBottomOf="@+id/variations_rv" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -246,7 +184,6 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
 
-
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView4"
                     android:layout_width="0dp"
@@ -288,7 +225,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:fontFamily="sans-serif"
                             android:lineSpacingExtra="2sp"
                             android:text="@{@string/conc_see_all(viewModel.productDetailsResponse.data.reviews.totalCount)}"
-                            android:textColor="@color/warm_grey"
+                            android:textColor="@color/warm_purple"
                             android:textSize="12sp"
                             android:textStyle="bold"
                             android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
@@ -301,7 +238,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:id="@+id/reviewsRv"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginBottom="16dp"
                             android:clipToPadding="false"
                             android:nestedScrollingEnabled="false"
                             android:paddingHorizontal="12dp"
@@ -311,8 +248,64 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView19"
+                            app:layout_constraintVertical_bias="0.0"
                             tools:itemCount="2"
                             tools:listitem="@layout/item_review" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/messageTil"
+                            style="@style/ProjectTextInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:visibility="@{viewModel.product.userReview == null ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/reviewsRv">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="96dp"
+                                android:gravity="start"
+                                android:hint="@string/your_message_here"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:text="@={viewModel.reviewComment}" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <androidx.appcompat.widget.AppCompatRatingBar
+                            android:id="@+id/appCompatRatingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:progressTint="@color/warm_purple"
+                            android:rating="@={viewModel.reviewRating}"
+                            android:visibility="@{viewModel.product.userReview == null ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toEndOf="@+id/messageTil"
+                            app:layout_constraintStart_toStartOf="@+id/messageTil"
+                            app:layout_constraintTop_toBottomOf="@+id/messageTil" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/sendBtn"
+                            style="@style/ProjectPurpleStrokeButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="12dp"
+                            android:paddingHorizontal="32dp"
+                            android:text="@string/send"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:visibility="@{viewModel.product.userReview == null ? View.VISIBLE : View.GONE}"
+                            app:cornerRadius="32dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/messageTil"
+                            app:layout_constraintStart_toStartOf="@+id/messageTil"
+                            app:layout_constraintTop_toBottomOf="@+id/appCompatRatingBar" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -377,32 +370,32 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/quantityCv"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
             app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="@id/addToCartBtn"
-            app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/addToCartBtn">
+            app:layout_constraintTop_toTopOf="@+id/addToCartBtn">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:gravity="center">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/decreaseCartQuantityBtn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="3sp"
-                    android:text="@string/qty"
+                    android:layout_height="match_parent"
+                    android:layout_margin="0dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:text="@string/symbol_minus"
                     android:textColor="@color/warm_purple"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textSize="24sp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/quantityInCartTv"
@@ -410,11 +403,24 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="4sp"
-                    android:text="@{@string/format_integer(viewModel.product.quantityInCart == null ? 0 : viewModel.product.quantityInCart)}"
-                    android:textColor="@color/warm_grey"
+                    android:paddingHorizontal="8dp"
+                    android:text="@{@string/format_integer(viewModel.quantityInCart)}"
+                    android:textColor="@color/warm_purple"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     tools:text="3" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/increaseCartQuantityBtn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="0dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:text="@string/symbol_plus"
+                    android:textColor="@color/warm_purple"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 

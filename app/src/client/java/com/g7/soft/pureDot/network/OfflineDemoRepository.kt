@@ -121,6 +121,7 @@ class OfflineDemoRepository {
                 "totalCount" to 10,
                 "data" to listOf(review1, review2)
             ),
+            "availableQuantity" to 5,
         )
         private val product1 = hashMapOf(
             "id" to 1,
@@ -136,6 +137,7 @@ class OfflineDemoRepository {
             "currency" to "EGP",
             "discountPercentage" to .23,
             "quantityInCart" to null,
+            "availableQuantity" to 5,
         )
 
         // TODO delete logoImageUrl from api?
@@ -153,7 +155,8 @@ class OfflineDemoRepository {
             "currency" to "EGP",
             "discountPercentage" to null,
             "quantityInCart" to 2,
-            "userReview" to review2
+            "userReview" to review2,
+            "availableQuantity" to 5,
         )
         private val product1InCart = hashMapOf(
             "id" to 1,
@@ -169,7 +172,16 @@ class OfflineDemoRepository {
             "currency" to "EGP",
             "discountPercentage" to .23,
             "quantityInCart" to 1,
-            "userReview" to null
+            "userReview" to null,
+            "availableQuantity" to 5,
+        )
+        private val branch1 = hashMapOf(
+            "id" to 1,
+            "name" to "Alex Branch",
+        )
+        private val branch2 = hashMapOf(
+            "id" to 2,
+            "name" to "Cairo Branch",
         )
         private val sliderOffer1 = hashMapOf(
             "id" to 1,
@@ -190,38 +202,55 @@ class OfflineDemoRepository {
             "imageUrl" to "photo-1543208541-0961a29a8c3d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80",
         )
         private val cartItemsModel1 = hashMapOf(
-            "products" to listOf(product1InCart, product2, product1InCart , product2),
+            "products" to listOf(product1InCart, product2, product1InCart, product2),
             "serviceDateTime" to Calendar.getInstance().timeInMillis / 1000
         )
         private val cartItemsModel2 = hashMapOf(
             "products" to listOf(product2, product1, product2, product1),
             "serviceDateTime" to null
         )
-        private val size1 = hashMapOf(
-            "id" to 1,
-            "text" to "Small",
+        private val sizeVariations = hashMapOf(
+            "title" to "Size",
+            "isColor" to false,
+            "values" to listOf(
+                hashMapOf(
+                    "id" to 1,
+                    "value" to "Small"
+                ),
+                hashMapOf(
+                    "id" to 2,
+                    "value" to "Large",
+                )
+            )
         )
-        private val size2 = hashMapOf(
-            "id" to 2,
-            "text" to "Large",
+        private val flavourVariations = hashMapOf(
+            "title" to "Flavour",
+            "isColor" to false,
+            "values" to listOf(
+                hashMapOf(
+                    "id" to 1,
+                    "value" to "Choco Flavour"
+                ),
+                hashMapOf(
+                    "id" to 2,
+                    "value" to "Mango Flavour",
+                )
+            )
         )
-        private val flavour1 = hashMapOf(
-            "id" to 1,
-            "name" to "Choco Flavour",
+        private val colorVariations = hashMapOf(
+            "title" to "Color",
+            "isColor" to true,
+            "values" to listOf(
+                hashMapOf(
+                    "id" to 1,
+                    "value" to "#ff0000"
+                ),
+                hashMapOf(
+                    "id" to 2,
+                    "value" to "#fffb00",
+                )
+            )
         )
-        private val flavour2 = hashMapOf(
-            "id" to 2,
-            "name" to "Mango Flavour",
-        )
-        private val color1 = hashMapOf(
-            "id" to 1,
-            "hexColor" to "#ff0000",
-        )
-        private val color2 = hashMapOf(
-            "id" to 2,
-            "hexColor" to "#fffb00",
-        )
-
         private val order1 = hashMapOf(
             "number" to 512,
             "dateTime" to Calendar.getInstance().apply {
@@ -235,18 +264,22 @@ class OfflineDemoRepository {
             "toAddress" to "41 Euclid St. Easton, CT 06514",
             "price" to 41.50,
             "note" to "the red door is my flat",
-            "products" to listOf(product1InCart, product2),
-            "shippingCost" to 10.50,
-            "commission" to 10.00,
             "clientLat" to 31.180703,
             "clientLng" to 29.928346,
             "clientImageUrl" to "photo-1534308143481-c55f00be8bd7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1488&q=80",
-            "status" to ApiConstant.OrderStatus.NEW.value,
-            "shopName" to "shop x",
-            "shopLat" to 31.208480,
-            "shopLng" to 29.933935,
             "finalRouteImageUrl" to "photo-1604357209793-fca5dca89f97?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80",
-            "clientPhoneNumber" to "+965443436778"
+            "clientPhoneNumber" to "+965443436778",
+            "orders" to listOf(
+                hashMapOf(
+                    "products" to listOf(product1InCart, product2),
+                    "shippingCost" to 10.50,
+                    "commission" to 10.00,
+                    "status" to ApiConstant.OrderStatus.NEW.value,
+                    "shopName" to "shop x",
+                    "shopLat" to 31.208480,
+                    "shopLng" to 29.933935,
+                )
+            )
         )
         private val order2 = hashMapOf(
             "number" to 664,
@@ -261,18 +294,22 @@ class OfflineDemoRepository {
             "toAddress" to "41 Euclid St. Easton, CT 06514",
             "price" to 11.50,
             "note" to "the red door is my flat",
-            "products" to listOf(product1InCart, product2),
-            "shippingCost" to 5.50,
-            "commission" to 4.00,
             "clientLat" to 31.180703,
             "clientLng" to 29.928346,
             "clientImageUrl" to "photo-1534308143481-c55f00be8bd7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1488&q=80",
-            "status" to ApiConstant.OrderStatus.DELIVERED.value,
-            "shopName" to "shop x",
-            "shopLat" to 31.208480,
-            "shopLng" to 29.933935,
             "finalRouteImageUrl" to "photo-1604357209793-fca5dca89f97?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80",
-            "clientPhoneNumber" to "+965443436778"
+            "clientPhoneNumber" to "+965443436778",
+            "orders" to listOf(
+                hashMapOf(
+                    "products" to listOf(product1InCart, product2),
+                    "shippingCost" to 5.50,
+                    "commission" to 4.00,
+                    "status" to ApiConstant.OrderStatus.DELIVERED.value,
+                    "shopName" to "shop x",
+                    "shopLat" to 31.208480,
+                    "shopLng" to 29.933935,
+                )
+            )
         )
         private val service1 = hashMapOf(
             "id" to 1,
@@ -563,9 +600,8 @@ class OfflineDemoRepository {
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,
                 "data" to hashMapOf(
-                    "sizes" to listOf(size1, size2),
-                    "flavours" to listOf(flavour1, flavour2),
-                    "colors" to listOf(color1, color2),
+                    "branches" to listOf(branch1, branch2),
+                    "variations" to listOf(sizeVariations, flavourVariations, colorVariations),
                     "description" to "Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes, along with exposition, argumentation, and narration.",
                     "similarItems" to listOf(product1, product2),
                     "quantityInCart" to 1,
@@ -579,6 +615,11 @@ class OfflineDemoRepository {
                     ),
                 )
             )
+        val addProductReview: HashMap<String, Any?>
+            get() = hashMapOf(
+                "status" to ApiConstant.Status.SUCCESS.value,
+                "data" to review1
+            )
         val getItemReviews: HashMap<String, Any?>
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,
@@ -590,7 +631,7 @@ class OfflineDemoRepository {
                     )
                 )
             )
-        val checkout: HashMap<String, Any?>
+        val getShippingCost: HashMap<String, Any?>
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,
                 "data" to hashMapOf(
@@ -632,8 +673,8 @@ class OfflineDemoRepository {
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,
                 "data" to listOf(
-                        order1, order2, order1, order2, order1,
-                        order2, order1, order2, order1, order2
+                    order1, order2, order1, order2, order1,
+                    order2, order1, order2, order1, order2
                 )
             )
         val trackOrder: HashMap<String, Any?>
@@ -679,6 +720,7 @@ class OfflineDemoRepository {
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,
                 "data" to hashMapOf(
+                    "variations" to listOf(sizeVariations, flavourVariations),
                     "maxServants" to 4,
                     "includingDescription" to "Item 1 (x3) + Item 2 (x3) + Item 3 (x3)",
                     "description" to "Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes, along with exposition, argumentation, and narration.",
@@ -715,7 +757,13 @@ class OfflineDemoRepository {
         val getTransactions: HashMap<String, Any?>
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,
-                "data" to listOf(transaction1, transaction2, transaction3, transaction4, transaction5)
+                "data" to listOf(
+                    transaction1,
+                    transaction2,
+                    transaction3,
+                    transaction4,
+                    transaction5
+                )
             )
         val suggestContact: HashMap<String, Any?>
             get() = hashMapOf(

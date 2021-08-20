@@ -19,9 +19,9 @@ data class ProductModel(
     @Json(name = "isAvailable") val isAvailable: Boolean? = null,
     @Json(name = "currency") val currency: String? = null,
     @Json(name = "discountPercentage") val discountPercentage: Float? = null,
-    @Json(name = "quantityInCart") var quantityInCart: Int? = null,
+    var quantityInCart: Int? = null,
     @Json(name = "userReview") var userReview: ReviewModel? = null,
-
+    @Json(name = "availableQuantity") var availableQuantity: Int? = null,
 ) : Parcelable {
     val discountPercentageInHundred get() = discountPercentage?.times(100)?.toInt() ?: 0
 

@@ -3,12 +3,10 @@ package com.g7.soft.pureDot.ui.screen.cart
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.model.CartItemsModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.CartRepository
-import kotlinx.coroutines.Dispatchers
 
 class CartViewModel : ViewModel() {
 
@@ -42,7 +40,7 @@ class CartViewModel : ViewModel() {
     }
 
 
-    fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int) = liveData(Dispatchers.IO) {
+    /*fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
 
         emitSource(
@@ -52,5 +50,5 @@ class CartViewModel : ViewModel() {
                 serviceDateTime = null
             )
         )
-    }
+    }*/
 }

@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ColorModel(
+data class BranchModel(
     @Json(name = "id") val id: Int?,
-    @Json(name = "hexColor") val hexColor: String?,
+    @Json(name = "name") val name: String?,
 )

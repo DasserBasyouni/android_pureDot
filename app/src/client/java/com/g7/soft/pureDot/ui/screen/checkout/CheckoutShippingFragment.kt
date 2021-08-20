@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.adapter.CartReviewHeaderAdapter
+import com.g7.soft.pureDot.adapter.OldCartReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentCheckout2Binding
 import com.kofigyan.stateprogressbar.StateProgressBar
 import com.zeugmasolutions.localehelper.currentLocale
@@ -41,7 +41,7 @@ class CheckoutShippingFragment(private val viewModel: CheckoutViewModel) : Fragm
         viewModel.cartItemsResponse.observe(viewLifecycleOwner, {
             viewModel.cartItemsLcee.value!!.response.value = it
 
-            CartReviewHeaderAdapter(it.data?.products ?: mutableListOf()).let { adapter ->
+            OldCartReviewHeaderAdapter(it.data?.products ?: mutableListOf()).let { adapter ->
                 binding.cartReviewItemsRv.adapter = adapter
                 adapter.submitList(it.data?.products?.map { product ->
                     product.shop?.name

@@ -35,7 +35,7 @@ class MyOrdersAdapter(private val fragment: Fragment) :
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                val bundle = bundleOf("order" to dataModel)
+                val bundle = bundleOf("masterOrder" to dataModel)
                 fragment.findNavController().navigate(R.id.orderFragment, bundle)
             }
         }

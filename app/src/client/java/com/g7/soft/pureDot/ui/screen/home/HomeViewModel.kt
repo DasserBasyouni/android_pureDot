@@ -2,17 +2,14 @@ package com.g7.soft.pureDot.ui.screen.home
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.model.*
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.CartRepository
 import com.g7.soft.pureDot.repo.CategoriesRepository
 import com.g7.soft.pureDot.repo.ProductRepository
 import com.g7.soft.pureDot.repo.StoreRepository
-import kotlinx.coroutines.Dispatchers
 import java.util.*
 
 class HomeViewModel : ViewModel() {
@@ -206,13 +203,13 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int) = liveData(Dispatchers.IO) {
+    /*fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
 
         emitSource(CartRepository(langTag).editCartQuantity(itemId = itemId,
             quantity = quantity,
             serviceDateTime = null))
-    }
+    }*/
 
     fun getLatestProducts(langTag: String) {
         latestProductsResponse.value = NetworkRequestResponse.loading()

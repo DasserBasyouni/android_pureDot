@@ -16,7 +16,7 @@ class CartReviewInnerAdapter :
         ViewHolder.from(viewGroup)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), order)
 
 
     class ViewHolder private constructor(private val binding: ItemCartReviewInnerBinding) :

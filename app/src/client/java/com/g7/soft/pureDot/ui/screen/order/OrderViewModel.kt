@@ -2,12 +2,12 @@ package com.g7.soft.pureDot.ui.screen.order
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.g7.soft.pureDot.model.OrderModel
+import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.OrderRepository
 import kotlinx.coroutines.Dispatchers
 
-class OrderViewModel(val order: OrderModel?) : ViewModel() {
+class OrderViewModel(val masterOrder: MasterOrderModel?) : ViewModel() {
 
 
     fun cancelOrder(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
@@ -23,7 +23,7 @@ class OrderViewModel(val order: OrderModel?) : ViewModel() {
         emitSource(
             OrderRepository(langTag).cancelOrder(
                 tokenId = tokenId,
-                orderNumber = order?.number,
+                orderNumber = masterOrder?.number,
             )
         )
     }
@@ -48,7 +48,7 @@ class OrderViewModel(val order: OrderModel?) : ViewModel() {
         emitSource(
             OrderRepository(langTag).rateOrder(
                 tokenId = tokenId,
-                orderNumber = order?.number,
+                orderNumber = masterOrder?.number,
                 orderRating = orderRating,
                 orderComment = orderComment,
                 deliveryRating = deliveryRating,
