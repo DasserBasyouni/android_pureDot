@@ -25,6 +25,7 @@ import com.g7.soft.pureDot.model.ProductDetailsModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
+import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
@@ -64,7 +65,7 @@ class ProductFragment : Fragment() {
 
         // setup observers
         val imagesOffersAdapter = ImagesSliderAdapter(this)
-        val similarProductsAdapter = ProductsAdapter(this, isGrid = false)
+        val similarProductsAdapter = ProductsAdapter(this, isGrid = false, editWishList = this::editWishList)
         val reviewsAdapter = ReviewsAdapter(this)
         binding.sliderOffersLceeLayoutVp.adapter = imagesOffersAdapter
         binding.similarProductsRv.adapter = similarProductsAdapter
@@ -97,6 +98,19 @@ class ProductFragment : Fragment() {
         )
 
         // setup click listener
+        binding.wishListCiv.setOnClickListener {
+            val tokenId = "" //todo
+            editWishList(
+                tokenId,
+                viewModel.product?.id,
+                binding.wishListCiv.isChecked
+            ) {
+                val isChecked = !binding.wishListCiv.isChecked
+                args.item.isInWishList = isChecked
+                viewModel.product?.isInWishList = isChecked
+                binding.wishListCiv.isChecked = isChecked
+            }
+        }
         binding.reviewsSeeAllTv.setOnClickListener {
             val bundle = bundleOf(
                 "itemId" to args.item.id
@@ -123,7 +137,25 @@ class ProductFragment : Fragment() {
             viewModel.addProductToCart(
                 requireActivity().currentLocale.toLanguageTag(),
                 requireContext()
-            ) { viewModel.quantityInCart.value = 1 }
+            ) {
+                viewModel.quantityInCart.value = 1
+                viewModel.getTotalProductsPriceInCart(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    requireContext(),
+                    onComplete = { totalPrice ->
+                        ProjectDialogUtils.showCheckoutTopPopup(
+                            requireContext(),
+                            itemName = viewModel.product?.name,
+                            totalPriceInCart = totalPrice,
+                            currency = viewModel.product?.currency,
+                            positiveBtnOnClick = {
+                                findNavController().navigate(R.id.cartFragment)
+                            }
+                        )
+                    }
+                )
+
+            }
         }
     }
 
@@ -165,5 +197,19 @@ class ProductFragment : Fragment() {
             spinner.adapter = adapter
             spinner.setSelection(viewModel.selectedBranchPosition.value!!)
         }
+    }
+
+    private fun editWishList(
+        tokenId: String,
+        productId: Int?,
+        doAdd: Boolean,
+        onComplete: () -> Unit
+    ) {
+        viewModel.editWishList(
+            requireActivity().currentLocale.toLanguageTag(),
+            tokenId = tokenId,
+            productId = productId,
+            doAdd = doAdd
+        ).observeApiResponse(this, { onComplete.invoke() })
     }
 }

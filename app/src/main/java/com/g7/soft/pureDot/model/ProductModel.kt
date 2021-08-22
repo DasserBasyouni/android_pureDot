@@ -22,7 +22,9 @@ data class ProductModel(
     var quantityInCart: Int? = null,
     @Json(name = "userReview") var userReview: ReviewModel? = null,
     @Json(name = "availableQuantity") var availableQuantity: Int? = null,
-) : Parcelable {
+    @Json(name = "isInWishList") var isInWishList: Boolean? = null,
+
+    ) : Parcelable {
     val discountPercentageInHundred get() = discountPercentage?.times(100)?.toInt() ?: 0
 
     val priceWithDiscount get() = price?.minus(price.times(discountPercentage ?: 0f))

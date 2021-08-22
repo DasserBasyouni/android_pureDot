@@ -1,10 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.checkout
 
 import androidx.lifecycle.*
-import com.g7.soft.pureDot.model.AddressModel
-import com.g7.soft.pureDot.model.CartItemsModel
-import com.g7.soft.pureDot.model.ClientDataModel
-import com.g7.soft.pureDot.model.ShippingCostModel
+import com.g7.soft.pureDot.model.*
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.CartRepository
@@ -13,7 +10,17 @@ import com.g7.soft.pureDot.util.ValidationUtils
 import com.kofigyan.stateprogressbar.StateProgressBar
 import kotlinx.coroutines.Dispatchers
 
-class CheckoutViewModel : ViewModel() {
+class CheckoutViewModel(
+    private val service: ServiceModel?,
+    private val selectedVariations: IntArray?,
+    private val servantsNumber: Int?,
+    private val time: Long?,
+    private val date: Long?,
+    private val quantity: Int?
+) : ViewModel() {
+
+    // service data
+    internal val isProductCheckout = service == null
 
     // checkout 1
     val currentStateNumber = MediatorLiveData<StateProgressBar.StateNumber>().apply {
@@ -129,21 +136,21 @@ class CheckoutViewModel : ViewModel() {
                 Log.e("Z_", "here 3: ${addressesResponse.value?.data}")
                 Log.e("Z_", "here 3: ${addressesResponse.value?.data?.get(0)}")
                 Log.e("Z_", "here 3: ${addressesResponse.value?.data?.get(it-1)}")*/
-                addressesResponse.value?.data?.get(it-1)
-            }else null
+                addressesResponse.value?.data?.get(it - 1)
+            } else null
         }
 
     val coupon = MutableLiveData<String?>()
 
-    fun checkoutIsPaid(langTag: String, tokenId: String, paidAmount: Double) = liveData(Dispatchers.IO) {
-        emit(NetworkRequestResponse.loading())
+    fun checkoutIsPaid(langTag: String, tokenId: String, paidAmount: Double) =
+        liveData(Dispatchers.IO) {
+            emit(NetworkRequestResponse.loading())
 
-        emitSource(
-            CartRepository(langTag).checkoutIsPaid(
-                tokenId = tokenId,
-                paidAmount = paidAmount
+            emitSource(
+                CartRepository(langTag).checkoutIsPaid(
+                    tokenId = tokenId,
+                    paidAmount = paidAmount
+                )
             )
-        )
-    }
-
+        }
 }

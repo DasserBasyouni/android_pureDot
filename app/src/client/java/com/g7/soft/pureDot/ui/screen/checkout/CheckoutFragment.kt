@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.CheckoutAdapter
 import com.g7.soft.pureDot.databinding.FragmentCheckoutBinding
@@ -16,7 +17,9 @@ import com.kofigyan.stateprogressbar.StateProgressBar
 
 class CheckoutFragment : Fragment() {
     private lateinit var binding: FragmentCheckoutBinding
+    private lateinit var viewModelFactory: CheckoutViewModelFactory
     internal lateinit var viewModel: CheckoutViewModel
+    internal val args: CheckoutFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +28,15 @@ class CheckoutFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_checkout, container, false)
 
-        viewModel = ViewModelProvider(this).get(CheckoutViewModel::class.java)
+        viewModelFactory = CheckoutViewModelFactory(
+            service = args.service,
+            selectedVariations = args.selectedVariations,
+            servantsNumber = args.servantsNumber,
+            time = args.time,
+            date = args.date,
+            quantity = args.quantity,
+        )
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CheckoutViewModel::class.java)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -35,15 +46,27 @@ class CheckoutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val isProductCheckout = args.service == null
 
         // init data
+        binding.checkoutSpb.setMaxStateNumber(
+            if (isProductCheckout) StateProgressBar.StateNumber.FOUR
+            else StateProgressBar.StateNumber.THREE
+        )
         binding.checkoutSpb.setStateDescriptionData(
-            arrayListOf(
-                getString(R.string.details),
-                getString(R.string.shipping),
-                getString(R.string.payment),
-                getString(R.string.confirmation),
-            )
+            if (isProductCheckout)
+                arrayListOf(
+                    getString(R.string.details),
+                    getString(R.string.shipping),
+                    getString(R.string.payment),
+                    getString(R.string.confirmation),
+                )
+            else
+                arrayListOf(
+                    getString(R.string.details),
+                    getString(R.string.payment),
+                    getString(R.string.confirmation),
+                )
         )
 
         // setup observers

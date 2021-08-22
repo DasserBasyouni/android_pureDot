@@ -8,6 +8,6 @@ import androidx.room.PrimaryKey
 class ProductCart(
     @field:PrimaryKey var id: Int? = null,
     @field:ColumnInfo(name = "productId") var productId: Int,
-    /*@ColumnInfo(name = "price") private Float price;*/
+    @field:ColumnInfo(name = "price") var price: Double,
     @field:ColumnInfo(name = "quantityInCart") var quantityInCart: Int
 )

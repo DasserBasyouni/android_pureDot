@@ -4,8 +4,7 @@ import android.content.Context
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.database.product.ProductCart
 import com.g7.soft.pureDot.database.product.ProductCartDatabase
-import com.g7.soft.pureDot.database.service.ServiceCart
-import com.g7.soft.pureDot.database.service.ServiceCartDatabase
+import com.g7.soft.pureDot.model.ProductModel
 import com.g7.soft.pureDot.network.Fetcher
 import com.g7.soft.pureDot.network.NetworkRequestHandler
 import com.g7.soft.pureDot.util.LogEventUtils
@@ -42,15 +41,20 @@ class CartRepository(private val langTag: String) {
     fun addProductToCart(
         lifecycleScope: CoroutineScope,
         context: Context,
-        productId: Int?,
+        product: ProductModel?,
         quantityInCart: Int?,
         onComplete: () -> Unit
     ) {
         lifecycleScope.launch {
             val dao = ProductCartDatabase.getDatabase(context)?.cartDao()
+            val productId = product?.id
+            val productPrice = product?.priceWithDiscount
 
             productId
                 ?: LogEventUtils.logApiError("CartRepository.addProductToCart: null productId")
+                    .run { return@launch }
+            productPrice
+                ?: LogEventUtils.logApiError("CartRepository.addProductToCart: null productPrice")
                     .run { return@launch }
             quantityInCart
                 ?: LogEventUtils.logApiError("CartRepository.addProductToCart: null quantityInCart")
@@ -64,6 +68,7 @@ class CartRepository(private val langTag: String) {
                 ProductCart(
                     id = existingProduct?.id,
                     productId = productId,
+                    price = productPrice,
                     quantityInCart = (existingProduct?.quantityInCart ?: 0) + quantityInCart
                 )
             )
@@ -72,7 +77,26 @@ class CartRepository(private val langTag: String) {
         }
     }
 
-    fun addServiceToCart(
+    fun getTotalProductsPriceInCart(
+        lifecycleScope: CoroutineScope,
+        context: Context,
+        onComplete: (totalPrice: Double) -> Unit
+    ) {
+        lifecycleScope.launch {
+            val dao = ProductCartDatabase.getDatabase(context)?.cartDao()
+
+            dao ?: LogEventUtils.logApiError("CartRepository.addProductToCart: null dao")
+                .run { return@launch }
+
+            val productsInCart = dao.getAll()
+            val totalPriceInCart =
+                productsInCart?.map { it?.quantityInCart?.times(it.price) ?: 0.0 }?.sum() ?: 0.0
+
+            onComplete.invoke(totalPriceInCart)
+        }
+    }
+
+    /*fun addServiceToCart(
         lifecycleScope: CoroutineScope,
         context: Context,
         serviceId: Int?,
@@ -103,7 +127,7 @@ class CartRepository(private val langTag: String) {
 
             onComplete.invoke()
         }
-    }
+    }*/
 
     fun getCartItems(
         tokenId: String?,

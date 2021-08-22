@@ -270,6 +270,14 @@ interface ApiService {
     ): ApiResponseModel<ReviewModel>?
 
     @FormUrlEncoded
+    @POST("client/editWishList")
+    suspend fun editWishList(
+        @Field("tokenId") tokenId: String?,
+        @Field("productId") productId: Int?,
+        @Field("doAdd") doAdd: Boolean?,
+    ): ApiResponseModel<*>?
+
+    @FormUrlEncoded
     @POST("client/checkout")
     suspend fun checkout(
         @Field("tokenId") tokenId: String?,

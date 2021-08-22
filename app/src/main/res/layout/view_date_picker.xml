@@ -8,8 +8,16 @@
         <import type="android.view.View" />
 
         <variable
-            name="adapterPosition"
-            type="Integer" />
+            name="hour"
+            type="String" />
+
+        <variable
+            name="minute"
+            type="String" />
+
+        <variable
+            name="isAm"
+            type="Boolean" />
 
     </data>
 
@@ -32,12 +40,13 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:hint="Hour"
-                android:textSize="24sp"
                 android:gravity="center"
-                android:maxLength="2"
+                android:hint="@string/hour"
                 android:imeOptions="actionNext"
-                android:inputType="number" />
+                android:inputType="number"
+                android:maxLength="2"
+                android:text="@={hour}"
+                android:textSize="24sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -75,12 +84,13 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:hint="Minute"
                 android:gravity="center"
-                android:textSize="24sp"
-                android:maxLength="2"
+                android:hint="@string/minute"
                 android:imeOptions="actionDone"
-                android:inputType="number" />
+                android:inputType="number"
+                android:maxLength="2"
+                android:text="@={minute}"
+                android:textSize="24sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <RadioGroup
@@ -94,28 +104,29 @@
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="2dp"
                 android:background="@drawable/checkable_date_radio_bg"
                 android:button="@android:color/transparent"
-                android:checked="true"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="12dp"
+                android:checked="@={isAm}"
+                android:gravity="center"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                android:layout_margin="2dp"
-                android:gravity="center"
-                android:text="@string/am" />
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:text="@string/am"
+                tools:checked="true" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingVertical="8dp"
-                android:paddingHorizontal="12dp"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
                 android:layout_margin="2dp"
                 android:background="@drawable/checkable_date_radio_bg"
                 android:button="@android:color/transparent"
                 android:gravity="center"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
                 android:text="@string/pm" />
 
         </RadioGroup>

@@ -20,14 +20,17 @@ import com.g7.soft.pureDot.ext.dpToPx
 import com.g7.soft.pureDot.model.ProductModel
 
 
-class StaggeredProductsAdapter(private val fragment: Fragment) :
+class StaggeredProductsAdapter(
+    private val fragment: Fragment,
+    private val editWishList: (tokenId: String, productId: Int?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
+) :
     ListAdapter<ProductModel, StaggeredProductsAdapter.ViewHolder>(StaggeredProductsDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder.from(viewGroup, viewType)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getItem(position), fragment)
+        holder.bind(getItem(position), fragment, editWishList)
 
     override fun getItemViewType(position: Int): Int =
         if (position == 0 || position % 3 == 0) LARGE_VIEW_TYPE else SMALL_VIEW_TYPE
@@ -37,6 +40,7 @@ class StaggeredProductsAdapter(private val fragment: Fragment) :
         fun bind(
             dataModel: ProductModel,
             fragment: Fragment,
+            editWishList: (tokenId: String, productId: Int?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
         ) {
             if (binding is ItemStaggeredProductSmallBinding) {
                 binding.dataModel = dataModel
@@ -49,9 +53,32 @@ class StaggeredProductsAdapter(private val fragment: Fragment) :
                     (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
                         8.dpToPx()
                 }
+
+                // setup onClick
+                binding.wishListCiv.setOnClickListener {
+                    val tokenId = "" //todo
+                    editWishList.invoke(
+                        tokenId,
+                        dataModel.id,
+                        binding.wishListCiv.isChecked
+                    ) {
+                        binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                    }
+                }
+
             } else if (binding is ItemStaggeredProductLargeBinding) {
                 binding.dataModel = dataModel
                 createLayoutParams(binding.root)
+                binding.wishListCiv.setOnClickListener {
+                    val tokenId = "" //todo
+                    editWishList.invoke(
+                        tokenId,
+                        dataModel.id,
+                        binding.wishListCiv.isChecked
+                    ) {
+                        binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                    }
+                }
             }
 
             binding.executePendingBindings()

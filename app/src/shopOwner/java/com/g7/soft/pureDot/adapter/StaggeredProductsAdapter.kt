@@ -25,7 +25,7 @@ class StaggeredProductsAdapter(private val fragment: Fragment) :
         ViewHolder.from(viewGroup, viewType)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getItem(position), fragment)
+        holder.bind(getItem(position), fragment, addToWishList)
 
     override fun getItemViewType(position: Int): Int =
         if (position == 0 || position % 3 == 0) LARGE_VIEW_TYPE else SMALL_VIEW_TYPE

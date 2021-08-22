@@ -69,8 +69,16 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
         CartRepository(langTag).addProductToCart(
             viewModelScope,
             context,
-            product?.id,
+            product,
             quantityInCart.value,
+            onComplete
+        )
+    }
+
+    fun getTotalProductsPriceInCart(langTag: String, context: Context, onComplete: (totalPrice: Double) -> Unit) {
+        CartRepository(langTag).getTotalProductsPriceInCart(
+            viewModelScope,
+            context,
             onComplete
         )
     }
@@ -85,6 +93,18 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
                     productId = product?.id,
                     rating = reviewRating.value,
                     comment = reviewComment.value
+                )
+            )
+        }
+
+    fun editWishList(langTag: String, tokenId: String?, productId: Int?, doAdd: Boolean) =
+        liveData(Dispatchers.IO) {
+            emit(NetworkRequestResponse.loading())
+            emitSource(
+                ProductRepository(langTag).editWishList(
+                    tokenId = tokenId,
+                    productId = productId,
+                    doAdd = doAdd
                 )
             )
         }

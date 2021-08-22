@@ -63,18 +63,32 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:lceeModel="@{viewModel.productDetailsLcee}" />
 
+                        <com.g7.soft.pureDot.ui.custom.CheckableImageView
+                            android:id="@+id/wishListCiv"
+                            android:layout_width="wrap_content"
+                            android:checked="@{viewModel.product.isInWishList}"
+                            android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="12dp"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:padding="8dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/checkable_heart" />
+
                         <androidx.cardview.widget.CardView
                             android:id="@+id/sliderOffersLceeLayoutCv"
                             android:layout_width="0dp"
                             android:layout_height="120dp"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="8dp"
                             android:layout_marginEnd="16dp"
                             android:visibility="@{viewModel.productDetailsLcee.contentVisibility}"
                             app:cardCornerRadius="15dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
+                            app:layout_constraintTop_toBottomOf="@+id/wishListCiv">
 
                             <androidx.viewpager2.widget.ViewPager2
                                 android:id="@+id/sliderOffersLceeLayoutVp"

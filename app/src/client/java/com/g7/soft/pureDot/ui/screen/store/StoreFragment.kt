@@ -18,6 +18,7 @@ import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentStoreBinding
+import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.CategoryModel
 import com.g7.soft.pureDot.ui.GridSpacingItemDecoration
 import com.g7.soft.pureDot.ui.screen.MainActivity
@@ -92,14 +93,15 @@ class StoreFragment : Fragment() {
             binding.sliderOffersLceeLayoutVp.currentItem = it
         })
 
-        val latestOffersAdapter = ProductsAdapter(this)
+        val latestOffersAdapter = ProductsAdapter(this, editWishList = this::editWishList)
         binding.latestOffersRv.adapter = latestOffersAdapter
         viewModel.latestOffersResponse.observe(viewLifecycleOwner, {
             viewModel.latestOffersLcee.value!!.response.value = it
             latestOffersAdapter.submitList(it.data?.data)
         })
 
-        val latestProductsAdapter = StaggeredProductsAdapter(this)
+        val latestProductsAdapter =
+            StaggeredProductsAdapter(this, editWishList = this::editWishList)
         binding.latestProductsRv.adapter = latestProductsAdapter
         viewModel.latestProductsResponse.observe(viewLifecycleOwner, {
             viewModel.latestProductsLcee.value!!.response.value = it
@@ -123,4 +125,18 @@ class StoreFragment : Fragment() {
         }
     }
 
+
+    private fun editWishList(
+        tokenId: String,
+        productId: Int?,
+        doAdd: Boolean,
+        onComplete: () -> Unit
+    ) {
+        viewModel.editWishList(
+            requireActivity().currentLocale.toLanguageTag(),
+            tokenId = tokenId,
+            productId = productId,
+            doAdd = doAdd
+        ).observeApiResponse(this, { onComplete.invoke() })
+    }
 }

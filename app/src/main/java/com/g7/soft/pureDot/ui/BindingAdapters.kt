@@ -301,7 +301,7 @@ fun bindOrderDeliveryStatus(textView: TextView, orderDeliveryStatus: Int?) {
         ApiConstant.OrderDeliveryStatus.PICKED -> {
             textView.text = context.getString(R.string.picked_up_the_item)
             textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_order_shipping_small,
+                R.drawable.ic_order_status_picked,
                 0,
                 0,
                 0
@@ -432,10 +432,10 @@ fun bindTransactionTypeImage(imageView: ImageView, type: Int?) {
     type ?: LogEventUtils.logApiError("bindTransactionTypeImage: null type").run { return }
 
     val imageResId = when (ApiConstant.TransactionType.fromInt(type)) {
-        ApiConstant.TransactionType.FROM_YOUR_ACCOUNT, ApiConstant.TransactionType.TO_YOUR_ACCOUNT -> R.drawable.ic_transfer
-        ApiConstant.TransactionType.WITHDRAW -> R.drawable.ic_withdraw
-        ApiConstant.TransactionType.DEPOSIT -> R.drawable.ic_deposit
-        ApiConstant.TransactionType.POINTS -> R.drawable.ic_deposit // todo update icon
+        ApiConstant.TransactionType.FROM_YOUR_ACCOUNT, ApiConstant.TransactionType.TO_YOUR_ACCOUNT -> R.drawable.ic_transaction_type_transfer
+        ApiConstant.TransactionType.WITHDRAW -> R.drawable.ic_transaction_type_withdraw
+        ApiConstant.TransactionType.DEPOSIT -> R.drawable.ic_transaction_type_deposit
+        ApiConstant.TransactionType.POINTS -> R.drawable.ic_transaction_type_points
         null -> null
     }
 

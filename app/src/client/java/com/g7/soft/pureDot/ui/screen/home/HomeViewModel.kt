@@ -2,6 +2,7 @@ package com.g7.soft.pureDot.ui.screen.home
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.model.*
@@ -10,12 +11,14 @@ import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.CategoriesRepository
 import com.g7.soft.pureDot.repo.ProductRepository
 import com.g7.soft.pureDot.repo.StoreRepository
+import kotlinx.coroutines.Dispatchers
 import java.util.*
 
 class HomeViewModel : ViewModel() {
 
     val storesLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
-    val storesResponse = MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<StoreModel>>>>()
+    val storesResponse =
+        MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<StoreModel>>>>()
 
     private var sliderOffersTimer0: Timer? = null
     val sliderOffersResponse0 = MediatorLiveData<NetworkRequestResponse<List<SliderOfferModel>>>()
@@ -28,10 +31,12 @@ class HomeViewModel : ViewModel() {
     val sliderOffersPosition1 = MediatorLiveData<Int>().apply { this.value = 0 }
 
     val categoriesLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
-    val categoriesResponse = MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<CategoryModel>>>>()
+    val categoriesResponse =
+        MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<CategoryModel>>>>()
 
     val latestOffersLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
-    val latestOffersResponse = MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
+    val latestOffersResponse =
+        MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
 
     private var sliderOffersTimer2: Timer? = null
     val sliderOffersResponse2 = MediatorLiveData<NetworkRequestResponse<List<SliderOfferModel>>>()
@@ -39,10 +44,12 @@ class HomeViewModel : ViewModel() {
     val sliderOffersPosition2 = MediatorLiveData<Int>().apply { this.value = 0 }
 
     val latestProductsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
-    val latestProductsResponse = MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
+    val latestProductsResponse =
+        MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
 
     val bestSellingLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
-    val bestSellingResponse = MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
+    val bestSellingResponse =
+        MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
 
 
     fun fetchScreenData(langTag: String) {
@@ -242,4 +249,16 @@ class HomeViewModel : ViewModel() {
             ) { bestSellingResponse.value = it }
         }
     }
+
+    fun editWishList(langTag: String, tokenId: String?, productId: Int?, doAdd: Boolean) =
+        liveData(Dispatchers.IO) {
+            emit(NetworkRequestResponse.loading())
+            emitSource(
+                ProductRepository(langTag).editWishList(
+                    tokenId = tokenId,
+                    productId = productId,
+                    doAdd = doAdd
+                )
+            )
+        }
 }

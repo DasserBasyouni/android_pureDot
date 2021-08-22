@@ -108,6 +108,8 @@ class SignUpFragment : Fragment() {
         networkResponse: NetworkRequestResponse<List<T>?>?,
         initialText: String
     ) {
+        var selectedPosition = 0
+
         val spinnerData = when (networkResponse?.status) {
             ProjectConstant.Companion.Status.IDLE -> {
                 spinner.isEnabled = false
@@ -121,13 +123,16 @@ class SignUpFragment : Fragment() {
                 val modelsList = networkResponse.data
                 val dataList = when {
                     modelsList?.firstOrNull() is CountryModel -> {
+                        selectedPosition = viewModel.selectedCountryPosition.value!!
                         modelsList.mapNotNull { (it as CountryModel).name }.toTypedArray()
                     }
                     modelsList?.firstOrNull() is CityModel -> {
+                        selectedPosition = viewModel.selectedCityPosition.value!!
                         modelsList.mapNotNull { (it as CityModel).name }.toTypedArray()
 
                     }
                     modelsList?.firstOrNull() is ZipCodeModel -> {
+                        selectedPosition = viewModel.selectedZipCodePosition.value!!
                         modelsList.mapNotNull { (it as ZipCodeModel).code }.toTypedArray()
                     }
                     else -> null
@@ -150,7 +155,7 @@ class SignUpFragment : Fragment() {
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
-            spinner.setSelection(viewModel.selectedCountryPosition.value!!)
+            spinner.setSelection(selectedPosition)
         }
     }
 

@@ -21,6 +21,7 @@ import com.g7.soft.pureDot.adapter.SmallServicesAdapter
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentServiceBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.ext.toDateWithoutTime
 import com.g7.soft.pureDot.model.ServiceDetailsModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.ui.DividerItemDecorator
@@ -91,7 +92,7 @@ class ServiceFragment : Fragment() {
             imagesOffersAdapter.submitList(it.data?.images)
             similarServicesAdapter.submitList(it.data?.similarItems)
             reviewsAdapter.submitList(it.data?.reviews?.data)
-            binding.variationsRv.adapter = ServiceVariantsAdapter(it.data?.variations)
+            binding.variationsRv.adapter = ServiceVariantsAdapter(it.data?.variations, viewModel)
         })
         viewModel.sliderOffersPosition.observe(viewLifecycleOwner, {
             binding.sliderOffersLceeLayoutVp.currentItem = it
@@ -128,10 +129,16 @@ class ServiceFragment : Fragment() {
             viewModel.quantityInCart.value = viewModel.quantityInCart.value?.plus(1)
         }
         binding.addToCartBtn.setOnClickListener {
-            viewModel.addToCart(
-                requireActivity().currentLocale.toLanguageTag(),
-                requireContext()
-            ) { viewModel.quantityInCart.value = 1 }
+            val bundle =
+                bundleOf(
+                    "service" to viewModel.service,
+                    "selectedVariations" to viewModel.selectedVariations.value?.toIntArray(),
+                    "servantsNumber" to viewModel.servantsSelectedPosition.value,
+                    "time" to viewModel.timeInSeconds,
+                    "date" to binding.calendarView.date.toDateWithoutTime(),
+                    "quantity" to viewModel.quantityInCart.value
+                )
+            findNavController().navigate(R.id.checkoutFragment, bundle)
         }
     }
 

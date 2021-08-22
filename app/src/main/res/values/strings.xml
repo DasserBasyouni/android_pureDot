@@ -290,4 +290,6 @@
     <string name="label_return">Return</string>
     <string name="shipping_method">Shipping Method</string>
     <string name="extra_details">Extra Details</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
 </resources>

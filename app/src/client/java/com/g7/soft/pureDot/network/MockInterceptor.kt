@@ -49,6 +49,7 @@ class MockInterceptor : Interceptor {
                         //uri.contains("review/mark") -> OfflineDemoRepository.getSuccessfulStatus
                         uri.contains("client/getProductDetails") -> OfflineDemoRepository.getProductDetails
                         uri.contains("client/addProductReview") -> OfflineDemoRepository.addProductReview
+                        uri.contains("client/editWishList") -> OfflineDemoRepository.getSuccessfulStatus
 
                         // offers
                         uri.contains("client/getSliderOffers") -> OfflineDemoRepository.getSliderOffers
@@ -67,7 +68,6 @@ class MockInterceptor : Interceptor {
                         uri.contains("client/checkCoupon") -> OfflineDemoRepository.checkCoupon
                         uri.contains("client/getWishList") -> OfflineDemoRepository.getWishList
                         uri.contains("client/checkCartProducts") -> OfflineDemoRepository.get4Products
-
 
                         // order
                         uri.contains("client/getMyOrders") -> OfflineDemoRepository.getMyOrders

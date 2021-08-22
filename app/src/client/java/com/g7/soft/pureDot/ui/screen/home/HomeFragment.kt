@@ -11,6 +11,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.*
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.databinding.FragmentHomeBinding
+import com.g7.soft.pureDot.ext.observeApiResponse
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 
@@ -99,7 +100,7 @@ class HomeFragment : Fragment() {
             categoriesAdapter.submitList(it.data?.data)
         })
 
-        val latestOffersAdapter = ProductsAdapter(this)
+        val latestOffersAdapter = ProductsAdapter(this, editWishList = this::editWishList)
         binding.latestOffersRv.adapter = latestOffersAdapter
         viewModel.latestOffersResponse.observe(viewLifecycleOwner, {
             viewModel.latestOffersLcee.value!!.response.value = it
@@ -122,14 +123,14 @@ class HomeFragment : Fragment() {
             binding.sliderOffersLceeLayoutVp2.currentItem = it
         })
 
-        val latestProductsAdapter = StaggeredProductsAdapter(this)
+        val latestProductsAdapter = StaggeredProductsAdapter(this, editWishList = this::editWishList)
         binding.latestProductsRv.adapter = latestProductsAdapter
         viewModel.latestProductsResponse.observe(viewLifecycleOwner, {
             viewModel.latestProductsLcee.value!!.response.value = it
             latestProductsAdapter.submitList(it.data?.data)
         })
 
-        val bestSellingAdapter = ProductsAdapter(this, isGrid = false)
+        val bestSellingAdapter = ProductsAdapter(this, isGrid = false, editWishList = this::editWishList)
         binding.bestSellingRv.adapter = bestSellingAdapter
         viewModel.bestSellingResponse.observe(viewLifecycleOwner, {
             viewModel.bestSellingLcee.value!!.response.value = it
@@ -174,5 +175,20 @@ class HomeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_notification, menu)
+    }
+
+
+    private fun editWishList(
+        tokenId: String,
+        productId: Int?,
+        doAdd: Boolean,
+        onComplete: () -> Unit
+    ) {
+        viewModel.editWishList(
+            requireActivity().currentLocale.toLanguageTag(),
+            tokenId = tokenId,
+            productId = productId,
+            doAdd = doAdd
+        ).observeApiResponse(this, { onComplete.invoke() })
     }
 }

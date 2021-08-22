@@ -30,16 +30,18 @@
             tools:background="@android:color/white"
             tools:layout_gravity="center">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/appCompatImageView4"
-                android:layout_width="32dp"
-                android:layout_height="24dp"
+            <com.g7.soft.pureDot.ui.custom.CheckableImageView
+                android:id="@+id/wishListCiv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
+                android:checked="@{dataModel.isInWishList}"
                 android:layout_marginTop="12dp"
-                app:bindApiImageUrl="@{dataModel.shop.logoImageUrl}"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/backgrounds/scenic" />
+                app:srcCompat="@drawable/checkable_heart" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/appCompatImageView3"
@@ -51,10 +53,11 @@
                 app:bindApiImageUrl="@{dataModel.imageUrl}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatImageView4"
+                app:layout_constraintTop_toBottomOf="@+id/wishListCiv"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView19"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
@@ -67,22 +70,38 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView8"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="2sp"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@{dataModel.name}"
                 android:textColor="#818181"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/appCompatTextView11"
-                app:layout_constraintStart_toStartOf="@+id/appCompatImageView4"
+                app:layout_constraintEnd_toStartOf="@+id/appCompatImageView4"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatImageView3"
                 app:layout_constraintVertical_bias="1.0"
                 tools:text="Item Name" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView4"
+                android:layout_width="32dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="12dp"
+                app:bindApiImageUrl="@{dataModel.shop.logoImageUrl}"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatImageView19"
+                app:layout_constraintTop_toTopOf="@+id/appCompatTextView8"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <!-- <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -100,11 +119,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/appCompatTextView8"
                 app:layout_constraintTop_toTopOf="@+id/appCompatTextView8"
-                tools:text="10 SAR" />
+                tools:text="10 SAR" /> -->
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView11"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:fontFamily="sans-serif"
@@ -114,6 +133,7 @@
                 android:textSize="12sp"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView8"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView8"
                 tools:text="400 kg" />
 

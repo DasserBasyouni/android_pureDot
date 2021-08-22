@@ -1,15 +1,19 @@
 package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.databinding.ItemServiceVariationBinding
 import com.g7.soft.pureDot.model.ServiceVariationModel
+import com.g7.soft.pureDot.ui.screen.service.ServiceViewModel
 
 
 class ServiceVariantsAdapter(
-    private val serviceVariations: List<ServiceVariationModel>?
+    private val serviceVariations: List<ServiceVariationModel>?,
+    private val viewModel: ServiceViewModel
 ) :
     RecyclerView.Adapter<ServiceVariantsAdapter.ViewHolder>() {
 
@@ -17,7 +21,7 @@ class ServiceVariantsAdapter(
         ViewHolder.from(viewGroup)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(serviceVariations?.get(position))
+        holder.bind(serviceVariations?.get(position), viewModel)
 
     override fun getItemCount(): Int = serviceVariations?.size ?: 0
 
@@ -25,17 +29,17 @@ class ServiceVariantsAdapter(
     class ViewHolder private constructor(private val binding: ItemServiceVariationBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            dataModel: ServiceVariationModel?
+            dataModel: ServiceVariationModel?,
+            viewModel: ServiceViewModel
         ) {
             val context = binding.root.context
 
+            // setup spinner
             val modelsList = dataModel?.values
             val dataList = modelsList?.mapNotNull { it.value }?.toTypedArray()
             val spinnerData = arrayListOf(dataModel?.title).apply {
                 this.addAll((dataList ?: arrayOf()))
             }
-
-
             ArrayAdapter(
                 context,
                 android.R.layout.simple_spinner_item,
@@ -44,6 +48,24 @@ class ServiceVariantsAdapter(
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 binding.spinner.adapter = adapter
                 //spinner.setSelection(viewModel.selectedBranchPosition.value!!)
+            }
+
+            var lastSelectedId: Int? = null
+            binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long
+                ) {
+                    val currentId = dataModel?.values?.getOrNull(position - 1)?.id
+
+                    viewModel.selectedVariations.value = viewModel.selectedVariations.value.also {
+                        it?.remove(lastSelectedId)
+                        if (currentId != null) it?.add(currentId)
+                    }
+
+                    lastSelectedId = currentId
+                }
+
+                override fun onNothingSelected(parentView: AdapterView<*>?) = Unit
             }
 
             binding.dataModel = dataModel

@@ -43,9 +43,6 @@ class CheckoutPaymentFragment(private val viewModel: CheckoutViewModel) : Fragme
         }
 
         // setup listeners
-        binding.nextBtn.setOnClickListener {
-            viewModel.currentStateNumber.value = StateProgressBar.StateNumber.FOUR
-        }
         binding.stcPayIv.setOnClickListener {
             binding.stcPayIv.isChecked = true
             viewModel.isStcPayChecked.value = true
@@ -59,6 +56,11 @@ class CheckoutPaymentFragment(private val viewModel: CheckoutViewModel) : Fragme
 
             // reset other methods
             binding.stcPayIv.isChecked = false
+        }
+        binding.nextBtn.setOnClickListener {
+            viewModel.currentStateNumber.value =
+                if (viewModel.isProductCheckout) StateProgressBar.StateNumber.FOUR
+                else StateProgressBar.StateNumber.THREE
         }
 
         // init selection

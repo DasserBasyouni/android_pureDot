@@ -26,7 +26,7 @@ class ProductsAdapter(private val fragment: Fragment, private val isGrid: Boolea
         ViewHolder.from(viewGroup, isGrid)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getItem(position), fragment)
+        holder.bind(getItem(position), fragment, addToWishList)
 
 
     class ViewHolder private constructor(private val binding: ViewDataBinding) :

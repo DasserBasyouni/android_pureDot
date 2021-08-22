@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.kofigyan.stateprogressbar.StateProgressBar" />
+
         <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
@@ -27,7 +29,6 @@
             app:spb_currentStateDescriptionColor="@color/warm_purple"
             app:spb_currentStateNumber="@={viewModel.currentStateNumber}"
             app:spb_descriptionTopSpaceIncrementer="8dp"
-            app:spb_maxStateNumber="four"
             app:spb_stateBackgroundColor="@color/greyish"
             app:spb_stateDescriptionColor="@color/greyish"
             app:spb_stateForegroundColor="@color/warm_purple"

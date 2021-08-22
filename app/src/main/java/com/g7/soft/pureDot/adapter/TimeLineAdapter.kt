@@ -93,8 +93,8 @@ class TimeLineAdapter : RecyclerView.Adapter<TimeLineAdapter.TimeLineViewHolder>
             context.getString(R.string.msg_order_placed)
         ),
         TimeLineModel(
-            activatedImageResId = R.drawable.ic_ready_for_delivery,
-            deactivatedImageResId = R.drawable.ic_ready_for_delivery_deactivated,
+            activatedImageResId = R.drawable.ic_confirmation,
+            deactivatedImageResId = R.drawable.ic_confirmation_deactivated,
             context.getString(R.string.confirmed),
             context.getString(
                 R.string.conc_estimated_for,

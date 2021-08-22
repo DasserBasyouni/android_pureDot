@@ -11,7 +11,9 @@ import com.g7.soft.pureDot.adapter.PagedProductsAdapter
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentFavouritesBinding
+import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ProductModel
+import com.zeugmasolutions.localehelper.currentLocale
 
 class FavouritesFragment : Fragment() {
     private lateinit var binding: FragmentFavouritesBinding
@@ -47,7 +49,7 @@ class FavouritesFragment : Fragment() {
             ).build()
 
         // setup observers
-        val productsAdapter = PagedProductsAdapter(this)
+        val productsAdapter = PagedProductsAdapter(this, editWishList = this::editWishList)
         binding.productsRv.adapter = productsAdapter
         viewModel.productsPagedList?.observe(viewLifecycleOwner, {
             productsAdapter.submitList(it)
@@ -60,5 +62,20 @@ class FavouritesFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_notification, menu)
+    }
+
+
+    private fun editWishList(
+        tokenId: String,
+        productId: Int?,
+        doAdd: Boolean,
+        onComplete: () -> Unit
+    ) {
+        viewModel.editWishList(
+            requireActivity().currentLocale.toLanguageTag(),
+            tokenId = tokenId,
+            productId = productId,
+            doAdd = doAdd
+        ).observeApiResponse(this, { onComplete.invoke() })
     }
 }

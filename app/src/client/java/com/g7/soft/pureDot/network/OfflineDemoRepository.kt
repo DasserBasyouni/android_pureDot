@@ -138,6 +138,7 @@ class OfflineDemoRepository {
             "discountPercentage" to .23,
             "quantityInCart" to null,
             "availableQuantity" to 5,
+            "isInWishList" to true,
         )
 
         // TODO delete logoImageUrl from api?
@@ -174,6 +175,7 @@ class OfflineDemoRepository {
             "quantityInCart" to 1,
             "userReview" to null,
             "availableQuantity" to 5,
+            "isInWishList" to true,
         )
         private val branch1 = hashMapOf(
             "id" to 1,

@@ -15,6 +15,7 @@ import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentAllProductsBinding
+import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ProductModel
 import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.google.android.material.tabs.TabLayoutMediator
@@ -95,7 +96,7 @@ class AllProductsFragment : Fragment() {
             })
         }
 
-        val productsAdapter = PagedProductsAdapter(this)
+        val productsAdapter = PagedProductsAdapter(this, editWishList = this::editWishList)
         binding.productsRv.adapter = productsAdapter
         viewModel.productsPagedList?.observe(viewLifecycleOwner, {
             productsAdapter.submitList(it)
@@ -106,4 +107,17 @@ class AllProductsFragment : Fragment() {
 
     }
 
+    private fun editWishList(
+        tokenId: String,
+        productId: Int?,
+        doAdd: Boolean,
+        onComplete: () -> Unit
+    ) {
+        viewModel.editWishList(
+            requireActivity().currentLocale.toLanguageTag(),
+            tokenId = tokenId,
+            productId = productId,
+            doAdd = doAdd
+        ).observeApiResponse(this, { onComplete.invoke() })
+    }
 }

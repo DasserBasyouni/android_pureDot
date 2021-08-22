@@ -15,14 +15,17 @@ import com.g7.soft.pureDot.databinding.ItemProductLinearViewBinding
 import com.g7.soft.pureDot.model.ProductModel
 
 
-class PagedProductsAdapter(private val fragment: Fragment, private val isGrid: Boolean = true) :
+class PagedProductsAdapter(
+    private val fragment: Fragment, private val isGrid: Boolean = true,
+    private val editWishList: (tokenId: String, productId: Int?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
+) :
     PagedListAdapter<ProductModel, PagedProductsAdapter.ViewHolder>(PagedProductsDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder.from(viewGroup, isGrid)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getItem(position), fragment)
+        holder.bind(getItem(position), fragment, editWishList)
 
 
     class ViewHolder private constructor(private val binding: ViewDataBinding) :
@@ -30,11 +33,34 @@ class PagedProductsAdapter(private val fragment: Fragment, private val isGrid: B
         fun bind(
             dataModel: ProductModel?,
             fragment: Fragment,
+            editWishList: (tokenId: String, productId: Int?, doAdd: Boolean, onComplete: () -> Unit) -> Unit,
         ) {
-            if (binding is ItemProductGridViewBinding)
+            if (binding is ItemProductGridViewBinding) {
                 binding.dataModel = dataModel
-            else if (binding is ItemProductLinearViewBinding)
+                binding.wishListCiv.setOnClickListener {
+                    val tokenId = "" //todo
+                    editWishList.invoke(
+                        tokenId,
+                        dataModel?.id,
+                        binding.wishListCiv.isChecked
+                    ) {
+                        binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                    }
+                }
+
+            } else if (binding is ItemProductLinearViewBinding) {
                 binding.dataModel = dataModel
+                binding.wishListCiv.setOnClickListener {
+                    val tokenId = "" //todo
+                    editWishList.invoke(
+                        tokenId,
+                        dataModel?.id,
+                        binding.wishListCiv.isChecked
+                    ) {
+                        binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                    }
+                }
+            }
 
             binding.executePendingBindings()
 

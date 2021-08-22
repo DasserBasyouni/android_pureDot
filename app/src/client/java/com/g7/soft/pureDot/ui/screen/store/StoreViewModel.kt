@@ -3,6 +3,7 @@ package com.g7.soft.pureDot.ui.screen.store
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.paging.PagedList
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.constant.ProjectConstant
@@ -10,6 +11,7 @@ import com.g7.soft.pureDot.model.*
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.ProductRepository
+import kotlinx.coroutines.Dispatchers
 import java.util.*
 
 class StoreViewModel(val store: StoreModel?) : ViewModel() {
@@ -99,4 +101,16 @@ class StoreViewModel(val store: StoreModel?) : ViewModel() {
             ) { latestProductsResponse.value = it }
         }
     }
+
+    fun editWishList(langTag: String, tokenId: String?, productId: Int?, doAdd: Boolean) =
+        liveData(Dispatchers.IO) {
+            emit(NetworkRequestResponse.loading())
+            emitSource(
+                ProductRepository(langTag).editWishList(
+                    tokenId = tokenId,
+                    productId = productId,
+                    doAdd = doAdd
+                )
+            )
+        }
 }

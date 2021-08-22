@@ -43,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="8dp"
-                    tools:srcCompat="@drawable/ic_transfer" />
+                    tools:srcCompat="@drawable/ic_transaction_type_transfer" />
 
             </com.google.android.material.card.MaterialCardView>
 

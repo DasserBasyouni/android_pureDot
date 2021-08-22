@@ -135,4 +135,17 @@ class ProductRepository(private val langTag: String) {
         }))
     }
 
+    fun editWishList(
+        tokenId: String?,
+        productId: Int?,
+        doAdd: Boolean?,
+    ) = liveData(Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.editWishList(
+                tokenId = tokenId,
+                productId = productId,
+                doAdd = doAdd,
+            )
+        }))
+    }
 }

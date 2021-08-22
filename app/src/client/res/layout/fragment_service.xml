@@ -255,10 +255,13 @@
                             app:layout_constraintTop_toBottomOf="@id/servantsSpinner" />
 
                         <include
-                            android:id="@+id/include"
+                            android:id="@+id/dateTimeLayout"
                             layout="@layout/view_date_picker"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            app:hour="@={viewModel.hour}"
+                            app:minute="@={viewModel.minute}"
+                            app:isAm="@={viewModel.isAm}"
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="8dp"
@@ -269,12 +272,13 @@
                         <CalendarView
                             android:id="@+id/calendarView"
                             android:layout_width="0dp"
+                            android:date="@{1629768064L}"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView78"
                             app:layout_constraintStart_toStartOf="@+id/appCompatTextView78"
-                            app:layout_constraintTop_toBottomOf="@+id/include" />
+                            app:layout_constraintTop_toBottomOf="@+id/dateTimeLayout" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
