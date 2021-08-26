@@ -1,5 +1,6 @@
 package com.g7.soft.pureDot.network
 
+import android.util.Log
 import com.g7.soft.pureDot.BuildConfig
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -15,6 +16,7 @@ class MockInterceptor : Interceptor {
 
             val uri = chain.request().url.toUri().toString()
 
+            Log.e("Z_", "uri: $uri")
             // todo find a way to link names with ApiService class for less hard-coded Errors
             val responseString =
                 JSONObject(
@@ -104,19 +106,22 @@ class MockInterceptor : Interceptor {
                     }
                 ).toString()
 
-            return chain.proceed(chain.request())
-                .newBuilder()
-                .code(200)
-                .protocol(Protocol.HTTP_2)
-                .message(responseString)
-                .body(
-                    ResponseBody.create(
-                        "application/json".toMediaTypeOrNull(),
-                        responseString.toByteArray()
+            /*if (responseString == "{}")
+                return chain.proceed(chain.request())
+            else*/
+                return chain.proceed(chain.request())
+                    .newBuilder()
+                    .code(200)
+                    .protocol(Protocol.HTTP_2)
+                    .message(responseString)
+                    .body(
+                        ResponseBody.create(
+                            "application/json".toMediaTypeOrNull(),
+                            responseString.toByteArray()
+                        )
                     )
-                )
-                .addHeader("content-type", "application/json")
-                .build()
+                    .addHeader("content-type", "application/json")
+                    .build()
         } else {
             //just to be on safe side.
             throw IllegalAccessError(

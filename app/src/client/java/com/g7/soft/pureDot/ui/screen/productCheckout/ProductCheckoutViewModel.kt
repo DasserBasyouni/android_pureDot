@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.ui.screen.checkout
+package com.g7.soft.pureDot.ui.screen.productCheckout
 
 import androidx.lifecycle.*
 import com.g7.soft.pureDot.model.*
@@ -10,13 +10,15 @@ import com.g7.soft.pureDot.util.ValidationUtils
 import com.kofigyan.stateprogressbar.StateProgressBar
 import kotlinx.coroutines.Dispatchers
 
-class CheckoutViewModel(
+class ProductCheckoutViewModel(
     private val service: ServiceModel?,
     private val selectedVariations: IntArray?,
     private val servantsNumber: Int?,
     private val time: Long?,
     private val date: Long?,
-    private val quantity: Int?
+    private val quantity: Int?,
+    val currency: String?, // todo delete
+    internal val storesProductsCartDetails: MutableList<StoreProductsCartDetailsModel>?,
 ) : ViewModel() {
 
     // service data
@@ -91,12 +93,8 @@ class CheckoutViewModel(
 
     // checkout 2
     var shippingCostModel: ShippingCostModel? = null
-    val currency
-        get() = Transformations.map(cartItemsResponse) {
-            it.data?.products?.first()?.currency
-        }
 
-    val cartItemsResponse = MediatorLiveData<NetworkRequestResponse<CartItemsModel>>()
+    /*val cartItemsResponse = MediatorLiveData<NetworkRequestResponse<CartItemsModel>>()
     val cartItemsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
     val totalPrice // add delivry
@@ -106,9 +104,11 @@ class CheckoutViewModel(
             }?.plus(it.data.products.sumOf { product ->
                 product.quantityInCart!! * (product.vat ?: 0.00)
             })
-        }
+        }*/
 
-    fun getCartItems(langTag: String, tokenId: String) {
+    val totalPrice get() = storesProductsCartDetails?.sumOf { it.totalCost ?: 0.0 }
+
+    /*fun getCartItems(langTag: String, tokenId: String) {
         cartItemsResponse.value = NetworkRequestResponse.loading()
 
         // fetch request
@@ -119,7 +119,7 @@ class CheckoutViewModel(
                 )
             ) { cartItemsResponse.value = it }
         }
-    }
+    }*/
 
     // checkout 3
     val isCashOnDelivery = MutableLiveData<Boolean?>().apply { this.value = true }

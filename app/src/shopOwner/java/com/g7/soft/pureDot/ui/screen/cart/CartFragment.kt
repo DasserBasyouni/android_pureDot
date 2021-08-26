@@ -61,6 +61,7 @@ class CartFragment : Fragment() {
 
         // setup click listener
         binding.checkoutBtn.setOnClickListener {
+            // todo changed arguments !
             findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment)
         }
     }

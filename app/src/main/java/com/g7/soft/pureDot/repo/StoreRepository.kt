@@ -11,7 +11,7 @@ class StoreRepository(private val langTag: String) {
         pageNumber: Int?,
         itemsPerPage: Int?,
         searchText: String?,
-        categoryId: Int?,
+        categoryId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getALlStores(

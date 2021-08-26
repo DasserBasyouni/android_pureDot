@@ -69,63 +69,91 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView61"
                 app:srcCompat="@drawable/ic_maroof" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/twitterIv"
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/twitterIb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/ripple_circle"
-                app:layout_constraintEnd_toStartOf="@id/facebookIv"
-                android:padding="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/facebookIb"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView61"
                 app:layout_constraintTop_toBottomOf="@+id/maroofIv"
+                app:layout_constraintVertical_chainStyle="packed"
                 app:srcCompat="@drawable/ic_twitter" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/facebookIv"
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/facebookIb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:background="@drawable/ripple_circle"
-                android:padding="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/twitterIv"
-                app:layout_constraintEnd_toStartOf="@id/instagramIv"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/twitterIb"
+                app:layout_constraintEnd_toStartOf="@id/instagramIb"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/twitterIv"
-                app:layout_constraintTop_toTopOf="@+id/twitterIv"
+                app:layout_constraintStart_toEndOf="@+id/twitterIb"
+                app:layout_constraintTop_toTopOf="@+id/twitterIb"
                 app:srcCompat="@drawable/ic_facebook" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/instagramIv"
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/instagramIb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:background="@drawable/ripple_circle"
-                android:padding="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/facebookIv"
-                app:layout_constraintEnd_toStartOf="@id/linkedinIv"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/facebookIb"
+                app:layout_constraintEnd_toStartOf="@id/tiktokIb"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/facebookIv"
-                app:layout_constraintTop_toTopOf="@+id/facebookIv"
+                app:layout_constraintStart_toEndOf="@+id/facebookIb"
+                app:layout_constraintTop_toTopOf="@+id/facebookIb"
                 app:srcCompat="@drawable/ic_instagram" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/linkedinIv"
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/tiktokIb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:background="@drawable/ripple_circle"
-                android:padding="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/instagramIv"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/instagramIb"
+                app:layout_constraintEnd_toStartOf="@+id/youtubeIb"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/instagramIb"
+                app:layout_constraintTop_toTopOf="@+id/instagramIb"
+                app:srcCompat="@drawable/ic_tik_tok" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/youtubeIb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tiktokIb"
+                app:layout_constraintEnd_toStartOf="@+id/snapchatIb"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/tiktokIb"
+                app:layout_constraintTop_toTopOf="@+id/tiktokIb"
+                app:srcCompat="@drawable/ic_youtube" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/snapchatIb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/bg_about_us_button"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/youtubeIb"
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView61"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/instagramIv"
-                app:layout_constraintTop_toTopOf="@+id/instagramIv"
-                app:srcCompat="@drawable/ic_linkedin" />
+                app:layout_constraintStart_toEndOf="@+id/youtubeIb"
+                app:layout_constraintTop_toTopOf="@+id/youtubeIb"
+                app:srcCompat="@drawable/ic_snapchat" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

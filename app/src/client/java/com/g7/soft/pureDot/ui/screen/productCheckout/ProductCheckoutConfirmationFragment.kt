@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.ui.screen.checkout
+package com.g7.soft.pureDot.ui.screen.productCheckout
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.adapter.OldCartReviewHeaderAdapter
+import com.g7.soft.pureDot.adapter.ProductCartReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentCheckout3Binding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.util.ProjectDialogUtils
@@ -17,7 +17,7 @@ import com.kofigyan.stateprogressbar.StateProgressBar
 import com.zeugmasolutions.localehelper.currentLocale
 
 
-class CheckoutConfirmationFragment(private val viewModel: CheckoutViewModel) : Fragment() {
+class ProductCheckoutConfirmationFragment(private val viewModel: ProductCheckoutViewModel) : Fragment() {
 
     private lateinit var binding: FragmentCheckout3Binding
 
@@ -38,20 +38,10 @@ class CheckoutConfirmationFragment(private val viewModel: CheckoutViewModel) : F
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // fetch data
-        viewModel.getCartItems(requireActivity().currentLocale.toLanguageTag(), "") //todo
-
-        // observables
-        viewModel.cartItemsResponse.observe(viewLifecycleOwner, {
-            viewModel.cartItemsLcee.value!!.response.value = it
-
-            OldCartReviewHeaderAdapter(it.data?.products ?: mutableListOf()).let { adapter ->
-                binding.cartReviewItemsRv.adapter = adapter
-                adapter.submitList(it.data?.products?.map { product ->
-                    product.shop?.name
-                }?.toSet()?.toList())
-            }
-        })
+        // setup adapter
+        ProductCartReviewHeaderAdapter(this, viewModel.storesProductsCartDetails).let { adapter ->
+            binding.cartReviewItemsRv.adapter = adapter
+        }
 
         // setup listeners
         binding.paymentMethodCv.setOnClickListener {
@@ -73,7 +63,10 @@ class CheckoutConfirmationFragment(private val viewModel: CheckoutViewModel) : F
                     positiveBtnTextResId = R.string.track_order
                 ) {
                     val bundle = bundleOf("masterOrder" to it)
-                    findNavController().navigate(R.id.action_checkoutFragment_to_orderFragment, bundle)
+                    findNavController().navigate(
+                        R.id.action_checkoutFragment_to_orderFragment,
+                        bundle
+                    )
                 }
             })
         }

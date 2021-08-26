@@ -61,7 +61,7 @@ class OrderRepository(private val langTag: String) {
 
     fun calculateRefundShipping(
         orderNumber: Int?,
-        productId: Int?,
+        productId: String?,
         shippingMethod: Int?,
     ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
@@ -75,7 +75,7 @@ class OrderRepository(private val langTag: String) {
 
     fun refund(
         orderNumber: Int?,
-        productId: Int?,
+        productId: String?,
         shippingMethod: Int?,
     ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {

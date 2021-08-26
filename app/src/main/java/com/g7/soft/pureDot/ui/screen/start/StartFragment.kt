@@ -12,9 +12,6 @@ import com.g7.soft.pureDot.Application
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentStartBinding
 import com.g7.soft.pureDot.ext.makeLinks
-import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.util.ProjectDialogUtils
-import com.zeugmasolutions.localehelper.currentLocale
 
 // todo make this fragment MVVM arch
 class StartFragment : Fragment() {
@@ -38,6 +35,10 @@ class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /*lifecycleScope.launch {
+            ClientRepository("").saveTokenId(requireContext(), "dasser test")
+        }*/
+
         // setup listeners
         binding.loginBtn.setOnClickListener {
             findNavController().navigate(R.id.action_startFragment_to_loginFragment)
@@ -48,13 +49,8 @@ class StartFragment : Fragment() {
         if (Application.isClientFlavour) {
             binding.continueAsGuestTv.visibility = View.VISIBLE
             binding.continueAsGuestTv.makeLinks(Pair(getString(R.string.part_guest), View.OnClickListener {
-                viewModel.signUpAsGuest(requireActivity().currentLocale.toLanguageTag())
-                    .observeApiResponse(this, { data ->
-                        if (data?.tokenId != null) {
-                            findNavController().navigate(R.id.action_startFragment_to_homeFragment)
-                        } else
-                            ProjectDialogUtils.showSimpleMessage(requireContext(), R.string.something_went_wrong, R.drawable.ic_secure_shield)
-                    })
+                // todo save guest token
+                findNavController().navigate(R.id.action_startFragment_to_homeFragment)
             }), doChangeColor = false)
         }
     }

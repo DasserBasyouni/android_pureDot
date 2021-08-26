@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "com.g7.soft.pureDot.data";
+option java_multiple_files = true;
+
+message UserData {
+  // filter for showing / hiding completed tasks
+  string tokenId = 1;
+  string name = 2;
+  string phoneNumber = 3;
+  string password = 4;
+}

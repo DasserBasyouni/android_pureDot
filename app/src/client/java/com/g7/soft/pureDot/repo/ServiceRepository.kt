@@ -9,8 +9,8 @@ class ServiceRepository(private val langTag: String) {
 
     fun getServices(
         tokenId: String?,
-        categoryId: Int?,
-        shopId: Int?,
+        categoryId: String?,
+        shopId: String?,
         minStarts: List<Int>?,
         fromPrice: Int?,
         toPrice: Int?,
@@ -47,7 +47,7 @@ class ServiceRepository(private val langTag: String) {
 
 
     fun getServiceDetails(
-        serviceId: Int?,
+        serviceId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getServiceDetails(
@@ -59,7 +59,7 @@ class ServiceRepository(private val langTag: String) {
 
     fun addReview(
         tokenId: String?,
-        productId: Int?,
+        productId: String?,
         rating: Float?,
         comment: String?,
     ) = liveData(Dispatchers.IO) {

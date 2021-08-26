@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.ui.screen.checkout
+package com.g7.soft.pureDot.ui.screen.productCheckout
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,11 +15,11 @@ import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.kofigyan.stateprogressbar.StateProgressBar
 
 
-class CheckoutFragment : Fragment() {
+class ProductCheckoutFragment : Fragment() {
     private lateinit var binding: FragmentCheckoutBinding
-    private lateinit var viewModelFactory: CheckoutViewModelFactory
-    internal lateinit var viewModel: CheckoutViewModel
-    internal val args: CheckoutFragmentArgs by navArgs()
+    private lateinit var viewModelFactory: ProductCheckoutViewModelFactory
+    internal lateinit var viewModel: ProductCheckoutViewModel
+    internal val args: ProductCheckoutFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,15 +28,17 @@ class CheckoutFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_checkout, container, false)
 
-        viewModelFactory = CheckoutViewModelFactory(
+        viewModelFactory = ProductCheckoutViewModelFactory(
             service = args.service,
             selectedVariations = args.selectedVariations,
             servantsNumber = args.servantsNumber,
             time = args.time,
             date = args.date,
             quantity = args.quantity,
+            currency = args.service?.currency,
+            storesProductsCartDetails = args.storesProductsCartDetails?.toMutableList(),
         )
-        viewModel = ViewModelProvider(this, viewModelFactory).get(CheckoutViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ProductCheckoutViewModel::class.java)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this

@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.adapter.CartReviewHeaderAdapter
+import com.g7.soft.pureDot.adapter.OrderReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentReturnBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.zeugmasolutions.localehelper.currentLocale
@@ -48,7 +48,7 @@ class ReturnFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // init data
-        CartReviewHeaderAdapter(
+        OrderReviewHeaderAdapter(
             args.masterOrder,
             this,
             areTotalPricesVisible = false,

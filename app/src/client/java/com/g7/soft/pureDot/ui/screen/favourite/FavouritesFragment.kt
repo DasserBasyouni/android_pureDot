@@ -67,7 +67,7 @@ class FavouritesFragment : Fragment() {
 
     private fun editWishList(
         tokenId: String,
-        productId: Int?,
+        productId: String?,
         doAdd: Boolean,
         onComplete: () -> Unit
     ) {

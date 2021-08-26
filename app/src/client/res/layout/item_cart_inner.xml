@@ -55,12 +55,12 @@
                 android:textColor="@color/warm_grey"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/appCompatTextView32"
+                app:layout_constraintBottom_toTopOf="@id/appCompatTextView29"
                 app:layout_constraintStart_toEndOf="@+id/materialCardView"
                 app:layout_constraintTop_toTopOf="@+id/materialCardView"
                 tools:text="Item Name" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <!-- <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView32"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 app:layout_constraintBottom_toTopOf="@id/appCompatTextView29"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView31"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView31"
-                tools:text="400 kg" />
+                tools:text="400 kg" /> -->
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView29"
@@ -85,8 +85,8 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/materialCardView"
-                app:layout_constraintStart_toStartOf="@+id/appCompatTextView32"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView32"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView31"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView31"
                 android:text="@string/sort_by" />
 
             <androidx.appcompat.widget.AppCompatTextView

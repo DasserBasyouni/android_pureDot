@@ -156,6 +156,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
             app:layout_constraintStart_toStartOf="@+id/cardView13">
 
             <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="154dp"
                 android:gravity="start"

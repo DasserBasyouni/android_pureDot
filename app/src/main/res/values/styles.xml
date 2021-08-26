@@ -42,6 +42,10 @@
         <item name="boxCornerRadiusTopStart">15dp</item>
     </style>
 
+    <style name="ProjectTextInputEditText">
+        <item name="android:textColorHighlight">@color/light_blue_grey</item>
+    </style>
+
     <!-- spinner -->
     <style name="ProjectTheme.Spinner" parent="Widget.AppCompat.Spinner">
         <item name="android:padding">16dp</item>

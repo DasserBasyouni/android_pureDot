@@ -15,9 +15,11 @@ class ChangePasswordViewModel : ViewModel() {
     fun changePassword(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
-            ClientRepository(langTag).changePassword(
+            ClientRepository(langTag).
+            changePassword(
                 tokenId = tokenId,
                 password = newPassword1.value,
+                oldPassword = currentPassword.value
             )
         )
     }

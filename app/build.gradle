@@ -12,7 +12,7 @@ plugins {
 // Semantic Versioning 2.0.0 {@link 'https://semver.org/'}
 def versionMajor = 0
 def versionMinor = 0
-def versionPatch = 14
+def versionPatch = 15
 
 android {
     compileSdkVersion 30
@@ -103,9 +103,8 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2"
 
     // data: persistence
-    //implementation "androidx.datastore:datastore-core:1.0.0-alpha06"
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha06" // when it comes to stable then update project code inorder not to have many migrations project code
-    implementation  "com.google.protobuf:protobuf-javalite:3.10.0"
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation "com.google.protobuf:protobuf-javalite:3.10.0"
 
     // network: retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"

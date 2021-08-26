@@ -91,7 +91,6 @@ class FilterFragment : Fragment() {
         binding.applyBtn.setOnClickListener {
             val bundle = bundleOf(
                 "sliderType" to ApiConstant.SliderOfferType.SEARCH_RESULTS,
-                "storeId" to -1 // (default value)
             )
             findNavController().navigate(R.id.allProductsFragment, bundle)
         }

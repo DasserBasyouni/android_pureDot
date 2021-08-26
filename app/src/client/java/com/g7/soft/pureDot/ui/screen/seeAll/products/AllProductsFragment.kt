@@ -43,7 +43,7 @@ class AllProductsFragment : Fragment() {
 
         viewModelFactory = AllProductsViewModelFactory(
             sliderType = args.sliderType,
-            storeId = if (args.storeId == -1) null else args.storeId
+            storeId = args.storeId
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(AllProductsViewModel::class.java)
 
@@ -109,7 +109,7 @@ class AllProductsFragment : Fragment() {
 
     private fun editWishList(
         tokenId: String,
-        productId: Int?,
+        productId: String?,
         doAdd: Boolean,
         onComplete: () -> Unit
     ) {

@@ -7,19 +7,19 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.databinding.ItemCartReviewInnerBinding
+import com.g7.soft.pureDot.databinding.ItemOrderReviewInnerBinding
 import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.model.OrderModel
 import com.g7.soft.pureDot.model.ProductModel
 
 
-class CartReviewInnerAdapter(
+class OrderReviewInnerAdapter(
     private val order: OrderModel?,
     private val fragment: Fragment,
     private val masterOrder: MasterOrderModel? = null,
     private val selectedProduct: ProductModel? = null
 ) :
-    RecyclerView.Adapter<CartReviewInnerAdapter.ViewHolder>() {
+    RecyclerView.Adapter<OrderReviewInnerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder.from(viewGroup)
@@ -40,7 +40,7 @@ class CartReviewInnerAdapter(
     }
 
 
-    class ViewHolder private constructor(private val binding: ItemCartReviewInnerBinding) :
+    class ViewHolder private constructor(private val binding: ItemOrderReviewInnerBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             dataModel: ProductModel?,
@@ -64,7 +64,7 @@ class CartReviewInnerAdapter(
 
         companion object {
             internal fun from(viewGroup: ViewGroup) = ViewHolder(
-                ItemCartReviewInnerBinding.inflate(
+                ItemOrderReviewInnerBinding.inflate(
                     LayoutInflater.from(viewGroup.context),
                     viewGroup,
                     false

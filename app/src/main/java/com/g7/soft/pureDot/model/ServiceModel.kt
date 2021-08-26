@@ -8,15 +8,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class ServiceModel(
-    @Json(name = "id") val id: Int?,
+    @Json(name = "id") val id: String?,
     @Json(name = "name") val name: String?,
     @Json(name = "price") val price: Double?,
-    @Json(name = "items") val items: CartItemsModel?,
+    //@Json(name = "items") val items: CartItemsModel?,
     @Json(name = "shopLogoUrl") val shopLogoUrl: String?,
     @Json(name = "imageUrl") val imageUrl: String?,
-    @Json(name = "description") val description: String?,
-    @Json(name = "quantityInCart") var quantityInCart: Int? = null,
-    @Json(name = "userReview") var userReview: ReviewModel? = null,
+    @Json(name = "shortDescription") val shortDescription: String?,
+    //@Json(name = "quantityInCart") var quantityInCart: Int? = null,
+    @Json(name = "currency") val currency: String? = null,
 ) : Parcelable {
-    val currency get() = items?.products?.first()?.currency
+    //val currency get() = items?.products?.first()?.currency
 }

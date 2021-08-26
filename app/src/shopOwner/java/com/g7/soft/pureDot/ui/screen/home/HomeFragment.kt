@@ -146,22 +146,19 @@ class HomeFragment : Fragment() {
         }
         binding.latestOffersSeeAllTv.setOnClickListener {
             val bundle = bundleOf(
-                "sliderType" to ApiConstant.SliderOfferType.INNER_LATEST_OFFERS,
-                "storeId" to -1 // (default value)
+                "sliderType" to ApiConstant.SliderOfferType.INNER_LATEST_OFFERS
             )
             findNavController().navigate(R.id.allProductsFragment, bundle)
         }
         binding.latestProductsSellAllTv.setOnClickListener {
             val bundle = bundleOf(
-                "sliderType" to ApiConstant.SliderOfferType.INNER_LATEST_PRODUCTS,
-                "storeId" to -1
+                "sliderType" to ApiConstant.SliderOfferType.INNER_LATEST_PRODUCTS
             )
             findNavController().navigate(R.id.allProductsFragment, bundle)
         }
         binding.bestSellingSellAllTv.setOnClickListener {
             val bundle = bundleOf(
-                "sliderType" to ApiConstant.SliderOfferType.INNER_BEST_SELLING,
-                "storeId" to -1
+                "sliderType" to ApiConstant.SliderOfferType.INNER_BEST_SELLING
             )
             findNavController().navigate(R.id.allProductsFragment, bundle)
         }

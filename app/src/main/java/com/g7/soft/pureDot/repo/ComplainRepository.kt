@@ -22,7 +22,7 @@ class ComplainRepository(private val langTag: String) {
         title: String?,
         description: String?,
         relatedOrderNumber: Int?,
-        categoryId: Int?,
+        categoryId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.addComplain(
@@ -37,7 +37,7 @@ class ComplainRepository(private val langTag: String) {
 
     fun getComplainComments(
         tokenId: String?,
-        complainId: Int?,
+        complainId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getComplainComments(

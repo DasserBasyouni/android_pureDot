@@ -20,7 +20,7 @@ data class ClientDataModel(
     @Json(name = "credit") val credit: Double?,
     @Json(name = "email") val email: String?,
     @Json(name = "countryCode") val countryCode: String?,
-    @Json(name = "currency") val currency: String?,
+    @Json(name = "currency") val currency: CurrencyModel?,
     @Json(name = "country") val country: CountryModel?,
     @Json(name = "city") val city: CityModel?,
     @Json(name = "dateOfBirth") val dateOfBirth: Long?,

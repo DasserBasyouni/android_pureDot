@@ -2,10 +2,10 @@ package com.g7.soft.pureDot.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.g7.soft.pureDot.ui.screen.checkout.*
+import com.g7.soft.pureDot.ui.screen.productCheckout.*
 
 
-class CheckoutAdapter(private val fragment: CheckoutFragment) : FragmentStateAdapter(fragment) {
+class CheckoutAdapter(private val fragment: ProductCheckoutFragment) : FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int = if (fragment.viewModel.isProductCheckout) 4 else 3
 
@@ -13,16 +13,16 @@ class CheckoutAdapter(private val fragment: CheckoutFragment) : FragmentStateAda
 
         return if (fragment.viewModel.isProductCheckout)
             when (position) {
-                1 -> CheckoutShippingFragment(fragment.viewModel)
-                2 -> CheckoutPaymentFragment(fragment.viewModel)
-                3 -> CheckoutConfirmationFragment(fragment.viewModel)
-                else -> CheckoutDetailsFragment(fragment.viewModel)
+                1 -> ProductCheckoutShippingFragment(fragment.viewModel)
+                2 -> ProductCheckoutPaymentFragment(fragment.viewModel)
+                3 -> ProductCheckoutConfirmationFragment(fragment.viewModel)
+                else -> ProductCheckoutDetailsFragment(fragment.viewModel)
             }
         else
             when (position) {
-                1 -> CheckoutPaymentFragment(fragment.viewModel)
-                2 -> CheckoutConfirmationFragment(fragment.viewModel)
-                else -> CheckoutDetailsFragment(fragment.viewModel)
+                1 -> ProductCheckoutPaymentFragment(fragment.viewModel)
+                2 -> ProductCheckoutConfirmationFragment(fragment.viewModel)
+                else -> ProductCheckoutDetailsFragment(fragment.viewModel)
             }
     }
 }

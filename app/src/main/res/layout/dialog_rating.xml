@@ -106,6 +106,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/orderRatingRb">
 
                     <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="154dp"
                         android:gravity="start"
@@ -152,6 +153,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/deliveryRatingRb">
 
                     <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="154dp"
                         android:gravity="start"

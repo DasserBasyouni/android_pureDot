@@ -6,7 +6,7 @@ import com.g7.soft.pureDot.constant.ApiConstant
 
 class AllProductsViewModelFactory(
     private val sliderType: ApiConstant.SliderOfferType,
-    private val storeId: Int?,
+    private val storeId: String?,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

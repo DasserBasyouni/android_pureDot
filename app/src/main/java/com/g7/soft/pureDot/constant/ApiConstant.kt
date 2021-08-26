@@ -8,7 +8,15 @@ class ApiConstant {
 
         //NULL_DATA(999),
         SUCCESS(1000),
-        WRONG_PHONE_OR_PASSWORD(1001);
+        ERROR(1001),
+        WRONG_AUTHENTICATION(1002),
+        EMAIL_EXIST(1007),
+        MOBILE_EXIST(1008),
+        WRONG_PASSWORD(1009),
+        ACCOUNT_NOT_FOUND(1010),
+        NOT_VERIFIED(1013),
+        INCORRECT_VERIFICATION(1014),
+        EXIST_BEFORE(1015);
 
         companion object {
             fun fromInt(value: Int) = values().first { it.value == value }
@@ -78,7 +86,7 @@ class ApiConstant {
         }
     }
 
-    enum class OrderDeliveryStatus (val value: Int) {
+    enum class OrderDeliveryStatus(val value: Int) {
         NEW(5000),
         ACCEPTED(5001),
         STARTED(5002),
@@ -113,7 +121,8 @@ class ApiConstant {
             fun isBefore(currentStatus: Int?, reachedStatus: Int?): Boolean =
                 currentStatus ?: -1 > reachedStatus ?: 0
 
-            fun isDriverPendingOrAccepted(value: Int?): Boolean = value == NEW.value || value == ACCEPTED.value
+            fun isDriverPendingOrAccepted(value: Int?): Boolean =
+                value == NEW.value || value == ACCEPTED.value
         }
     }
 
@@ -141,12 +150,12 @@ class ApiConstant {
 
     enum class SliderOfferType(val value: Int) {
         SEARCH_RESULTS(-1),
-        HOME_MAIN_SLIDER(5000),
-        HOME_CATEGORY_SLIDER(5001),
-        HOME_LATEST_PRODUCT(5002),
-        INNER_LATEST_PRODUCTS(5003),
-        INNER_LATEST_OFFERS(5004),
-        INNER_BEST_SELLING(5005);
+        HOME_MAIN_SLIDER(6000),
+        HOME_CATEGORY_SLIDER(6001),
+        HOME_LATEST_PRODUCT(6002),
+        INNER_LATEST_PRODUCTS(6003),
+        INNER_LATEST_OFFERS(6004),
+        INNER_BEST_SELLING(6005);
 
         companion object {
             fun fromInt(value: Int) = values().firstOrNull() { it.value == value }
@@ -156,7 +165,7 @@ class ApiConstant {
 
     companion object {
 
-        const val BASE_URL = "https://mars.udacity.com/"
+        const val BASE_URL = "http://207.38.87.126:2222/api/"
         const val SOCKET_IO_URL = "https://mars.udacity.com/"
         const val IMG_BASE_URL = "https://images.unsplash.com/"
 

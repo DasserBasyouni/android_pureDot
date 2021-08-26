@@ -55,9 +55,6 @@ class ContactUsFragment : Fragment() {
         binding.instagramIb.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/puredot2030/")))
         }
-        binding.linkedinIb.setOnClickListener {
-            //startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/puredot2030/")))
-        }
         binding.tiktokIb.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tiktok.com/@puredot2030?lang=en&is_copy_url=1&is_from_webapp=v3")))
         }

@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.ui.screen.checkout
+package com.g7.soft.pureDot.ui.screen.productCheckout
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.adapter.OldCartReviewHeaderAdapter
+import com.g7.soft.pureDot.adapter.ProductCartReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentCheckout2Binding
 import com.kofigyan.stateprogressbar.StateProgressBar
-import com.zeugmasolutions.localehelper.currentLocale
 
 
-class CheckoutShippingFragment(private val viewModel: CheckoutViewModel) : Fragment() {
+class ProductCheckoutShippingFragment(private val viewModel: ProductCheckoutViewModel) : Fragment() {
 
     private lateinit var binding: FragmentCheckout2Binding
 
@@ -34,20 +33,10 @@ class CheckoutShippingFragment(private val viewModel: CheckoutViewModel) : Fragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // fetch data
-        viewModel.getCartItems(requireActivity().currentLocale.toLanguageTag(), "") //todo
-
-        // observables
-        viewModel.cartItemsResponse.observe(viewLifecycleOwner, {
-            viewModel.cartItemsLcee.value!!.response.value = it
-
-            OldCartReviewHeaderAdapter(it.data?.products ?: mutableListOf()).let { adapter ->
-                binding.cartReviewItemsRv.adapter = adapter
-                adapter.submitList(it.data?.products?.map { product ->
-                    product.shop?.name
-                }?.toSet()?.toList())
-            }
-        })
+        // setup adapter
+        ProductCartReviewHeaderAdapter(this, viewModel.storesProductsCartDetails).let { adapter ->
+            binding.cartReviewItemsRv.adapter = adapter
+        }
 
         // setup listeners
         binding.nextBtn.setOnClickListener {

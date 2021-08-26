@@ -19,7 +19,7 @@ class LoginViewModel : ViewModel() {
         emitSource(
             ClientRepository(langTag).login(
                 fcmToken = fcmToken,
-                username = username.value,
+                emailOrPhoneNumber = username.value,
                 password = password.value
             )
         )

@@ -79,7 +79,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getOffersSlider0(langTag: String, categoryId: Int?, shopId: Int?) {
+    fun getOffersSlider0(langTag: String, categoryId: String?, shopId: String?) {
         sliderOffersResponse0.value = NetworkRequestResponse.loading()
         sliderOffersTimer0?.cancel() // release the auto slider timer
 
@@ -112,7 +112,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getOffersSlider1(langTag: String, categoryId: Int?, shopId: Int?) {
+    fun getOffersSlider1(langTag: String, categoryId: String?, shopId: String?) {
         sliderOffersResponse1.value = NetworkRequestResponse.loading()
         sliderOffersTimer1?.cancel() // release the auto slider timer
 
@@ -145,7 +145,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getOffersSlider2(langTag: String, categoryId: Int?, shopId: Int?) {
+    fun getOffersSlider2(langTag: String, categoryId: String?, shopId: String?) {
         sliderOffersResponse2.value = NetworkRequestResponse.loading()
         sliderOffersTimer2?.cancel() // release the auto slider timer
 
@@ -203,7 +203,6 @@ class HomeViewModel : ViewModel() {
                 ProductRepository(langTag).getLatestOffers(
                     pageNumber = 1,
                     itemPerPage = 4,
-                    searchText = null,
                     shopId = null
                 )
             ) { latestOffersResponse.value = it }
@@ -227,7 +226,6 @@ class HomeViewModel : ViewModel() {
                 ProductRepository(langTag).getLatestProducts(
                     pageNumber = 1,
                     itemPerPage = 9,
-                    searchText = null,
                     shopId = null,
                 )
             ) { latestProductsResponse.value = it }
@@ -243,14 +241,13 @@ class HomeViewModel : ViewModel() {
                 ProductRepository(langTag).getBestSelling(
                     pageNumber = 1,
                     itemPerPage = ProjectConstant.ITEMS_PER_PAGE,
-                    searchText = null,
                     shopId = null,
                 )
             ) { bestSellingResponse.value = it }
         }
     }
 
-    fun editWishList(langTag: String, tokenId: String?, productId: Int?, doAdd: Boolean) =
+    fun editWishList(langTag: String, tokenId: String?, productId: String?, doAdd: Boolean) =
         liveData(Dispatchers.IO) {
             emit(NetworkRequestResponse.loading())
             emitSource(

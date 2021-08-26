@@ -310,7 +310,7 @@ class PaginationDataSource<T>(
                         viewModel.reviewsLcee.value!!.response.value =
                             NetworkRequestResponse.loading<List<*>>()
 
-                    ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getItemReviews(
+                    ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getItemReviews( // todo
                         pageNumber = pageNumber,
                         itemsPerPage = itemsPerPage,
                         itemId = viewModel.itemId,

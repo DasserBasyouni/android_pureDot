@@ -10,13 +10,13 @@ interface ProductCartDao {
     @Query("SELECT * FROM ProductCart")
     suspend fun getAll(): List<ProductCart?>?
 
-    @Query("SELECT * FROM ProductCart WHERE id = :id")
-    suspend fun getItemById(id: Int): ProductCart?
+    @Query("SELECT * FROM ProductCart WHERE apiId = :apiId")
+    suspend fun getItemById(apiId: String): ProductCart?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertIntoProduct(vararg productCartItems: ProductCart?)
 
-    @Query("DELETE FROM ProductCart WHERE id = :id")
+    @Query("DELETE FROM ProductCart WHERE apiId = :id")
     suspend fun deleteItem(id: Int)
 
     @get:Query("SELECT COUNT(*) FROM ProductCart")

@@ -51,7 +51,7 @@ class CategoryViewModel(val category: CategoryModel?) : ViewModel() {
         }
     }*/
 
-    fun getOffersSlider(langTag: String, categoryId: Int?, shopId: Int?) {
+    fun getOffersSlider(langTag: String, categoryId: String?, shopId: String?) {
         sliderOffersResponse.value = NetworkRequestResponse.loading()
         sliderOffersTimer?.cancel() // release the auto slider timer
 
@@ -85,7 +85,7 @@ class CategoryViewModel(val category: CategoryModel?) : ViewModel() {
     }
 
 
-    fun editWishList(langTag: String, tokenId: String?, productId: Int?, doAdd: Boolean) =
+    fun editWishList(langTag: String, tokenId: String?, productId: String?, doAdd: Boolean) =
         liveData(Dispatchers.IO) {
             emit(NetworkRequestResponse.loading())
             emitSource(

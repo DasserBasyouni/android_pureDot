@@ -43,6 +43,7 @@ class CartRepository(private val langTag: String) {
         context: Context,
         product: ProductModel?,
         quantityInCart: Int?,
+        variationsIds: List<String>?,
         onComplete: () -> Unit
     ) {
         lifecycleScope.launch {
@@ -66,10 +67,11 @@ class CartRepository(private val langTag: String) {
 
             dao.insertIntoProduct(
                 ProductCart(
-                    id = existingProduct?.id,
+                    apiId = existingProduct?.apiId,
                     productId = productId,
                     price = productPrice,
-                    quantityInCart = (existingProduct?.quantityInCart ?: 0) + quantityInCart
+                    quantityInCart = (existingProduct?.quantityInCart ?: 0) + quantityInCart,
+                    variationsIds = variationsIds
                 )
             )
 
@@ -93,6 +95,23 @@ class CartRepository(private val langTag: String) {
                 productsInCart?.map { it?.quantityInCart?.times(it.price) ?: 0.0 }?.sum() ?: 0.0
 
             onComplete.invoke(totalPriceInCart)
+        }
+    }
+
+    fun getProductsInCart(
+        lifecycleScope: CoroutineScope,
+        context: Context,
+        onComplete: (productsInCart: List<ProductCart?>?) -> Unit
+    ) {
+        lifecycleScope.launch {
+            val dao = ProductCartDatabase.getDatabase(context)?.cartDao()
+
+            dao ?: LogEventUtils.logApiError("CartRepository.getProductsInCart: null dao")
+                .run { return@launch }
+
+            val productsInCart = dao.getAll()
+
+            onComplete.invoke(productsInCart)
         }
     }
 
@@ -129,7 +148,7 @@ class CartRepository(private val langTag: String) {
         }
     }*/
 
-    fun getCartItems(
+    /*fun getCartItems(
         tokenId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
@@ -137,11 +156,11 @@ class CartRepository(private val langTag: String) {
                 tokenId = tokenId,
             )
         }))
-    }
+    }*/
 
     fun checkCartProducts(
         tokenId: String?,
-        ids: List<Int>?,
+        ids: List<String>?,
         quantities: List<Int>?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
@@ -159,7 +178,7 @@ class CartRepository(private val langTag: String) {
         lastName: String?,
         email: String?,
         phoneNumber: String?,
-        addressId: Int?,
+        addressId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.checkout(

@@ -105,10 +105,10 @@ class OfflineDemoRepository {
         )
         private val notAvailableProduct = hashMapOf(
             "id" to 3,
-            "name" to "product 3",
+            "name" to "product 3, 100 gm",
             "price" to 19.50,
-            "quantity" to 100,
-            "measureUnit" to "gm",
+            //"quantity" to 100,
+            //"measureUnit" to "gm",
             //"logoImageUrl" to "photo-1496200186974-4293800e2c20?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2089&q=80",
             "imageUrl" to "photo-1576618148400-f54bed99fcfd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
             "vat" to 2.00,
@@ -125,10 +125,10 @@ class OfflineDemoRepository {
         )
         private val product1 = hashMapOf(
             "id" to 1,
-            "name" to "product 1",
+            "name" to "product 1, 200 gm",
             "price" to 19.50,
-            "quantity" to 100,
-            "measureUnit" to "gm",
+            //"quantity" to 100,
+            //"measureUnit" to "gm",
             //"logoImageUrl" to "photo-1496200186974-4293800e2c20?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2089&q=80",
             "imageUrl" to "photo-1523275335684-37898b6baf30?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1289&q=80",
             "vat" to 2.00,
@@ -144,10 +144,10 @@ class OfflineDemoRepository {
         // TODO delete logoImageUrl from api?
         private val product2 = hashMapOf(
             "id" to 2,
-            "name" to "product 2",
+            "name" to "product 2, 300 gm",
             "price" to 10.50,
-            "quantity" to 100,
-            "measureUnit" to "gm",
+            //"quantity" to 100,
+            //"measureUnit" to "gm",
             //"logoImageUrl" to "photo-1496200186974-4293800e2c20?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2089&q=80",
             "imageUrl" to "photo-1505740420928-5e560c06d30e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
             "vat" to 1.00,
@@ -161,10 +161,10 @@ class OfflineDemoRepository {
         )
         private val product1InCart = hashMapOf(
             "id" to 1,
-            "name" to "product 1",
+            "name" to "product 1, 100 gm",
             "price" to 19.99,
-            "quantity" to 150,
-            "measureUnit" to "gm",
+            //"quantity" to 150,
+            //"measureUnit" to "gm",
             //"logoImageUrl" to "photo-1496200186974-4293800e2c20?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2089&q=80",
             "imageUrl" to "photo-1523275335684-37898b6baf30?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1289&q=80",
             "vat" to 2.00,
@@ -317,19 +317,21 @@ class OfflineDemoRepository {
             "id" to 1,
             "name" to "service 1",
             "price" to 41.50,
+            "currency" to "EGP",
             "items" to cartItemsModel1,
             "shopLogoUrl" to "photo-1496200186974-4293800e2c20?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2089&q=80",
             "imageUrl" to "photo-1523275335684-37898b6baf30?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1289&q=80",
-            "description" to "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+            "shortDescription" to "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
         )
         private val service2 = hashMapOf(
             "id" to 2,
             "name" to "service 2",
             "price" to 11.50,
+            "currency" to "EGP",
             "items" to cartItemsModel2,
             "shopLogoUrl" to "photo-1496200186974-4293800e2c20?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2089&q=80",
             "imageUrl" to "photo-1505740420928-5e560c06d30e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-            "description" to "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+            "shortDescription" to "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
         )
         private val transaction1 = hashMapOf(
             "id" to 1,
@@ -605,9 +607,9 @@ class OfflineDemoRepository {
                     "branches" to listOf(branch1, branch2),
                     "variations" to listOf(sizeVariations, flavourVariations, colorVariations),
                     "description" to "Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes, along with exposition, argumentation, and narration.",
-                    "similarItems" to listOf(product1, product2),
+                    "similarProducts" to listOf(product1, product2),
                     "quantityInCart" to 1,
-                    "images" to listOf(
+                    "imagesUrls" to listOf(
                         "photo-1523275335684-37898b6baf30?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1289&q=80",
                         "photo-1505740420928-5e560c06d30e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
                     ),
@@ -724,11 +726,11 @@ class OfflineDemoRepository {
                 "data" to hashMapOf(
                     "variations" to listOf(sizeVariations, flavourVariations),
                     "maxServants" to 4,
-                    "includingDescription" to "Item 1 (x3) + Item 2 (x3) + Item 3 (x3)",
-                    "description" to "Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes, along with exposition, argumentation, and narration.",
-                    "similarItems" to listOf(service1, service2),
+                    //"includingDescription" to "Item 1 (x3) + Item 2 (x3) + Item 3 (x3)",
+                    "fullDescription" to "Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes, along with exposition, argumentation, and narration.",
+                    "similarServices" to listOf(service1, service2),
                     "quantityInCart" to 1,
-                    "images" to listOf(
+                    "imagesUrls" to listOf(
                         "photo-1523275335684-37898b6baf30?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1289&q=80",
                         "photo-1505740420928-5e560c06d30e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
                     ),

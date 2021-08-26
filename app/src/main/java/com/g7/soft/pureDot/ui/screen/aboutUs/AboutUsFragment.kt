@@ -1,5 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.aboutUs
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,20 +34,23 @@ class AboutUsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.maroofIv.setOnClickListener {
-
+        binding.twitterIb.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/Puredot2030")))
         }
-        binding.twitterIv.setOnClickListener {
-
+        binding.facebookIb.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Puredot-104256265027094")))
         }
-        binding.facebookIv.setOnClickListener {
-
+        binding.instagramIb.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/puredot2030/")))
         }
-        binding.instagramIv.setOnClickListener {
-
+        binding.tiktokIb.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tiktok.com/@puredot2030?lang=en&is_copy_url=1&is_from_webapp=v3")))
         }
-        binding.linkedinIv.setOnClickListener {
-
+        binding.youtubeIb.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/channel/UCrLL_kAdfEVaZH81t-L-UCg")))
+        }
+        binding.snapchatIb.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.snapchat.com/add/puredot2030")))
         }
     }
 

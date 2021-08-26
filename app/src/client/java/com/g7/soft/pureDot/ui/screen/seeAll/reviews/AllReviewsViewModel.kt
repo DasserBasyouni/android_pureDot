@@ -8,7 +8,7 @@ import com.g7.soft.pureDot.model.ReviewModel
 import com.g7.soft.pureDot.model.project.LceeModel
 
 class AllReviewsViewModel(
-    internal val itemId: Int?,
+    internal val itemId: String?,
     internal val tokenId: String
 ) : ViewModel() {
 

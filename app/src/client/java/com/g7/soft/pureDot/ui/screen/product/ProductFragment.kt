@@ -77,7 +77,7 @@ class ProductFragment : Fragment() {
         viewModel.productDetailsResponse.observe(viewLifecycleOwner, {
             viewModel.productDetailsLcee.value!!.response.value = it
             imagesOffersAdapter.submitList(it.data?.images)
-            similarProductsAdapter.submitList(it.data?.similarItems)
+            similarProductsAdapter.submitList(it.data?.similarProducts)
             reviewsAdapter.submitList(it.data?.reviews?.data)
             binding.variationsRv.adapter = ProductVariantsAdapter(it.data?.variations)
             setupSpinner(
@@ -113,7 +113,8 @@ class ProductFragment : Fragment() {
         }
         binding.reviewsSeeAllTv.setOnClickListener {
             val bundle = bundleOf(
-                "itemId" to args.item.id
+                "itemId" to args.item.id,
+                "isProduct" to true
             )
             findNavController().navigate(R.id.allReviewsFragment, bundle)
         }
@@ -122,7 +123,7 @@ class ProductFragment : Fragment() {
 
             viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
                 .observeApiResponse(this, {
-                    viewModel.product?.userReview = it
+                    viewModel.productDetailsResponse.value?.data?.userReview = it
                     binding.invalidateAll()
                 })
         }
@@ -201,7 +202,7 @@ class ProductFragment : Fragment() {
 
     private fun editWishList(
         tokenId: String,
-        productId: Int?,
+        productId: String?,
         doAdd: Boolean,
         onComplete: () -> Unit
     ) {

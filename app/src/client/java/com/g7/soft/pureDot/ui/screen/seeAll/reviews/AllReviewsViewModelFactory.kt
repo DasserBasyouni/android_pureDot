@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 class AllReviewsViewModelFactory(
-    private val itemId: Int?,
+    private val itemId: String?,
     private val tokenId: String,
 ) : ViewModelProvider.Factory {
 

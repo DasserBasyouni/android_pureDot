@@ -24,8 +24,23 @@ class SignUpViewModel : ViewModel() {
     val phoneNumber = MutableLiveData<String?>()
     val email = MutableLiveData<String?>()
     val selectedCountryPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedCountry
+        get() = countiesResponse.value?.data?.getOrNull(
+            selectedCountryPosition.value?.minus(1) ?: -1
+        )
+
     val selectedCityPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedCity
+        get() = citiesResponse.value?.data?.getOrNull(
+            selectedCityPosition.value?.minus(1) ?: -1
+        )
+
     val selectedZipCodePosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedZipCode
+        get() = zipCodesResponse.value?.data?.getOrNull(
+            selectedZipCodePosition.value?.minus(1) ?: -1
+        )
+
     val password = MutableLiveData<String?>()
     val confirmPassword = MutableLiveData<String?>()
     val isMale = MutableLiveData<Boolean?>().apply { this.value = true }
@@ -44,9 +59,7 @@ class SignUpViewModel : ViewModel() {
         citiesResponse.apply {
             this.addSource(
                 GeneralRepository(langTag).getCities(
-                    countryId = countiesResponse.value?.data?.get(
-                        selectedCountryPosition.value!!
-                    )?.id
+                    countryId = selectedCountry?.id
                 )
             ) { citiesResponse.value = it }
         }
@@ -55,11 +68,11 @@ class SignUpViewModel : ViewModel() {
     fun getZipCodes(langTag: String) {
         zipCodesResponse.value = NetworkRequestResponse.loading()
         zipCodesResponse.apply {
-            this.addSource(GeneralRepository(langTag).getZipCodes(
-                cityId = citiesResponse.value?.data?.get(
-                    selectedCityPosition.value!!
-                )?.id
-            )) { zipCodesResponse.value = it }
+            this.addSource(
+                GeneralRepository(langTag).getZipCodes(
+                    cityId = selectedCity?.id
+                )
+            ) { zipCodesResponse.value = it }
         }
     }
 
@@ -74,7 +87,6 @@ class SignUpViewModel : ViewModel() {
                 lastName = lastName.value,
                 phoneNumber = phoneNumber.value,
                 email = email.value,
-                countryId = countiesResponse.value?.data?.get(selectedCountryPosition.value!!)?.id,
                 cityId = citiesResponse.value?.data?.get(selectedCityPosition.value!!)?.id,
                 zipCodeId = zipCodesResponse.value?.data?.get(selectedZipCodePosition.value!!)?.id,
                 password = password.value,

@@ -18,22 +18,21 @@ interface ApiService {
         @Field("phoneNumber") phoneNumber: String?,
         @Field("password") password: String?,
         @Field("isMale") isMale: Boolean?,
-        @Field("countryId") countryId: Int?,
-        @Field("cityId") cityId: Int?,
-        @Field("zipCodeId") zipCodeId: Int?,
+        @Field("cityId") cityId: String?,
+        @Field("zipCodeId") zipCodeId: String?,
         @Field("fcmToken") fcmToken: String?
-    ): ApiResponseModel<ClientDataModel>?
+    ): ApiResponseModel<TokenIdModel>?
 
     @FormUrlEncoded
     @POST("client/login")
     suspend fun login(
         @Field("fcmToken") fcmToken: String?,
-        @Field("username") username: String?,
+        @Field("emailOrPhoneNumber") emailOrPhoneNumber: String?,
         @Field("password") password: String?,
     ): ApiResponseModel<ClientDataModel>? // api note: this method is used instead of checkAccount so fcmToken might be sent as null and api won't save it for user
 
     @FormUrlEncoded
-    @POST("client/sendForgetPasswordCode")
+    @POST("client/forgetPassword")
     suspend fun sendForgetPasswordCode(
         @Field("emailOrPhoneNumber") emailOrPhoneNumber: String?,
     ): ApiResponseModel<*>?
@@ -91,8 +90,8 @@ interface ApiService {
         @Field("mobileNumber") phoneNumber: String?,
         @Field("isMale") isMale: Boolean?,
         @Field("imageUrl") imageUrl: String?,
-        @Field("countryId") countryId: Int?,
-        @Field("cityId") cityId: Int?,
+        @Field("countryId") countryId: String?,
+        @Field("cityId") cityId: String?,
         @Field("dateOfBirth") dateOfBirth: Long?,
         //@Field( "points") points: Int?, exclude this from api method too
         //@Field( "credit") credit: Double?, exclude this from api method too
@@ -105,6 +104,7 @@ interface ApiService {
     suspend fun changePassword(
         @Field("tokenId") tokenId: String?,
         @Field("password") password: String?,
+        @Field("oldPassword") oldPassword: String?,
     ): ApiResponseModel<ClientDataModel>?
 
     @FormUrlEncoded
@@ -119,11 +119,11 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST("city/getAll")
-    suspend fun getAllCities(@Field("countryId") countryId: Int?): ApiResponseModel<List<CityModel>>?
+    suspend fun getAllCities(@Field("countryId") countryId: String?): ApiResponseModel<List<CityModel>>?
 
     @FormUrlEncoded
     @POST("zipCode/getAll")
-    suspend fun getAllZipCodes(@Field("cityId") cityId: Int?): ApiResponseModel<List<ZipCodeModel>>?
+    suspend fun getAllZipCodes(@Field("cityId") cityId: String?): ApiResponseModel<List<ZipCodeModel>>?
 
     @FormUrlEncoded
     @POST("client/contactUs")
@@ -135,10 +135,10 @@ interface ApiService {
 
     // product
     @FormUrlEncoded
-    @POST("client/getProducts")
+    @POST("product/getProducts")
     suspend fun getProducts(
-        @Field("categoriesIds") categoriesIds: List<Int>?,
-        @Field("storesIds") storesIds: List<Int>?,
+        @Field("categoriesIds") categoriesIds: List<String>?,
+        @Field("storesIds") storesIds: List<String>?,
         @Field("minStarts") minStarts: List<Int>?,
         @Field("fromPrice") fromPrice: Int?,
         @Field("toPrice") toPrice: Int?,
@@ -148,30 +148,27 @@ interface ApiService {
     ): ApiResponseModel<DataWithCountModel<List<ProductModel>>>?
 
     @FormUrlEncoded
-    @POST("client/getLatestOffers")
+    @POST("product/getLatestOffers")
     suspend fun getLatestOffers(
         @Field("pageNumber") pageNumber: Int?,
         @Field("itemPerPage") itemPerPage: Int?,
-        @Field("searchText") searchText: String?,
-        @Field("shopId") shopId: Int?,
+        @Field("shopId") shopId: String?,
     ): ApiResponseModel<DataWithCountModel<List<ProductModel>>>?
 
     @FormUrlEncoded
-    @POST("client/getLatestProducts")
+    @POST("product/getLatestProducts")
     suspend fun getLatestProducts(
         @Field("pageNumber") pageNumber: Int?,
         @Field("itemPerPage") itemPerPage: Int?,
-        @Field("searchText") searchText: String?,
-        @Field("shopId") shopId: Int?,
+        @Field("shopId") shopId: String?,
     ): ApiResponseModel<DataWithCountModel<List<ProductModel>>>?
 
     @FormUrlEncoded
-    @POST("client/getBestSelling")
+    @POST("product/getBestSelling")
     suspend fun getBestSelling(
         @Field("pageNumber") pageNumber: Int?,
         @Field("itemPerPage") itemPerPage: Int?,
-        @Field("searchText") searchText: String?,
-        @Field("shopId") shopId: Int?,
+        @Field("shopId") shopId: String?,
     ): ApiResponseModel<DataWithCountModel<List<ProductModel>>>?
 
     @FormUrlEncoded
@@ -186,38 +183,47 @@ interface ApiService {
     ): ApiResponseModel<*>?
 
     @FormUrlEncoded
-    @POST("client/getProductDetails")
+    @POST("product/getProductDetails")
     suspend fun getProductDetails(
-        @Field("productId") productId: Int?,
+        @Field("productId") productId: String?,
     ): ApiResponseModel<ProductDetailsModel>?
+
+    @FormUrlEncoded
+    @POST("client/getProductReviews")
+    suspend fun getProductReviews(
+        @Field("productId") itemId: String?,
+        @Field("tokenId") tokenId: String?,
+        @Field("pageNumber") pageNumber: Int?,
+        @Field("itemPerPage") itemPerPage: Int?,
+    ): ApiResponseModel<DataWithCountModel<List<ReviewModel>>>?
 
     // offers
     @FormUrlEncoded
     @POST("client/getSliderOffers")
     suspend fun getSliderOffers(
-        @Field("categoryId") categoryId: Int?,
-        @Field("shopId") shopId: Int?,
+        @Field("categoryId") categoryId: String?,
+        @Field("shopId") shopId: String?,
         @Field("type") type: Int?,
     ): ApiResponseModel<List<SliderOfferModel>>?
 
     // stores
     @FormUrlEncoded
-    @POST("client/getShops")
+    @POST("shop/getAll")
     suspend fun getALlStores(
         @Field("pageNumber") pageNumber: Int?,
         @Field("itemPerPage") itemPerPage: Int?,
         @Field("searchText") searchText: String?,
-        @Field("categoryId") categoryId: Int?,
+        @Field("categoryId") categoryId: String?,
     ): ApiResponseModel<DataWithCountModel<List<StoreModel>>>?
 
     // categories
     @FormUrlEncoded
-    @POST("client/getCategories")
+    @POST("category/getAll")
     suspend fun getCategories(
         @Field("pageNumber") pageNumber: Int?,
         @Field("itemPerPage") itemPerPage: Int?,
         @Field("searchText") searchText: String?,
-        @Field("shopId") shopId: Int?,
+        @Field("shopId") shopId: String?,
     ): ApiResponseModel<DataWithCountModel<List<CategoryModel>>>?
 
     // cart
@@ -233,24 +239,15 @@ interface ApiService {
     @POST("client/checkCartProducts")
     suspend fun checkCartProducts(
         @Field("tokenId") tokenId: String?,
-        @Field("ids") ids: List<Int>?,
+        @Field("ids") ids: List<String>?,
         @Field("quantities") quantities: List<Int>?,
-    ): ApiResponseModel<List<ProductModel>>?
+    ): ApiResponseModel<MutableList<StoreProductsCartDetailsModel>>?
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @POST("client/getCartItems")
     suspend fun getCartItems(
         @Field("tokenId") tokenId: String?,
-    ): ApiResponseModel<CartItemsModel>?
-
-    @FormUrlEncoded
-    @POST("client/getItemReviews")
-    suspend fun getItemReviews(
-        @Field("itemId") itemId: Int?,
-        @Field("tokenId") tokenId: String?,
-        @Field("pageNumber") pageNumber: Int?,
-        @Field("itemPerPage") itemPerPage: Int?,
-    ): ApiResponseModel<DataWithCountModel<List<ReviewModel>>>?
+    ): ApiResponseModel<CartItemsModel>?*/
 
     /*@FormUrlEncoded
     @POST("review/mark")
@@ -264,7 +261,7 @@ interface ApiService {
     @POST("client/addProductReview")
     suspend fun addProductReview(
         @Field("tokenId") tokenId: String?,
-        @Field("productId") productId: Int?,
+        @Field("productId") productId: String?,
         @Field("rating") rating: Float?,
         @Field("comment") comment: String?,
     ): ApiResponseModel<ReviewModel>?
@@ -273,7 +270,7 @@ interface ApiService {
     @POST("client/editWishList")
     suspend fun editWishList(
         @Field("tokenId") tokenId: String?,
-        @Field("productId") productId: Int?,
+        @Field("productId") productId: String?,
         @Field("doAdd") doAdd: Boolean?,
     ): ApiResponseModel<*>?
 
@@ -285,7 +282,7 @@ interface ApiService {
         @Field("lastName") lastName: String?,
         @Field("email") email: String?,
         @Field("phoneNumber") phoneNumber: String?,
-        @Field("addressId") addressId: Int?,
+        @Field("addressId") addressId: String?,
     ): ApiResponseModel<ShippingCostModel>?
 
     @FormUrlEncoded
@@ -333,7 +330,7 @@ interface ApiService {
     @POST("client/calculateRefundShipping")
     suspend fun calculateRefundShipping(
         @Field("orderNumber") orderNumber: Int?,
-        @Field("productId") productId: Int?,
+        @Field("productId") productId: String?,
         @Field("shippingMethod") shippingMethod: Int?,
     ): ApiResponseModel<ShippingCostModel>?
 
@@ -341,7 +338,7 @@ interface ApiService {
     @POST("client/refund")
     suspend fun refund(
         @Field("orderNumber") orderNumber: Int?,
-        @Field("productId") productId: Int?,
+        @Field("productId") productId: String?,
         @Field("shippingMethod") shippingMethod: Int?,
     ): ApiResponseModel<*>?
 
@@ -350,8 +347,8 @@ interface ApiService {
     @POST("client/getServices")
     suspend fun getServices(
         @Field("tokenId") tokenId: String?,
-        @Field("categoryId") categoryId: Int?,
-        @Field("shopId") shopId: Int?,
+        @Field("categoryId") categoryId: String?,
+        @Field("shopId") shopId: String?,
         @Field("minStarts") minStarts: List<Int>?,
         @Field("fromPrice") fromPrice: Int?,
         @Field("toPrice") toPrice: Int?,
@@ -368,16 +365,16 @@ interface ApiService {
     ): ApiResponseModel<*>?
 
     @FormUrlEncoded
-    @POST("client/getServiceDetails")
+    @POST("product/getServiceDetails")
     suspend fun getServiceDetails(
-        @Field("serviceId") serviceId: Int?,
+        @Field("serviceId") serviceId: String?,
     ): ApiResponseModel<ServiceDetailsModel>?
 
     @FormUrlEncoded
     @POST("client/addServiceReview")
     suspend fun addServiceReview(
         @Field("tokenId") tokenId: String?,
-        @Field("productId") productId: Int?,
+        @Field("productId") productId: String?,
         @Field("rating") rating: Float?,
         @Field("comment") comment: String?,
     ): ApiResponseModel<ReviewModel>?
@@ -429,7 +426,7 @@ interface ApiService {
     @POST("client/readNotifications")
     suspend fun readNotifications(
         @Field("tokenId") tokenId: String?,
-        @Field("notificationsIds") notificationsIds: List<Int>?,
+        @Field("notificationsIds") notificationsIds: List<String>?,
     ): ApiResponseModel<*>?
 
     @FormUrlEncoded
@@ -453,14 +450,14 @@ interface ApiService {
         @Field("title") title: String?,
         @Field("description") description: String?,
         @Field("relatedOrderNumber") relatedOrderNumber: Int?,
-        @Field("categoryId") categoryId: Int?,
+        @Field("categoryId") categoryId: String?,
     ): ApiResponseModel<*>?
 
     @FormUrlEncoded
     @POST("client/getComplainComments")
     suspend fun getComplainComments(
         @Field("tokenId") tokenId: String?,
-        @Field("complainId") complainId: Int?,
+        @Field("complainId") complainId: String?,
     ): ApiResponseModel<List<CommentModel>>?
 
 }

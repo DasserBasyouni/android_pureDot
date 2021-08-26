@@ -20,6 +20,7 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
     val quantityInCart = MediatorLiveData<Int>().apply { this.value = 1 }
     val productDetailsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     val productDetailsResponse = MediatorLiveData<NetworkRequestResponse<ProductDetailsModel>>()
+    val selectedVariationsIds = MediatorLiveData<List<String>>().apply { this.value = listOf() }
 
     private var sliderOffersTimer: Timer? = null
     val sliderOffersPosition = MediatorLiveData<Int>().apply { this.value = 0 }
@@ -67,11 +68,12 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
 
     fun addProductToCart(langTag: String, context: Context, onComplete: () -> Unit) {
         CartRepository(langTag).addProductToCart(
-            viewModelScope,
-            context,
-            product,
-            quantityInCart.value,
-            onComplete
+            lifecycleScope = viewModelScope,
+            context = context,
+            product= product,
+            quantityInCart = quantityInCart.value,
+            variationsIds = selectedVariationsIds.value,
+            onComplete = onComplete
         )
     }
 
@@ -97,7 +99,7 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
             )
         }
 
-    fun editWishList(langTag: String, tokenId: String?, productId: Int?, doAdd: Boolean) =
+    fun editWishList(langTag: String, tokenId: String?, productId: String?, doAdd: Boolean) =
         liveData(Dispatchers.IO) {
             emit(NetworkRequestResponse.loading())
             emitSource(

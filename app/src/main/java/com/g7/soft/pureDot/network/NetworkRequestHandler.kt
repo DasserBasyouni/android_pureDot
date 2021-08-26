@@ -1,5 +1,6 @@
 package com.g7.soft.pureDot.network
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.constant.ApiConstant

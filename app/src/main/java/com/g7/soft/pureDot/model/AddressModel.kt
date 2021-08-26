@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class AddressModel(
-    @Json(name = "id") val id: Int?,
+    @Json(name = "id") val id: String?,
     @Json(name = "flat") val flat: String?,
     @Json(name = "floor") val floor: String?,
     @Json(name = "homeNumber") val homeNumber: String?,

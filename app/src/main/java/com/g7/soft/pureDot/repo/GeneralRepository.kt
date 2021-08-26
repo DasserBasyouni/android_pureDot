@@ -14,7 +14,7 @@ class GeneralRepository(private val langTag: String) {
     }
 
     fun getCities(
-        countryId: Int?,
+        countryId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getAllCities(countryId = countryId)
@@ -22,7 +22,7 @@ class GeneralRepository(private val langTag: String) {
     }
 
     fun getZipCodes(
-        cityId: Int?,
+        cityId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getAllZipCodes(cityId = cityId)

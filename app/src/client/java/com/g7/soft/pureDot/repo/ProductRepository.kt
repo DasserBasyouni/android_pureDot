@@ -8,8 +8,8 @@ import kotlinx.coroutines.Dispatchers
 class ProductRepository(private val langTag: String) {
 
     fun getProducts(
-        categoriesIds: List<Int>?,
-        storesIds: List<Int>?,
+        categoriesIds: List<String>?,
+        storesIds: List<String>?,
         minStars: List<Int>?,
         fromPrice: Int?,
         toPrice: Int?,
@@ -34,14 +34,12 @@ class ProductRepository(private val langTag: String) {
     fun getLatestOffers(
         pageNumber: Int?,
         itemPerPage: Int?,
-        searchText: String?,
-        shopId: Int?
+        shopId: String?
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getLatestOffers(
                 pageNumber = pageNumber,
                 itemPerPage = itemPerPage,
-                searchText = searchText,
                 shopId = shopId
             )
         }))
@@ -50,14 +48,12 @@ class ProductRepository(private val langTag: String) {
     fun getLatestProducts(
         pageNumber: Int?,
         itemPerPage: Int?,
-        searchText: String?,
-        shopId: Int?
+        shopId: String?
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getLatestProducts(
                 pageNumber = pageNumber,
                 itemPerPage = itemPerPage,
-                searchText = searchText,
                 shopId = shopId
             )
         }))
@@ -66,22 +62,20 @@ class ProductRepository(private val langTag: String) {
     fun getBestSelling(
         pageNumber: Int?,
         itemPerPage: Int?,
-        searchText: String?,
-        shopId: Int?
+        shopId: String?
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getBestSelling(
                 pageNumber = pageNumber,
                 itemPerPage = itemPerPage,
-                searchText = searchText,
                 shopId = shopId
             )
         }))
     }
 
     fun getSliderOffers(
-        categoryId: Int?,
-        shopId: Int?,
+        categoryId: String?,
+        shopId: String?,
         type: Int,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
@@ -94,7 +88,7 @@ class ProductRepository(private val langTag: String) {
     }
 
     fun getProductDetails(
-        productId: Int?,
+        productId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getProductDetails(
@@ -104,13 +98,13 @@ class ProductRepository(private val langTag: String) {
     }
 
     fun getItemReviews(
-        itemId: Int?,
+        itemId: String?,
         tokenId: String?,
         pageNumber: Int?,
         itemsPerPage: Int?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.getItemReviews(
+            return@handle Fetcher().getInstance(langTag)?.getProductReviews(
                 itemId = itemId,
                 tokenId = tokenId,
                 pageNumber = pageNumber,
@@ -121,7 +115,7 @@ class ProductRepository(private val langTag: String) {
 
     fun addReview(
         tokenId: String?,
-        productId: Int?,
+        productId: String?,
         rating: Float?,
         comment: String?,
     ) = liveData(Dispatchers.IO) {
@@ -137,7 +131,7 @@ class ProductRepository(private val langTag: String) {
 
     fun editWishList(
         tokenId: String?,
-        productId: Int?,
+        productId: String?,
         doAdd: Boolean?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {

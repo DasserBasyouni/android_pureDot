@@ -12,8 +12,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        app:paddingBottomSystemWindowInsets="@{true}"
         android:layout_height="wrap_content"
+        app:paddingBottomSystemWindowInsets="@{true}"
         tools:context=".ui.screen.MainActivity">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -28,6 +28,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/ProjectTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/first_name"
@@ -49,6 +50,7 @@
             app:layout_constraintTop_toTopOf="@+id/firstNameTil">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/ProjectTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/last_name"
@@ -68,6 +70,7 @@
             app:layout_constraintTop_toBottomOf="@+id/firstNameTil">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/ProjectTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/mobile_number"
@@ -87,6 +90,7 @@
             app:layout_constraintTop_toBottomOf="@+id/phoneNumberTil">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/ProjectTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
@@ -143,6 +147,7 @@
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/ProjectTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password"
@@ -163,6 +168,7 @@
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/ProjectTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/confirm_password"

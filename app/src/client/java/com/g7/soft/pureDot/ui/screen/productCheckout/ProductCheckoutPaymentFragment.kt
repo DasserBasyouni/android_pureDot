@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.ui.screen.checkout
+package com.g7.soft.pureDot.ui.screen.productCheckout
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import com.g7.soft.pureDot.databinding.FragmentCheckoutPaymentBinding
 import com.kofigyan.stateprogressbar.StateProgressBar
 
 
-class CheckoutPaymentFragment(private val viewModel: CheckoutViewModel) : Fragment() {
+class ProductCheckoutPaymentFragment(private val viewModel: ProductCheckoutViewModel) : Fragment() {
 
     private lateinit var binding: FragmentCheckoutPaymentBinding
 

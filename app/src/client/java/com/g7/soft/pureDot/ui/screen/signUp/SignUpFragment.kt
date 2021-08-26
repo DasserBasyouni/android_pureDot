@@ -87,18 +87,23 @@ class SignUpFragment : Fragment() {
                 }),
         )
         binding.registerBtn.setOnClickListener {
-            viewModel.register(requireActivity().currentLocale.toLanguageTag()).observeApiResponse(this, {
-                // todo save user data
-                if (it?.tokenId != null)
-                    findNavController().navigate(
-                        SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
-                            false,
-                            viewModel.phoneNumber.value
+            viewModel.register(requireActivity().currentLocale.toLanguageTag())
+                .observeApiResponse(this, {
+                    // todo save user data
+                    if (it?.tokenId != null)
+                        findNavController().navigate(
+                            SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
+                                false,
+                                viewModel.phoneNumber.value
+                            )
                         )
-                    )
-                else
-                    ProjectDialogUtils.showSimpleMessage(requireContext(), R.string.something_went_wrong, R.drawable.ic_secure_shield)
-            })
+                    else
+                        ProjectDialogUtils.showSimpleMessage(
+                            requireContext(),
+                            R.string.something_went_wrong,
+                            R.drawable.ic_secure_shield
+                        )
+                })
         }
     }
 
@@ -119,7 +124,7 @@ class SignUpFragment : Fragment() {
                 spinner.isEnabled = false
                 arrayListOf(getString(R.string.loading_))
             }
-            ProjectConstant.Companion.Status.SUCCESS -> {
+            ProjectConstant.Companion.Status.SUCCESS, ProjectConstant.Companion.Status.API_ERROR -> {
                 val modelsList = networkResponse.data
                 val dataList = when {
                     modelsList?.firstOrNull() is CountryModel -> {

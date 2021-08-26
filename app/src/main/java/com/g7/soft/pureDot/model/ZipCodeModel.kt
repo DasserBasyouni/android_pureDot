@@ -5,6 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ZipCodeModel(
-    @Json(name = "id") val id: Int?,
+    @Json(name = "id") val id: String?,
     @Json(name = "code") val code: String? = null
 )

@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class ComplainModel(
-    @Json(name = "id") val id: Int?,
+    @Json(name = "id") val id: String?,
     @Json(name = "status") val status: Int?,
     @Json(name = "dateTime") val dateTime: Long?,
     @Json(name = "description") val description: String?,

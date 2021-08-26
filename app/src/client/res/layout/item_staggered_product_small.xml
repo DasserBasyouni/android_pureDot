@@ -83,7 +83,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/appCompatImageView4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatImageView3"
-                tools:text="Item Name" />
+                tools:text="Item Name, 100 gm" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/appCompatImageView4"
@@ -115,7 +115,7 @@
                 app:layout_constraintTop_toTopOf="@+id/appCompatTextView8"
                 tools:text="10 SAR" /> -->
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <!-- <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView11"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView8"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView8"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView8"
-                tools:text="400 kg" />
+                tools:text="400 kg" /> -->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

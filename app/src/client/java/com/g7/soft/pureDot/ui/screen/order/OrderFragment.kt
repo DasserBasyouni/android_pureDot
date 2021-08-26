@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.adapter.CartReviewHeaderAdapter
+import com.g7.soft.pureDot.adapter.OrderReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.util.ProjectDialogUtils
@@ -47,7 +47,7 @@ class OrderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //init data
-        CartReviewHeaderAdapter(args.masterOrder, this).let { adapter ->
+        OrderReviewHeaderAdapter(args.masterOrder, this).let { adapter ->
             binding.cartReviewItemsRv.adapter = adapter
             //adapter.submitList(args.masterOrder.orders)
         }

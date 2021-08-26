@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
+            type="com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:padding="12dp">
 
-                    <include
+                    <!-- <include
                         android:id="@+id/cartReviewItemsLcee"
                         layout="@layout/layout_lcee"
                         android:layout_width="0dp"
@@ -165,21 +165,21 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:lceeModel="@{viewModel.cartItemsLcee}" />
+                        app:lceeModel="@{viewModel.cartItemsLcee}" /> -->
 
+                    <!-- android:visibility="@{viewModel.cartItemsLcee.contentVisibility}" -->
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/cartReviewItemsRv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
-                        android:visibility="@{viewModel.cartItemsLcee.contentVisibility}"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:itemCount="2"
-                        tools:listitem="@layout/item_cart_review_header" />
+                        tools:listitem="@layout/item_order_review_header" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -226,6 +226,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/appCompatTextView40">
 
                         <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/coupon"

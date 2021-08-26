@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.g7.soft.pureDot.database.converter.DataConverter
 
-@Database(entities = [ProductCart::class], version = 12, exportSchema = false)
+@Database(entities = [ProductCart::class], version = 14, exportSchema = false)
+@TypeConverters(DataConverter::class)
 internal abstract class ProductCartDatabase : RoomDatabase() {
 
     abstract fun cartDao(): ProductCartDao?
@@ -22,6 +25,7 @@ internal abstract class ProductCartDatabase : RoomDatabase() {
                             context.applicationContext,
                             ProductCartDatabase::class.java, "product_cart"
                         )
+                            //@ProvidedTypeConverter && .addTypeConverter(DataConverter())
                             .fallbackToDestructiveMigration()
                             .addCallback(callback)
                             .build()

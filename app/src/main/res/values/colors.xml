@@ -15,6 +15,7 @@
     <color name="driverRed">#ED1C24</color>
     <color name="charcoal_grey">#3b3d3f</color>
     <color name="stroke_color">#d1d1d1</color>
+    <color name="light_blue_grey">#d3bfe2</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

@@ -81,6 +81,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView42">
 
                 <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/first_name"
@@ -100,6 +101,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/firstNameTil">
 
                 <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/last_name"
@@ -119,6 +121,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/lastNameTil">
 
                 <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/mobile_number"
@@ -138,6 +141,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/phoneNumberTil">
 
                 <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
@@ -157,6 +161,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/emailTil">
 
                 <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/date_of_birth"

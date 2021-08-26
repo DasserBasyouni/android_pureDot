@@ -36,6 +36,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/your_email"
@@ -55,6 +56,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/emailTil">
 
                 <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="154dp"
                     android:gravity="start"
@@ -132,25 +134,11 @@
                 android:background="@drawable/bg_about_us_button"
                 android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/facebookIb"
-                app:layout_constraintEnd_toStartOf="@id/linkedinIb"
+                app:layout_constraintEnd_toStartOf="@id/tiktokIb"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@+id/facebookIb"
                 app:layout_constraintTop_toTopOf="@+id/facebookIb"
                 app:srcCompat="@drawable/ic_instagram" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/linkedinIb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:background="@drawable/bg_about_us_button"
-                android:padding="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/instagramIb"
-                app:layout_constraintEnd_toStartOf="@+id/tiktokIb"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/instagramIb"
-                app:layout_constraintTop_toTopOf="@+id/instagramIb"
-                app:srcCompat="@drawable/ic_linkedin" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/tiktokIb"
@@ -159,12 +147,12 @@
                 android:layout_marginStart="16dp"
                 android:background="@drawable/bg_about_us_button"
                 android:padding="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/linkedinIb"
+                app:layout_constraintBottom_toBottomOf="@+id/instagramIb"
                 app:layout_constraintEnd_toStartOf="@+id/youtubeIb"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/linkedinIb"
-                app:layout_constraintTop_toTopOf="@+id/linkedinIb"
-                app:srcCompat="@drawable/ic_linkedin" />
+                app:layout_constraintStart_toEndOf="@+id/instagramIb"
+                app:layout_constraintTop_toTopOf="@+id/instagramIb"
+                app:srcCompat="@drawable/ic_tik_tok" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/youtubeIb"
@@ -178,7 +166,7 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@+id/tiktokIb"
                 app:layout_constraintTop_toTopOf="@+id/tiktokIb"
-                app:srcCompat="@drawable/ic_linkedin" />
+                app:srcCompat="@drawable/ic_youtube" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/snapchatIb"
@@ -192,7 +180,7 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@+id/youtubeIb"
                 app:layout_constraintTop_toTopOf="@+id/youtubeIb"
-                app:srcCompat="@drawable/ic_linkedin" />
+                app:srcCompat="@drawable/ic_snapchat" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

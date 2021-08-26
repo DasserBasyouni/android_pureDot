@@ -18,7 +18,7 @@ import com.g7.soft.pureDot.model.ProductModel
 class ProductsAdapter(
     private val fragment: Fragment,
     private val isGrid: Boolean = true,
-    private val editWishList: (tokenId: String, productId: Int?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
+    private val editWishList: (tokenId: String, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
 ) :
     ListAdapter<ProductModel, ProductsAdapter.ViewHolder>(LatestOffersDiffCallback()) {
 
@@ -34,7 +34,7 @@ class ProductsAdapter(
         fun bind(
             dataModel: ProductModel,
             fragment: Fragment,
-            editWishList: (tokenId: String, productId: Int?, doAdd: Boolean, onComplete: () -> Unit) -> Unit,
+            editWishList: (tokenId: String, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit,
         ) {
             if (binding is ItemProductGridViewBinding) {
                 binding.dataModel = dataModel

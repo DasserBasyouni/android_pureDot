@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.ui.screen.checkout
+package com.g7.soft.pureDot.ui.screen.productCheckout
 
 import android.graphics.Paint
 import android.os.Bundle
@@ -21,7 +21,7 @@ import com.kofigyan.stateprogressbar.StateProgressBar
 import com.zeugmasolutions.localehelper.currentLocale
 
 
-class CheckoutDetailsFragment(private val viewModel: CheckoutViewModel) : Fragment() {
+class ProductCheckoutDetailsFragment(private val viewModel: ProductCheckoutViewModel) : Fragment() {
 
     private lateinit var binding: FragmentCheckout1Binding
 

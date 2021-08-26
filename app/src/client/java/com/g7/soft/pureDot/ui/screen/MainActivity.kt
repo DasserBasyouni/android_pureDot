@@ -16,7 +16,7 @@ import androidx.navigation.ui.onNavDestinationSelected
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ActivityMainBinding
-import com.g7.soft.pureDot.ui.screen.checkout.CheckoutFragment
+import com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutFragment
 import com.g7.soft.pureDot.util.UiUtils
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
 
@@ -192,7 +192,7 @@ class MainActivity : LocaleAwareCompatActivity() {
         if (findNavController(R.id.navHostFragment).currentDestination?.id == R.id.checkoutFragment) {
             val currentFragment =
                 supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()
-            (currentFragment as CheckoutFragment).doBackPressed()
+            (currentFragment as ProductCheckoutFragment).doBackPressed()
         } else
             super.onBackPressed()
     }

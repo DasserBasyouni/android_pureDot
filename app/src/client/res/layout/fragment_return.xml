@@ -107,7 +107,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:itemCount="2"
-                        tools:listitem="@layout/item_cart_review_header" />
+                        tools:listitem="@layout/item_order_review_header" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -276,7 +276,7 @@
                         android:textSize="14sp"
                         android:textStyle="bold"
                         app:bindCurrency="@{viewModel.masterOrder.currency}"
-                        app:bindPrice="@{selectedProduct.priceWithDiscount}"
+                        app:bindPrice="@{viewModel.masterOrder.subTotalCost}"
                         app:layout_constraintBottom_toTopOf="@+id/appCompatTextView50"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/appCompatTextView49"
@@ -292,7 +292,7 @@
                         android:textSize="14sp"
                         android:textStyle="bold"
                         app:bindCurrency="@{viewModel.masterOrder.currency}"
-                        app:bindPrice="@{selectedProduct.vat}"
+                        app:bindPrice="@{viewModel.masterOrder.totalVat}"
                         app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView50"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/appCompatTextView50"
@@ -338,7 +338,7 @@
                 android:visibility="@{viewModel.shippingCostLcee.contentVisibility}"
                 app:bindCurrency="@{viewModel.masterOrder.currency}"
                 app:bindPrePriceText="@{@string/total_}"
-                app:bindPrice="@{selectedProduct.priceWithDiscount + selectedProduct.vat - viewModel.shippingCostResponse.data.shippingCost}"
+                app:bindPrice="@{viewModel.masterOrder.totalCost}"
                 app:layout_constraintEnd_toEndOf="@id/cardView8"
                 app:layout_constraintStart_toStartOf="@id/cardView8"
                 app:layout_constraintTop_toBottomOf="@+id/cardView8"

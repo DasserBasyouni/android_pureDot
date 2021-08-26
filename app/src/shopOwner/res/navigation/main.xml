@@ -166,7 +166,7 @@
     </fragment>
     <fragment
         android:id="@+id/checkoutFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.checkout.CheckoutFragment"
+        android:name="com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutFragment"
         android:label="@string/checkout"
         tools:layout="@layout/fragment_checkout">
         <action

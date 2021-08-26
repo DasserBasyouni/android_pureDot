@@ -136,6 +136,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/appCompatImageView5">
 
                         <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/flat"
@@ -159,6 +160,7 @@
                         app:layout_constraintTop_toTopOf="@+id/firstNameTil">
 
                         <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/floor"
@@ -182,6 +184,7 @@
                         app:layout_constraintTop_toTopOf="@+id/lastNameTil">
 
                         <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/home_number"
@@ -201,6 +204,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/homeNumberTil">
 
                         <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/street_name"
@@ -220,6 +224,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/streetNameTil">
 
                         <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/area"

@@ -35,7 +35,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:lceeModel="@{viewModel.cartItemsLcee}" />
+                app:lceeModel="@{viewModel.productsInCartLcee}" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/cartItemsRv"
@@ -45,7 +45,7 @@
                 android:nestedScrollingEnabled="false"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:visibility="@{viewModel.cartItemsLcee.contentVisibility}"
+                android:visibility="@{viewModel.productsInCartLcee.contentVisibility}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +67,7 @@
                 android:textColor="@color/bluish"
                 android:textSize="18sp"
                 android:textStyle="normal"
-                android:visibility="@{viewModel.cartItemsLcee.contentVisibility}"
+                android:visibility="@{viewModel.productsInCartLcee.contentVisibility}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cartItemsRv"
@@ -83,7 +83,7 @@
                 android:textColor="@color/greyish_brown"
                 android:textSize="14sp"
                 android:textStyle="normal"
-                android:visibility="@{viewModel.cartItemsLcee.contentVisibility}"
+                android:visibility="@{viewModel.productsInCartLcee.contentVisibility}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView33" />
@@ -98,7 +98,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:text="@string/proceed_to_checkout"
-                android:visibility="@{viewModel.cartItemsLcee.contentVisibility}"
+                android:visibility="@{viewModel.productsInCartLcee.contentVisibility}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

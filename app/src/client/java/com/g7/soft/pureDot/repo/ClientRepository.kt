@@ -1,13 +1,34 @@
 package com.g7.soft.pureDot.repo
 
+import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.network.Fetcher
 import com.g7.soft.pureDot.network.NetworkRequestHandler
 
 class ClientRepository(private val langTag: String) {
 
-    fun signUpAsGuest(
+    /*suspend fun saveTokenId(context: Context, value: String) {
+        Log.e("Z_", "saveTokenId 1")
+
+        context.userDataStore.updateData { data -> data.toBuilder().setTokenId(value).build() }
+
+        Log.e("Z_", "saveTokenId 2")
+
+        val exampleCounterFlow: Flow<Unit> = context.userDataStore.data
+            .map { settings ->
+                Log.e("Z_", "entered")
+
+                Log.e("Z_", "se: $settings")
+                // The exampleCounter property is generated from the proto schema.
+                Log.e("Z_", "tokenId: ${settings.tokenId}")
+            }
+
+        Log.e("Z_", "saveTokenId 3")
+    }*/
+
+
+    /*fun signUpAsGuest(
         fcmToken: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.signUp(
                 fcmToken = fcmToken,
@@ -22,7 +43,7 @@ class ClientRepository(private val langTag: String) {
                 zipCodeId = null,
             )
         }))
-    }
+    }*/
 
     fun signUp(
         fcmToken: String?,
@@ -30,12 +51,11 @@ class ClientRepository(private val langTag: String) {
         lastName: String?,
         phoneNumber: String?,
         email: String?,
-        countryId: Int?,
-        cityId: Int?,
-        zipCodeId: Int?,
+        cityId: String?,
+        zipCodeId: String?,
         password: String?,
         isMale: Boolean?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.signUp(
                 fcmToken = fcmToken,
@@ -43,7 +63,6 @@ class ClientRepository(private val langTag: String) {
                 lastName = lastName,
                 phoneNumber = phoneNumber,
                 email = email,
-                countryId = countryId,
                 cityId = cityId,
                 zipCodeId = zipCodeId,
                 password = password,
@@ -54,13 +73,13 @@ class ClientRepository(private val langTag: String) {
 
     fun login(
         fcmToken: String?,
-        username: String?,
+        emailOrPhoneNumber: String?,
         password: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.login(
                 fcmToken = fcmToken,
-                username = username,
+                emailOrPhoneNumber = emailOrPhoneNumber,
                 password = password
             )
         }))
@@ -68,7 +87,7 @@ class ClientRepository(private val langTag: String) {
 
     fun sendForgetPasswordCode(
         emailOrPhoneNumber: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)
                 ?.sendForgetPasswordCode(
@@ -80,7 +99,7 @@ class ClientRepository(private val langTag: String) {
     fun verify(
         emailOrPhoneNumber: String?,
         verificationCode: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.verify(
                 emailOrPhoneNumber = emailOrPhoneNumber,
@@ -91,7 +110,7 @@ class ClientRepository(private val langTag: String) {
 
     fun resendVerification(
         emailOrPhoneNumber: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)
                 ?.resendVerification(
@@ -103,7 +122,7 @@ class ClientRepository(private val langTag: String) {
     fun resetPassword(
         emailOrPhoneNumber: String?,
         password: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.resetPassword(
                 emailOrPhoneNumber = emailOrPhoneNumber,
@@ -114,7 +133,7 @@ class ClientRepository(private val langTag: String) {
 
     fun getAddresses(
         tokenId: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getAddresses(
                 tokenId = tokenId,
@@ -130,7 +149,7 @@ class ClientRepository(private val langTag: String) {
         streetName: String?,
         area: String?,
         isMainAddress: Boolean?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.addAddress(
                 tokenId = tokenId,
@@ -146,7 +165,7 @@ class ClientRepository(private val langTag: String) {
 
     fun getUserData(
         tokenId: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getUserData(
                 tokenId = tokenId,
@@ -163,10 +182,10 @@ class ClientRepository(private val langTag: String) {
         imageUrl: String?,
         email: String?,
         countryCode: String?,
-        countryId: Int?,
-        cityId: Int?,
+        countryId: String?,
+        cityId: String?,
         dateOfBirth: Long?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.editUserData(
                 tokenId = tokenId,
@@ -187,19 +206,21 @@ class ClientRepository(private val langTag: String) {
     fun changePassword(
         tokenId: String?,
         password: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+        oldPassword: String?
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)
                 ?.changePassword(
                     tokenId = tokenId,
                     password = password,
+                    oldPassword = oldPassword
                 )
         }))
     }
 
     fun logout(
         fcmToken: String?,
-    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.logout(
                 fcmToken = fcmToken,

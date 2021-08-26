@@ -16,7 +16,7 @@ class FavouritesViewModel : ViewModel() {
     val productsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     var productsPagedList: LiveData<PagedList<ProductModel>>? = null
 
-    fun editWishList(langTag: String, tokenId: String?, productId: Int?, doAdd: Boolean) =
+    fun editWishList(langTag: String, tokenId: String?, productId: String?, doAdd: Boolean) =
         liveData(Dispatchers.IO) {
             emit(NetworkRequestResponse.loading())
             emitSource(

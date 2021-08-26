@@ -128,7 +128,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:itemCount="2"
-                        tools:listitem="@layout/item_cart_review_header" />
+                        tools:listitem="@layout/item_order_review_header" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

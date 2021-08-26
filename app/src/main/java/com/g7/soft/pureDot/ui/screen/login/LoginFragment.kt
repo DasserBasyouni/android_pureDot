@@ -42,6 +42,10 @@ class LoginFragment : Fragment() {
 
         // setup listeners
         binding.loginBtn.setOnClickListener {
+            /*viewModel.login(requireActivity().currentLocale.toLanguageTag()).observeForever {
+                Log.e("Z_", "it: $it}")
+            }*/
+
             viewModel.login(requireActivity().currentLocale.toLanguageTag())
                 .observeApiResponse(this, {
                     if (it?.tokenId != null)

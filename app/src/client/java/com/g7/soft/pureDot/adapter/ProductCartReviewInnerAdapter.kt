@@ -2,29 +2,30 @@ package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.databinding.ItemCartReviewInnerBinding
 import com.g7.soft.pureDot.model.ProductModel
 
 
-class OldCartReviewInnerAdapter :
-    ListAdapter<ProductModel, OldCartReviewInnerAdapter.ViewHolder>(OldCartReviewInnerDiffCallback()) {
+class ProductCartReviewInnerAdapter(private val data: MutableList<ProductModel>?) :
+    RecyclerView.Adapter<ProductCartReviewInnerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder.from(viewGroup)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getItem(position))
+        holder.bind(
+            data?.get(position),
+        )
+
+    override fun getItemCount(): Int = data?.size ?: 0
 
 
     class ViewHolder private constructor(private val binding: ItemCartReviewInnerBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            dataModel: ProductModel,
+            dataModel: ProductModel?
         ) {
-
             binding.dataModel = dataModel
             binding.executePendingBindings()
         }
@@ -39,16 +40,4 @@ class OldCartReviewInnerAdapter :
             )
         }
     }
-}
-
-class OldCartReviewInnerDiffCallback : DiffUtil.ItemCallback<ProductModel>() {
-    override fun areItemsTheSame(
-        oldItem: ProductModel,
-        newItem: ProductModel,
-    ): Boolean = oldItem.id == newItem.id
-
-    override fun areContentsTheSame(
-        oldItem: ProductModel,
-        newItem: ProductModel,
-    ): Boolean = oldItem == newItem
 }

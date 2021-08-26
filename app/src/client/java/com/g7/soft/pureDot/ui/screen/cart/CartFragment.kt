@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -38,17 +39,20 @@ class CartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        viewModel.getCartItems(requireActivity().currentLocale.toLanguageTag(), "") // todo token
+        val tokenId = "" // todo
+        viewModel.getProductsInCart(
+            requireActivity().currentLocale.toLanguageTag(),
+            tokenId = tokenId,
+            context = requireContext()
+        )
 
         // setup observers
-        viewModel.cartItemsResponse.observe(viewLifecycleOwner, {
-            viewModel.cartItemsLcee.value!!.response.value = it
+        viewModel.productsInCartResponse.observe(viewLifecycleOwner, {
+            viewModel.productsInCartLcee.value!!.response.value = it
 
-            CartHeaderAdapter(this, it.data?.products ?: mutableListOf()).let { adapter ->
+            CartHeaderAdapter(this).let { adapter ->
                 binding.cartItemsRv.adapter = adapter
-                adapter.submitList(it.data?.products?.map { product ->
-                    product.shop?.name
-                }?.toSet()?.toList())
+                adapter.submitList(it.data)
             }
         })
 
@@ -61,7 +65,10 @@ class CartFragment : Fragment() {
 
         // setup click listener
         binding.checkoutBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment)
+            val bundle = bundleOf(
+                "storesProductsCartDetails" to viewModel.productsInCartResponse.value?.data?.toTypedArray()
+            )
+            findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment, bundle)
         }
     }
 

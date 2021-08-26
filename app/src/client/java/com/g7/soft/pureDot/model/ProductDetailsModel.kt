@@ -8,8 +8,9 @@ data class ProductDetailsModel(
     @Json(name = "branches") val branches: List<BranchModel>?,
     @Json(name = "variations") val variations: List<ProductVariationModel>?,
     @Json(name = "description") val description: String?,
-    @Json(name = "similarItems") val similarItems: List<ProductModel>?,
+    @Json(name = "similarProducts") val similarProducts: List<ProductModel>?,
     @Json(name = "quantityInCart") val quantityInCart: Int?,
-    @Json(name = "images") val images: List<String>?,
-    @Json(name = "reviews") val reviews: DataWithCountModel<List<ReviewModel>>?
+    @Json(name = "imagesUrls") val images: List<String>?,
+    @Json(name = "reviews") val reviews: DataWithCountModel<List<ReviewModel>>?,
+    @Json(name = "userReview") var userReview: ReviewModel?,
 )

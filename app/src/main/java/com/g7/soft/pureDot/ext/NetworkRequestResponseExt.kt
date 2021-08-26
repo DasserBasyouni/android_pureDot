@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
+import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
@@ -20,7 +21,7 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
     chosenApiStatusObserve: (suspend (status: ApiConstant.Status) -> Unit)? = null
 ) {
     this.observe(fragment, {
-        Log.e("Z_", "here - ${it.status} - ${it.exception}")
+        Log.e("Z_", "here - ${it.status} - ${it.apiErrorStatus} - ${it.exception}")
         fragment.context?.let { context ->
             when (it.status) {
                 ProjectConstant.Companion.Status.LOADING -> {
@@ -72,13 +73,38 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
                 ProjectConstant.Companion.Status.API_ERROR -> {
                     if (doLoading) ProjectDialogUtils.hideLoading()
 
-                    if (it.apiErrorStatus == null) {
-                        // todo
-                    } else if (apiStatusToObserve?.contains(it.apiErrorStatus) == true) {
-                        fragment.lifecycleScope.launch {
-                            chosenApiStatusObserve?.let { function -> function(it.apiErrorStatus) }
+                    when {
+                        it.apiErrorStatus == null -> {
+                            ProjectDialogUtils.showSimpleMessage(
+                                fragment.requireContext(),
+                                R.string.something_went_wrong,
+                                R.drawable.ic_secure_shield
+                            )
                         }
-                    } //else if (it.apiErrorStatus == ApiConstant.Status.) todo
+                        apiStatusToObserve?.contains(it.apiErrorStatus) == true -> {
+                            fragment.lifecycleScope.launch {
+                                chosenApiStatusObserve?.let { function -> function(it.apiErrorStatus) }
+                            }
+                        }
+                        else -> {
+                            val messageResId = when (it.apiErrorStatus) {
+                                ApiConstant.Status.SUCCESS, ApiConstant.Status.NULL_STATUS, ApiConstant.Status.ERROR, ApiConstant.Status.WRONG_AUTHENTICATION, null -> R.string.something_went_wrong
+                                ApiConstant.Status.EMAIL_EXIST -> R.string.email_exists
+                                ApiConstant.Status.MOBILE_EXIST -> R.string.mobile_exists
+                                ApiConstant.Status.WRONG_PASSWORD -> R.string.wrong_password
+                                ApiConstant.Status.ACCOUNT_NOT_FOUND -> R.string.account_not_fount
+                                ApiConstant.Status.NOT_VERIFIED -> R.string.not_verified
+                                ApiConstant.Status.INCORRECT_VERIFICATION -> R.string.incorrect_verification
+                                ApiConstant.Status.EXIST_BEFORE -> R.string.exists_before
+                            }
+
+                            ProjectDialogUtils.showSimpleMessage(
+                                fragment.requireContext(),
+                                messageResId,
+                                R.drawable.ic_secure_shield
+                            )
+                        }
+                    }
                 }
                 ProjectConstant.Companion.Status.NETWORK_ERROR -> {
                     if (doLoading) ProjectDialogUtils.hideLoading()

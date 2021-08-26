@@ -37,7 +37,7 @@ class StoreViewModel(val store: StoreModel?) : ViewModel() {
         getLatestProducts(langTag)
     }
 
-    fun getOffersSlider(langTag: String, categoryId: Int?, shopId: Int?) {
+    fun getOffersSlider(langTag: String, categoryId: String?, shopId: String?) {
         sliderOffersResponse.value = NetworkRequestResponse.loading()
         sliderOffersTimer?.cancel() // release the auto slider timer
 
@@ -79,7 +79,6 @@ class StoreViewModel(val store: StoreModel?) : ViewModel() {
                 ProductRepository(langTag).getLatestOffers(
                     pageNumber = 1,
                     itemPerPage = 4,
-                    searchText = null,
                     shopId = store?.id
                 )
             ) { latestOffersResponse.value = it }
@@ -95,14 +94,13 @@ class StoreViewModel(val store: StoreModel?) : ViewModel() {
                 ProductRepository(langTag).getLatestProducts(
                     pageNumber = 1,
                     itemPerPage = 9,
-                    searchText = null,
                     shopId = store?.id,
                 )
             ) { latestProductsResponse.value = it }
         }
     }
 
-    fun editWishList(langTag: String, tokenId: String?, productId: Int?, doAdd: Boolean) =
+    fun editWishList(langTag: String, tokenId: String?, productId: String?, doAdd: Boolean) =
         liveData(Dispatchers.IO) {
             emit(NetworkRequestResponse.loading())
             emitSource(

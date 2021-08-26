@@ -292,4 +292,11 @@
     <string name="extra_details">Extra Details</string>
     <string name="hour">Hour</string>
     <string name="minute">Minute</string>
+    <string name="email_exists">Email exists</string>
+    <string name="mobile_exists">Mobile exists</string>
+    <string name="wrong_password">Wrong password</string>
+    <string name="account_not_fount">Account not found</string>
+    <string name="not_verified">Not verified</string>
+    <string name="incorrect_verification">Incorrect verification</string>
+    <string name="exists_before">Exists before</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.g7.soft.pureDot.network
 
+import android.util.Log
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -37,13 +38,13 @@ class Fetcher {
         httpClint.readTimeout(120, TimeUnit.SECONDS)
         httpClint.writeTimeout(120, TimeUnit.SECONDS)
 
-        // todo set header
         httpClint.addInterceptor { chain: Interceptor.Chain ->
             val request = chain.request().newBuilder()
-                //.addHeader("apikey", "xyz")
+                .addHeader("apikey", "puredot2021")
                 .addHeader("lang", lang ?: "en")
                 .addHeader("Content-Type", " application/json")
-                /*.addHeader(
+                .addHeader("DevicePlatform", "0")
+                /*.addHeader( // todo timestamp as api?
                     "CurrentDate",
                     SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale("en"))
                         .format(Date())
@@ -51,13 +52,17 @@ class Fetcher {
                 .build()
 
             val response = chain.proceed(request)
+
+            Log.e("Z_", "request: $request")
+            Log.e("Z_", "response: $response - ${response.peekBody(2048).string()}")
+
             if (!response.isSuccessful)
                 Timber.e("Error loading request: %s", request.toString())
             response
         }
 
         // todo delete mock interceptor
-        httpClint.addInterceptor(MockInterceptor())
+        //httpClint.addInterceptor(MockInterceptor())
 
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())

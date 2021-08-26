@@ -274,12 +274,13 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="16dp"
-                            android:visibility="@{viewModel.product.userReview == null ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{viewModel.productDetailsResponse.data.userReview == null ? View.VISIBLE : View.GONE}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/reviewsRv">
 
                             <com.google.android.material.textfield.TextInputEditText
+style="@style/ProjectTextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="96dp"
                                 android:gravity="start"
@@ -296,7 +297,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:layout_marginTop="8dp"
                             android:progressTint="@color/warm_purple"
                             android:rating="@={viewModel.reviewRating}"
-                            android:visibility="@{viewModel.product.userReview == null ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{viewModel.productDetailsResponse.data.userReview == null ? View.VISIBLE : View.GONE}"
                             app:layout_constraintEnd_toEndOf="@+id/messageTil"
                             app:layout_constraintStart_toStartOf="@+id/messageTil"
                             app:layout_constraintTop_toBottomOf="@+id/messageTil" />
@@ -314,7 +315,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:text="@string/send"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:visibility="@{viewModel.product.userReview == null ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{viewModel.productDetailsResponse.data.userReview == null ? View.VISIBLE : View.GONE}"
                             app:cornerRadius="32dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/messageTil"

@@ -22,7 +22,7 @@ import com.g7.soft.pureDot.model.ProductModel
 
 class StaggeredProductsAdapter(
     private val fragment: Fragment,
-    private val editWishList: (tokenId: String, productId: Int?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
+    private val editWishList: (tokenId: String, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
 ) :
     ListAdapter<ProductModel, StaggeredProductsAdapter.ViewHolder>(StaggeredProductsDiffCallback()) {
 
@@ -40,7 +40,7 @@ class StaggeredProductsAdapter(
         fun bind(
             dataModel: ProductModel,
             fragment: Fragment,
-            editWishList: (tokenId: String, productId: Int?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
+            editWishList: (tokenId: String, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
         ) {
             if (binding is ItemStaggeredProductSmallBinding) {
                 binding.dataModel = dataModel

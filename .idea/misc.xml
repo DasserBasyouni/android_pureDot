@@ -4,30 +4,41 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/drawable/checkable_heart.xml" value="0.3175925925925926" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/drawable/checkable_master_card.xml" value="0.39010416666666664" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/drawable/checkable_stc_pay.xml" value="0.3175925925925926" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/drawable/checkable_stroke_payment_method.xml" value="0.3175925925925926" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_all_categories.xml" value="0.20520833333333333" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_cart.xml" value="0.2109375" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout.xml" value="0.2328125" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_2.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_3.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_payment.xml" value="0.275" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_home.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_my_account.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_my_wallet.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_order.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_product.xml" value="0.3682051282051282" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_profile_edit.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_refund.xml" value="0.37395833333333334" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_return.xml" value="0.2109375" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_service.xml" value="0.275" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_services.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_sign_up.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_track_order.xml" value="0.37395833333333334" />
-        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_cart_inner.xml" value="0.2109375" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_cart_inner.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_cart_review_header.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_cart_review_inner.xml" value="0.25" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_order.xml" value="0.37135416666666665" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_product_grid_view.xml" value="0.37395833333333334" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_product_linear_view.xml" value="0.28229166666666666" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_product_variant.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_product_variantion.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_service_variation.xml" value="0.37395833333333334" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_staggered_product_large.xml" value="0.9" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_staggered_product_small.xml" value="0.724390243902439" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_home.xml" value="0.21621621621621623" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_order.xml" value="0.2109375" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/item_my_order.xml" value="0.2109375" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/item_order.xml" value="0.2109375" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable-night/horizontal_cursor.xml" value="0.39010416666666664" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/bg_language_radio_button.xml" value="0.3175925925925926" />
@@ -36,6 +47,7 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/ic_linkedin.xml" value="0.39010416666666664" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/ic_twitter.xml" value="0.39010416666666664" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/ic_wallet_points.xml" value="0.39010416666666664" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_about_us.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_change_language.xml" value="0.3558974358974359" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_complain.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_contact_us.xml" value="0.275" />
@@ -49,6 +61,7 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/item_staggered_product_small.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/item_transaction.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/view_date_picker.xml" value="0.37395833333333334" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/xml/network_security_config.xml" value="0.2328125" />
         <entry key="..\:/Tools/SDK/android/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.37395833333333334" />
         <entry key="..\:/Tools/SDK/android/platforms/android-30/data/res/layout/simple_spinner_item.xml" value="0.37395833333333334" />
       </map>

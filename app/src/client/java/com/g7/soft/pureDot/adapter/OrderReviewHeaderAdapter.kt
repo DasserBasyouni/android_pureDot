@@ -7,19 +7,19 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.databinding.ItemCartReviewHeaderBinding
+import com.g7.soft.pureDot.databinding.ItemOrderReviewHeaderBinding
 import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.model.OrderModel
 import com.g7.soft.pureDot.model.ProductModel
 
 
-class CartReviewHeaderAdapter(
+class OrderReviewHeaderAdapter(
     private val masterOrder: MasterOrderModel,
     private val fragment: Fragment,
     private val areTotalPricesVisible: Boolean = true,
     private val selectedProduct: ProductModel? = null
 ) :
-    RecyclerView.Adapter<CartReviewHeaderAdapter.ViewHolder>() {
+    RecyclerView.Adapter<OrderReviewHeaderAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder.from(viewGroup)
@@ -36,7 +36,7 @@ class CartReviewHeaderAdapter(
     override fun getItemCount(): Int = masterOrder.orders?.size ?: 0
 
 
-    class ViewHolder private constructor(private val binding: ItemCartReviewHeaderBinding) :
+    class ViewHolder private constructor(private val binding: ItemOrderReviewHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             dataModel: OrderModel?,
@@ -47,7 +47,7 @@ class CartReviewHeaderAdapter(
         ) {
             if (areTotalPricesVisible) {
                 binding.order = dataModel
-                binding.vat = dataModel?.totalVat
+                binding.vat = dataModel?.vat
                 binding.subTotal = dataModel?.totalCost
                 binding.currency = dataModel?.currency
             }
@@ -56,7 +56,7 @@ class CartReviewHeaderAdapter(
             binding.executePendingBindings()
 
             binding.recyclerView.adapter =
-                CartReviewInnerAdapter(
+                OrderReviewInnerAdapter(
                     dataModel,
                     fragment,
                     masterOrder = if (areTotalPricesVisible) masterOrder else null,
@@ -73,7 +73,7 @@ class CartReviewHeaderAdapter(
 
         companion object {
             internal fun from(viewGroup: ViewGroup) = ViewHolder(
-                ItemCartReviewHeaderBinding.inflate(
+                ItemOrderReviewHeaderBinding.inflate(
                     LayoutInflater.from(viewGroup.context),
                     viewGroup,
                     false

@@ -90,7 +90,7 @@ class ServiceFragment : Fragment() {
         viewModel.serviceDetailsResponse.observe(viewLifecycleOwner, {
             viewModel.serviceDetailsLcee.value!!.response.value = it
             imagesOffersAdapter.submitList(it.data?.images)
-            similarServicesAdapter.submitList(it.data?.similarItems)
+            similarServicesAdapter.submitList(it.data?.similarServices)
             reviewsAdapter.submitList(it.data?.reviews?.data)
             binding.variationsRv.adapter = ServiceVariantsAdapter(it.data?.variations, viewModel)
         })
@@ -108,7 +108,8 @@ class ServiceFragment : Fragment() {
         // setup click listener
         binding.reviewsSeeAllTv.setOnClickListener {
             val bundle = bundleOf(
-                "itemId" to args.service.id
+                "itemId" to args.service.id,
+                "isProduct" to false
             )
             findNavController().navigate(R.id.allReviewsFragment, bundle)
         }
@@ -117,7 +118,7 @@ class ServiceFragment : Fragment() {
 
             viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
                 .observeApiResponse(this, {
-                    viewModel.service?.userReview = it
+                    viewModel.serviceDetailsResponse.value?.data?.userReview = it
                     binding.invalidateAll()
                 })
         }

@@ -97,7 +97,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="@{viewModel.userDataLcee.contentVisibility}"
-                app:bindCurrency="@{viewModel.userDataResponse.data.currency}"
+                app:bindCurrency="@{viewModel.userDataResponse.data.currency.name}"
                 app:bindPrice="@{viewModel.userDataResponse.data.credit}"
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView42"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView42"
