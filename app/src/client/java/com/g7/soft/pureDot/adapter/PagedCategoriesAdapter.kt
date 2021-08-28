@@ -13,6 +13,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemCategoryGridViewBinding
 import com.g7.soft.pureDot.databinding.ItemCategoryListViewBinding
 import com.g7.soft.pureDot.model.CategoryModel
+import com.g7.soft.pureDot.ui.screen.filter.FilterFragment
 
 
 class PagedCategoriesAdapter(
@@ -43,12 +44,19 @@ class PagedCategoriesAdapter(
 
             binding.executePendingBindings()
 
-
             binding.root.setOnClickListener {
-                // todo add or get those selected
-                if (isSelectable)
+                if (isSelectable) {
                     binding.root.isSelected = !binding.root.isSelected
-                else {
+                    if (fragment is FilterFragment){
+                        val categoryId = dataModel?.id
+                        categoryId?.let {
+                            if (binding.root.isSelected)
+                                fragment.viewModel.selectedCategoriesIds.add(dataModel.id)
+                            else
+                                fragment.viewModel.selectedCategoriesIds.remove(dataModel.id)
+                        }
+                    }
+                } else {
                     val bundle = bundleOf("category" to dataModel)
                     fragment.findNavController().navigate(R.id.categoryFragment, bundle)
                 }

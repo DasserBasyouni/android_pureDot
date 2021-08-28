@@ -13,6 +13,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentLoginBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 
@@ -42,15 +43,13 @@ class LoginFragment : Fragment() {
 
         // setup listeners
         binding.loginBtn.setOnClickListener {
-            /*viewModel.login(requireActivity().currentLocale.toLanguageTag()).observeForever {
-                Log.e("Z_", "it: $it}")
-            }*/
-
             viewModel.login(requireActivity().currentLocale.toLanguageTag())
                 .observeApiResponse(this, {
-                    if (it?.tokenId != null)
+                    if (it?.tokenId != null) {
+                        ClientRepository("").saveUserData(requireContext(), it, viewModel.password.value)
+
                         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                    else
+                    } else
                         ProjectDialogUtils.showSimpleMessage(
                             requireContext(),
                             R.string.something_went_wrong,

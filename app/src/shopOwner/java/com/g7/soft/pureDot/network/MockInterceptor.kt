@@ -63,7 +63,6 @@ class MockInterceptor : Interceptor {
                         uri.contains("client/getCartItems") -> OfflineDemoRepository.getCartItems
                         uri.contains("client/checkoutIsPaid") -> OfflineDemoRepository.checkoutIsPaid
                         uri.contains("client/checkout") -> OfflineDemoRepository.checkout
-                        uri.contains("client/checkCoupon") -> OfflineDemoRepository.checkCoupon
                         uri.contains("client/getWishList") -> OfflineDemoRepository.getWishList
 
                         // order

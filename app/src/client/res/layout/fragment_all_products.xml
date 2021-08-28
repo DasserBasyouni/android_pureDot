@@ -8,6 +8,10 @@
         <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.seeAll.products.AllProductsViewModel" />
+
+        <variable
+            name="filterViewModel"
+            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
     </data>
 
 
@@ -31,6 +35,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="16dp"
+                app:filterViewModel="@{filterViewModel}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -115,6 +120,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/sliderOffersBarrier"
+                app:layout_constraintVertical_bias="0.0"
                 app:spanCount="2"
                 tools:itemCount="10"
                 tools:listitem="@layout/item_product_grid_view" />

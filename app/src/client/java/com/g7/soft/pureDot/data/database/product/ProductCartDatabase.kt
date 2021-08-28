@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.database.product
+package com.g7.soft.pureDot.data.database.product
 
 import android.content.Context
 import androidx.room.Database
@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.g7.soft.pureDot.database.converter.DataConverter
+import com.g7.soft.pureDot.data.database.converter.DataConverter
 
 @Database(entities = [ProductCart::class], version = 14, exportSchema = false)
 @TypeConverters(DataConverter::class)

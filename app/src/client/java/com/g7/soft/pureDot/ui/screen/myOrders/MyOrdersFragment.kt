@@ -6,10 +6,13 @@ import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.OrdersAdapter
 import com.g7.soft.pureDot.databinding.FragmentMyOrdersBinding
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class MyOrdersFragment : Fragment() {
     private lateinit var binding: FragmentMyOrdersBinding
@@ -35,8 +38,11 @@ class MyOrdersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" //todo
-        viewModel.getMyOrders(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getMyOrders(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val myOrdersAdapter = OrdersAdapter(this)

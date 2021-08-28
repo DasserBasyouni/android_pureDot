@@ -21,11 +21,11 @@ class ProductRepository(private val langTag: String) {
             return@handle Fetcher().getInstance(langTag)?.getProducts(
                 categoriesIds = categoriesIds,
                 storesIds = storesIds,
-                minStarts = minStars,
+                minStars = minStars,
                 fromPrice = fromPrice,
                 toPrice = toPrice,
                 pageNumber = pageNumber,
-                itemPerPage = itemsPerPage,
+                itemsPerPage = itemsPerPage,
                 searchText = searchText,
             )
         }))
@@ -39,7 +39,7 @@ class ProductRepository(private val langTag: String) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getLatestOffers(
                 pageNumber = pageNumber,
-                itemPerPage = itemPerPage,
+                itemsPerPage = itemPerPage,
                 shopId = shopId
             )
         }))
@@ -53,7 +53,7 @@ class ProductRepository(private val langTag: String) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getLatestProducts(
                 pageNumber = pageNumber,
-                itemPerPage = itemPerPage,
+                itemsPerPage = itemPerPage,
                 shopId = shopId
             )
         }))
@@ -67,7 +67,7 @@ class ProductRepository(private val langTag: String) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getBestSelling(
                 pageNumber = pageNumber,
-                itemPerPage = itemPerPage,
+                itemsPerPage = itemPerPage,
                 shopId = shopId
             )
         }))
@@ -97,7 +97,7 @@ class ProductRepository(private val langTag: String) {
         }))
     }
 
-    fun getItemReviews(
+    fun getReviews(
         itemId: String?,
         tokenId: String?,
         pageNumber: Int?,
@@ -108,7 +108,7 @@ class ProductRepository(private val langTag: String) {
                 itemId = itemId,
                 tokenId = tokenId,
                 pageNumber = pageNumber,
-                itemPerPage = itemsPerPage,
+                itemsPerPage = itemsPerPage,
             )
         }))
     }
@@ -139,6 +139,21 @@ class ProductRepository(private val langTag: String) {
                 tokenId = tokenId,
                 productId = productId,
                 doAdd = doAdd,
+            )
+        }))
+    }
+
+
+    fun getWishList(
+        tokenId: String?,
+        itemsPerPage: Int?,
+        pageNumber: Int?,
+    ) = liveData(Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.getWishList(
+                tokenId = tokenId,
+                itemsPerPage = itemsPerPage,
+                pageNumber = pageNumber,
             )
         }))
     }

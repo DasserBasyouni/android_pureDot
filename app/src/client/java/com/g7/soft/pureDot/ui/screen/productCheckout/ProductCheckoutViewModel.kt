@@ -55,7 +55,7 @@ class ProductCheckoutViewModel(
     fun getUserData(langTag: String, tokenId: String) {
         userDataResponse.value = NetworkRequestResponse.loading()
         userDataResponse.apply {
-            this.addSource(ClientRepository(langTag).getUserData(tokenId = tokenId)) {
+            this.addSource(ClientRepository(langTag).getLocalUserData(tokenId = tokenId)) {
                 userDataResponse.value = it
                 firstName.value = it.data?.firstName
                 lastName.value = it.data?.lastName

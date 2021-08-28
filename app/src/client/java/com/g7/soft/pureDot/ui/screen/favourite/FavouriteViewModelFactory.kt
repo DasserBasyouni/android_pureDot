@@ -1,16 +1,16 @@
-package com.g7.soft.pureDot.ui.screen.filter
+package com.g7.soft.pureDot.ui.screen.favourite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class FilterViewModelFactory(
-    private val currency: String?,
+class FavouriteViewModelFactory(
+    private val tokenId: String?,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return if (modelClass.isAssignableFrom(FilterViewModel::class.java)) {
-            FilterViewModel(
-                currency = currency,
+        return if (modelClass.isAssignableFrom(FavouritesViewModel::class.java)) {
+            FavouritesViewModel(
+                tokenId = tokenId
             ) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class")

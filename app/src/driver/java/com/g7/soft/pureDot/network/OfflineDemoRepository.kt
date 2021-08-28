@@ -691,13 +691,6 @@ class OfflineDemoRepository {
                     "shippingCost" to 15.00
                 )
             )
-        val checkCoupon: HashMap<String, Any?>
-            get() = hashMapOf(
-                "status" to ApiConstant.Status.SUCCESS.value,
-                "data" to hashMapOf(
-                    "discountPercentage" to .15,
-                )
-            )
         val getWishList: HashMap<String, Any?>
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,

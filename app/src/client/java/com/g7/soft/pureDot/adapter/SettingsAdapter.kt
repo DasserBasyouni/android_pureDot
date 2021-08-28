@@ -2,15 +2,20 @@ package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemSettingsBinding
+import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.ui.screen.myAccount.MyAccountFragment
 import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 
-class SettingsAdapter(private val fragment: Fragment) :
+class SettingsAdapter(private val fragment: MyAccountFragment) :
     RecyclerView.Adapter<SettingsAdapter.ViewHolder>() {
 
     val list = listOf(
@@ -39,7 +44,7 @@ class SettingsAdapter(private val fragment: Fragment) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             dataModel: Pair<Int, Int>,
-            fragment: Fragment,
+            fragment: MyAccountFragment,
         ) {
             binding.iconResId = dataModel.first
             binding.settingsName = binding.root.context.getString(dataModel.second)
@@ -63,15 +68,34 @@ class SettingsAdapter(private val fragment: Fragment) :
                             R.string.sign_out,
                             R.string.question_sure_logout,
                             positiveRunnable = {
-                                // todo clear tokenId
-                                fragment.findNavController()
-                                    .navigate(R.id.action_myAccountFragment_to_startFragment)
+                                fragment.viewModel.viewModelScope.launch {
+                                    val isGuestAccount =
+                                        ClientRepository("").getLocalUserData(fragment.requireContext()).isGuestAccount
+
+                                    if (isGuestAccount)
+                                        clearUserDataThenNavigate(fragment)
+                                    else
+                                        fragment.viewModel.logout(fragment.requireActivity().currentLocale.toLanguageTag())
+                                            .observeApiResponse(fragment, {
+                                                clearUserDataThenNavigate(fragment)
+                                            })
+                                }
                             }
                         )
                     }
                 }
             }
         }
+
+
+        private fun clearUserDataThenNavigate(fragment: MyAccountFragment) {
+            fragment.viewModel.viewModelScope.launch {
+                ClientRepository("").clearUserData(fragment.requireContext())
+                fragment.findNavController()
+                    .navigate(R.id.action_myAccountFragment_to_startFragment)
+            }
+        }
+
 
         companion object {
             internal fun from(viewGroup: ViewGroup) = ViewHolder(

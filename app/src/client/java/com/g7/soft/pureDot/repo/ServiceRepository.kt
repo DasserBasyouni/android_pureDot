@@ -10,10 +10,7 @@ class ServiceRepository(private val langTag: String) {
     fun getServices(
         tokenId: String?,
         categoryId: String?,
-        shopId: String?,
         minStarts: List<Int>?,
-        fromPrice: Int?,
-        toPrice: Int?,
         pageNumber: Int?,
         itemsPerPage: Int?,
     ) = liveData(Dispatchers.IO) {
@@ -21,10 +18,7 @@ class ServiceRepository(private val langTag: String) {
             return@handle Fetcher().getInstance(langTag)?.getServices(
                 tokenId = tokenId,
                 categoryId = categoryId,
-                shopId = shopId,
-                minStarts = minStarts,
-                fromPrice = fromPrice,
-                toPrice = toPrice,
+                minStars = minStarts,
                 pageNumber = pageNumber,
                 itemsPerPage = itemsPerPage
             )

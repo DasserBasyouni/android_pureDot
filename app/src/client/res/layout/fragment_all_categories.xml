@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="filterViewModel"
+            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
 
         <variable
             name="viewModel"
@@ -27,6 +30,7 @@
                 android:id="@+id/searchLayout"
                 layout="@layout/view_search_bar"
                 android:layout_width="0dp"
+                app:filterViewModel="@{filterViewModel}"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="15dp"

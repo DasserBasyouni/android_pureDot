@@ -5,15 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemProfileBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.ext.toFormattedDateTime
 import com.g7.soft.pureDot.model.ClientDataModel
+import com.g7.soft.pureDot.model.SignUpFieldsModel
 
 
-class ProfileAdapter(private val fragment: Fragment, private val userData: ClientDataModel?) :
+class ProfileAdapter(
+    private val fragment: Fragment,
+    private val userData: ClientDataModel?,
+    private val signUpFields: SignUpFieldsModel?
+) :
     RecyclerView.Adapter<ProfileAdapter.ViewHolder>() {
 
 
@@ -27,26 +33,44 @@ class ProfileAdapter(private val fragment: Fragment, private val userData: Clien
             isLastItem = position + 1 == itemCount
         )
 
-    override fun getItemCount(): Int = 8
+    override fun getItemCount(): Int = if (signUpFields?.haveZipCode == true) 9 else 8
 
 
-    private fun getDataList(context: Context, position: Int): Pair<Int, String?> = listOf(
-        Pair(R.string.full_name, userData?.fullName),
-        Pair(R.string.email, userData?.email),
-        Pair(R.string.phone_number, userData?.phoneNumber),
-        Pair(
-            R.string.date_of_birth,
-            userData?.dateOfBirth?.toFormattedDateTime(context.getString(R.string.format_standard_date))
-        ),
-        Pair(
-            R.string.gender,
-            if (userData?.isMale == true) context.getString(R.string.male)
-            else context.getString(R.string.female)
-        ),
-        Pair(R.string.country, userData?.country?.name),
-        Pair(R.string.city, userData?.city?.name),
-        Pair(R.string.password, context.getString(R.string.symbol_password)),
-    )[position]
+    private fun getDataList(context: Context, position: Int): Pair<Int, String?> =
+        if (signUpFields?.haveZipCode == true) listOf(
+            Pair(R.string.full_name, userData?.fullName),
+            Pair(R.string.email, userData?.email),
+            Pair(R.string.phone_number, userData?.phoneNumber),
+            Pair(
+                R.string.date_of_birth,
+                userData?.dateOfBirth?.toFormattedDateTime(context.getString(R.string.format_standard_date))
+            ),
+            Pair(
+                R.string.gender,
+                if (userData?.isMale == true) context.getString(R.string.male)
+                else context.getString(R.string.female)
+            ),
+            Pair(R.string.country, userData?.country?.name),
+            Pair(R.string.city, userData?.city?.name),
+            Pair(R.string.zip_code, userData?.zipCode?.code),
+            Pair(R.string.password, context.getString(R.string.symbol_password)),
+        )[position] else listOf(
+            Pair(R.string.full_name, userData?.fullName),
+            Pair(R.string.email, userData?.email),
+            Pair(R.string.phone_number, userData?.phoneNumber),
+            Pair(
+                R.string.date_of_birth,
+                userData?.dateOfBirth?.toFormattedDateTime(context.getString(R.string.format_standard_date))
+            ),
+            Pair(
+                R.string.gender,
+                if (userData?.isMale == true) context.getString(R.string.male)
+                else context.getString(R.string.female)
+            ),
+            Pair(R.string.country, userData?.country?.name),
+            Pair(R.string.city, userData?.city?.name),
+            Pair(R.string.password, context.getString(R.string.symbol_password)),
+        )[position]
 
 
     class ViewHolder private constructor(private val binding: ItemProfileBinding) :
@@ -66,7 +90,7 @@ class ProfileAdapter(private val fragment: Fragment, private val userData: Clien
                     Pair(
                         fragment.getString(R.string.change_password),
                         View.OnClickListener {
-                            //fragment.findNavController().navigate(R.id.changePassword)
+                            fragment.findNavController().navigate(R.id.changePasswordFragment)
                         }), doChangeColor = false
                 )
         }

@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.database.converter
+package com.g7.soft.pureDot.data.database.converter
 
 import androidx.room.TypeConverter
 

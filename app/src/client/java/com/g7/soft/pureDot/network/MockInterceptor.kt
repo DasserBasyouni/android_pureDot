@@ -21,6 +21,8 @@ class MockInterceptor : Interceptor {
             val responseString =
                 JSONObject(
                     when {
+                        uri.contains("client/getSignUpFields") -> OfflineDemoRepository.getSignUpFields
+
                         // user
                         uri.contains("client/signUp") -> OfflineDemoRepository.userSignUp
                         uri.contains("client/login") -> OfflineDemoRepository.userLogin
@@ -45,9 +47,9 @@ class MockInterceptor : Interceptor {
                         uri.contains("client/getProducts") -> OfflineDemoRepository.get10Products
                         uri.contains("client/getLatestOffers") -> OfflineDemoRepository.get4Products
                         uri.contains("client/getLatestProducts") -> OfflineDemoRepository.get9Products
-                        uri.contains("client/getBestSelling") -> OfflineDemoRepository.get10Products
+                        uri.contains("client/getBestSelling") -> OfflineDemoRepository.get9Products
                         uri.contains("client/rateItem") -> OfflineDemoRepository.getSuccessfulStatus
-                        uri.contains("client/getItemReviews") -> OfflineDemoRepository.getItemReviews
+                        uri.contains("client/getProductReviews") -> OfflineDemoRepository.getItemReviews
                         //uri.contains("review/mark") -> OfflineDemoRepository.getSuccessfulStatus
                         uri.contains("client/getProductDetails") -> OfflineDemoRepository.getProductDetails
                         uri.contains("client/addProductReview") -> OfflineDemoRepository.addProductReview
@@ -64,10 +66,8 @@ class MockInterceptor : Interceptor {
 
                         // cart
                         uri.contains("client/editCartQuantity") -> OfflineDemoRepository.editCartQuantity
-                        uri.contains("client/getCartItems") -> OfflineDemoRepository.getCartItems
                         uri.contains("client/checkoutIsPaid") -> OfflineDemoRepository.checkoutIsPaid
                         uri.contains("client/checkout") -> OfflineDemoRepository.getShippingCost
-                        uri.contains("client/checkCoupon") -> OfflineDemoRepository.checkCoupon
                         uri.contains("client/getWishList") -> OfflineDemoRepository.getWishList
                         uri.contains("client/checkCartProducts") -> OfflineDemoRepository.get4Products
 

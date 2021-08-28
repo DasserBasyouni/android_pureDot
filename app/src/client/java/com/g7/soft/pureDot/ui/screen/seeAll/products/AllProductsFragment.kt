@@ -1,10 +1,15 @@
 package com.g7.soft.pureDot.ui.screen.seeAll.products
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.paging.PagedList
@@ -18,16 +23,30 @@ import com.g7.soft.pureDot.databinding.FragmentAllProductsBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ProductModel
 import com.g7.soft.pureDot.ui.screen.MainActivity
+import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
+import android.view.inputmethod.EditorInfo
+
+import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
+import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.g7.soft.pureDot.repo.ClientRepository
+import kotlinx.coroutines.launch
+
 
 // todo fix title of screens that appears in other screens, maybe that fix is in navigation also 3 title for this screen
 class AllProductsFragment : Fragment() {
     private lateinit var binding: FragmentAllProductsBinding
     private lateinit var viewModelFactory: AllProductsViewModelFactory
     internal lateinit var viewModel: AllProductsViewModel
-    private val args: AllProductsFragmentArgs by navArgs()
+    internal val filterViewModel: FilterViewModel by viewModels(
+        ownerProducer = { requireActivity() }
+    )
+    internal val args: AllProductsFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +67,7 @@ class AllProductsFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(AllProductsViewModel::class.java)
 
         binding.viewModel = viewModel
+        binding.filterViewModel = filterViewModel
         binding.lifecycleOwner = this
 
         return binding.root
@@ -102,22 +122,61 @@ class AllProductsFragment : Fragment() {
             productsAdapter.submitList(it)
         })
 
-        // setup click listener
+        // fix non-working observer of search include layout
+        binding.root.findViewById<EditText>(R.id.appCompatEditText).addTextChangedListener(object :
+            TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+
+            override fun afterTextChanged(s: Editable?) {
+                filterViewModel.searchText.value = s.toString()
+            }
+        })
+
+        // setup onClick
+        binding.root.findViewById<EditText>(R.id.appCompatEditText)
+            .setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    refreshSearch()
+                    true
+                } else false
+            }
+        binding.root.findViewById<ImageView>(R.id.filterIv).setOnClickListener {
+            lifecycleScope.launch {
+                val currencySymbol =
+                    ClientRepository("").getLocalUserData(requireContext()).currencySymbol
+
+                val bundle = bundleOf("currency" to currencySymbol)
+                findNavController().navigate(R.id.filterFragment, bundle)
+            }
+        }
+        binding.root.findViewById<ImageView>(R.id.searchIv).setOnClickListener {
+            refreshSearch()
+        }
+    }
 
 
+    private fun refreshSearch() {
+        viewModel.productsPagedList?.value?.dataSource?.invalidate()
     }
 
     private fun editWishList(
-        tokenId: String,
         productId: String?,
         doAdd: Boolean,
         onComplete: () -> Unit
     ) {
-        viewModel.editWishList(
-            requireActivity().currentLocale.toLanguageTag(),
-            tokenId = tokenId,
-            productId = productId,
-            doAdd = doAdd
-        ).observeApiResponse(this, { onComplete.invoke() })
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+            viewModel.editWishList(
+                requireActivity().currentLocale.toLanguageTag(),
+                tokenId = tokenId,
+                productId = productId,
+                doAdd = doAdd
+            ).observeApiResponse(this@AllProductsFragment, { onComplete.invoke() })
+        }
     }
 }

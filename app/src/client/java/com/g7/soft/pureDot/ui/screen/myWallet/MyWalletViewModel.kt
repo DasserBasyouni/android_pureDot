@@ -36,6 +36,7 @@ class MyWalletViewModel(internal val tokenId: String?) : ViewModel() {
         emitSource(
             WalletRepository(langTag).replacePoints(
                 tokenId = tokenId,
+                amount = walletResponse.value?.data?.points
             )
         )
     }

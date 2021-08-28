@@ -47,10 +47,12 @@ class WalletRepository(private val langTag: String) {
 
     fun replacePoints(
         tokenId: String?,
+        amount: Int?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.replacePoints(
                 tokenId = tokenId,
+                amount = amount,
             )
         }))
     }
@@ -63,6 +65,18 @@ class WalletRepository(private val langTag: String) {
             return@handle Fetcher().getInstance(langTag)?.suggestContact(
                 tokenId = tokenId,
                 emailOrPhoneNumber = emailOrPhoneNumber
+            )
+        }))
+    }
+
+    fun addMoney(
+        tokenId: String?,
+        amount: Int?,
+    ) = liveData(Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.addMoney(
+                tokenId = tokenId,
+                amount = amount
             )
         }))
     }

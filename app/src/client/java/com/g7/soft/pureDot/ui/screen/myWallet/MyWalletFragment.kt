@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import com.g7.soft.pureDot.R
@@ -16,7 +17,9 @@ import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentMyWalletBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.TransactionModel
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class MyWalletFragment : Fragment() {
     private lateinit var binding: FragmentMyWalletBinding
@@ -30,10 +33,11 @@ class MyWalletFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_my_wallet, container, false)
 
-        val tokenId = "" //todo
-        viewModelFactory = MyWalletViewModelFactory(
-            tokenId = tokenId,
-        )
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModelFactory = MyWalletViewModelFactory(tokenId = tokenId)
+        }
         viewModel = ViewModelProvider(this, viewModelFactory).get(MyWalletViewModel::class.java)
 
         binding.viewModel = viewModel
@@ -56,8 +60,11 @@ class MyWalletFragment : Fragment() {
             ).build()
 
         // fetch data
-        val tokenId = "" //todo
-        viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         viewModel.walletResponse.observe(viewLifecycleOwner, {
@@ -73,16 +80,23 @@ class MyWalletFragment : Fragment() {
         binding.transferMoneyBtn.setOnClickListener {
             findNavController().navigate(R.id.transferMoneyFragment)
         }
+        binding.addMoneyBtn.setOnClickListener {
+            findNavController().navigate(R.id.addMoneyFragment)
+        }
         binding.replacePointsBtn.setOnClickListener {
-            val tokenId = "" // todo
-            viewModel.replacePoints(
-                requireActivity().currentLocale.toLanguageTag(),
-                tokenId = tokenId
-            ).observeApiResponse(this, {
-                viewModel.walletResponse.value = viewModel.walletResponse.value.apply {
-                    this?.data?.points = 0
-                }
-            })
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                viewModel.replacePoints(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId
+                ).observeApiResponse(this@MyWalletFragment, {
+                    viewModel.walletResponse.value = viewModel.walletResponse.value.apply {
+                        this?.data?.points = 0
+                    }
+                })
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagedList
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.PagedProductsAdapter
@@ -13,11 +14,14 @@ import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentFavouritesBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ProductModel
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class FavouritesFragment : Fragment() {
     private lateinit var binding: FragmentFavouritesBinding
     internal lateinit var viewModel: FavouritesViewModel
+    internal lateinit var viewModelFactory: FavouriteViewModelFactory
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,10 +30,22 @@ class FavouritesFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_favourites, container, false)
 
-        viewModel = ViewModelProvider(this).get(FavouritesViewModel::class.java)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModelFactory = FavouriteViewModelFactory(
+                tokenId = tokenId
+            )
+            viewModel = ViewModelProvider(
+                this@FavouritesFragment,
+                viewModelFactory
+            ).get(FavouritesViewModel::class.java)
+
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@FavouritesFragment
+        }
+
         setHasOptionsMenu(true)
 
         return binding.root
@@ -66,16 +82,20 @@ class FavouritesFragment : Fragment() {
 
 
     private fun editWishList(
-        tokenId: String,
         productId: String?,
         doAdd: Boolean,
         onComplete: () -> Unit
     ) {
-        viewModel.editWishList(
-            requireActivity().currentLocale.toLanguageTag(),
-            tokenId = tokenId,
-            productId = productId,
-            doAdd = doAdd
-        ).observeApiResponse(this, { onComplete.invoke() })
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+            viewModel.editWishList(
+                requireActivity().currentLocale.toLanguageTag(),
+                tokenId = tokenId,
+                productId = productId,
+                doAdd = doAdd
+            ).observeApiResponse(this@FavouritesFragment, { onComplete.invoke() })
+        }
     }
 }

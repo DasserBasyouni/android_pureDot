@@ -26,6 +26,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentAddressBinding
 import com.g7.soft.pureDot.ext.dpToPx
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -103,7 +104,8 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
         }
         binding.saveBtn.setOnClickListener {
             lifecycleScope.launch {
-                val tokenId = "" // todo
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
 
                 viewModel.addAddress(
                     langTag = requireActivity().currentLocale.toLanguageTag(),
@@ -130,7 +132,12 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
                 val currentHeight: Int = binding.root.height - bottomSheet.height
                 val bottomSheetShiftDown = currentHeight - bottomSheet.top
 
-                googleMap?.setPadding(0, 24.dpToPx(), 0, binding.bottomSheet.height + bottomSheetShiftDown)
+                googleMap?.setPadding(
+                    0,
+                    24.dpToPx(),
+                    0,
+                    binding.bottomSheet.height + bottomSheetShiftDown
+                )
                 if (locationVM.location?.value != null) {
                     val cameraPosition = CameraPosition.Builder()
                         .target(

@@ -9,11 +9,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentContactUsBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 
 class ContactUsFragment : Fragment() {
@@ -39,30 +42,59 @@ class ContactUsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.submitBtn.setOnClickListener {
-            val tokenId = "" // todo
-            viewModel.submit(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
-                .observeApiResponse(this, {
-                    findNavController().popBackStack()
-                })
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                viewModel.submit(requireActivity().currentLocale.toLanguageTag())
+                    .observeApiResponse(this@ContactUsFragment, {
+                        findNavController().popBackStack()
+                    })
+            }
         }
 
         binding.twitterIb.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/Puredot2030")))
         }
         binding.facebookIb.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Puredot-104256265027094")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.facebook.com/Puredot-104256265027094")
+                )
+            )
         }
         binding.instagramIb.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/puredot2030/")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.instagram.com/puredot2030/")
+                )
+            )
         }
         binding.tiktokIb.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tiktok.com/@puredot2030?lang=en&is_copy_url=1&is_from_webapp=v3")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.tiktok.com/@puredot2030?lang=en&is_copy_url=1&is_from_webapp=v3")
+                )
+            )
         }
         binding.youtubeIb.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/channel/UCrLL_kAdfEVaZH81t-L-UCg")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.youtube.com/channel/UCrLL_kAdfEVaZH81t-L-UCg")
+                )
+            )
         }
         binding.snapchatIb.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.snapchat.com/add/puredot2030")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.snapchat.com/add/puredot2030")
+                )
+            )
         }
     }
 

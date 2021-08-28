@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemStoreVerticalBinding
 import com.g7.soft.pureDot.model.StoreModel
+import com.g7.soft.pureDot.ui.screen.filter.FilterFragment
 
 
 class PagedStoresAdapter(private val fragment: Fragment, private val isSelectable: Boolean = false) :
@@ -34,10 +35,18 @@ class PagedStoresAdapter(private val fragment: Fragment, private val isSelectabl
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                // todo add or get those selected
-                if (isSelectable)
+                if (isSelectable) {
                     binding.root.isSelected = !binding.root.isSelected
-                else {
+                    if (fragment is FilterFragment){
+                        val categoryId = dataModel?.id
+                        categoryId?.let {
+                            if (binding.root.isSelected)
+                                fragment.viewModel.selectedStoresIds.add(dataModel.id)
+                            else
+                                fragment.viewModel.selectedStoresIds.remove(dataModel.id)
+                        }
+                    }
+                }else {
                     val bundle = bundleOf("store" to dataModel)
                     fragment.findNavController().navigate(R.id.storeFragment, bundle)
                 }

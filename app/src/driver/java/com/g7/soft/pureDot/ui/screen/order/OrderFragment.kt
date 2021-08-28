@@ -47,11 +47,15 @@ class OrderFragment : Fragment() {
 
         // setup listeners
         binding.cancelBtn.setOnClickListener {
-            val tokenId = "" //todo
-            viewModel.cancelOrder(
-                requireActivity().currentLocale.toLanguageTag(),
-                tokenId = tokenId
-            )
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                viewModel.cancelOrder(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId
+                )
+            }
         }
         binding.complaintBtn.setOnClickListener {
             findNavController().navigate(R.id.submitComplainFragment)
@@ -66,13 +70,17 @@ class OrderFragment : Fragment() {
             titleResId = R.string.question_sure_cancel,
             messageResId = R.string.amount_will_be_refunded_to_your_wallet,
             positiveRunnable = {
-                val tokenId = "" // todo
-                viewModel.cancelOrder(
-                    requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId,
-                ).observeApiResponse(this, {
-                    findNavController().popBackStack()
-                })
+                lifecycleScope.launch {
+                    val tokenId =
+                        ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                    viewModel.cancelOrder(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId,
+                    ).observeApiResponse(this, {
+                        findNavController().popBackStack()
+                    })
+                }
             }
         )
     }

@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatSpinner
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
@@ -17,8 +18,11 @@ import com.g7.soft.pureDot.databinding.FragmentProfileEditBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.CityModel
 import com.g7.soft.pureDot.model.CountryModel
+import com.g7.soft.pureDot.model.ZipCodeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class ProfileEditFragment : Fragment() {
 
@@ -41,6 +45,7 @@ class ProfileEditFragment : Fragment() {
 
         viewModelFactory = ProfileEditViewModelFactory(
             userData = args.userData,
+            signUpFields = args.signUpFields
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(ProfileEditViewModel::class.java)
 
@@ -64,9 +69,7 @@ class ProfileEditFragment : Fragment() {
             binding.genderSpinner.setSelection(viewModel.selectedGenderPosition.value!!)
         }
 
-        // fetch data
-        viewModel.getCounties(requireActivity().currentLocale.toLanguageTag())
-        viewModel.getCities(requireActivity().currentLocale.toLanguageTag())
+        viewModel.fetchData(requireActivity().currentLocale.toLanguageTag())
 
         // observables
         viewModel.selectedCountryPosition.observe(viewLifecycleOwner, {
@@ -91,14 +94,27 @@ class ProfileEditFragment : Fragment() {
             viewModel.selectedCityPosition.value =
                 (it.data?.indexOfFirst { city -> viewModel.userData?.city?.id == city.id })?.plus(1)
         })
+        viewModel.zipCodesResponse.observe(viewLifecycleOwner, {
+            setupSpinner(
+                binding.zipCodeSpinner,
+                viewModel.zipCodesResponse.value,
+                initialText = getString(R.string.select_zipcode)
+            )
+            viewModel.selectedZipCodePosition.value =
+                (it.data?.indexOfFirst { zipCode -> viewModel.userData?.zipCode?.id == zipCode.id })?.plus(1)
+        })
 
         // setup listeners
         binding.saveBtn.setOnClickListener {
-            val tokenId = "" // todo
-            viewModel.save(requireActivity().currentLocale.toLanguageTag(), tokenId)
-                .observeApiResponse(this, {
-                    findNavController().popBackStack()
-                })
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                viewModel.save(requireActivity().currentLocale.toLanguageTag(), tokenId)
+                    .observeApiResponse(this@ProfileEditFragment, {
+                        findNavController().popBackStack()
+                    })
+            }
         }
         binding.cancelBtn.setOnClickListener {
             findNavController().popBackStack()
@@ -111,7 +127,8 @@ class ProfileEditFragment : Fragment() {
         networkResponse: NetworkRequestResponse<List<T>?>?,
         initialText: String
     ) {
-        var selectionPosition = 0
+        var selectedPosition = 0
+
         val spinnerData = when (networkResponse?.status) {
             ProjectConstant.Companion.Status.IDLE -> {
                 spinner.isEnabled = false
@@ -121,17 +138,21 @@ class ProfileEditFragment : Fragment() {
                 spinner.isEnabled = false
                 arrayListOf(getString(R.string.loading_))
             }
-            ProjectConstant.Companion.Status.SUCCESS -> {
+            ProjectConstant.Companion.Status.SUCCESS, ProjectConstant.Companion.Status.API_ERROR -> {
                 val modelsList = networkResponse.data
                 val dataList = when {
                     modelsList?.firstOrNull() is CountryModel -> {
-                        selectionPosition = viewModel.selectedCountryPosition.value!!
+                        selectedPosition = viewModel.selectedCountryPosition.value!!
                         modelsList.mapNotNull { (it as CountryModel).name }.toTypedArray()
                     }
                     modelsList?.firstOrNull() is CityModel -> {
-                        selectionPosition = viewModel.selectedCityPosition.value!!
+                        selectedPosition = viewModel.selectedCityPosition.value!!
                         modelsList.mapNotNull { (it as CityModel).name }.toTypedArray()
 
+                    }
+                    modelsList?.firstOrNull() is ZipCodeModel -> {
+                        selectedPosition = viewModel.selectedZipCodePosition.value!!
+                        modelsList.mapNotNull { (it as ZipCodeModel).code }.toTypedArray()
                     }
                     else -> null
                 }
@@ -153,9 +174,8 @@ class ProfileEditFragment : Fragment() {
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
-            spinner.setSelection(selectionPosition)
+            spinner.setSelection(selectedPosition)
         }
     }
-
 
 }

@@ -1,11 +1,16 @@
 package com.g7.soft.pureDot.data
 
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
+import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ApiConstant.SliderOfferType.*
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.*
 import com.g7.soft.pureDot.ui.screen.browse.BrowseFragment
@@ -19,6 +24,7 @@ import com.g7.soft.pureDot.ui.screen.seeAll.reviews.AllReviewsFragment
 import com.g7.soft.pureDot.ui.screen.seeAll.stores.AllStoresFragment
 import com.g7.soft.pureDot.ui.screen.services.ServicesFragment
 import com.g7.soft.pureDot.ui.screen.store.StoreFragment
+import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -50,7 +56,7 @@ class PaginationDataSource<T>(
     }
 
 
-    private var pageNumber = 1
+    //private var pageNumber = 1
 
 
     override fun loadInitial(
@@ -59,7 +65,7 @@ class PaginationDataSource<T>(
     ) {
         fragment.lifecycleScope.launch {
             try {
-                fetchData(initCallback = callback, fragment = fragment, pageKey = ++pageNumber)
+                fetchData(initCallback = callback, fragment = fragment, pageKey = 2)
             } catch (exception: Exception) {
                 Timber.e("Failed to fetch data!")
             }
@@ -75,7 +81,7 @@ class PaginationDataSource<T>(
                     params = params,
                     callback = callback,
                     fragment = fragment,
-                    pageKey = ++pageNumber
+                    pageKey = params.key.inc()
                 )
             } catch (exception: Exception) {
                 Timber.e("Failed to fetch data!")
@@ -90,7 +96,7 @@ class PaginationDataSource<T>(
                     params = params,
                     callback = callback,
                     fragment = fragment,
-                    pageKey = --pageNumber
+                    pageKey = params.key.dec()
                 )
             } catch (exception: Exception) {
                 Timber.e("Failed to fetch data!")
@@ -106,290 +112,386 @@ class PaginationDataSource<T>(
         fragment: Fragment,
         pageKey: Int,
     ) = coroutineScope {
+        Log.e("Z_", "fetchData: ${params?.key} - pageNumber - ")
         val isInitialLoad = params == null
 
-        if (params == null || params.key != 0)
-            when {
-                fragment is FilterFragment && isFirstPagedList -> {
-                    val viewModel = fragment.viewModel
+        when {
+            fragment is FilterFragment && isFirstPagedList -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.categoriesLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                CategoriesRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getCategories(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    searchText = null,
+                    shopId = null,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
 
                     if (isInitialLoad)
-                        viewModel.categoriesLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
+                        viewModel.categoriesLcee.value!!.response.value = it
 
-                    CategoriesRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getCategories(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        shopId = null,
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.categoriesLcee.value!!.response.value = it
-                    })
-                }
-                fragment is FilterFragment && !isFirstPagedList -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.storesLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    // todo  searchText = null, categoryId = null?
-                    StoreRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getAll(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        categoryId = null
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.storesLcee.value!!.response.value = it
-                    })
-                }
-                fragment is AllProductsFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.productsLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    // todo use filter values with saving them locally maybe
-                    ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getProducts(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        categoriesIds = null,
-                        fromPrice = null,
-                        toPrice = null,
-                        storesIds = null,
-                        minStars = null,
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.productsLcee.value!!.response.value = it
-                    })
-                }
-                fragment is AllCategoriesFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.categoriesLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    CategoriesRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getCategories(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        shopId = null,
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.categoriesLcee.value!!.response.value = it
-                    })
-                }
-                fragment is AllStoresFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.storesLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    // todo  searchText = null, categoryId = null?
-                    StoreRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getAll(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        categoryId = null
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.storesLcee.value!!.response.value = it
-                    })
-                }
-                fragment is BrowseFragment && isFirstPagedList -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.categoriesLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    CategoriesRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getCategories(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        shopId = null,
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.categoriesLcee.value!!.response.value = it
-                    })
-                }
-                fragment is BrowseFragment && !isFirstPagedList -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.storesLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    // todo  searchText = null, categoryId = null?
-                    StoreRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getAll(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        categoryId = null
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.storesLcee.value!!.response.value = it
-                    })
-                }
-                fragment is StoreFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.categoriesLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    CategoriesRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getCategories(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        shopId = null,
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.categoriesLcee.value!!.response.value = it
-                    })
-                }
-                fragment is CategoryFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.productsLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    // todo use filter values with saving them locally maybe
-                    ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getProducts(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        categoriesIds = listOfNotNull(viewModel.category?.id),
-                        fromPrice = null,
-                        toPrice = null,
-                        storesIds = null,
-                        minStars = null,
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.productsLcee.value!!.response.value = it
-                    })
-                }
-                fragment is AllReviewsFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.reviewsLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getItemReviews( // todo
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        itemId = viewModel.itemId,
-                        tokenId = viewModel.tokenId
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.reviewsLcee.value!!.response.value = it
-                    })
-                }
-                fragment is MyWalletFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.transactionLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    WalletRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getTransactions(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        tokenId = viewModel.tokenId
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.transactionLcee.value!!.response.value = it
-                    })
-                }
-                fragment is FavouritesFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.productsLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getProducts(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        categoriesIds = null,
-                        fromPrice = null,
-                        toPrice = null,
-                        storesIds = null,
-                        minStars = null,
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.productsLcee.value!!.response.value = it
-                    })
-                }
-                fragment is ServicesFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.servicesLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    ServiceRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getServices(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        categoryId = null,
-                        tokenId = null, // todo
-                        fromPrice = null,
-                        toPrice = null,
-                        shopId = null,
-                        minStarts = null,
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.servicesLcee.value!!.response.value = it
-                    })
-                }
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
             }
+            fragment is FilterFragment && !isFirstPagedList -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.storesLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                // todo  searchText = null, categoryId = null?
+                StoreRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getAll(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    searchText = null,
+                    categoryId = null
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.storesLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is AllProductsFragment && fragment.args.sliderType == INNER_LATEST_PRODUCTS -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.productsLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                // todo use filter values with saving them locally maybe
+                ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getLatestProducts(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemPerPage = itemsPerPage,
+                    shopId = null
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.productsLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is AllProductsFragment && fragment.args.sliderType == INNER_LATEST_OFFERS -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.productsLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                // todo use filter values with saving them locally maybe
+                ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getLatestOffers(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemPerPage = itemsPerPage,
+                    shopId = null
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.productsLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is AllProductsFragment && fragment.args.sliderType == INNER_BEST_SELLING -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.productsLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                // todo use filter values with saving them locally maybe
+                ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getBestSelling(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemPerPage = itemsPerPage,
+                    shopId = null
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.productsLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is AllProductsFragment && fragment.args.sliderType == SEARCH_RESULTS -> {
+                val viewModel = fragment.viewModel
+                val filterViewModel = fragment.filterViewModel
+
+                if (isInitialLoad)
+                    viewModel.productsLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                // todo use filter values with saving them locally maybe
+                ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getProducts(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    categoriesIds = filterViewModel.selectedCategoriesIds,
+                    fromPrice = filterViewModel.minPrice.value?.toInt(),
+                    toPrice = filterViewModel.maxPrice.value?.toInt(),
+                    storesIds = filterViewModel.selectedStoresIds,
+                    minStars = filterViewModel.minStars,
+                    searchText = filterViewModel.searchText.value,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.productsLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is AllCategoriesFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.categoriesLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                CategoriesRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getCategories(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    searchText = null,
+                    shopId = null,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.categoriesLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is AllStoresFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.storesLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                // todo  searchText = null, categoryId = null?
+                StoreRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getAll(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    searchText = null,
+                    categoryId = null
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.storesLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is BrowseFragment && isFirstPagedList -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.categoriesLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                CategoriesRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getCategories(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    searchText = null,
+                    shopId = null,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.categoriesLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is BrowseFragment && !isFirstPagedList -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.storesLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                // todo  searchText = null, categoryId = null?
+                StoreRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getAll(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    searchText = null,
+                    categoryId = null
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.storesLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is StoreFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.categoriesLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                CategoriesRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getCategories(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    searchText = null,
+                    shopId = null,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.categoriesLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is CategoryFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.productsLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getProducts(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    searchText = null,
+                    categoriesIds = listOfNotNull(viewModel.category?.id),
+                    fromPrice = null,
+                    toPrice = null,
+                    storesIds = null,
+                    minStars = null,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.productsLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is AllReviewsFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.reviewsLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getReviews( // todo
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    itemId = viewModel.itemId,
+                    tokenId = viewModel.tokenId
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.reviewsLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is MyWalletFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.transactionLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                WalletRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getTransactions(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    tokenId = viewModel.tokenId
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.transactionLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is FavouritesFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.productsLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getWishList(
+                    tokenId = viewModel.tokenId,
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.productsLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is ServicesFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.servicesLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                ServiceRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getServices(
+                    tokenId = null,
+                    categoryId = null,
+                    minStarts = null,
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.servicesLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+        }
+    }
+
+    private fun handleErrors(
+        status: ProjectConstant.Companion.Status,
+        apiErrorStatus: ApiConstant.Status?
+    ) {
+        if (status == ProjectConstant.Companion.Status.API_ERROR)
+            ProjectDialogUtils.showSimpleMessage(
+                fragment.requireContext(),
+                ApiConstant.Status.getMessageResId(apiErrorStatus),
+                R.drawable.ic_secure_shield
+            )
     }
 }

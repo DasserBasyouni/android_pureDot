@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.model.CategoryModel
+import com.g7.soft.pureDot.model.ComplaintOrderModel
 import com.g7.soft.pureDot.model.DataWithCountModel
-import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.CategoriesRepository
 import com.g7.soft.pureDot.repo.ComplainRepository
@@ -18,7 +18,7 @@ class SubmitComplainViewModel : ViewModel() {
     val title = MutableLiveData<String?>()
     val description = MutableLiveData<String?>()
 
-    val ordersResponse = MediatorLiveData<NetworkRequestResponse<List<MasterOrderModel>?>>()
+    val complaintOrdersResponse = MediatorLiveData<NetworkRequestResponse<List<ComplaintOrderModel>?>>()
     val categoriesResponse =
         MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<CategoryModel>?>>>()
     val ordersPosition = MutableLiveData<Int?>().apply { this.value = 0 }
@@ -27,7 +27,7 @@ class SubmitComplainViewModel : ViewModel() {
 
     fun fetchData(langTag: String, tokenId: String) {
         getCategories(langTag)
-        getOrders(langTag, tokenId)
+        getComplaintOrder(langTag, tokenId)
     }
 
     fun getCategories(langTag: String) {
@@ -44,14 +44,14 @@ class SubmitComplainViewModel : ViewModel() {
         }
     }
 
-    fun getOrders(langTag: String, tokenId: String) {
-        ordersResponse.value = NetworkRequestResponse.loading()
-        ordersResponse.apply {
+    fun getComplaintOrder(langTag: String, tokenId: String) {
+        complaintOrdersResponse.value = NetworkRequestResponse.loading()
+        complaintOrdersResponse.apply {
             this.addSource(
-                OrderRepository(langTag).getMyOrders(
+                OrderRepository(langTag).getComplaintOrder(
                     tokenId = tokenId
                 )
-            ) { ordersResponse.value = it }
+            ) { complaintOrdersResponse.value = it }
         }
     }
 
@@ -62,7 +62,7 @@ class SubmitComplainViewModel : ViewModel() {
                 tokenId = tokenId,
                 title = title.value,
                 description = description.value,
-                relatedOrderNumber = ordersResponse.value?.data?.get(ordersPosition.value!!)?.number,
+                relatedOrderNumber = complaintOrdersResponse.value?.data?.get(ordersPosition.value!!)?.number,
                 categoryId = categoriesResponse.value?.data?.data?.get(categoriesPosition.value!!)?.id,
             )
         )

@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.profileEdit.ProfileEditViewModel" />
@@ -81,7 +83,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView42">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/first_name"
@@ -101,7 +103,7 @@ style="@style/ProjectTextInputEditText"
                 app:layout_constraintTop_toBottomOf="@+id/firstNameTil">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/last_name"
@@ -121,7 +123,7 @@ style="@style/ProjectTextInputEditText"
                 app:layout_constraintTop_toBottomOf="@+id/lastNameTil">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/mobile_number"
@@ -141,7 +143,7 @@ style="@style/ProjectTextInputEditText"
                 app:layout_constraintTop_toBottomOf="@+id/phoneNumberTil">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
@@ -161,7 +163,7 @@ style="@style/ProjectTextInputEditText"
                 app:layout_constraintTop_toBottomOf="@+id/emailTil">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/date_of_birth"
@@ -206,6 +208,19 @@ style="@style/ProjectTextInputEditText"
                 app:layout_constraintStart_toStartOf="@+id/countriesSpinner"
                 app:layout_constraintTop_toBottomOf="@+id/countriesSpinner" />
 
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/zipCodeSpinner"
+                style="@style/ProjectTheme.Spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_rounded_spinner"
+                android:selectedItemPosition="@={viewModel.selectedZipCodePosition}"
+                android:visibility="@{viewModel.signUpFields.haveZipCode == true ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
+                app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/citiesSpinner" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/saveBtn"
                 style="@style/ProjectPurpleFilledButton"
@@ -218,7 +233,7 @@ style="@style/ProjectTextInputEditText"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/cancelBtn"
                 app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
-                app:layout_constraintTop_toBottomOf="@+id/citiesSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/zipCodeSpinner"
                 app:layout_constraintVertical_bias="1.0" />
 
             <com.google.android.material.button.MaterialButton

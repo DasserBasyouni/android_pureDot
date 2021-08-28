@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.signUp.SignUpViewModel" />
@@ -15,6 +17,18 @@
         android:layout_height="wrap_content"
         app:paddingBottomSystemWindowInsets="@{true}"
         tools:context=".ui.screen.MainActivity">
+
+        <include
+            android:id="@+id/servicesLcee"
+            layout="@layout/layout_lcee"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:emptyText="@{@string/something_went_wrong}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lceeModel="@{viewModel.signUpFieldsLcee}" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/firstNameTil"
@@ -131,6 +145,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_rounded_spinner"
             android:selectedItemPosition="@={viewModel.selectedZipCodePosition}"
+            android:visibility="@{viewModel.signUpFieldsResponse.data.haveZipCode == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
             app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
             app:layout_constraintTop_toBottomOf="@+id/citiesSpinner" />
@@ -141,8 +156,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/zipCodeSpinner"
-            app:layout_constraintStart_toStartOf="@+id/zipCodeSpinner"
+            app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
+            app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
             app:layout_constraintTop_toBottomOf="@+id/zipCodeSpinner"
             app:passwordToggleEnabled="true">
 
@@ -241,6 +256,12 @@
             app:layout_constraintEnd_toEndOf="@+id/passwordTil"
             app:layout_constraintStart_toStartOf="@+id/passwordTil"
             app:layout_constraintTop_toBottomOf="@+id/acceptTermsCb" />
+
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{viewModel.signUpFieldsLcee.contentVisibility}"
+            app:constraint_referenced_ids="confirmPasswordTil,phoneNumberTil,lastNameTil,firstNameTil,registerBtn,radioGroup,acceptTermsCb,zipCodeSpinner,passwordTil,countriesSpinner,citiesSpinner,emailTil" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

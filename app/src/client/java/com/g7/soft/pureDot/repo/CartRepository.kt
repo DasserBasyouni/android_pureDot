@@ -2,8 +2,8 @@ package com.g7.soft.pureDot.repo
 
 import android.content.Context
 import androidx.lifecycle.liveData
-import com.g7.soft.pureDot.database.product.ProductCart
-import com.g7.soft.pureDot.database.product.ProductCartDatabase
+import com.g7.soft.pureDot.data.database.product.ProductCart
+import com.g7.soft.pureDot.data.database.product.ProductCartDatabase
 import com.g7.soft.pureDot.model.ProductModel
 import com.g7.soft.pureDot.network.Fetcher
 import com.g7.soft.pureDot.network.NetworkRequestHandler
@@ -24,16 +24,6 @@ class CartRepository(private val langTag: String) {
                 itemId = itemId,
                 quantity = quantity,
                 serviceDateTime = serviceDateTime,
-            )
-        }))
-    }*/
-
-    /*fun getCartItems(
-        tokenId: String?,
-    ) = liveData(Dispatchers.IO) {
-        emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.getCartItems(
-                tokenId = tokenId,
             )
         }))
     }*/
@@ -148,16 +138,6 @@ class CartRepository(private val langTag: String) {
         }
     }*/
 
-    /*fun getCartItems(
-        tokenId: String?,
-    ) = liveData(Dispatchers.IO) {
-        emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.getCartItems(
-                tokenId = tokenId,
-            )
-        }))
-    }*/
-
     fun checkCartProducts(
         tokenId: String?,
         ids: List<String>?,
@@ -192,18 +172,6 @@ class CartRepository(private val langTag: String) {
         }))
     }
 
-    fun checkCoupon(
-        tokenId: String?,
-        coupon: String?,
-    ) = liveData(Dispatchers.IO) {
-        emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.checkCoupon(
-                tokenId = tokenId,
-                coupon = coupon,
-            )
-        }))
-    }
-
     fun checkoutIsPaid(
         tokenId: String?,
         paidAmount: Double?,
@@ -212,16 +180,6 @@ class CartRepository(private val langTag: String) {
             return@handle Fetcher().getInstance(langTag)?.checkoutIsPaid(
                 tokenId = tokenId,
                 paidAmount = paidAmount,
-            )
-        }))
-    }
-
-    fun getWishList(
-        tokenId: String?,
-    ) = liveData(Dispatchers.IO) {
-        emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.getWishList(
-                tokenId = tokenId,
             )
         }))
     }

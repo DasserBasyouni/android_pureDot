@@ -47,7 +47,10 @@ class HomeFragment : Fragment() {
             )
         }
         requireActivity().findViewById<View>(R.id.searchIv).setOnClickListener {
-            // todo
+            val bundle = bundleOf(
+                "sliderType" to ApiConstant.SliderOfferType.SEARCH_RESULTS,
+            )
+            findNavController().navigate(R.id.allProductsFragment, bundle)
         }
 
         // fetch data

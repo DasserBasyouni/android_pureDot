@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="filterViewModel"
+            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
+
+        <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.seeAll.stores.AllStoresViewModel" />
     </data>

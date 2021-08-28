@@ -61,7 +61,7 @@ class OrderFragment : Fragment() {
                 ProjectDialogUtils.showOrderRating(this, viewModel = viewModel)
 
             } else {
-                val bundle = bundleOf("order" to args.order, "masterOderNumber" to )
+                val bundle = bundleOf("order" to args.order, "masterOderNumber" to)
                 findNavController().navigate(R.id.trackOrderFragment, bundle)
             }
         }
@@ -78,13 +78,17 @@ class OrderFragment : Fragment() {
             titleResId = R.string.question_sure_cancel,
             messageResId = R.string.amount_will_be_refunded_to_your_wallet,
             positiveRunnable = {
-                val tokenId = "" // todo
-                viewModel.cancelOrder(
-                    requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId,
-                ).observeApiResponse(this, {
-                    findNavController().popBackStack()
-                })
+                lifecycleScope.launch {
+                    val tokenId =
+                        ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                    viewModel.cancelOrder(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId,
+                    ).observeApiResponse(this@OrderFragment, {
+                        findNavController().popBackStack()
+                    })
+                }
             }
         )
     }

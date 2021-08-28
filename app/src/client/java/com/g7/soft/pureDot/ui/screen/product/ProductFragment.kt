@@ -11,6 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
@@ -23,12 +24,14 @@ import com.g7.soft.pureDot.databinding.FragmentProductBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ProductDetailsModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
+import kotlinx.coroutines.launch
 
 class ProductFragment : Fragment() {
     private lateinit var binding: FragmentProductBinding
@@ -65,7 +68,8 @@ class ProductFragment : Fragment() {
 
         // setup observers
         val imagesOffersAdapter = ImagesSliderAdapter(this)
-        val similarProductsAdapter = ProductsAdapter(this, isGrid = false, editWishList = this::editWishList)
+        val similarProductsAdapter =
+            ProductsAdapter(this, isGrid = false, editWishList = this::editWishList)
         val reviewsAdapter = ReviewsAdapter(this)
         binding.sliderOffersLceeLayoutVp.adapter = imagesOffersAdapter
         binding.similarProductsRv.adapter = similarProductsAdapter
@@ -99,16 +103,20 @@ class ProductFragment : Fragment() {
 
         // setup click listener
         binding.wishListCiv.setOnClickListener {
-            val tokenId = "" //todo
-            editWishList(
-                tokenId,
-                viewModel.product?.id,
-                binding.wishListCiv.isChecked
-            ) {
-                val isChecked = !binding.wishListCiv.isChecked
-                args.item.isInWishList = isChecked
-                viewModel.product?.isInWishList = isChecked
-                binding.wishListCiv.isChecked = isChecked
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                editWishList(
+                    tokenId,
+                    viewModel.product?.id,
+                    binding.wishListCiv.isChecked
+                ) {
+                    val isChecked = !binding.wishListCiv.isChecked
+                    args.item.isInWishList = isChecked
+                    viewModel.product?.isInWishList = isChecked
+                    binding.wishListCiv.isChecked = isChecked
+                }
             }
         }
         binding.reviewsSeeAllTv.setOnClickListener {
@@ -119,13 +127,16 @@ class ProductFragment : Fragment() {
             findNavController().navigate(R.id.allReviewsFragment, bundle)
         }
         binding.sendBtn.setOnClickListener {
-            val tokenId = "" // todo
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-            viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
-                .observeApiResponse(this, {
-                    viewModel.productDetailsResponse.value?.data?.userReview = it
-                    binding.invalidateAll()
-                })
+                viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
+                    .observeApiResponse(this@ProductFragment, {
+                        viewModel.productDetailsResponse.value?.data?.userReview = it
+                        binding.invalidateAll()
+                    })
+            }
         }
         binding.decreaseCartQuantityBtn.setOnClickListener {
             if (viewModel.quantityInCart.value != 1)

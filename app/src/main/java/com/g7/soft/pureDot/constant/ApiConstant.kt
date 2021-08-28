@@ -1,5 +1,7 @@
 package com.g7.soft.pureDot.constant
 
+import com.g7.soft.pureDot.R
+
 
 class ApiConstant {
 
@@ -20,6 +22,17 @@ class ApiConstant {
 
         companion object {
             fun fromInt(value: Int) = values().first { it.value == value }
+
+            fun getMessageResId(status: Status?): Int = when (status) {
+                SUCCESS, NULL_STATUS, ERROR, WRONG_AUTHENTICATION, null -> R.string.something_went_wrong
+                EMAIL_EXIST -> R.string.email_exists
+                MOBILE_EXIST -> R.string.mobile_exists
+                WRONG_PASSWORD -> R.string.wrong_password
+                ACCOUNT_NOT_FOUND -> R.string.account_not_fount
+                NOT_VERIFIED -> R.string.not_verified
+                INCORRECT_VERIFICATION -> R.string.incorrect_verification
+                EXIST_BEFORE -> R.string.exists_before
+            }
         }
     }
 
@@ -144,7 +157,7 @@ class ApiConstant {
         RESOLVED(4003);
 
         companion object {
-            fun fromInt(value: Int) = values().firstOrNull() { it.value == value }
+            fun fromInt(value: Int) = values().firstOrNull { it.value == value }
         }
     }
 
@@ -158,7 +171,15 @@ class ApiConstant {
         INNER_BEST_SELLING(6005);
 
         companion object {
-            fun fromInt(value: Int) = values().firstOrNull() { it.value == value }
+            fun fromInt(value: Int) = values().firstOrNull { it.value == value }
+        }
+    }
+
+    enum class RedirectType(val value: Int) {
+        SHOP(7000), OFFER(7001), PRODUCT(7002);
+
+        companion object {
+            fun fromInt(value: Int?) = values().firstOrNull { it.value == value }
         }
     }
 
@@ -167,7 +188,7 @@ class ApiConstant {
 
         const val BASE_URL = "http://207.38.87.126:2222/api/"
         const val SOCKET_IO_URL = "https://mars.udacity.com/"
-        const val IMG_BASE_URL = "https://images.unsplash.com/"
+        const val IMG_BASE_URL = "http://207.38.87.126:3333/"
 
     }
 }

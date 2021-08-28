@@ -9,16 +9,19 @@ import androidx.appcompat.widget.AppCompatSpinner
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentSubmitComplainBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.CategoryModel
+import com.g7.soft.pureDot.model.ComplaintOrderModel
 import com.g7.soft.pureDot.model.DataWithCountModel
-import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class SubmitComplainFragment : Fragment() {
     private lateinit var binding: FragmentSubmitComplainBinding
@@ -29,7 +32,12 @@ class SubmitComplainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_submit_complain, container, false)
+            DataBindingUtil.inflate(
+                layoutInflater,
+                R.layout.fragment_submit_complain,
+                container,
+                false
+            )
 
         viewModel = ViewModelProvider(this).get(SubmitComplainViewModel::class.java)
 
@@ -43,13 +51,16 @@ class SubmitComplainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" // todo
-        viewModel.fetchData(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.fetchData(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
+        }
 
-        viewModel.ordersResponse.observe(viewLifecycleOwner, {
+        viewModel.complaintOrdersResponse.observe(viewLifecycleOwner, {
             setupSpinner(
                 binding.relatedOrderSpinner,
-                viewModel.ordersResponse.value,
+                viewModel.complaintOrdersResponse.value,
                 initialText = getString(R.string.related_order)
             )
         })
@@ -63,17 +74,21 @@ class SubmitComplainFragment : Fragment() {
 
         // setup onClick
         binding.submitBtn.setOnClickListener {
-            val tokenId = "" // todo
-            viewModel.submit(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
-                .observeApiResponse(this, {
-                    findNavController().popBackStack()
-                })
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                viewModel.submit(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
+                    .observeApiResponse(this@SubmitComplainFragment, {
+                        findNavController().popBackStack()
+                    })
+            }
         }
     }
 
     private fun setupSpinner(
         spinner: AppCompatSpinner,
-        networkResponse: NetworkRequestResponse<List<MasterOrderModel>?>?,
+        networkResponse: NetworkRequestResponse<List<ComplaintOrderModel>?>?,
         initialText: String
     ) {
         val spinnerData = when (networkResponse?.status) {
@@ -87,7 +102,8 @@ class SubmitComplainFragment : Fragment() {
             }
             ProjectConstant.Companion.Status.SUCCESS -> {
                 val modelsList = networkResponse.data
-                val dataList = modelsList?.map { getString(R.string.conc_order_, it.number) }?.toTypedArray()
+                val dataList =
+                    modelsList?.map { getString(R.string.conc_order_, it.number) }?.toTypedArray()
 
                 spinner.isEnabled = true
                 arrayListOf(initialText).apply {

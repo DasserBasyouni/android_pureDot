@@ -9,13 +9,16 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ContactsAdapter
 import com.g7.soft.pureDot.databinding.FragmentTransferMoneyBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 
 class TransferMoneyFragment : Fragment() {
@@ -35,15 +38,21 @@ class TransferMoneyFragment : Fragment() {
                 false
             )
 
-        val tokenId = "" //todo
-        viewModelFactory = TransferMoneyViewModelFactory(
-            tokenId = tokenId,
-        )
-        viewModel =
-            ViewModelProvider(this, viewModelFactory).get(TransferMoneyViewModel::class.java)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModelFactory = TransferMoneyViewModelFactory(
+                tokenId = tokenId,
+            )
+            viewModel =
+                ViewModelProvider(this@TransferMoneyFragment, viewModelFactory).get(
+                    TransferMoneyViewModel::class.java
+                )
+
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@TransferMoneyFragment
+        }
 
         return binding.root
     }
@@ -52,8 +61,11 @@ class TransferMoneyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" //todo
-        viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         viewModel.walletResponse.observe(viewLifecycleOwner, {
@@ -79,32 +91,40 @@ class TransferMoneyFragment : Fragment() {
                 before: Int, count: Int
             ) {
                 if (s.isNotEmpty()) {
-                    val tokenId = "" // todo
-                    viewModel.suggestContact(
-                        requireActivity().currentLocale.toLanguageTag(),
-                        tokenId
-                    )
+                    lifecycleScope.launch {
+                        val tokenId =
+                            ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                        viewModel.suggestContact(
+                            requireActivity().currentLocale.toLanguageTag(),
+                            tokenId
+                        )
+                    }
                 }
             }
         })
 
         // setup on click
         binding.transferBtn.setOnClickListener {
-            val tokenId = "" // todo
-            viewModel.transferMoney(
-                requireActivity().currentLocale.toLanguageTag(),
-                tokenId = tokenId
-            ).observeApiResponse(this, {
-                viewModel.walletResponse.value = viewModel.walletResponse.value.apply {
-                    ProjectDialogUtils.showSimpleMessage(
-                        requireContext(),
-                        messageResId = R.string.msg_transfer_success,
-                        drawableResId = R.drawable.ic_transfer_money,
-                        title = getString(R.string.transfer_money),
-                        positiveBtnOnClick = findNavController()::popBackStack
-                    )
-                }
-            })
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                viewModel.transferMoney(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId
+                ).observeApiResponse(this@TransferMoneyFragment, {
+                    viewModel.walletResponse.value = viewModel.walletResponse.value.apply {
+                        ProjectDialogUtils.showSimpleMessage(
+                            requireContext(),
+                            messageResId = R.string.msg_transfer_success,
+                            drawableResId = R.drawable.ic_transfer_money,
+                            title = getString(R.string.transfer_money),
+                            positiveBtnOnClick = findNavController()::popBackStack
+                        )
+                    }
+                })
+            }
         }
     }
 

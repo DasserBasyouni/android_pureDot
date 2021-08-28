@@ -264,13 +264,6 @@ interface ApiService {
     ): ApiResponseModel<ShippingCostModel>?
 
     @FormUrlEncoded
-    @POST("client/checkCoupon")
-    suspend fun checkCoupon(
-        @Field("tokenId") tokenId: String?,
-        @Field("coupon") coupon: String?,
-    ): ApiResponseModel<DiscountPercentageModel>?
-
-    @FormUrlEncoded
     @POST("client/checkoutIsPaid")
     suspend fun checkoutIsPaid(
         @Field("tokenId") tokenId: String?,

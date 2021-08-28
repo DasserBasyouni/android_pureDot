@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -18,6 +19,8 @@ import com.g7.soft.pureDot.databinding.ItemStaggeredProductLargeBinding
 import com.g7.soft.pureDot.databinding.ItemStaggeredProductSmallBinding
 import com.g7.soft.pureDot.ext.dpToPx
 import com.g7.soft.pureDot.model.ProductModel
+import com.g7.soft.pureDot.repo.ClientRepository
+import kotlinx.coroutines.launch
 
 
 class StaggeredProductsAdapter(
@@ -46,23 +49,27 @@ class StaggeredProductsAdapter(
                 binding.dataModel = dataModel
 
                 // setup margin
-                if ((adapterPosition+2) % 3 == 0) {
+                if ((adapterPosition + 2) % 3 == 0) {
                     (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).bottomMargin =
                         8.dpToPx()
-                } else if ((adapterPosition+1) % 3 == 0) {
+                } else if ((adapterPosition + 1) % 3 == 0) {
                     (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin =
                         8.dpToPx()
                 }
 
                 // setup onClick
                 binding.wishListCiv.setOnClickListener {
-                    val tokenId = "" //todo
-                    editWishList.invoke(
-                        tokenId,
-                        dataModel.id,
-                        binding.wishListCiv.isChecked
-                    ) {
-                        binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                    fragment.lifecycleScope.launch {
+                        val tokenId =
+                            ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+
+                        editWishList.invoke(
+                            tokenId,
+                            dataModel.id,
+                            binding.wishListCiv.isChecked
+                        ) {
+                            binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                        }
                     }
                 }
 
@@ -70,13 +77,17 @@ class StaggeredProductsAdapter(
                 binding.dataModel = dataModel
                 createLayoutParams(binding.root)
                 binding.wishListCiv.setOnClickListener {
-                    val tokenId = "" //todo
-                    editWishList.invoke(
-                        tokenId,
-                        dataModel.id,
-                        binding.wishListCiv.isChecked
-                    ) {
-                        binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                    fragment.lifecycleScope.launch {
+                        val tokenId =
+                            ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+
+                        editWishList.invoke(
+                            tokenId,
+                            dataModel.id,
+                            binding.wishListCiv.isChecked
+                        ) {
+                            binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                        }
                     }
                 }
             }

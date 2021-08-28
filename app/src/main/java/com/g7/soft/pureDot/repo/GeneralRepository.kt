@@ -7,6 +7,12 @@ import kotlinx.coroutines.Dispatchers
 
 class GeneralRepository(private val langTag: String) {
 
+    fun getSignUpFields() = liveData(Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.getSignUpFields()
+        }))
+    }
+
     fun getCounties() = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getAllCounties()
@@ -30,16 +36,24 @@ class GeneralRepository(private val langTag: String) {
     }
 
     fun contactUs(
-        tokenId: String?,
+        name: String?,
         email: String?,
         message: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.contactUs(
-                tokenId = tokenId,
+                name = name,
                 email = email,
                 message = message,
             )
+        }))
+    }
+
+    fun changeLanguage(
+        fcmToken: String?,
+    ) = liveData(Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.changeLanguage(fcmToken = fcmToken)
         }))
     }
 }

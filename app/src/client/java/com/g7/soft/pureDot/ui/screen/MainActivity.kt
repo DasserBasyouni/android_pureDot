@@ -1,8 +1,12 @@
 package com.g7.soft.pureDot.ui.screen
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
@@ -16,6 +20,7 @@ import androidx.navigation.ui.onNavDestinationSelected
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ActivityMainBinding
+import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
 import com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutFragment
 import com.g7.soft.pureDot.util.UiUtils
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
@@ -33,6 +38,7 @@ class MainActivity : LocaleAwareCompatActivity() {
 
     internal lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration // with this or without menu+upButton bug still the same so we can remove the line?
+    private val filterViewModel: FilterViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +46,7 @@ class MainActivity : LocaleAwareCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        binding.filterViewModel = filterViewModel
         binding.lifecycleOwner = this
 
         setSupportActionBar(binding.toolbar)
@@ -53,6 +60,18 @@ class MainActivity : LocaleAwareCompatActivity() {
             navController,
             appBarConfiguration
         )
+
+        // fix non-working observer of search include layout
+        binding.root.findViewById<EditText>(R.id.appCompatEditText).addTextChangedListener(object :
+            TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+
+            override fun afterTextChanged(s: Editable?) {
+                filterViewModel.searchText.value = s.toString()
+            }
+        })
 
         // fix for insets, issue: https://github.com/material-components/material-components-android/issues/1310
         ViewCompat.setOnApplyWindowInsetsListener(binding.collapsingToolbarLayout, null)
@@ -101,6 +120,7 @@ class MainActivity : LocaleAwareCompatActivity() {
                     R.id.serviceFragment,
                     R.id.changeLanguageFragment,
                     R.id.returnFragment,
+                    R.id.addMoneyFragment,
                 ),
                 collapsingToolBarTitleDestinationIds = arrayListOf(R.id.signUpFragment),
                 collapsingHomeDestinationIds = arrayListOf(R.id.homeFragment),
@@ -196,6 +216,7 @@ class MainActivity : LocaleAwareCompatActivity() {
         } else
             super.onBackPressed()
     }
+
 
     fun superOnBackPressed() = super.onBackPressed()
 

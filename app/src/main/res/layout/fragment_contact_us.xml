@@ -25,18 +25,39 @@
             tools:context=".ui.screen.MainActivity">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/emailTil"
+                android:id="@+id/nameTil"
                 style="@style/ProjectTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:text="@={viewModel.name}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@id/nameTil"
+                app:layout_constraintStart_toStartOf="@id/nameTil"
+                app:layout_constraintTop_toBottomOf="@id/nameTil">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/your_email"
@@ -56,7 +77,7 @@ style="@style/ProjectTextInputEditText"
                 app:layout_constraintTop_toBottomOf="@+id/emailTil">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="154dp"
                     android:gravity="start"

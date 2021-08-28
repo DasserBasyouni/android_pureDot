@@ -19,6 +19,7 @@ import com.g7.soft.pureDot.model.CityModel
 import com.g7.soft.pureDot.model.CountryModel
 import com.g7.soft.pureDot.model.ZipCodeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 
@@ -45,11 +46,12 @@ class SignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        viewModel.getCounties(requireActivity().currentLocale.toLanguageTag())
-        viewModel.getCities(requireActivity().currentLocale.toLanguageTag())
-        viewModel.getZipCodes(requireActivity().currentLocale.toLanguageTag())
+        viewModel.fetchData(requireActivity().currentLocale.toLanguageTag())
 
         // observables
+        viewModel.signUpFieldsResponse.observe(viewLifecycleOwner, {
+            viewModel.signUpFieldsLcee.value!!.response.value = it
+        })
         viewModel.selectedCountryPosition.observe(viewLifecycleOwner, {
             viewModel.getCities(requireActivity().currentLocale.toLanguageTag())
         })
@@ -89,15 +91,19 @@ class SignUpFragment : Fragment() {
         binding.registerBtn.setOnClickListener {
             viewModel.register(requireActivity().currentLocale.toLanguageTag())
                 .observeApiResponse(this, {
-                    // todo save user data
-                    if (it?.tokenId != null)
+                    if (it?.tokenId != null) {
+                        // ClientRepository("").saveUserData(requireContext(), it, viewModel.password.value) todo
+                        // save user data
+                        ClientRepository("").updateIsGuestAccount(requireContext(), false)
+                        ClientRepository("").updateTokenId(requireContext(), it.tokenId)
+
                         findNavController().navigate(
                             SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
                                 false,
                                 viewModel.phoneNumber.value
                             )
                         )
-                    else
+                    } else
                         ProjectDialogUtils.showSimpleMessage(
                             requireContext(),
                             R.string.something_went_wrong,
@@ -163,6 +169,5 @@ class SignUpFragment : Fragment() {
             spinner.setSelection(selectedPosition)
         }
     }
-
 
 }

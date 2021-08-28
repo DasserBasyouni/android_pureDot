@@ -27,21 +27,7 @@ class CartViewModel : ViewModel() {
             it.data?.first()?.currency
         }
 
-    /*fun getCartItems(langTag: String, tokenId: String) {
-        cartItemsResponse.value = NetworkRequestResponse.loading()
-
-        // fetch request
-        cartItemsResponse.apply {
-            addSource(
-                CartRepository(langTag).getCartItems(
-                    tokenId = tokenId
-                )
-            ) { cartItemsResponse.value = it }
-        }
-    }
-
-
-    fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int) = liveData(Dispatchers.IO) {
+    /*fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
 
         emitSource(

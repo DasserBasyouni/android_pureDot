@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentChangeLanguageBinding
+import com.g7.soft.pureDot.ext.observeApiResponse
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
 import com.zeugmasolutions.localehelper.currentLocale
 import java.util.*
@@ -16,6 +18,7 @@ import java.util.*
 
 class ChangeLanguageFragment : Fragment() {
     private lateinit var binding: FragmentChangeLanguageBinding
+    private lateinit var viewModel: ChangeLanguageViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +31,9 @@ class ChangeLanguageFragment : Fragment() {
             false
         )
 
+        viewModel = ViewModelProvider(this).get(ChangeLanguageViewModel::class.java)
+
+        binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
         return binding.root
@@ -50,6 +56,12 @@ class ChangeLanguageFragment : Fragment() {
                 changeLocaleTo(Locale("en"))
             else
                 changeLocaleTo(Locale("ar"))
+
+            val fcmToken = "" // todo
+            viewModel.changeLanguage(requireActivity().currentLocale.toLanguageTag(), fcmToken)
+                .observeApiResponse(this, {
+                    // todo
+                })
         }
     }
 

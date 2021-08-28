@@ -9,15 +9,16 @@ import kotlinx.coroutines.Dispatchers
 
 class ContactUsViewModel : ViewModel() {
 
+    val name = MutableLiveData<String?>()
     val email = MutableLiveData<String?>()
     val message = MutableLiveData<String?>()
 
 
-    fun submit(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun submit(langTag: String) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
             GeneralRepository(langTag).contactUs(
-                tokenId = tokenId,
+                name = name.value,
                 email = email.value,
                 message = message.value,
             )

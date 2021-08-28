@@ -33,6 +33,19 @@
                 app:srcCompat="@drawable/app_gradient_scrim_part_2" />
 
             <include
+                android:id="@+id/signUpFieldsLcee"
+                layout="@layout/layout_lcee"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:emptyText="@{@string/something_went_wrong}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatImageView12"
+                app:lceeModel="@{viewModel.signUpFieldsLcee}" />
+
+            <include
                 android:id="@+id/userDataLcee"
                 layout="@layout/layout_lcee"
                 android:layout_width="0dp"

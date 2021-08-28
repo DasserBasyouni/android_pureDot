@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.Application
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentStartBinding
 import com.g7.soft.pureDot.ext.makeLinks
+import com.g7.soft.pureDot.repo.ClientRepository
+import kotlinx.coroutines.launch
 
 // todo make this fragment MVVM arch
 class StartFragment : Fragment() {
@@ -35,10 +38,6 @@ class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*lifecycleScope.launch {
-            ClientRepository("").saveTokenId(requireContext(), "dasser test")
-        }*/
-
         // setup listeners
         binding.loginBtn.setOnClickListener {
             findNavController().navigate(R.id.action_startFragment_to_loginFragment)
@@ -49,7 +48,9 @@ class StartFragment : Fragment() {
         if (Application.isClientFlavour) {
             binding.continueAsGuestTv.visibility = View.VISIBLE
             binding.continueAsGuestTv.makeLinks(Pair(getString(R.string.part_guest), View.OnClickListener {
-                // todo save guest token
+                lifecycleScope.launch {
+                    ClientRepository("").updateIsGuestAccount(requireContext(), true)
+                }
                 findNavController().navigate(R.id.action_startFragment_to_homeFragment)
             }), doChangeColor = false)
         }

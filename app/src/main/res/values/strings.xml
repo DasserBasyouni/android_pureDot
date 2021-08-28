@@ -61,6 +61,7 @@
     <string name="empty_offers">No offers</string>
     <string name="empty_products">No products</string>
     <string name="empty_categories">No categories</string>
+    <string name="empty_complaints">No complaints</string>
     <string name="empty_services">No services</string>
     <string name="empty_notifications">No notifications</string>
     <string name="empty_orders">No orders</string>
@@ -299,4 +300,6 @@
     <string name="not_verified">Not verified</string>
     <string name="incorrect_verification">Incorrect verification</string>
     <string name="exists_before">Exists before</string>
+    <string name="name">Name</string>
+    <string name="zip_code">Zip Code</string>
 </resources>

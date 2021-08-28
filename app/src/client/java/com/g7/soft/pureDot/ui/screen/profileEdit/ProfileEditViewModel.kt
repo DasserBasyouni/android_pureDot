@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.ext.toFormattedDateTime
-import com.g7.soft.pureDot.model.CityModel
-import com.g7.soft.pureDot.model.ClientDataModel
-import com.g7.soft.pureDot.model.CountryModel
+import com.g7.soft.pureDot.model.*
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.repo.GeneralRepository
@@ -17,13 +15,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 // TODO IMP ADD VALIDATION LAYER ON INPUTS FOR THE WHOLE APP
-class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
+class ProfileEditViewModel(
+    val userData: ClientDataModel?,
+    val signUpFields: SignUpFieldsModel?
+) : ViewModel() {
 
     val dateFormat = "dd/MM/yyyy"
 
 
     val countiesResponse = MediatorLiveData<NetworkRequestResponse<List<CountryModel>?>?>()
     val citiesResponse = MediatorLiveData<NetworkRequestResponse<List<CityModel>?>>()
+    val zipCodesResponse = MediatorLiveData<NetworkRequestResponse<List<ZipCodeModel>?>>()
 
     val firstName = MutableLiveData<String?>()
     val lastName = MutableLiveData<String?>()
@@ -32,8 +34,21 @@ class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
     val dateOfBirth = MutableLiveData<String?>()
     val selectedGenderPosition = MutableLiveData<Int?>().apply { this.value = 0 }
     val selectedCountryPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedCountry
+        get() = countiesResponse.value?.data?.getOrNull(
+            selectedCountryPosition.value?.minus(1) ?: -1
+        )
     val selectedCityPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedCity
+        get() = citiesResponse.value?.data?.getOrNull(
+            selectedCityPosition.value?.minus(1) ?: -1
+        )
 
+    val selectedZipCodePosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedZipCode
+        get() = zipCodesResponse.value?.data?.getOrNull(
+            selectedZipCodePosition.value?.minus(1) ?: -1
+        )
 
     init {
         firstName.value = userData?.firstName
@@ -46,12 +61,16 @@ class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
     }
 
 
+    fun fetchData(langTag: String) {
+        getCounties(langTag)
+        getCities(langTag)
+        getZipCodes(langTag)
+    }
+
     fun getCounties(langTag: String) {
         countiesResponse.value = NetworkRequestResponse.loading()
         countiesResponse.apply {
-            this.addSource(GeneralRepository(langTag).getCounties()) {
-                countiesResponse.value = it
-            }
+            this.addSource(GeneralRepository(langTag).getCounties()) { countiesResponse.value = it }
         }
     }
 
@@ -60,13 +79,20 @@ class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
         citiesResponse.apply {
             this.addSource(
                 GeneralRepository(langTag).getCities(
-                    countryId = countiesResponse.value?.data?.get(
-                        selectedCountryPosition.value!!
-                    )?.id
+                    countryId = selectedCountry?.id
                 )
-            ) {
-                citiesResponse.value = it
-            }
+            ) { citiesResponse.value = it }
+        }
+    }
+
+    fun getZipCodes(langTag: String) {
+        zipCodesResponse.value = NetworkRequestResponse.loading()
+        zipCodesResponse.apply {
+            this.addSource(
+                GeneralRepository(langTag).getZipCodes(
+                    cityId = selectedCity?.id
+                )
+            ) { zipCodesResponse.value = it }
         }
     }
 
@@ -89,8 +115,8 @@ class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
                 lastName = lastName.value,
                 phoneNumber = phoneNumber.value,
                 email = email.value,
-                countryId = countiesResponse.value?.data?.get(selectedCountryPosition.value!!)?.id,
-                cityId = citiesResponse.value?.data?.get(selectedCityPosition.value!!)?.id,
+                cityId = selectedCity?.id,
+                zipCodeId = if (signUpFields?.haveZipCode == true) selectedZipCode?.id else null,
                 isMale = selectedGenderPosition.value == 0,
                 countryCode = null,
                 dateOfBirth = timestamp?.time?.div(1000),

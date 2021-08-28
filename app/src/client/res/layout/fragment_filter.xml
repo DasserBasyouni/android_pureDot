@@ -213,20 +213,21 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout3"
                 style="@style/SquareTextInputLayout"
-                app:layout_constraintEnd_toStartOf="@id/appCompatTextView74"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@id/appCompatTextView74"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView15"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView15"
                 app:suffixText="@{viewModel.currency}"
                 tools:suffixText="EGP">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
+                    android:maxLength="4"
                     android:text="@={viewModel.minPrice}"
                     tools:text="0" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -262,10 +263,11 @@ style="@style/ProjectTextInputEditText"
                 tools:suffixText="EGP">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
+                    android:maxLength="4"
                     android:text="@={viewModel.maxPrice}"
                     tools:text="9999" />
 

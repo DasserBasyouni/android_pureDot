@@ -7,7 +7,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class CartItemsModel(
-    @Json(name = "products") val products: MutableList<ProductModel>?,
-    @Json(name = "serviceDateTime") val serviceDateTime: Long?,
-) : Parcelable
+data class SignUpFieldsModel(
+    @Json(name = "haveZipCode") val haveZipCode: Boolean?,
+): Parcelable

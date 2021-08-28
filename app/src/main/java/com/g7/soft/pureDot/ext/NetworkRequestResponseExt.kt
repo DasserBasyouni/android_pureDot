@@ -86,24 +86,13 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
                                 chosenApiStatusObserve?.let { function -> function(it.apiErrorStatus) }
                             }
                         }
-                        else -> {
-                            val messageResId = when (it.apiErrorStatus) {
-                                ApiConstant.Status.SUCCESS, ApiConstant.Status.NULL_STATUS, ApiConstant.Status.ERROR, ApiConstant.Status.WRONG_AUTHENTICATION, null -> R.string.something_went_wrong
-                                ApiConstant.Status.EMAIL_EXIST -> R.string.email_exists
-                                ApiConstant.Status.MOBILE_EXIST -> R.string.mobile_exists
-                                ApiConstant.Status.WRONG_PASSWORD -> R.string.wrong_password
-                                ApiConstant.Status.ACCOUNT_NOT_FOUND -> R.string.account_not_fount
-                                ApiConstant.Status.NOT_VERIFIED -> R.string.not_verified
-                                ApiConstant.Status.INCORRECT_VERIFICATION -> R.string.incorrect_verification
-                                ApiConstant.Status.EXIST_BEFORE -> R.string.exists_before
-                            }
-
+                        else ->
                             ProjectDialogUtils.showSimpleMessage(
                                 fragment.requireContext(),
-                                messageResId,
+                                ApiConstant.Status.getMessageResId(it.apiErrorStatus),
                                 R.drawable.ic_secure_shield
                             )
-                        }
+
                     }
                 }
                 ProjectConstant.Companion.Status.NETWORK_ERROR -> {

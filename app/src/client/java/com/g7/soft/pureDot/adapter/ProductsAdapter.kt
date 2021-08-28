@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,6 +14,8 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemProductGridViewBinding
 import com.g7.soft.pureDot.databinding.ItemProductLinearViewBinding
 import com.g7.soft.pureDot.model.ProductModel
+import com.g7.soft.pureDot.repo.ClientRepository
+import kotlinx.coroutines.launch
 
 
 class ProductsAdapter(
@@ -39,25 +42,31 @@ class ProductsAdapter(
             if (binding is ItemProductGridViewBinding) {
                 binding.dataModel = dataModel
                 binding.wishListCiv.setOnClickListener {
-                    val tokenId = "" //todo
-                    editWishList.invoke(
-                        tokenId,
-                        dataModel.id,
-                        binding.wishListCiv.isChecked
-                    ) {
-                        binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                    fragment.lifecycleScope.launch {
+                        val tokenId =
+                            ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+                        editWishList.invoke(
+                            tokenId,
+                            dataModel.id,
+                            binding.wishListCiv.isChecked
+                        ) {
+                            binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                        }
                     }
                 }
             } else if (binding is ItemProductLinearViewBinding) {
                 binding.dataModel = dataModel
                 binding.wishListCiv.setOnClickListener {
-                    val tokenId = "" //todo
-                    editWishList.invoke(
-                        tokenId,
-                        dataModel.id,
-                        binding.wishListCiv.isChecked
-                    ) {
-                        binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                    fragment.lifecycleScope.launch {
+                        val tokenId =
+                            ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+                        editWishList.invoke(
+                            tokenId,
+                            dataModel.id,
+                            binding.wishListCiv.isChecked
+                        ) {
+                            binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                        }
                     }
                 }
             }

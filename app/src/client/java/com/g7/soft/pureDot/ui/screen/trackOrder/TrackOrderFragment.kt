@@ -7,14 +7,17 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.TimeLineAdapter
 import com.g7.soft.pureDot.databinding.FragmentTrackOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class TrackOrderFragment : Fragment() {
 
@@ -46,8 +49,11 @@ class TrackOrderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" // todo
-        viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val timelineAdapter = TimeLineAdapter()
@@ -62,8 +68,8 @@ class TrackOrderFragment : Fragment() {
             findNavController().navigate(R.id.submitComplainFragment)
         }
         binding.trackOrRateBtn.setOnClickListener {
-            if (viewModel.order?.isDelivered == true){
-              // todo rate
+            if (viewModel.order?.isDelivered == true) {
+                // todo rate
             } else
                 cancelOrder()
         }
@@ -76,13 +82,17 @@ class TrackOrderFragment : Fragment() {
             titleResId = R.string.question_sure_cancel,
             messageResId = R.string.amount_will_be_refunded_to_your_wallet,
             positiveRunnable = {
-                val tokenId = "" // todo
-                viewModel.cancelOrder(
-                    requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId,
-                ).observeApiResponse(this, {
-                    findNavController().navigate(R.id.action_trackOrderFragment_to_homeFragment)
-                })
+                lifecycleScope.launch {
+                    val tokenId =
+                        ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                    viewModel.cancelOrder(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId,
+                    ).observeApiResponse(this@TrackOrderFragment, {
+                        findNavController().navigate(R.id.action_trackOrderFragment_to_homeFragment)
+                    })
+                }
             }
         )
     }

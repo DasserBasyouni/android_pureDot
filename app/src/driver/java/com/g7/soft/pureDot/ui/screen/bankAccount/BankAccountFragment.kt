@@ -24,7 +24,12 @@ class BankAccountFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_bank_account, container, false)
+            DataBindingUtil.inflate(
+                layoutInflater,
+                R.layout.fragment_bank_account,
+                container,
+                false
+            )
 
         viewModel = ViewModelProvider(this).get(BankAccountViewModel::class.java)
 
@@ -38,15 +43,20 @@ class BankAccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // set screen title
-        (requireActivity() as MainActivity).toolbar_title.text = getString(R.string.update_bank_account_details)
+        (requireActivity() as MainActivity).toolbar_title.text =
+            getString(R.string.update_bank_account_details)
 
         // set onClick listener
         binding.saveBtn.setOnClickListener {
-            val tokenId = "" // todo
-            viewModel.save(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
-                .observeApiResponse(this, {
-                    findNavController().popBackStack()
-                })
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                viewModel.save(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
+                    .observeApiResponse(this, {
+                        findNavController().popBackStack()
+                    })
+            }
         }
         binding.cancelBtn.setOnClickListener {
             findNavController().popBackStack()

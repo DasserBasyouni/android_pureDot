@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="filterViewModel"
+            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
+
+        <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.category.CategoryViewModel" />
     </data>
@@ -31,6 +35,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="16dp"
+                app:filterViewModel="@{filterViewModel}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -109,10 +114,10 @@
                 android:id="@+id/sliderOffersLceeLayoutCv"
                 android:layout_width="0dp"
                 android:layout_height="120dp"
-                android:visibility="@{viewModel.sliderOffersLcee.contentVisibility}"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:visibility="@{viewModel.sliderOffersLcee.contentVisibility}"
                 app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -129,8 +134,8 @@
                 android:id="@+id/sliderOffersLceeLayoutTl"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:visibility="@{viewModel.sliderOffersLcee.contentVisibility}"
                 android:background="@android:color/transparent"
+                android:visibility="@{viewModel.sliderOffersLcee.contentVisibility}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/sliderOffersLceeLayoutCv"

@@ -1,5 +1,6 @@
 package com.g7.soft.pureDot.model
 
+import com.g7.soft.pureDot.constant.ApiConstant
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -9,4 +10,6 @@ data class SliderOfferModel(
     @Json(name = "imageUrl") val imageUrl: String?,
     @Json(name = "redirectId") val redirectId: Int?,
     @Json(name = "redirectType") val redirectType: Int?
-)
+) {
+    val redirectTypeEnum get() = ApiConstant.RedirectType.fromInt(redirectType)
+}

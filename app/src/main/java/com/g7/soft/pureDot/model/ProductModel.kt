@@ -16,7 +16,7 @@ data class ProductModel(
     @Json(name = "imageUrl") val imageUrl: String? = null,
     //@Json(name = "vat") val vat: Double? = null, // receiving this in checkCartProducts only
     @Json(name = "shop") val shop: StoreModel? = null,
-    @Json(name = "isAvailable") val isAvailable: Boolean? = null,
+    @Json(name = "isAvailable") val isAvailable: Boolean? = true, // receiving this in getWishList only so default value will be true for UI
     @Json(name = "currency") val currency: String? = null, // receiving this in checkCartProducts only
     @Json(name = "discountPercentage") val discountPercentage: Float? = null,
     @Json(name = "isPercentageDiscount") val isPercentageDiscount: Boolean? = null,
@@ -25,7 +25,7 @@ data class ProductModel(
     //@Json(name = "availableQuantity") var availableQuantity: Int? = null,
     @Json(name = "isInWishList") var isInWishList: Boolean? = null, // receiving this in checkCartProducts only
 
-    ) : Parcelable {
+) : Parcelable {
     val discountPercentageInHundred get() = discountPercentage?.times(100)?.toInt() ?: 0
 
     val priceWithDiscount get() = price?.minus(price.times(discountPercentage ?: 0f))

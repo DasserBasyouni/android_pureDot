@@ -8,13 +8,16 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.NotificationsAdapter
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentNotificationBinding
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class NotificationFragment : Fragment() {
     private lateinit var binding: FragmentNotificationBinding
@@ -44,8 +47,11 @@ class NotificationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" // todo
-        viewModel.getNotifications(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getNotifications(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val notificationAdapter = NotificationsAdapter(this)
@@ -64,21 +70,28 @@ class NotificationFragment : Fragment() {
 
         // setup click listener
         viewModel.doNotify.observe(viewLifecycleOwner, {
-            val tokenId = "" //todo
-            viewModel.doNotify(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
-                .observe(viewLifecycleOwner, {
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-                    // show loading
-                    if (it.status == ProjectConstant.Companion.Status.LOADING)
-                        ProjectDialogUtils.showLoading(requireContext())
-                    else ProjectDialogUtils.hideLoading()
+                viewModel.doNotify(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId
+                )
+                    .observe(viewLifecycleOwner, {
 
-                    // reset the switch if have error
-                    if (it.status == ProjectConstant.Companion.Status.API_ERROR
-                        || it.status == ProjectConstant.Companion.Status.NETWORK_ERROR
-                    )
-                        binding.doNotifyS.isChecked = !binding.doNotifyS.isChecked
-                })
+                        // show loading
+                        if (it.status == ProjectConstant.Companion.Status.LOADING)
+                            ProjectDialogUtils.showLoading(requireContext())
+                        else ProjectDialogUtils.hideLoading()
+
+                        // reset the switch if have error
+                        if (it.status == ProjectConstant.Companion.Status.API_ERROR
+                            || it.status == ProjectConstant.Companion.Status.NETWORK_ERROR
+                        )
+                            binding.doNotifyS.isChecked = !binding.doNotifyS.isChecked
+                    })
+            }
         })
     }
 }

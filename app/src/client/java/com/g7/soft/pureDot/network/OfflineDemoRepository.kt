@@ -448,6 +448,13 @@ class OfflineDemoRepository {
         )
 
         // general
+        val getSignUpFields = hashMapOf<String, Any?>(
+            "status" to ApiConstant.Status.SUCCESS.value,
+            "data" to hashMapOf(
+                "haveZipCode" to true
+            )
+        )
+
         val getAllCounties: HashMap<String, Any?>
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,
@@ -528,20 +535,17 @@ class OfflineDemoRepository {
         val get10Products: HashMap<String, Any?>
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,
-                "data" to hashMapOf(
-                    "totalCount" to 512,
-                    "data" to listOf(
-                        notAvailableProduct,
-                        product2,
-                        product1,
-                        product2,
-                        product1,
-                        product2,
-                        product1,
-                        product2,
-                        product1,
-                        product2
-                    )
+                "data" to listOf(
+                    notAvailableProduct,
+                    product2,
+                    product1,
+                    product2,
+                    product1,
+                    product2,
+                    product1,
+                    product2,
+                    product1,
+                    product2
                 )
             )
 
@@ -595,11 +599,6 @@ class OfflineDemoRepository {
                     "totalPriceInCart" to 230
                 )
             )
-        val getCartItems: HashMap<String, Any?>
-            get() = hashMapOf(
-                "status" to ApiConstant.Status.SUCCESS.value,
-                "data" to cartItemsModel1
-            )
         val getProductDetails: HashMap<String, Any?>
             get() = hashMapOf(
                 "status" to ApiConstant.Status.SUCCESS.value,
@@ -640,13 +639,6 @@ class OfflineDemoRepository {
                 "status" to ApiConstant.Status.SUCCESS.value,
                 "data" to hashMapOf(
                     "shippingCost" to 15.00
-                )
-            )
-        val checkCoupon: HashMap<String, Any?>
-            get() = hashMapOf(
-                "status" to ApiConstant.Status.SUCCESS.value,
-                "data" to hashMapOf(
-                    "discountPercentage" to .15,
                 )
             )
         val checkoutIsPaid: HashMap<String, Any?>

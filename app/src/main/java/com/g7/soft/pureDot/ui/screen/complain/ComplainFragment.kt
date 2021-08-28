@@ -8,12 +8,15 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.CommentsAdapter
 import com.g7.soft.pureDot.databinding.FragmentComplainBinding
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class ComplainFragment : Fragment() {
     private lateinit var binding: FragmentComplainBinding
@@ -43,8 +46,11 @@ class ComplainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" //todo
-        viewModel.getComplainComments(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getComplainComments(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val commentsAdapter = CommentsAdapter(this)

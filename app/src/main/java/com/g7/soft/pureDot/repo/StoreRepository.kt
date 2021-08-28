@@ -16,7 +16,7 @@ class StoreRepository(private val langTag: String) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getALlStores(
                 pageNumber = pageNumber,
-                itemPerPage = itemsPerPage,
+                itemsPerPage = itemsPerPage,
                 searchText = searchText,
                 categoryId = categoryId
             )

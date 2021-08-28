@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.paging.PagedList
 import com.g7.soft.pureDot.R
@@ -14,7 +15,9 @@ import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentAllReviewsBinding
 import com.g7.soft.pureDot.model.ReviewModel
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
+import kotlinx.coroutines.launch
 
 
 class AllReviewsFragment : Fragment() {
@@ -30,14 +33,23 @@ class AllReviewsFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_all_reviews, container, false)
 
-        viewModelFactory = AllReviewsViewModelFactory(
-            itemId = args.itemId,
-            tokenId = "" // todo
-        )
-        viewModel = ViewModelProvider(this, viewModelFactory).get(AllReviewsViewModel::class.java)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModelFactory = AllReviewsViewModelFactory(
+                itemId = args.itemId,
+                tokenId = tokenId
+            )
+            viewModel =
+                ViewModelProvider(
+                    this@AllReviewsFragment,
+                    viewModelFactory
+                ).get(AllReviewsViewModel::class.java)
+
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@AllReviewsFragment
+        }
 
         return binding.root
     }

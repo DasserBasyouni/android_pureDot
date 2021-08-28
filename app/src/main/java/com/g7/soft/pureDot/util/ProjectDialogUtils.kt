@@ -12,16 +12,19 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.lifecycle.lifecycleScope
 import com.g7.soft.pureDot.Application
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.ext.dpToPx
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.OrderReviewModel
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.ui.bindPriceWithCurrency
 import com.g7.soft.pureDot.ui.screen.order.OrderFragment
 import com.g7.soft.pureDot.ui.screen.order.OrderViewModel
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.main.dialog_rating.*
+import kotlinx.coroutines.launch
 
 
 // todo a cleaner solution?
@@ -231,24 +234,28 @@ class ProjectDialogUtils {
             dialog.findViewById<TextView>(R.id.positiveBtn).apply {
                 this.text = context.getString(R.string.submit_review)
                 this.setOnClickListener {
-                    val tokenId = "" //todo
-                    viewModel.rateOrder(
-                        langTag = fragment.requireActivity().currentLocale.toLanguageTag(),
-                        tokenId = tokenId,
-                        orderRating = dialog.orderRatingRb.rating,
-                        orderComment = dialog.orderCommentTil.editText?.text?.toString(),
-                        deliveryRating = dialog.deliveryRatingRb.rating,
-                        deliveryComment = dialog.deliveryCommentTil.editText?.text?.toString()
-                    ).observeApiResponse(fragment, {
-                        viewModel.masterOrder?.review = OrderReviewModel(
+                    fragment.lifecycleScope.launch {
+                        val tokenId =
+                            ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+
+                        viewModel.rateOrder(
+                            langTag = fragment.requireActivity().currentLocale.toLanguageTag(),
+                            tokenId = tokenId,
                             orderRating = dialog.orderRatingRb.rating,
                             orderComment = dialog.orderCommentTil.editText?.text?.toString(),
                             deliveryRating = dialog.deliveryRatingRb.rating,
                             deliveryComment = dialog.deliveryCommentTil.editText?.text?.toString()
-                        )
-                        dialog.dismiss()
-                        fragment.binding.invalidateAll()
-                    })
+                        ).observeApiResponse(fragment, {
+                            viewModel.masterOrder?.review = OrderReviewModel(
+                                orderRating = dialog.orderRatingRb.rating,
+                                orderComment = dialog.orderCommentTil.editText?.text?.toString(),
+                                deliveryRating = dialog.deliveryRatingRb.rating,
+                                deliveryComment = dialog.deliveryCommentTil.editText?.text?.toString()
+                            )
+                            dialog.dismiss()
+                            fragment.binding.invalidateAll()
+                        })
+                    }
                 }
             }
 

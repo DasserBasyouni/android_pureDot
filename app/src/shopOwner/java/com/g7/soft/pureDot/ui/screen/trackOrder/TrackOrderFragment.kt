@@ -45,8 +45,11 @@ class TrackOrderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" // todo
-        viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val timelineAdapter = TimeLineAdapter()
@@ -61,8 +64,8 @@ class TrackOrderFragment : Fragment() {
             findNavController().navigate(R.id.submitComplainFragment)
         }
         binding.trackOrRateBtn.setOnClickListener {
-            if (viewModel.order?.isDelivered == true){
-              // todo rate
+            if (viewModel.order?.isDelivered == true) {
+                // todo rate
             } else
                 cancelOrder()
         }
@@ -75,13 +78,17 @@ class TrackOrderFragment : Fragment() {
             titleResId = R.string.question_sure_cancel,
             messageResId = R.string.amount_will_be_refunded_to_your_wallet,
             positiveRunnable = {
-                val tokenId = "" // todo
-                viewModel.cancelOrder(
-                    requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId,
-                ).observeApiResponse(this, {
-                    findNavController().navigate(R.id.action_trackOrderFragment_to_homeFragment)
-                })
+                lifecycleScope.launch {
+                    val tokenId =
+                        ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                    viewModel.cancelOrder(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId,
+                    ).observeApiResponse(this@TrackOrderFragment, {
+                        findNavController().navigate(R.id.action_trackOrderFragment_to_homeFragment)
+                    })
+                }
             }
         )
     }

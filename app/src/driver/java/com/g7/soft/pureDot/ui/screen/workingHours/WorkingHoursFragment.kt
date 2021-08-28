@@ -19,7 +19,12 @@ class WorkingHoursFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_working_hours, container, false)
+            DataBindingUtil.inflate(
+                layoutInflater,
+                R.layout.fragment_working_hours,
+                container,
+                false
+            )
 
         viewModel = ViewModelProvider(this).get(WorkingHoursViewModel::class.java)
 
@@ -34,8 +39,11 @@ class WorkingHoursFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" //todo
-        viewModel.getMyOrders(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getMyOrders(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         viewModel.workingHoursResponse.observe(viewLifecycleOwner, {

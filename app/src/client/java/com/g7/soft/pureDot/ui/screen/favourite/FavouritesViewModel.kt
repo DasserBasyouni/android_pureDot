@@ -11,7 +11,7 @@ import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.ProductRepository
 import kotlinx.coroutines.Dispatchers
 
-class FavouritesViewModel : ViewModel() {
+class FavouritesViewModel(internal val tokenId: String?) : ViewModel() {
 
     val productsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     var productsPagedList: LiveData<PagedList<ProductModel>>? = null

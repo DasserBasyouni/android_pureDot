@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.database.product
+package com.g7.soft.pureDot.data.database.product
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

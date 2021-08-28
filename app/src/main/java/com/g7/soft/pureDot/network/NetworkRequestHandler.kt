@@ -24,6 +24,7 @@ class NetworkRequestHandler {
                 emit(NetworkRequestResponse.apiError<T>(apiStatus = ApiConstant.Status.fromInt(networkRequest.status!!)))
 
         } catch (exception: Exception) {
+            Log.e("Z_", "ee: $exception")
             Timber.e("NetworkRequestHandler: handle catch", exception)
             emit(NetworkRequestResponse.error<T>(exception = exception))
         }

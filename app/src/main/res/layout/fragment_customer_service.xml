@@ -28,7 +28,7 @@
                 layout="@layout/layout_lcee"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:emptyText="@{@string/empty_orders}"
+                app:emptyText="@{@string/empty_complaints}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +43,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/submit_a_complain"
-                android:visibility="@{viewModel.complainLcee.contentVisibility}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

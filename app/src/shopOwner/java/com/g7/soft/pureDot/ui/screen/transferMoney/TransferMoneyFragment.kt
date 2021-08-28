@@ -35,15 +35,21 @@ class TransferMoneyFragment : Fragment() {
                 false
             )
 
-        val tokenId = "" //todo
-        viewModelFactory = TransferMoneyViewModelFactory(
-            tokenId = tokenId,
-        )
-        viewModel =
-            ViewModelProvider(this, viewModelFactory).get(TransferMoneyViewModel::class.java)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModelFactory = TransferMoneyViewModelFactory(
+                tokenId = tokenId,
+            )
+            viewModel =
+                ViewModelProvider(this@TransferMoneyFragment, viewModelFactory).get(
+                    TransferMoneyViewModel::class.java
+                )
+
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@TransferMoneyFragment
+        }
 
         return binding.root
     }
@@ -52,8 +58,11 @@ class TransferMoneyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" //todo
-        viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         viewModel.walletResponse.observe(viewLifecycleOwner, {
@@ -79,18 +88,25 @@ class TransferMoneyFragment : Fragment() {
                 before: Int, count: Int
             ) {
                 if (s.isNotEmpty()) {
-                    val tokenId = "" // todo
-                    viewModel.suggestContact(
-                        requireActivity().currentLocale.toLanguageTag(),
-                        tokenId
-                    )
+                    lifecycleScope.launch {
+                        val tokenId =
+                            ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                        viewModel.suggestContact(
+                            requireActivity().currentLocale.toLanguageTag(),
+                            tokenId
+                        )
+                    }
                 }
             }
         })
 
         // setup on click
         binding.transferBtn.setOnClickListener {
-            val tokenId = "" // todo
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
             viewModel.transferMoney(
                 requireActivity().currentLocale.toLanguageTag(),
                 tokenId = tokenId
@@ -105,7 +121,7 @@ class TransferMoneyFragment : Fragment() {
                     )
                 }
             })
-        }
+        }}
     }
 
 }

@@ -43,30 +43,38 @@ class PendingOrdersAdapter(private val fragment: HomeFragment) :
             }
 
             binding.acceptBtn.setOnClickListener {
-                val tokenId = "" // todo
-                fragment.viewModel.changeOrderStatus(
-                    langTag = fragment.requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId,
-                    orderNumber = dataModel.number,
-                    status = ApiConstant.OrderDeliveryStatus.ACCEPTED.value
-                ).observeApiResponse(fragment, {
-                    fragment.viewModel.selectedOrder.value = dataModel
-                    fragment.binding.positiveBtn.performClick()
-                })
+                fragment.lifecycleScope.launch {
+                    val tokenId =
+                        ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+
+                    fragment.viewModel.changeOrderStatus(
+                        langTag = fragment.requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId,
+                        orderNumber = dataModel.number,
+                        status = ApiConstant.OrderDeliveryStatus.ACCEPTED.value
+                    ).observeApiResponse(fragment, {
+                        fragment.viewModel.selectedOrder.value = dataModel
+                        fragment.binding.positiveBtn.performClick()
+                    })
+                }
             }
             binding.rejectBtn.setOnClickListener {
-                val tokenId = "" // todo
-                fragment.viewModel.changeOrderStatus(
-                    langTag = fragment.requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId,
-                    orderNumber = dataModel.number,
-                    status = ApiConstant.OrderDeliveryStatus.ACCEPTED.value
-                ).observeApiResponse(fragment, {
-                    fragment.viewModel.ordersResponse.value =
-                        fragment.viewModel.ordersResponse.value.also {
-                            it?.data?.removeAt(it.data.indexOfFirst { order -> order.number == dataModel.number })
-                        }
-                })
+                fragment.lifecycleScope.launch {
+                    val tokenId =
+                        ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+
+                    fragment.viewModel.changeOrderStatus(
+                        langTag = fragment.requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId,
+                        orderNumber = dataModel.number,
+                        status = ApiConstant.OrderDeliveryStatus.ACCEPTED.value
+                    ).observeApiResponse(fragment, {
+                        fragment.viewModel.ordersResponse.value =
+                            fragment.viewModel.ordersResponse.value.also {
+                                it?.data?.removeAt(it.data.indexOfFirst { order -> order.number == dataModel.number })
+                            }
+                    })
+                }
             }
         }
 

@@ -70,7 +70,6 @@ class MockInterceptor : Interceptor {
                         uri.contains("driver/getCartItems") -> OfflineDemoRepository.getCartItems
                         uri.contains("driver/getItemDetails") -> OfflineDemoRepository.getItemDetails
                         uri.contains("driver/checkout") -> OfflineDemoRepository.checkout
-                        uri.contains("driver/checkCoupon") -> OfflineDemoRepository.checkCoupon
                         uri.contains("driver/checkoutIsPaid") -> OfflineDemoRepository.getSuccessfulStatusWithNumber
                         uri.contains("driver/getWishList") -> OfflineDemoRepository.getWishList
 

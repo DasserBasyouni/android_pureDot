@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.contactUs.ContactUsViewModel" />
+            type="com.g7.soft.pureDot.ui.screen.changeLanguage.ChangeLanguageViewModel" />
     </data>
 
 

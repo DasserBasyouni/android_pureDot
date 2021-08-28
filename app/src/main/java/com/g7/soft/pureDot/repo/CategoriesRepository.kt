@@ -16,7 +16,7 @@ class CategoriesRepository(private val langTag: String) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getCategories(
                 pageNumber = pageNumber,
-                itemPerPage = itemsPerPage,
+                itemsPerPage = itemsPerPage,
                 searchText = searchText,
                 shopId = shopId
             )

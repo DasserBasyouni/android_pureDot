@@ -15,6 +15,16 @@ class OrderRepository(private val langTag: String) {
         }))
     }
 
+    fun getComplaintOrder(
+        tokenId: String?,
+    ) = androidx.lifecycle.liveData(kotlinx.coroutines.Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.getComplaintOrder(
+                tokenId = tokenId,
+            )
+        }))
+    }
+
     fun trackOrder(
         tokenId: String?,
         orderNumber: Int?,

@@ -676,18 +676,20 @@ open class HomeFragment : Fragment() {
         })
 
         binding.mapView.location.addOnIndicatorPositionChangedListener {
-            val tokenId = "" // todo
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-            if (viewModel.ordersResponse.value == null && viewModel.isAvailable.value == true)
-                viewModel.getPendingOrders(
-                    requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId,
-                    lat = it.latitude(),
-                    lng = it.longitude()
-                )
+                if (viewModel.ordersResponse.value == null && viewModel.isAvailable.value == true)
+                    viewModel.getPendingOrders(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId,
+                        lat = it.latitude(),
+                        lng = it.longitude()
+                    )
 
-            // setup location icon
-            /*googleMap?.clear() todo does mapBox auto changes location marker?
+                // setup location icon
+                /*googleMap?.clear() todo does mapBox auto changes location marker?
 
             val locationMarkerOptions = MarkerOptions()
             locationMarkerOptions.icon(requireContext().bitmapDescriptorFromVector(R.drawable.ic_location_pin))
@@ -703,49 +705,57 @@ open class HomeFragment : Fragment() {
                 ), 4000, null
             )*/
 
+            }
         }
 
         viewModel.isAvailable.observe(viewLifecycleOwner, {
-            val tokenId = "" // todo
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-            if (!viewModel.isFirstFetchData) {
-                // fetch pending orders for the first time
-                getOrRemovePendingOrders(tokenId)
+                if (!viewModel.isFirstFetchData) {
+                    // fetch pending orders for the first time
+                    getOrRemovePendingOrders(tokenId)
 
-            } else if (viewModel.isFirstFetchData && viewModel.availabilityResponse.value?.status != ProjectConstant.Companion.Status.LOADING) {
+                } else if (viewModel.isFirstFetchData && viewModel.availabilityResponse.value?.status != ProjectConstant.Companion.Status.LOADING) {
 
-                viewModel.changeAvailability(
-                    requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId
-                ).observe(viewLifecycleOwner, {
+                    viewModel.changeAvailability(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId
+                    ).observe(viewLifecycleOwner, {
 
-                    // show loading
-                    if (it.status == ProjectConstant.Companion.Status.LOADING)
-                        ProjectDialogUtils.showLoading(requireContext())
-                    else
-                        ProjectDialogUtils.hideLoading()
+                        // show loading
+                        if (it.status == ProjectConstant.Companion.Status.LOADING)
+                            ProjectDialogUtils.showLoading(requireContext())
+                        else
+                            ProjectDialogUtils.hideLoading()
 
-                    // reset the switch if have error
-                    if (it.status == ProjectConstant.Companion.Status.API_ERROR
-                        || it.status == ProjectConstant.Companion.Status.NETWORK_ERROR
-                    ) {
-                        // apply availability to switch
-                        binding.isAvailableS.isChecked = !binding.isAvailableS.isChecked
+                        // reset the switch if have error
+                        if (it.status == ProjectConstant.Companion.Status.API_ERROR
+                            || it.status == ProjectConstant.Companion.Status.NETWORK_ERROR
+                        ) {
+                            // apply availability to switch
+                            binding.isAvailableS.isChecked = !binding.isAvailableS.isChecked
 
-                        getOrRemovePendingOrders(tokenId)
-                    }
-                })
-            } else if (!viewModel.isFirstFetchData)
-                viewModel.isFirstFetchData = true
+                            getOrRemovePendingOrders(tokenId)
+                        }
+                    })
+                } else if (!viewModel.isFirstFetchData)
+                    viewModel.isFirstFetchData = true
+            }
         })
     }
 
     private fun fetchData() {
-        val tokenId = "" // todo
-        viewModel.fetchData(
-            requireActivity().currentLocale.toLanguageTag(),
-            tokenId = tokenId
-        )
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+            viewModel.fetchData(
+                requireActivity().currentLocale.toLanguageTag(),
+                tokenId = tokenId
+            )
+        }
     }
 
     private fun setupBottomSheet() {
@@ -830,41 +840,49 @@ open class HomeFragment : Fragment() {
                     else -> null
                 }
 
-            val tokenId = "" // todo
-            viewModel.changeOrderStatus(
-                langTag = requireActivity().currentLocale.toLanguageTag(),
-                tokenId = tokenId,
-                orderNumber = viewModel.selectedOrder.value?.number,
-                status = nextStatus
-            ).observeApiResponse(this, {
-                viewModel.ordersResponse.value =
-                    viewModel.ordersResponse.value.also {
-                        it?.data?.firstOrNull { order ->
-                            order.number == viewModel.selectedOrder.value?.number
-                        }?.deliveryStatus = nextStatus
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                viewModel.changeOrderStatus(
+                    langTag = requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId,
+                    orderNumber = viewModel.selectedOrder.value?.number,
+                    status = nextStatus
+                ).observeApiResponse(this, {
+                    viewModel.ordersResponse.value =
+                        viewModel.ordersResponse.value.also {
+                            it?.data?.firstOrNull { order ->
+                                order.number == viewModel.selectedOrder.value?.number
+                            }?.deliveryStatus = nextStatus
+                        }
+                    viewModel.selectedOrder.value = viewModel.selectedOrder.value?.also {
+                        it.deliveryStatus = nextStatus
                     }
-                viewModel.selectedOrder.value = viewModel.selectedOrder.value?.also {
-                    it.deliveryStatus = nextStatus
-                }
-            })
+                })
+            }
         }
 
         binding.rejectBtn.setOnClickListener {
-            val tokenId = "" // todo
-            viewModel.changeOrderStatus(
-                langTag = requireActivity().currentLocale.toLanguageTag(),
-                tokenId = tokenId,
-                orderNumber = viewModel.selectedOrder.value?.number,
-                status = ApiConstant.OrderDeliveryStatus.REJECTED.value
-            ).observeApiResponse(this, {
-                viewModel.ordersResponse.value =
-                    viewModel.ordersResponse.value.also {
-                        it?.data?.removeAt(it.data.indexOfFirst { order ->
-                            order.number == viewModel.selectedOrder.value?.number
-                        })
-                    }
-                viewModel.selectedOrder.value = null
-            })
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+
+                viewModel.changeOrderStatus(
+                    langTag = requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId,
+                    orderNumber = viewModel.selectedOrder.value?.number,
+                    status = ApiConstant.OrderDeliveryStatus.REJECTED.value
+                ).observeApiResponse(this, {
+                    viewModel.ordersResponse.value =
+                        viewModel.ordersResponse.value.also {
+                            it?.data?.removeAt(it.data.indexOfFirst { order ->
+                                order.number == viewModel.selectedOrder.value?.number
+                            })
+                        }
+                    viewModel.selectedOrder.value = null
+                })
+            }
         }
     }
 

@@ -11,6 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
@@ -24,11 +25,13 @@ import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.ext.toDateWithoutTime
 import com.g7.soft.pureDot.model.ServiceDetailsModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
+import kotlinx.coroutines.launch
 import java.util.*
 
 class ServiceFragment : Fragment() {
@@ -114,13 +117,16 @@ class ServiceFragment : Fragment() {
             findNavController().navigate(R.id.allReviewsFragment, bundle)
         }
         binding.sendBtn.setOnClickListener {
-            val tokenId = "" // todo
+            lifecycleScope.launch {
+                val tokenId =
+                    ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-            viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
-                .observeApiResponse(this, {
-                    viewModel.serviceDetailsResponse.value?.data?.userReview = it
-                    binding.invalidateAll()
-                })
+                viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
+                    .observeApiResponse(this@ServiceFragment, {
+                        viewModel.serviceDetailsResponse.value?.data?.userReview = it
+                        binding.invalidateAll()
+                    })
+            }
         }
         binding.decreaseCartQuantityBtn.setOnClickListener {
             if (viewModel.quantityInCart.value != 1)

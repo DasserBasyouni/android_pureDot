@@ -28,14 +28,18 @@ class MyWalletFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_my_wallet, container, false)
 
-        val tokenId = "" //todo
-        viewModelFactory = MyWalletViewModelFactory(
-            tokenId = tokenId,
-        )
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MyWalletViewModel::class.java)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModelFactory = MyWalletViewModelFactory(
+                tokenId = tokenId,
+            )
+            viewModel = ViewModelProvider(this, viewModelFactory).get(MyWalletViewModel::class.java)
+
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this
+        }
 
         return binding.root
     }
@@ -54,8 +58,11 @@ class MyWalletFragment : Fragment() {
             ).build()
 
         // fetch data
-        val tokenId = "" //todo
-        viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         viewModel.walletResponse.observe(viewLifecycleOwner, {

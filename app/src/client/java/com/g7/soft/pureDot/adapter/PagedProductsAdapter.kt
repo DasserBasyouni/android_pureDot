@@ -17,7 +17,7 @@ import com.g7.soft.pureDot.model.ProductModel
 
 class PagedProductsAdapter(
     private val fragment: Fragment, private val isGrid: Boolean = true,
-    private val editWishList: (tokenId: String, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
+    private val editWishList: (productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
 ) :
     PagedListAdapter<ProductModel, PagedProductsAdapter.ViewHolder>(PagedProductsDiffCallback()) {
 
@@ -33,27 +33,24 @@ class PagedProductsAdapter(
         fun bind(
             dataModel: ProductModel?,
             fragment: Fragment,
-            editWishList: (tokenId: String, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit,
+            editWishList: (productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit,
         ) {
             if (binding is ItemProductGridViewBinding) {
                 binding.dataModel = dataModel
                 binding.wishListCiv.setOnClickListener {
-                    val tokenId = "" //todo
-                    editWishList.invoke(
-                        tokenId,
-                        dataModel?.id,
-                        binding.wishListCiv.isChecked
-                    ) {
-                        binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
-                    }
+                        editWishList.invoke(
+                            dataModel?.id,
+                            binding.wishListCiv.isChecked
+                        ) {
+                            binding.wishListCiv.isChecked = !binding.wishListCiv.isChecked
+                        }
+
                 }
 
             } else if (binding is ItemProductLinearViewBinding) {
                 binding.dataModel = dataModel
                 binding.wishListCiv.setOnClickListener {
-                    val tokenId = "" //todo
                     editWishList.invoke(
-                        tokenId,
                         dataModel?.id,
                         binding.wishListCiv.isChecked
                     ) {

@@ -1,49 +1,70 @@
 package com.g7.soft.pureDot.repo
 
+import android.content.Context
 import androidx.lifecycle.liveData
+import com.g7.soft.pureDot.data.database.userData.UserDataDatabase
+import com.g7.soft.pureDot.model.ClientDataModel
 import com.g7.soft.pureDot.network.Fetcher
 import com.g7.soft.pureDot.network.NetworkRequestHandler
+import kotlinx.coroutines.flow.first
 
 class ClientRepository(private val langTag: String) {
 
-    /*suspend fun saveTokenId(context: Context, value: String) {
-        Log.e("Z_", "saveTokenId 1")
+    suspend fun getLocalUserData(context: Context) =
+        UserDataDatabase.getInstance(context).userDataFlow.first()
 
-        context.userDataStore.updateData { data -> data.toBuilder().setTokenId(value).build() }
+    suspend fun updateTokenId(context: Context, value: String) =
+        UserDataDatabase.getInstance(context).updateTokenId(value)
 
-        Log.e("Z_", "saveTokenId 2")
+    suspend fun updateEmailOrPhoneNumber(context: Context, value: String) =
+        UserDataDatabase.getInstance(context).updateEmailOrPhoneNumber(value)
 
-        val exampleCounterFlow: Flow<Unit> = context.userDataStore.data
-            .map { settings ->
-                Log.e("Z_", "entered")
+    suspend fun updatePassword(context: Context, value: String) =
+        UserDataDatabase.getInstance(context).updatePassword(value)
 
-                Log.e("Z_", "se: $settings")
-                // The exampleCounter property is generated from the proto schema.
-                Log.e("Z_", "tokenId: ${settings.tokenId}")
-            }
+    suspend fun updateCurrencySymbol(context: Context, value: String) =
+        UserDataDatabase.getInstance(context).updateCurrencySymbol(value)
 
-        Log.e("Z_", "saveTokenId 3")
-    }*/
+    suspend fun updateIsGuestAccount(context: Context, value: Boolean) =
+        UserDataDatabase.getInstance(context).updateIsGuestAccount(value)
+
+    suspend fun saveUserData(context: Context, clientData: ClientDataModel, password: String?) =
+        UserDataDatabase.getInstance(context).also {
+            it.updateTokenId(clientData.tokenId)
+            it.updateEmailOrPhoneNumber(clientData.phoneNumber)
+            it.updatePassword(password)
+            it.updateCurrencySymbol(clientData.currency?.name)
+            it.updateIsGuestAccount(false)
+        }
+
+    suspend fun clearUserData(context: Context) =
+        UserDataDatabase.getInstance(context).also {
+            it.updateTokenId(null)
+            it.updateEmailOrPhoneNumber(null)
+            it.updatePassword(null)
+            it.updateCurrencySymbol(null)
+            it.updateIsGuestAccount(null)
+        }
 
 
-    /*fun signUpAsGuest(
-        fcmToken: String?,
-    ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
-        emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.signUp(
-                fcmToken = fcmToken,
-                firstName = null,
-                lastName = null,
-                email = null,
-                phoneNumber = null,
-                password = null,
-                isMale = null,
-                countryId = null,
-                cityId = null,
-                zipCodeId = null,
-            )
-        }))
-    }*/
+/*fun signUpAsGuest(
+    fcmToken: String?,
+) = liveData(kotlinx.coroutines.Dispatchers.IO) {
+    emitSource(NetworkRequestHandler().handle(request = {
+        return@handle Fetcher().getInstance(langTag)?.signUp(
+            fcmToken = fcmToken,
+            firstName = null,
+            lastName = null,
+            email = null,
+            phoneNumber = null,
+            password = null,
+            isMale = null,
+            countryId = null,
+            cityId = null,
+            zipCodeId = null,
+        )
+    }))
+}*/
 
     fun signUp(
         fcmToken: String?,
@@ -163,7 +184,7 @@ class ClientRepository(private val langTag: String) {
         }))
     }
 
-    fun getUserData(
+    fun getLocalUserData(
         tokenId: String?,
     ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
@@ -182,8 +203,8 @@ class ClientRepository(private val langTag: String) {
         imageUrl: String?,
         email: String?,
         countryCode: String?,
-        countryId: String?,
         cityId: String?,
+        zipCodeId: String?,
         dateOfBirth: Long?,
     ) = liveData(kotlinx.coroutines.Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
@@ -193,10 +214,10 @@ class ClientRepository(private val langTag: String) {
                 lastName = lastName,
                 phoneNumber = phoneNumber,
                 isMale = isMale,
+                zipCodeId = zipCodeId,
                 imageUrl = imageUrl,
                 email = email,
                 countryCode = countryCode,
-                countryId = countryId,
                 cityId = cityId,
                 dateOfBirth = dateOfBirth
             )

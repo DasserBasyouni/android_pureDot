@@ -8,7 +8,26 @@ import com.g7.soft.pureDot.model.CategoryModel
 import com.g7.soft.pureDot.model.StoreModel
 import com.g7.soft.pureDot.model.project.LceeModel
 
-class FilterViewModel(val currency: String?) : ViewModel() {
+class FilterViewModel : ViewModel() {
+
+    var currency: String? = null
+
+    val searchText = MediatorLiveData<String>()
+    var selectedCategoriesIds = mutableListOf<String>()
+    var selectedStoresIds = mutableListOf<String>()
+    val minStars: MutableList<Int> get() {
+        val list = mutableListOf<Int>()
+
+        when{
+            doOneStar.value == true -> list.add(1)
+            doTwoStar.value == true -> list.add(2)
+            doThreeStar.value == true -> list.add(3)
+            doFourStar.value == true -> list.add(4)
+            doFiveStar.value == true -> list.add(5)
+        }
+
+        return list
+    }
 
     val categoriesLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     var categoriesPagedList: LiveData<PagedList<CategoryModel>>? = null

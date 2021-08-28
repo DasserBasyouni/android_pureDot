@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.PagedList
@@ -25,8 +25,9 @@ import com.g7.soft.pureDot.ui.GridSpacingItemDecoration
 
 class FilterFragment : Fragment() {
     private lateinit var binding: FragmentFilterBinding
-    private lateinit var viewModelFactory: FilterViewModelFactory
-    internal lateinit var viewModel: FilterViewModel
+    internal val viewModel: FilterViewModel by viewModels(
+        ownerProducer = { requireActivity() }
+    )
     private val args: FilterFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -36,10 +37,7 @@ class FilterFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_filter, container, false)
 
-        viewModelFactory = FilterViewModelFactory(
-            currency = args.currency,
-        )
-        viewModel = ViewModelProvider(this, viewModelFactory).get(FilterViewModel::class.java)
+        viewModel.currency = args.currency
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this

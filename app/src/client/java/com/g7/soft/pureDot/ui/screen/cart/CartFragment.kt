@@ -9,12 +9,15 @@ import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.CartHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentCartBinding
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class CartFragment : Fragment() {
     private lateinit var binding: FragmentCartBinding
@@ -39,12 +42,15 @@ class CartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" // todo
-        viewModel.getProductsInCart(
-            requireActivity().currentLocale.toLanguageTag(),
-            tokenId = tokenId,
-            context = requireContext()
-        )
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getProductsInCart(
+                requireActivity().currentLocale.toLanguageTag(),
+                tokenId = tokenId,
+                context = requireContext()
+            )
+        }
 
         // setup observers
         viewModel.productsInCartResponse.observe(viewLifecycleOwner, {

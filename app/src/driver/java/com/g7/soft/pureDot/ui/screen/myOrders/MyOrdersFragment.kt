@@ -34,8 +34,11 @@ class MyOrdersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // fetch data
-        val tokenId = "" //todo
-        viewModel.getMyOrders(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        lifecycleScope.launch {
+            val tokenId =
+                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            viewModel.getMyOrders(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val myOrdersAdapter = MyOrdersAdapter(this)

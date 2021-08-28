@@ -7,14 +7,17 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.OrderReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 
 class OrderFragment : Fragment() {
@@ -69,14 +72,17 @@ class OrderFragment : Fragment() {
             titleResId = R.string.question_sure_cancel,
             messageResId = R.string.amount_will_be_refunded_to_your_wallet,
             positiveRunnable = {
-                val tokenId = "" // todo
+                lifecycleScope.launch {
+                    val tokenId =
+                        ClientRepository("").getLocalUserData(requireContext()).tokenId
+
                 viewModel.cancelOrder(
                     requireActivity().currentLocale.toLanguageTag(),
                     tokenId = tokenId,
-                ).observeApiResponse(this, {
+                ).observeApiResponse(this@OrderFragment, {
                     findNavController().popBackStack()
                 })
-            }
+            }}
         )
     }
 }
