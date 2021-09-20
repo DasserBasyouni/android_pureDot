@@ -60,7 +60,7 @@ class MainActivity : LocaleAwareCompatActivity() {
                 destination.id,
                 this,
                 scrollLockedDestinationIds = arrayListOf(R.id.homeFragment),
-                fullScreenDestinationIds = arrayListOf(R.id.startFragment, R.id.homeFragment),
+                fullScreenDestinationIds = arrayListOf(R.id.splashFragment, R.id.startFragment, R.id.homeFragment),
                 loginDestinationIds = arrayListOf(R.id.loginFragment),
                 transparentDestinationIds = arrayListOf(
                     R.id.forgetPasswordFragment,

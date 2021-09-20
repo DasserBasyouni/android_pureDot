@@ -1,13 +1,11 @@
 package com.g7.soft.pureDot.ui.screen.service
 
-import android.content.Context
 import androidx.lifecycle.*
 import com.g7.soft.pureDot.constant.ProjectConstant
-import com.g7.soft.pureDot.model.ServiceDetailsModel
-import com.g7.soft.pureDot.model.ServiceModel
+import com.g7.soft.pureDot.model.*
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.CartRepository
+import com.g7.soft.pureDot.repo.OrderRepository
 import com.g7.soft.pureDot.repo.ServiceRepository
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -15,18 +13,33 @@ import java.util.concurrent.TimeUnit
 
 class ServiceViewModel(val service: ServiceModel?) : ViewModel() {
 
-    val selectedVariations =
-        MutableLiveData<MutableList<Int>>().apply { this.value = mutableListOf() }
+    val orderLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
+    val orderResponse = MediatorLiveData<NetworkRequestResponse<MasterOrderModel>>()
+
+    val selectedVariationsMap =
+        MutableLiveData<HashMap<Int, ServiceVariationValueModel?>>().apply {
+            this.value = hashMapOf()
+        }
+    val selectedVariations = Transformations.map(selectedVariationsMap) {
+        it.values.filterNotNull().toList()
+    }
+
     val servantsSelectedPosition = MutableLiveData<Int?>().apply { this.value = 0 }
     val hour = MutableLiveData<String?>()
     val minute = MutableLiveData<String?>()
     val isAm = MutableLiveData<Boolean?>().apply { this.value = true }
     val timeInSeconds: Long
         get() {
-            return TimeUnit.HOURS.toSeconds(( hour.value?.toIntOrNull() ?: 0).toLong())
+            return TimeUnit.HOURS.toSeconds((hour.value?.toIntOrNull() ?: 0).toLong())
                 .plus(TimeUnit.MINUTES.toSeconds((minute.value?.toIntOrNull() ?: 0).toLong()))
                 .plus(TimeUnit.HOURS.toSeconds((if (isAm.value == false) 12 else 0).toLong()))
         }
+
+    val selectedBranchPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedBranch
+        get() = serviceDetailsResponse.value?.data?.branches?.getOrNull(
+            selectedBranchPosition.value?.minus(1) ?: -1
+        )
 
     val quantityInCart = MediatorLiveData<Int>().apply { this.value = 1 }
     val reviewComment = MediatorLiveData<String>()
@@ -38,18 +51,20 @@ class ServiceViewModel(val service: ServiceModel?) : ViewModel() {
     private var sliderOffersTimer: Timer? = null
     val sliderOffersPosition = MediatorLiveData<Int>().apply { this.value = 0 }
 
+    val costResponse = MediatorLiveData<NetworkRequestResponse<Double>?>()
+    val costLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
     /*val reviewsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     val reviewsResponse =
         MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ReviewModel>>>>()*/
 
 
-    fun fetchScreenData(langTag: String) {
-        getItemDetails(langTag)
+    fun fetchData(langTag: String, tokenId: String?) {
+        getItemDetails(langTag, tokenId = tokenId)
     }
 
 
-    fun getItemDetails(langTag: String) {
+    fun getItemDetails(langTag: String, tokenId: String?) {
         serviceDetailsResponse.value = NetworkRequestResponse.loading()
         sliderOffersTimer?.cancel() // release the auto slider timer
 
@@ -57,6 +72,7 @@ class ServiceViewModel(val service: ServiceModel?) : ViewModel() {
         serviceDetailsResponse.apply {
             addSource(
                 ServiceRepository(langTag).getServiceDetails(
+                    tokenId = tokenId,
                     serviceId = service?.id,
                 )
             ) {
@@ -90,26 +106,65 @@ class ServiceViewModel(val service: ServiceModel?) : ViewModel() {
         )
     }*/
 
-    fun addReview(langTag: String, tokenId: String?) =
+    fun addReview(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
+        emit(NetworkRequestResponse.loading())
+
+        emitSource(
+            ServiceRepository(langTag).addReview(
+                tokenId = tokenId,
+                productId = service?.id,
+                rating = reviewRating.value?.toInt(),
+                comment = reviewComment.value
+            )
+        )
+    }
+
+
+    fun getCost(langTag: String) {
+        costResponse.value = NetworkRequestResponse.loading()
+
+        // fetch request
+        costResponse.apply {
+            addSource(
+                ServiceRepository(langTag).getCost(
+                    serviceId = service?.id,
+                    servants = servantsSelectedPosition.value,
+                    variations = selectedVariations.value
+                )
+            ) {
+                costResponse.value = it
+            }
+        }
+    }
+
+    fun checkCartItems(langTag: String, tokenId: String?) =
         liveData(Dispatchers.IO) {
             emit(NetworkRequestResponse.loading())
 
             emitSource(
-                ServiceRepository(langTag).addReview(
+                OrderRepository(langTag).checkCartItems(
                     tokenId = tokenId,
-                    productId = service?.id,
-                    rating = reviewRating.value,
-                    comment = reviewComment.value
+                    serviceId = service?.id,
+                    servantsCount = servantsSelectedPosition.value,
+                    apiShopOrders = listOf(ApiShopOrderModel(
+                        shopId = serviceDetailsResponse.value?.data?.shop?.id,
+                        branchId = selectedBranch?.id,
+                        items = mutableListOf<ApiShopOrderItemModel>().apply {
+                            for (variation in selectedVariations.value ?: listOf())
+                                this.add(
+                                    ApiShopOrderItemModel(
+                                        productId = variation.productId,
+                                        sourceId = variation.sourceId,
+                                        stockId = variation.stockId,
+                                        categoryId = variation.categoryId,
+                                        quantity = quantityInCart.value,
+                                        variationsIds = listOf()
+                                    )
+                                )
+                        }
+                    ))
                 )
             )
         }
 
-    /*fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int?) = liveData(Dispatchers.IO) {
-        emit(NetworkRequestResponse.loading())
-
-        emitSource(
-            CartRepository(langTag).editCartQuantity(itemId = itemId,
-            quantity = quantity,
-            serviceDateTime = null))
-    }*/
 }

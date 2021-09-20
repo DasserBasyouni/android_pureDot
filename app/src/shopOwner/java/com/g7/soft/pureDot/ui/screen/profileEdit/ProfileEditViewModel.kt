@@ -6,18 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.ext.toFormattedDateTime
 import com.g7.soft.pureDot.model.CityModel
-import com.g7.soft.pureDot.model.ClientDataModel
 import com.g7.soft.pureDot.model.CountryModel
+import com.g7.soft.pureDot.model.UserDataModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.repo.GeneralRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.Dispatchers
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
 // TODO IMP ADD VALIDATION LAYER ON INPUTS FOR THE WHOLE APP
-class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
+class ProfileEditViewModel(val userData: UserDataModel?) : ViewModel() {
 
     val dateFormat = "dd/MM/yyyy"
 
@@ -25,19 +25,19 @@ class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
     val countiesResponse = MediatorLiveData<NetworkRequestResponse<List<CountryModel>?>?>()
     val citiesResponse = MediatorLiveData<NetworkRequestResponse<List<CityModel>?>>()
 
-    val firstName = MutableLiveData<String?>()
-    val lastName = MutableLiveData<String?>()
+    val name = MutableLiveData<String?>()
     val phoneNumber = MutableLiveData<String?>()
     val email = MutableLiveData<String?>()
     val dateOfBirth = MutableLiveData<String?>()
+    val dateOfBirthCalendar =
+        MutableLiveData<Calendar?>().apply { this.value = Calendar.getInstance() }
     val selectedGenderPosition = MutableLiveData<Int?>().apply { this.value = 0 }
     val selectedCountryPosition = MutableLiveData<Int?>().apply { this.value = 0 }
     val selectedCityPosition = MutableLiveData<Int?>().apply { this.value = 0 }
 
 
     init {
-        firstName.value = userData?.firstName
-        lastName.value = userData?.lastName
+        name.value = userData?.name
         phoneNumber.value = userData?.phoneNumber
         email.value = userData?.email
 
@@ -45,6 +45,11 @@ class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
         selectedGenderPosition.value = if (userData?.isMale == true) 0 else 1
     }
 
+    fun fetchData(langTag: String) {
+        getCounties(langTag)
+        //getCities(langTag)
+        //getZipCodes(langTag)
+    }
 
     fun getCounties(langTag: String) {
         countiesResponse.value = NetworkRequestResponse.loading()
@@ -70,7 +75,7 @@ class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
         }
     }
 
-    fun save(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun save(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
 
         var timestamp: Timestamp? = null
 
@@ -83,16 +88,13 @@ class ProfileEditViewModel(val userData: ClientDataModel?) : ViewModel() {
 
         emit(NetworkRequestResponse.loading())
         emitSource(
-            ClientRepository(langTag).editUserData(
+            UserRepository(langTag).editUserData(
                 tokenId = tokenId,
-                firstName = firstName.value,
-                lastName = lastName.value,
+                name = name.value,
                 phoneNumber = phoneNumber.value,
                 email = email.value,
-                countryId = countiesResponse.value?.data?.get(selectedCountryPosition.value!!)?.id,
                 cityId = citiesResponse.value?.data?.get(selectedCityPosition.value!!)?.id,
                 isMale = selectedGenderPosition.value == 0,
-                countryCode = null,
                 dateOfBirth = timestamp?.time?.div(1000),
                 imageUrl = null //todo
             )

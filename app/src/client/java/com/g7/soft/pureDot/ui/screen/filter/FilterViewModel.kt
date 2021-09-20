@@ -10,8 +10,6 @@ import com.g7.soft.pureDot.model.project.LceeModel
 
 class FilterViewModel : ViewModel() {
 
-    var currency: String? = null
-
     val searchText = MediatorLiveData<String>()
     var selectedCategoriesIds = mutableListOf<String>()
     var selectedStoresIds = mutableListOf<String>()

@@ -5,13 +5,15 @@ import androidx.lifecycle.ViewModelProvider
 
 class AllReviewsViewModelFactory(
     private val itemId: String?,
-    private val tokenId: String,
+    private val tokenId: String?,
+    private val isProduct: Boolean,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AllReviewsViewModel::class.java)) {
             AllReviewsViewModel(
                 itemId = itemId,
+                isProduct = isProduct,
                 tokenId = tokenId
             ) as T
         } else {

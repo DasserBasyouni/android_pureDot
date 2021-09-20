@@ -7,13 +7,16 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.OrderReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentReturnBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.UserRepository
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 
 class ReturnFragment : Fragment() {
@@ -31,21 +34,32 @@ class ReturnFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_return, container, false)
 
-        viewModelFactory = ReturnViewModelFactory(
-            masterOrder = args.masterOrder,
-            selectedProduct = args.selectedProduct,
-        )
-        viewModel = ViewModelProvider(this, viewModelFactory).get(RefundViewModel::class.java)
+        lifecycleScope.launch {
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
-        binding.viewModel = viewModel
-        binding.selectedProduct = args.selectedProduct
-        binding.lifecycleOwner = this
+            viewModelFactory = ReturnViewModelFactory(
+                masterOrder = args.masterOrder,
+                selectedProduct = args.selectedProduct,
+            )
+            viewModel = ViewModelProvider(
+                this@ReturnFragment,
+                viewModelFactory
+            ).get(RefundViewModel::class.java)
+
+            binding.currency = currencySymbol
+            binding.viewModel = viewModel
+            binding.selectedProduct = args.selectedProduct
+            binding.lifecycleOwner = this@ReturnFragment
+        }
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // fetch data
+        viewModel.getShippingMethods(requireActivity().currentLocale.toLanguageTag())
 
         // init data
         OrderReviewHeaderAdapter(
@@ -58,20 +72,31 @@ class ReturnFragment : Fragment() {
         }
 
         // setup observables
+        viewModel.shippingMethodsResponse.observe(viewLifecycleOwner, {
+            viewModel.shippingMethodsLcee.value!!.response.value = it
+        })
         viewModel.shippingCostResponse.observe(viewLifecycleOwner, {
             viewModel.shippingCostLcee.value!!.response.value = it
         })
-        viewModel.selectedShippingMethodViewId.observe(viewLifecycleOwner, {
+        viewModel.selectedShippingMethodId.observe(viewLifecycleOwner, {
             viewModel.calculateRefundShipping(
                 requireActivity().currentLocale.toLanguageTag()
             )
         })
 
         // setup listeners
+        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            viewModel.haveSelectedShippingMethod.value =
+                binding.radioGroup.findViewById<View>(checkedId) != null
+
+            viewModel.selectedShippingMethodId.value =
+                binding.radioGroup.findViewById<View>(checkedId).tag?.toString()
+        }
         binding.confirmationBtn.setOnClickListener {
-            viewModel.refund(requireActivity().currentLocale.toLanguageTag()).observeApiResponse(this, {
-                findNavController().navigate(R.id.action_refundFragment_to_myOrdersFragment)
-            })
+            viewModel.returnItem(requireActivity().currentLocale.toLanguageTag())
+                .observeApiResponse(this, {
+                    findNavController().navigate(R.id.action_refundFragment_to_myOrdersFragment)
+                })
         }
     }
 }

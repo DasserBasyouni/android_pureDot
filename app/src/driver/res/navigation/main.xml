@@ -14,6 +14,16 @@
             app:destination="@id/startFragment"
             app:popUpTo="@id/nav_root"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/nav_root"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_phoneVerificationFragment"
+            app:destination="@id/phoneVerificationFragment"
+            app:popUpTo="@id/nav_root"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/startFragment"
@@ -59,6 +69,11 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_phoneVerificationFragment"
+            app:destination="@id/phoneVerificationFragment"
+            app:popUpTo="@id/nav_root"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/forgetPasswordFragment"
@@ -116,8 +131,8 @@
         android:label=""
         tools:layout="@layout/fragment_order">
         <argument
-            android:name="order"
-            app:argType="com.g7.soft.pureDot.model.OrderModel" />
+            android:name="masterOrder"
+            app:argType="com.g7.soft.pureDot.model.MasterOrderModel" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -155,7 +170,7 @@
         tools:layout="@layout/fragment_profile_edit">
         <argument
             android:name="userData"
-            app:argType="com.g7.soft.pureDot.model.DriverDataModel" />
+            app:argType="com.g7.soft.pureDot.model.UserDataModel" />
     </fragment>
     <fragment
         android:id="@+id/contactUsFragment"

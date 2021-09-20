@@ -12,10 +12,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.Application
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.constant.ProjectConstant
+import com.g7.soft.pureDot.constant.ProjectConstant.Companion.ValidationError
 import com.g7.soft.pureDot.databinding.FragmentPhoneVerificationBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 
@@ -56,8 +59,29 @@ class PhoneVerificationFragment : Fragment() {
         // observers
         viewModel.verificationResponse.observe(viewLifecycleOwner, {
             viewModel.verificationLcee.value!!.response.value = it
-            if (it.status == ProjectConstant.Companion.Status.SUCCESS && !args.isPasswordReset)
-                binding.actionBtn.performClick()
+
+            if (it.validationError == ValidationError.EMPTY_VERIFICATION_CODE)
+                binding.squarePinField.error =
+                    if (it.validationError == ValidationError.EMPTY_VERIFICATION_CODE)
+                        getString(R.string.error_empty_first_name) else null
+            else
+                if (it.status == ProjectConstant.Companion.Status.SUCCESS && !args.isPasswordReset)
+                    binding.actionBtn.performClick()
+                else if (it.status == ProjectConstant.Companion.Status.API_ERROR)
+                    when (it.apiErrorStatus) {
+                        null -> {
+                            ProjectDialogUtils.showSimpleMessage(
+                                requireContext(),
+                                R.string.something_went_wrong,
+                                R.drawable.ic_secure_shield
+                            )
+                        }
+                        else -> ProjectDialogUtils.showSimpleMessage(
+                            requireContext(),
+                            ApiConstant.Status.getMessageResId(it.apiErrorStatus),
+                            R.drawable.ic_secure_shield
+                        )
+                    }
         })
 
         // setup listeners
@@ -69,13 +93,19 @@ class PhoneVerificationFragment : Fragment() {
         binding.actionBtn.setOnClickListener {
             if (args.isPasswordReset) {
                 viewModel.changePassword(requireActivity().currentLocale.toLanguageTag())
-                    .observeApiResponse(this, { clientData ->
-                        // todo save user data
+                    .observeApiResponse(this, { userData ->
+
+                        UserRepository("").saveUserData(
+                            requireContext(),
+                            userData,
+                            viewModel.password.value
+                        )
+
                         ProjectDialogUtils.showSimpleMessage(
                             requireContext(), R.string.msg_password_reset,
                             drawableResId = R.drawable.ic_secure_shield,
-                            title = getString(R.string.conc_hello_, clientData?.firstName),
-                            positiveBtnTextResId = if (Application.isClientFlavour) R.string.start_shopping else R.string.start_delivering
+                            title = getString(R.string.conc_hello_, userData?.name),
+                            positiveBtnTextResId = if (Application.isClientFlavour) R.string.start_shopping else R.string.start_delivery
                         ) {
                             findNavController().navigate(R.id.action_phoneVerificationFragment_to_homeFragment)
                         }

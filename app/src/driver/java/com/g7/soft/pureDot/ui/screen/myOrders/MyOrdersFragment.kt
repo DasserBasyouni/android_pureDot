@@ -5,13 +5,20 @@ import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagedList
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.MyOrdersAdapter
+import com.g7.soft.pureDot.constant.ProjectConstant
+import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentMyOrdersBinding
-import com.zeugmasolutions.localehelper.currentLocale
+import com.g7.soft.pureDot.model.MasterOrderModel
+import com.g7.soft.pureDot.repo.UserRepository
+import kotlinx.coroutines.launch
 
 class MyOrdersFragment : Fragment() {
     private lateinit var binding: FragmentMyOrdersBinding
+    internal lateinit var viewModelFactory: MyOrdersViewModelFactory
     internal lateinit var viewModel: MyOrdersViewModel
 
     override fun onCreateView(
@@ -21,10 +28,18 @@ class MyOrdersFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_my_orders, container, false)
 
-        viewModel = ViewModelProvider(this).get(MyOrdersViewModel::class.java)
+        lifecycleScope.launch {
+            val tokenId = UserRepository("").getTokenId(requireContext())
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModelFactory = MyOrdersViewModelFactory(
+                tokenId = tokenId
+            )
+            viewModel = ViewModelProvider(this@MyOrdersFragment, viewModelFactory).get(MyOrdersViewModel::class.java)
+
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@MyOrdersFragment
+        }
+
         setHasOptionsMenu(true)
 
         return binding.root
@@ -33,19 +48,21 @@ class MyOrdersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // fetch data
-        lifecycleScope.launch {
-            val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
-            viewModel.getMyOrders(requireActivity().currentLocale.toLanguageTag(), tokenId)
-        }
+        // setup pagination
+        viewModel.ordersPagedList =
+            PaginationDataSource.initializedPagedListBuilder<MasterOrderModel>(
+                config = PagedList.Config.Builder()
+                    .setPageSize(ProjectConstant.ITEMS_PER_PAGE)
+                    .setEnablePlaceholders(true)
+                    .build(),
+                fragment = this@MyOrdersFragment,
+            ).build()
 
         // setup observers
         val myOrdersAdapter = MyOrdersAdapter(this)
         binding.ordersRv.adapter = myOrdersAdapter
-        viewModel.ordersResponse.observe(viewLifecycleOwner, {
-            viewModel.ordersLcee.value!!.response.value = it
-            myOrdersAdapter.submitList(it.data)
+        viewModel.ordersPagedList?.observe(viewLifecycleOwner, {
+            myOrdersAdapter.submitList(it)
         })
 
         // setup click listener

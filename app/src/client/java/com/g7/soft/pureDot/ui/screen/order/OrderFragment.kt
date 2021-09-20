@@ -14,7 +14,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.OrderReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -35,13 +35,22 @@ class OrderFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_order, container, false)
 
-        viewModelFactory = OrderViewModelFactory(
-            masterOrder = args.masterOrder,
-        )
-        viewModel = ViewModelProvider(this, viewModelFactory).get(OrderViewModel::class.java)
+        lifecycleScope.launch {
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModelFactory = OrderViewModelFactory(
+                masterOrder = args.masterOrder,
+                masterOrderId = args.masterOrderId,
+            )
+            viewModel = ViewModelProvider(
+                this@OrderFragment,
+                viewModelFactory
+            ).get(OrderViewModel::class.java)
+
+            binding.currency = currencySymbol
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@OrderFragment
+        }
 
         return binding.root
     }
@@ -49,16 +58,30 @@ class OrderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //init data
-        OrderReviewHeaderAdapter(args.masterOrder, this).let { adapter ->
-            binding.cartReviewItemsRv.adapter = adapter
-            //adapter.submitList(args.masterOrder.orders)
-        }
+        // fetch data if needed
+        if (args.masterOrder == null)
+            lifecycleScope.launch {
+                val tokenId = UserRepository("").getTokenId(requireContext())
+                viewModel.getMasterOrder(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId
+                )
+            }
+
+        // observables
+        viewModel.orderResponse.observe(viewLifecycleOwner, {
+            viewModel.orderLcee.value!!.response.value = it
+
+            // init data
+            OrderReviewHeaderAdapter(it.data, this).let { adapter ->
+                binding.cartReviewItemsRv.adapter = adapter
+                //adapter.submitList(args.masterOrder.orders)
+            }
+        })
+
 
         // setup listeners
-        binding.trackOrRateBtn.setOnClickListener {
-            ProjectDialogUtils.showOrderRating(this, viewModel = viewModel)
-        }
+        binding.cancelBtn.setOnClickListener { cancelOrder() }
         binding.complaintBtn.setOnClickListener {
             findNavController().navigate(R.id.submitComplainFragment)
         }
@@ -74,15 +97,16 @@ class OrderFragment : Fragment() {
             positiveRunnable = {
                 lifecycleScope.launch {
                     val tokenId =
-                        ClientRepository("").getLocalUserData(requireContext()).tokenId
+                        UserRepository("").getTokenId(requireContext())
 
-                viewModel.cancelOrder(
-                    requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId,
-                ).observeApiResponse(this@OrderFragment, {
-                    findNavController().popBackStack()
-                })
-            }}
+                    viewModel.cancelMasterOrder(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId,
+                    ).observeApiResponse(this@OrderFragment, {
+                        findNavController().popBackStack()
+                    })
+                }
+            }
         )
     }
 }

@@ -2,7 +2,6 @@ package com.g7.soft.pureDot.ui.screen.phoneVerification
 
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.databinding.FragmentPhoneVerificationBinding
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 
 class PhoneVerificationFragmentFlavour {
@@ -13,7 +12,7 @@ class PhoneVerificationFragmentFlavour {
                 drawableResId = R.drawable.ic_secure_shield,
                 title = fragment.getString(
                     R.string.conc_hello_,
-                    fragment.viewModel.verificationResponse.value?.data?.firstName
+                    fragment.viewModel.verificationResponse.value?.data?.name
                 ),
                 positiveBtnTextResId = R.string.start_shopping
             ) {

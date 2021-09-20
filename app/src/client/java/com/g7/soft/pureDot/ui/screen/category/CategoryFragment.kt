@@ -24,7 +24,7 @@ import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentCategoryBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ProductModel
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
 import com.google.android.material.tabs.TabLayoutMediator
@@ -77,7 +77,10 @@ class CategoryFragment : Fragment() {
             ).build()
 
         // fetch data
-        viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag())
+        lifecycleScope.launch {
+            val tokenId = UserRepository("").getTokenId(requireContext())
+            viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         /*val storesAdapter = StoresAdapter(this)
@@ -116,13 +119,7 @@ class CategoryFragment : Fragment() {
                 } else false
             }
         binding.root.findViewById<ImageView>(R.id.filterIv).setOnClickListener {
-            lifecycleScope.launch {
-                val currencySymbol =
-                    ClientRepository("").getLocalUserData(requireContext()).currencySymbol
-
-                val bundle = bundleOf("currency" to currencySymbol)
-                findNavController().navigate(R.id.filterFragment, bundle)
-            }
+            findNavController().navigate(R.id.filterFragment)
         }
         binding.root.findViewById<ImageView>(R.id.searchIv).setOnClickListener {
             navigateToAllProductsSearch()
@@ -158,14 +155,19 @@ class CategoryFragment : Fragment() {
     ) {
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
+            val isGuestAccount =
+                UserRepository("").getIsGuestAccount(requireContext())
 
-            viewModel.editWishList(
-                requireActivity().currentLocale.toLanguageTag(),
-                tokenId = tokenId,
-                productId = productId,
-                doAdd = doAdd
-            ).observeApiResponse(this@CategoryFragment, { onComplete.invoke() })
+            if (isGuestAccount)
+                findNavController().navigate(R.id.loginFragment)
+            else
+                viewModel.editWishList(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId,
+                    productId = productId,
+                    doAdd = doAdd
+                ).observeApiResponse(this@CategoryFragment, { onComplete.invoke() })
         }
     }
 }

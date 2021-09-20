@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.DriverRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.Dispatchers
 
 class BankAccountViewModel : ViewModel() {
@@ -13,10 +13,10 @@ class BankAccountViewModel : ViewModel() {
     val iban = MutableLiveData<String?>()
 
 
-    fun save(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun save(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
-            DriverRepository(langTag).updateBankAccount(
+            UserRepository(langTag).updateBankAccount(
                 tokenId = tokenId,
                 bankName = bankName.value,
                 iban = iban.value,

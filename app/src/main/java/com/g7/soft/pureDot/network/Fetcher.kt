@@ -8,6 +8,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -75,7 +76,7 @@ class Fetcher {
 
         val retrofit = Retrofit.Builder()
             .client(client)
-            //.addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create()) // required to send the right format for objects in @Multipart
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .baseUrl(ApiConstant.BASE_URL)

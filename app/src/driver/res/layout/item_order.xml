@@ -8,12 +8,16 @@
         <import type="android.view.View" />
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="isLastItem"
             type="Boolean" />
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.OrderModel" />
+            type="com.g7.soft.pureDot.model.MasterOrderModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -70,9 +74,9 @@
                 android:fontFamily="sans-serif"
                 android:textColor="@color/driverRed"
                 android:textSize="16sp"
-                app:bindPrice="@{dataModel.price}"
-                app:bindCurrency="@{dataModel.currency}"
                 android:textStyle="bold"
+                app:bindCurrency="@{currency}"
+                app:bindPrice="@{dataModel.commission}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="200 SAR" />
@@ -95,9 +99,8 @@
                 android:id="@+id/appCompatImageView7"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView7"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView7"
+                app:layout_constraintTop_toTopOf="@+id/appCompatTextView12"
                 app:srcCompat="@drawable/ring" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -105,14 +108,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="sans-serif"
-                android:text="@{dataModel.fromAddress}"
+                android:text="@{dataModel.firstOrder.fromAddress}"
                 android:textColor="@color/textColor"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView7"
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView7"
                 app:layout_constraintStart_toEndOf="@+id/appCompatImageView7"
-                app:layout_constraintTop_toTopOf="@+id/appCompatImageView7"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView7"
                 tools:text="14 Luran, Alexandria, Egypt." />
 
             <FrameLayout
@@ -129,6 +132,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView14"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView7"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatImageView7"
                 app:srcCompat="@drawable/ring" />
@@ -138,14 +142,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="sans-serif"
-                android:text="@{dataModel.toAddress}"
+                android:text="@{dataModel.firstOrder.toAddress}"
                 android:textColor="@color/textColor"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView8"
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView12"
                 app:layout_constraintStart_toEndOf="@+id/appCompatImageView8"
-                app:layout_constraintTop_toTopOf="@+id/appCompatImageView8"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView12"
                 tools:text="20 Moustafa Kamel st., Roushdy, Alexandria, Egypt." />
 
             <com.google.android.material.button.MaterialButton
@@ -155,12 +159,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="4dp"
+                android:text="@string/accept"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/rejectBtn"
                 app:layout_constraintStart_toStartOf="@+id/appCompatImageView8"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView14"
-                app:layout_constraintVertical_bias="1.0"
-                android:text="@string/accept" />
+                app:layout_constraintVertical_bias="1.0" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rejectBtn"

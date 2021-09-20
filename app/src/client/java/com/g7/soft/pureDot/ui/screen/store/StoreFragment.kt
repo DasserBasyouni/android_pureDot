@@ -27,7 +27,7 @@ import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentStoreBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.CategoryModel
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.GridSpacingItemDecoration
 import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
@@ -54,6 +54,7 @@ class StoreFragment : Fragment() {
 
         viewModelFactory = StoreViewModelFactory(
             store = args.store,
+            shopId = args.shopId,
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(StoreViewModel::class.java)
 
@@ -81,7 +82,10 @@ class StoreFragment : Fragment() {
             ).build()
 
         // fetch data
-        viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag())
+        lifecycleScope.launch {
+            val tokenId = UserRepository("").getTokenId(requireContext())
+            viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val categoriesAdapter = PagedCategoriesAdapter(this, isGrid = true)
@@ -147,13 +151,7 @@ class StoreFragment : Fragment() {
                 } else false
             }
         binding.root.findViewById<ImageView>(R.id.filterIv).setOnClickListener {
-            lifecycleScope.launch {
-                val currencySymbol =
-                    ClientRepository("").getLocalUserData(requireContext()).currencySymbol
-
-                val bundle = bundleOf("currency" to currencySymbol)
-                findNavController().navigate(R.id.filterFragment, bundle)
-            }
+            findNavController().navigate(R.id.filterFragment)
         }
         binding.root.findViewById<ImageView>(R.id.searchIv).setOnClickListener {
             navigateToAllProductsSearch()
@@ -182,16 +180,24 @@ class StoreFragment : Fragment() {
     }
 
     private fun editWishList(
-        tokenId: String,
+        tokenId: String?,
         productId: String?,
         doAdd: Boolean,
         onComplete: () -> Unit
     ) {
-        viewModel.editWishList(
-            requireActivity().currentLocale.toLanguageTag(),
-            tokenId = tokenId,
-            productId = productId,
-            doAdd = doAdd
-        ).observeApiResponse(this, { onComplete.invoke() })
+        lifecycleScope.launch {
+            val isGuestAccount =
+                UserRepository("").getIsGuestAccount(requireContext())
+
+            if (isGuestAccount)
+                findNavController().navigate(R.id.loginFragment)
+            else
+                viewModel.editWishList(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId,
+                    productId = productId,
+                    doAdd = doAdd
+                ).observeApiResponse(this@StoreFragment, { onComplete.invoke() })
+        }
     }
 }

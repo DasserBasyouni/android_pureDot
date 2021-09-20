@@ -7,12 +7,16 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.databinding.FragmentChangeLanguageBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.UserRepository
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -52,21 +56,31 @@ class ChangeLanguageFragment : Fragment() {
 
         // listen
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            if (checkedId == R.id.englishRb)
-                changeLocaleTo(Locale("en"))
-            else
-                changeLocaleTo(Locale("ar"))
 
-            val fcmToken = "" // todo
-            viewModel.changeLanguage(requireActivity().currentLocale.toLanguageTag(), fcmToken)
-                .observeApiResponse(this, {
-                    // todo
-                })
+            lifecycleScope.launch {
+                val isEnglish = checkedId == R.id.englishRb
+                val isGuestAccount = UserRepository("").getIsGuestAccount(requireContext())
+
+                if (isGuestAccount)
+                    changeLocaleTo(isEnglish)
+                else {
+                    val fcmToken = "" // todo
+                    viewModel.changeLanguage(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        fcmToken,
+                        ApiConstant.Language.fromIsEnglish(isEnglish).value
+                    )
+                        .observeApiResponse(this@ChangeLanguageFragment, {
+                            changeLocaleTo(isEnglish)
+                        })
+                }
+            }
         }
     }
 
 
-    private fun changeLocaleTo(locale: Locale) = (activity as LocaleAwareCompatActivity).let {
+    private fun changeLocaleTo(isEnglish: Boolean) = (activity as LocaleAwareCompatActivity).let {
+        val locale = if (isEnglish) Locale("en") else Locale("ar")
         if (it.currentLocale != locale) {
             it.updateLocale(locale)
             findNavController().popBackStack()

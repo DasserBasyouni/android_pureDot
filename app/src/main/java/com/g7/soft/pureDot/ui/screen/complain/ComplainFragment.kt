@@ -12,14 +12,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.CommentsAdapter
+import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentComplainBinding
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
+import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
 class ComplainFragment : Fragment() {
-    private lateinit var binding: FragmentComplainBinding
+    internal lateinit var binding: FragmentComplainBinding
     private lateinit var viewModelFactory: ComplainViewModelFactory
     internal lateinit var viewModel: ComplainViewModel
     private val args: ComplainFragmentArgs by navArgs()
@@ -47,8 +51,7 @@ class ComplainFragment : Fragment() {
 
         // fetch data
         lifecycleScope.launch {
-            val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            val tokenId = UserRepository("").getTokenId(requireContext())
             viewModel.getComplainComments(requireActivity().currentLocale.toLanguageTag(), tokenId)
         }
 
@@ -69,7 +72,26 @@ class ComplainFragment : Fragment() {
 
         // setup click listener
         binding.rateServiceBtn.setOnClickListener {
+            lifecycleScope.launch {
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
+                if (args.complain.status == ApiConstant.ComplainStatus.RESOLVED.value) {
+                    ProjectDialogUtils.showComplaintServiceRating(this@ComplainFragment)
+                } else {
+                    viewModel.addComplaintReply(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId
+                    ).observeApiResponse(this@ComplainFragment, { commentModel ->
+                        viewModel.reviewsResponse.value = viewModel.reviewsResponse.value.also {
+                            if (commentModel != null) it?.data?.add(commentModel)
+                        }
+                    }, validationObserve = {
+                        binding.messageTil.error =
+                            if (it == ProjectConstant.Companion.ValidationError.EMPTY_COMMENT)
+                                getString(R.string.error_comment) else null
+                    })
+                }
+            }
         }
 
     }

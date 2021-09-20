@@ -24,7 +24,7 @@ import com.g7.soft.pureDot.databinding.FragmentProductBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ProductDetailsModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.g7.soft.pureDot.util.ProjectDialogUtils
@@ -48,11 +48,19 @@ class ProductFragment : Fragment() {
 
         viewModelFactory = ProductViewModelFactory(
             product = args.item,
+            productId = args.productId
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(ProductViewModel::class.java)
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        lifecycleScope.launch {
+            val isGuestAccount = UserRepository("").getIsGuestAccount(requireContext())
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
+
+            binding.currency = currencySymbol
+            binding.isGuestAccount = isGuestAccount
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@ProductFragment
+        }
 
         return binding.root
     }
@@ -64,7 +72,10 @@ class ProductFragment : Fragment() {
         (requireActivity() as MainActivity).toolbar_title.text = args.item.name
 
         // fetch data
-        viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag())
+        lifecycleScope.launch {
+            val tokenId = UserRepository("").getTokenId(requireContext())
+            viewModel.fetchData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val imagesOffersAdapter = ImagesSliderAdapter(this)
@@ -83,15 +94,25 @@ class ProductFragment : Fragment() {
             imagesOffersAdapter.submitList(it.data?.images)
             similarProductsAdapter.submitList(it.data?.similarProducts)
             reviewsAdapter.submitList(it.data?.reviews?.data)
-            binding.variationsRv.adapter = ProductVariantsAdapter(it.data?.variations)
+            binding.variationsRv.adapter = ProductVariantsAdapter(it.data?.variations, viewModel)
             setupSpinner(
                 binding.branchesSpinner,
                 it,
                 initialText = getString(R.string.select_branch)
             )
+
+            // get price in case of no variations
+            /*if (it.data?.variations.isNullOrEmpty())
+                viewModel.getCost(requireActivity().currentLocale.toLanguageTag())*/
         })
         viewModel.sliderOffersPosition.observe(viewLifecycleOwner, {
             binding.sliderOffersLceeLayoutVp.currentItem = it
+        })
+        viewModel.selectedVariationsIds.observe(viewLifecycleOwner, {
+            viewModel.getCost(requireActivity().currentLocale.toLanguageTag())
+        })
+        viewModel.costResponse.observe(viewLifecycleOwner, {
+            viewModel.costLcee.value!!.response.value = it
         })
 
         // add decoration divider
@@ -105,7 +126,7 @@ class ProductFragment : Fragment() {
         binding.wishListCiv.setOnClickListener {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 editWishList(
                     tokenId,
@@ -129,7 +150,7 @@ class ProductFragment : Fragment() {
         binding.sendBtn.setOnClickListener {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
                     .observeApiResponse(this@ProductFragment, {
@@ -146,28 +167,54 @@ class ProductFragment : Fragment() {
             viewModel.quantityInCart.value = viewModel.quantityInCart.value?.plus(1)
         }
         binding.addToCartBtn.setOnClickListener {
-            viewModel.addProductToCart(
-                requireActivity().currentLocale.toLanguageTag(),
-                requireContext()
-            ) {
-                viewModel.quantityInCart.value = 1
-                viewModel.getTotalProductsPriceInCart(
-                    requireActivity().currentLocale.toLanguageTag(),
+            if (viewModel.selectedBranch == null)
+                ProjectDialogUtils.showSimpleMessage(
                     requireContext(),
-                    onComplete = { totalPrice ->
-                        ProjectDialogUtils.showCheckoutTopPopup(
-                            requireContext(),
-                            itemName = viewModel.product?.name,
-                            totalPriceInCart = totalPrice,
-                            currency = viewModel.product?.currency,
-                            positiveBtnOnClick = {
-                                findNavController().navigate(R.id.cartFragment)
-                            }
-                        )
-                    }
+                    R.string.branch_is_required,
+                    R.drawable.ic_secure_shield
                 )
+            else if (viewModel.productDetailsResponse.value?.data?.variations != null
+                && viewModel.selectedVariationsIds.value?.size
+                != viewModel.productDetailsResponse.value?.data?.variations?.size
+            )
+                ProjectDialogUtils.showSimpleMessage(
+                    requireContext(),
+                    R.string.variations_are_required,
+                    R.drawable.ic_secure_shield
+                )
+            else
+                lifecycleScope.launch {
+                    val isGuestAccount =
+                        UserRepository("").getIsGuestAccount(requireContext())
+                    val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
-            }
+                    if (isGuestAccount)
+                        findNavController().navigate(R.id.loginFragment)
+                    else
+                        viewModel.addProductToCart(
+                            requireActivity().currentLocale.toLanguageTag(),
+                            requireContext()
+                        ) {
+                            binding.currency = currencySymbol
+                            viewModel.quantityInCart.value = 1
+                            viewModel.getTotalProductsPriceInCart(
+                                requireActivity().currentLocale.toLanguageTag(),
+                                requireContext(),
+                                onComplete = { totalPrice ->
+                                    ProjectDialogUtils.showCheckoutTopPopup(
+                                        requireContext(),
+                                        itemName = viewModel.product?.name,
+                                        totalPriceInCart = totalPrice,
+                                        currency = currencySymbol,
+                                        positiveBtnOnClick = {
+                                            findNavController().navigate(R.id.cartFragment)
+                                        }
+                                    )
+                                }
+                            )
+
+                        }
+                }
         }
     }
 
@@ -212,16 +259,24 @@ class ProductFragment : Fragment() {
     }
 
     private fun editWishList(
-        tokenId: String,
+        tokenId: String?,
         productId: String?,
         doAdd: Boolean,
         onComplete: () -> Unit
     ) {
-        viewModel.editWishList(
-            requireActivity().currentLocale.toLanguageTag(),
-            tokenId = tokenId,
-            productId = productId,
-            doAdd = doAdd
-        ).observeApiResponse(this, { onComplete.invoke() })
+        lifecycleScope.launch {
+            val isGuestAccount =
+                UserRepository("").getIsGuestAccount(requireContext())
+
+            if (isGuestAccount)
+                findNavController().navigate(R.id.loginFragment)
+            else
+                viewModel.editWishList(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId,
+                    productId = productId,
+                    doAdd = doAdd
+                ).observeApiResponse(this@ProductFragment, { onComplete.invoke() })
+        }
     }
 }

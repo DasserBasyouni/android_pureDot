@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.myWallet.MyWalletViewModel" />
     </data>
@@ -83,7 +87,7 @@
                         android:textColor="@color/warm_purple"
                         android:textSize="32sp"
                         android:textStyle="bold"
-                        app:bindCurrency="@{viewModel.walletResponse.data.currency}"
+                        app:bindCurrency="@{currency}"
                         app:bindPrice="@{viewModel.walletResponse.data.balance}"
                         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView64"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView64"
@@ -227,7 +231,7 @@
                         android:layout_marginStart="16dp"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{@string/conc_points_equal_currency(viewModel.walletResponse.data.points, viewModel.walletResponse.data.pointsInCurrency, viewModel.walletResponse.data.currency)}"
+                        android:text="@{@string/conc_points_equal_currency(viewModel.walletResponse.data.points, viewModel.walletResponse.data.pointsInCurrency, currency)}"
                         android:textColor="@color/greyish_brown"
                         android:textSize="14sp"
                         android:textStyle="bold"

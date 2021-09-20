@@ -12,29 +12,34 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.g7.soft.pureDot.Application
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.ext.dpToPx
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.OrderReviewModel
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.model.ReviewModel
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.bindPriceWithCurrency
-import com.g7.soft.pureDot.ui.screen.order.OrderFragment
-import com.g7.soft.pureDot.ui.screen.order.OrderViewModel
+import com.g7.soft.pureDot.ui.screen.complain.ComplainFragment
 import com.zeugmasolutions.localehelper.currentLocale
-import kotlinx.android.synthetic.main.dialog_rating.*
+import kotlinx.android.synthetic.main.dialog_complaint_service_rating.*
+import kotlinx.android.synthetic.main.dialog_rating.disableClicksIv
+import kotlinx.android.synthetic.main.dialog_rating.positiveBtn
 import kotlinx.coroutines.launch
 
 
 // todo a cleaner solution?
-class ProjectDialogUtils {
+class ProjectDialogUtils : FlavourProjectDialogUtils() {
 
     companion object {
 
         //private var driverRegisterConfirmation: Dialog? = null
         //private var noConnectionDialog: Dialog? = null
         private var loadingDialog: Dialog? = null
+
 
         fun showLoading(context: Context) {
             loadingDialog = Dialog(context)
@@ -192,36 +197,43 @@ class ProjectDialogUtils {
         }
 
         fun showOrderRating(
-            fragment: OrderFragment,
-            viewModel: OrderViewModel
+            fragment: Fragment,
+            currencySymbol: String,
+            userReview: OrderReviewModel?,
+            orderNumber: Int?,
+            totalOrderCost: Double?,
+            onClickPositiveAction: () -> Unit,
+        ): Dialog? {
+            return FlavourProjectDialogUtils.showOrderRating(
+                fragment,
+                userReview = userReview,
+                orderNumber = orderNumber,
+                currencySymbol = currencySymbol,
+                totalOrderCost = totalOrderCost,
+                onClickPositiveAction = onClickPositiveAction
+            )
+        }
+
+        fun showComplaintServiceRating(
+            fragment: ComplainFragment,
         ) {
             val dialog = Dialog(fragment.requireContext())
+            val viewModel = fragment.viewModel
 
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             dialog.setCancelable(true)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setContentView(R.layout.dialog_rating)
+            dialog.setContentView(R.layout.dialog_complaint_service_rating)
 
-            // init data
-            dialog.findViewById<TextView>(R.id.orderIdTv).text =
-                fragment.getString(R.string.conc_order_id_, viewModel.masterOrder?.number)
-            bindPriceWithCurrency(
-                dialog.findViewById(R.id.totalPriceTv),
-                price = viewModel.masterOrder?.price,
-                currency = viewModel.masterOrder?.currency,
-                preText = fragment.getString(R.string.total_)
-            )
 
-            val review = viewModel.masterOrder?.review
+            val review = viewModel.complain?.review
             if (review != null) {
                 dialog.disableClicksIv.visibility = View.VISIBLE
                 dialog.positiveBtn.visibility = View.GONE
 
-                dialog.orderRatingRb.rating = review.orderRating ?: 0f
-                dialog.orderCommentTil.editText?.setText(review.orderComment ?: "")
-                dialog.deliveryRatingRb.rating = review.deliveryRating ?: 0f
-                dialog.deliveryCommentTil.editText?.setText(review.deliveryComment ?: "")
+                dialog.ratingRb.rating = review.rating?.toFloat() ?: 0f
+                dialog.commentTil.editText?.setText(review.review ?: "")
             }
 
             dialog.show()
@@ -236,24 +248,25 @@ class ProjectDialogUtils {
                 this.setOnClickListener {
                     fragment.lifecycleScope.launch {
                         val tokenId =
-                            ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+                            UserRepository("").getTokenId(fragment.requireContext())
 
-                        viewModel.rateOrder(
+                        viewModel.rateComplainService(
                             langTag = fragment.requireActivity().currentLocale.toLanguageTag(),
                             tokenId = tokenId,
-                            orderRating = dialog.orderRatingRb.rating,
-                            orderComment = dialog.orderCommentTil.editText?.text?.toString(),
-                            deliveryRating = dialog.deliveryRatingRb.rating,
-                            deliveryComment = dialog.deliveryCommentTil.editText?.text?.toString()
+                            message = dialog.commentTil.editText?.text?.toString(),
+                            ratting = dialog.ratingRb.rating,
                         ).observeApiResponse(fragment, {
-                            viewModel.masterOrder?.review = OrderReviewModel(
-                                orderRating = dialog.orderRatingRb.rating,
-                                orderComment = dialog.orderCommentTil.editText?.text?.toString(),
-                                deliveryRating = dialog.deliveryRatingRb.rating,
-                                deliveryComment = dialog.deliveryCommentTil.editText?.text?.toString()
+                            viewModel.complain?.review = ReviewModel(
+                                rating = dialog.ratingRb.rating.toInt(),
+                                review = dialog.commentTil.editText?.text?.toString(),
+                                id = it,
                             )
                             dialog.dismiss()
                             fragment.binding.invalidateAll()
+                        }, validationObserve = {
+                            dialog.commentTil.error =
+                                if (it == ProjectConstant.Companion.ValidationError.EMPTY_COMMENT)
+                                    dialog.context.getString(R.string.error_comment) else null
                         })
                     }
                 }

@@ -7,4 +7,5 @@
     <item name="action_startFragment_to_loginFragment" type="id" />
     <item name="action_startFragment_to_signUpFragment" type="id" />
     <item name="action_startFragment_to_homeFragment" type="id" />
+    <item name="action_loginFragment_to_signUpFragment" type="id" />
 </resources>

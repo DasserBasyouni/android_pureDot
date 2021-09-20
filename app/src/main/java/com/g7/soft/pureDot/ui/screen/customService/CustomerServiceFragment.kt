@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ComplainsAdapter
 import com.g7.soft.pureDot.databinding.FragmentCustomerServiceBinding
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
@@ -45,7 +45,7 @@ class CustomerServiceFragment : Fragment() {
         // fetch data
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
             viewModel.getComplains(requireActivity().currentLocale.toLanguageTag(), tokenId)
         }
 

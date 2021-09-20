@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutViewModel" />
+            type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="@{viewModel.userDataLcee.contentVisibility}"
-                app:constraint_referenced_ids="phoneNumberTil,addNewLocation,firstNameTil,appCompatImageView9,lastNameTil,appCompatTextView35,nextBtn,emailTil,countriesSpinner" />
+                app:constraint_referenced_ids="phoneNumberTil,addNewLocation,nameTil,appCompatImageView9,lastNameTil,appCompatTextView35,nextBtn,emailTil,countriesSpinner" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/appCompatImageView9"
@@ -50,7 +50,7 @@
                 app:srcCompat="@drawable/ic_checkout_details" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/firstNameTil"
+                android:id="@+id/nameTil"
                 style="@style/ProjectTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -77,9 +77,9 @@ style="@style/ProjectTextInputEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/firstNameTil"
-                app:layout_constraintStart_toStartOf="@+id/firstNameTil"
-                app:layout_constraintTop_toBottomOf="@+id/firstNameTil">
+                app:layout_constraintEnd_toEndOf="@+id/nameTil"
+                app:layout_constraintStart_toStartOf="@+id/nameTil"
+                app:layout_constraintTop_toBottomOf="@+id/nameTil">
 
                 <com.google.android.material.textfield.TextInputEditText
 style="@style/ProjectTextInputEditText"

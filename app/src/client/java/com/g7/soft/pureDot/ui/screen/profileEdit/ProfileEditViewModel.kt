@@ -7,8 +7,8 @@ import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.ext.toFormattedDateTime
 import com.g7.soft.pureDot.model.*
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.repo.GeneralRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.Dispatchers
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -16,7 +16,7 @@ import java.util.*
 
 // TODO IMP ADD VALIDATION LAYER ON INPUTS FOR THE WHOLE APP
 class ProfileEditViewModel(
-    val userData: ClientDataModel?,
+    val userData: UserDataModel?,
     val signUpFields: SignUpFieldsModel?
 ) : ViewModel() {
 
@@ -32,12 +32,16 @@ class ProfileEditViewModel(
     val phoneNumber = MutableLiveData<String?>()
     val email = MutableLiveData<String?>()
     val dateOfBirth = MutableLiveData<String?>()
+    val dateOfBirthCalendar =
+        MutableLiveData<Calendar?>().apply { this.value = Calendar.getInstance() }
     val selectedGenderPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+
     val selectedCountryPosition = MutableLiveData<Int?>().apply { this.value = 0 }
     val selectedCountry
         get() = countiesResponse.value?.data?.getOrNull(
             selectedCountryPosition.value?.minus(1) ?: -1
         )
+
     val selectedCityPosition = MutableLiveData<Int?>().apply { this.value = 0 }
     val selectedCity
         get() = citiesResponse.value?.data?.getOrNull(
@@ -63,8 +67,8 @@ class ProfileEditViewModel(
 
     fun fetchData(langTag: String) {
         getCounties(langTag)
-        getCities(langTag)
-        getZipCodes(langTag)
+        //getCities(langTag)
+        //getZipCodes(langTag)
     }
 
     fun getCounties(langTag: String) {
@@ -96,7 +100,7 @@ class ProfileEditViewModel(
         }
     }
 
-    fun save(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun save(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
 
         var timestamp: Timestamp? = null
 
@@ -109,7 +113,7 @@ class ProfileEditViewModel(
 
         emit(NetworkRequestResponse.loading())
         emitSource(
-            ClientRepository(langTag).editUserData(
+            UserRepository(langTag).editUserData(
                 tokenId = tokenId,
                 firstName = firstName.value,
                 lastName = lastName.value,
@@ -118,7 +122,6 @@ class ProfileEditViewModel(
                 cityId = selectedCity?.id,
                 zipCodeId = if (signUpFields?.haveZipCode == true) selectedZipCode?.id else null,
                 isMale = selectedGenderPosition.value == 0,
-                countryCode = null,
                 dateOfBirth = timestamp?.time?.div(1000),
                 imageUrl = null //todo
             )

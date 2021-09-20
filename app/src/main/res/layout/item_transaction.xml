@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="currency"
+            type="String" />
 
         <variable
             name="dataModel"
@@ -107,7 +110,7 @@
                 android:textColor="@color/warm_purple"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:bindCurrency="@{dataModel.currency}"
+                app:bindCurrency="@{currency}"
                 app:bindPrice="@{dataModel.amount}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/appCompatTextView69"

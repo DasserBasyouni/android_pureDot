@@ -52,12 +52,12 @@ class HomeViewModel : ViewModel() {
         MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
 
 
-    fun fetchScreenData(langTag: String) {
+    fun fetchScreenData(langTag: String, tokenId: String?) {
         getStores(langTag)
-        getOffersSlider0(langTag, null, null)
-        getOffersSlider1(langTag, null, null)
+        getOffersSlider0(langTag, tokenId, null, null)
+        getOffersSlider1(langTag, tokenId, null, null)
         getCategories(langTag)
-        getOffersSlider2(langTag, null, null)
+        getOffersSlider2(langTag, tokenId, null, null)
         getLatestOffers(langTag)
         getLatestProducts(langTag)
         getBestSelling(langTag)
@@ -79,7 +79,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getOffersSlider0(langTag: String, categoryId: String?, shopId: String?) {
+    fun getOffersSlider0(langTag: String, tokenId: String?, categoryId: String?, shopId: String?) {
         sliderOffersResponse0.value = NetworkRequestResponse.loading()
         sliderOffersTimer0?.cancel() // release the auto slider timer
 
@@ -87,6 +87,7 @@ class HomeViewModel : ViewModel() {
         sliderOffersResponse0.apply {
             addSource(
                 ProductRepository(langTag).getSliderOffers(
+                    tokenId = tokenId,
                     categoryId = categoryId,
                     shopId = shopId,
                     type = ApiConstant.SliderOfferType.HOME_MAIN_SLIDER.value,
@@ -112,7 +113,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getOffersSlider1(langTag: String, categoryId: String?, shopId: String?) {
+    fun getOffersSlider1(langTag: String, tokenId: String?, categoryId: String?, shopId: String?) {
         sliderOffersResponse1.value = NetworkRequestResponse.loading()
         sliderOffersTimer1?.cancel() // release the auto slider timer
 
@@ -120,6 +121,7 @@ class HomeViewModel : ViewModel() {
         sliderOffersResponse1.apply {
             addSource(
                 ProductRepository(langTag).getSliderOffers(
+                    tokenId = tokenId,
                     categoryId = categoryId,
                     shopId = shopId,
                     type = ApiConstant.SliderOfferType.HOME_CATEGORY_SLIDER.value,
@@ -145,7 +147,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getOffersSlider2(langTag: String, categoryId: String?, shopId: String?) {
+    fun getOffersSlider2(langTag: String, tokenId: String?, categoryId: String?, shopId: String?) {
         sliderOffersResponse2.value = NetworkRequestResponse.loading()
         sliderOffersTimer2?.cancel() // release the auto slider timer
 
@@ -153,6 +155,7 @@ class HomeViewModel : ViewModel() {
         sliderOffersResponse2.apply {
             addSource(
                 ProductRepository(langTag).getSliderOffers(
+                    tokenId = tokenId,
                     categoryId = categoryId,
                     shopId = shopId,
                     type = ApiConstant.SliderOfferType.HOME_LATEST_PRODUCT.value,
@@ -202,7 +205,7 @@ class HomeViewModel : ViewModel() {
             addSource(
                 ProductRepository(langTag).getLatestOffers(
                     pageNumber = 1,
-                    itemPerPage = 4,
+                    itemsPerPage = 4,
                     shopId = null
                 )
             ) { latestOffersResponse.value = it }
@@ -225,7 +228,7 @@ class HomeViewModel : ViewModel() {
             addSource(
                 ProductRepository(langTag).getLatestProducts(
                     pageNumber = 1,
-                    itemPerPage = 9,
+                    itemsPerPage = 9,
                     shopId = null,
                 )
             ) { latestProductsResponse.value = it }
@@ -240,7 +243,7 @@ class HomeViewModel : ViewModel() {
             addSource(
                 ProductRepository(langTag).getBestSelling(
                     pageNumber = 1,
-                    itemPerPage = ProjectConstant.ITEMS_PER_PAGE,
+                    itemsPerPage = ProjectConstant.ITEMS_PER_PAGE,
                     shopId = null,
                 )
             ) { bestSellingResponse.value = it }

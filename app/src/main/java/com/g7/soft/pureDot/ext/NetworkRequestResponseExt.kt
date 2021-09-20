@@ -32,38 +32,13 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
 
                     fragment.lifecycleScope.launch { validationObserve?.invoke(it.validationError) }
 
-                    /*val msgResId: Int? = when (it.validationError) {
-                        ProjectConstant.Companion.ValidationError.EMPTY_PHONE_NUMBER,
-                        ProjectConstant.Companion.ValidationError.EMPTY_PASSWORD ->
-                            R.string.msg_empty_login_data
-                        ProjectConstant.Companion.ValidationError.INVALID_PASSWORD ->
-                            R.string.msg_invalid_password
-                        ProjectConstant.Companion.ValidationError.EMPTY_PHONE_NUMBER_OR_EMAIL ->
-                            R.string.msg_empty_email_or_password
-                        ProjectConstant.Companion.ValidationError.EMPTY_VERIFICATION_CODE -> R.string.msg_empty_verify_code
-                        ProjectConstant.Companion.ValidationError.INVALID_VERIFICATION_CODE -> R.string.msg_invalid_verify_code
-                        ProjectConstant.Companion.ValidationError.NON_IDENTICAL_PASSWORD -> R.string.msg_non_identical_password
-                        ProjectConstant.Companion.ValidationError.EMPTY_FIRST_NAME -> R.string.msg_empty_first_name
-                        ProjectConstant.Companion.ValidationError.EMPTY_LAST_NAME -> R.string.msg_empty_last_name
-                        ProjectConstant.Companion.ValidationError.EMPTY_EMAIL -> R.string.msg_empty_email
-                        ProjectConstant.Companion.ValidationError.INVALID_EMAIL -> R.string.msg_invalid_email
-                        ProjectConstant.Companion.ValidationError.EMPTY_AGE -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_HEIGHT -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_WEIGHT -> TODO()
-                        ProjectConstant.Companion.ValidationError.UNSELECTED_ACTIVITY_LEVEL -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_CONVERSATION_MESSAGE -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_COMPLAINT_TITLE -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_COMPLAINT_DESCRIPTION -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_RATING_BAR -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_COMMENT -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_COUNTRY -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_CITY -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_AREA -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_ZIP_CODE -> TODO()
-                        ProjectConstant.Companion.ValidationError.EMPTY_ADDRESS -> TODO()
-                        null -> null
-                    }
-                    msgResId?.let { it -> ProjectDialogUtils.showSimpleMessage(context, it) }*/
+                    val popupMessageResId = it.validationError?.toMessageResId()
+                    if (popupMessageResId != null)
+                        ProjectDialogUtils.showSimpleMessage(
+                            fragment.requireContext(),
+                            messageResId = popupMessageResId,
+                            drawableResId = R.drawable.ic_secure_shield
+                        )
                 }
                 ProjectConstant.Companion.Status.SUCCESS -> {
                     if (doLoading) ProjectDialogUtils.hideLoading()
@@ -97,6 +72,15 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
                 }
                 ProjectConstant.Companion.Status.NETWORK_ERROR -> {
                     if (doLoading) ProjectDialogUtils.hideLoading()
+                }
+                else -> {
+                    if (doLoading)
+                        ProjectDialogUtils.hideLoading()
+                    ProjectDialogUtils.showSimpleMessage(
+                        fragment.requireContext(),
+                        R.string.something_went_wrong,
+                        R.drawable.ic_secure_shield
+                    )
                 }
             }
         }

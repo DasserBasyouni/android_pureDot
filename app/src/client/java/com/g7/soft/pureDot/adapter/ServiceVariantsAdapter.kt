@@ -50,19 +50,14 @@ class ServiceVariantsAdapter(
                 //spinner.setSelection(viewModel.selectedBranchPosition.value!!)
             }
 
-            var lastSelectedId: Int? = null
             binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long
                 ) {
-                    val currentId = dataModel?.values?.getOrNull(position - 1)?.id
-
-                    viewModel.selectedVariations.value = viewModel.selectedVariations.value.also {
-                        it?.remove(lastSelectedId)
-                        if (currentId != null) it?.add(currentId)
-                    }
-
-                    lastSelectedId = currentId
+                    viewModel.selectedVariationsMap.value =
+                        viewModel.selectedVariationsMap.value.also {
+                            it?.put(adapterPosition, dataModel?.values?.getOrNull(position - 1))
+                        }
                 }
 
                 override fun onNothingSelected(parentView: AdapterView<*>?) = Unit

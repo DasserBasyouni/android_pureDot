@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.SettingsAdapter
 import com.g7.soft.pureDot.databinding.FragmentMyAccountBinding
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -27,10 +27,16 @@ class MyAccountFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_my_account, container, false)
 
-        viewModel = ViewModelProvider(this).get(MyAccountViewModel::class.java)
+        lifecycleScope.launch { // optimize this and make it single time call
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModel = ViewModelProvider(this@MyAccountFragment).get(MyAccountViewModel::class.java)
+
+            binding.currency = currencySymbol
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@MyAccountFragment
+        }
+
         setHasOptionsMenu(true)
 
         return binding.root
@@ -42,7 +48,7 @@ class MyAccountFragment : Fragment() {
         // fetch data
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
             viewModel.getUserData(requireActivity().currentLocale.toLanguageTag(), tokenId)
         }
 

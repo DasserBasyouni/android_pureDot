@@ -10,7 +10,7 @@ class MyWalletViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(MyWalletViewModel::class.java)) {
             MyWalletViewModel(
-                tokenId = tokenId,
+                tokenId = tokenId
             ) as T
         } else {
             throw IllegalArgumentException("Unknown ViewModel class")

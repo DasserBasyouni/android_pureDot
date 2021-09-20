@@ -4,17 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemMyOrderBinding
-import com.g7.soft.pureDot.model.OrderModel
+import com.g7.soft.pureDot.model.MasterOrderModel
+import com.g7.soft.pureDot.repo.UserRepository
+import kotlinx.coroutines.launch
 
 
 class MyOrdersAdapter(private val fragment: Fragment) :
-    ListAdapter<OrderModel, MyOrdersAdapter.ViewHolder>(MyOrdersDiffCallback()) {
+    PagedListAdapter<MasterOrderModel, MyOrdersAdapter.ViewHolder>(MyOrdersDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder.from(viewGroup)
@@ -26,13 +29,19 @@ class MyOrdersAdapter(private val fragment: Fragment) :
     class ViewHolder private constructor(private val binding: ItemMyOrderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            dataModel: OrderModel,
+            dataModel: MasterOrderModel?,
             fragment: Fragment,
             isLastItem: Boolean,
         ) {
-            binding.dataModel = dataModel
-            binding.isLastItem = isLastItem
-            binding.executePendingBindings()
+            fragment.lifecycleScope.launch {
+                val currencySymbol = UserRepository("").getCurrencySymbol(fragment.requireContext())
+
+                binding.currency = currencySymbol
+                binding.dataModel = dataModel
+                binding.isLastItem = isLastItem
+                binding.executePendingBindings()
+            }
+
 
             binding.root.setOnClickListener {
                 val bundle = bundleOf("masterOrder" to dataModel)
@@ -55,14 +64,14 @@ class MyOrdersAdapter(private val fragment: Fragment) :
 
 }
 
-class MyOrdersDiffCallback : DiffUtil.ItemCallback<OrderModel>() {
+class MyOrdersDiffCallback : DiffUtil.ItemCallback<MasterOrderModel>() {
     override fun areItemsTheSame(
-        oldItem: OrderModel,
-        newItem: OrderModel,
+        oldItem: MasterOrderModel,
+        newItem: MasterOrderModel,
     ): Boolean = oldItem == newItem
 
     override fun areContentsTheSame(
-        oldItem: OrderModel,
-        newItem: OrderModel,
+        oldItem: MasterOrderModel,
+        newItem: MasterOrderModel,
     ): Boolean = oldItem == newItem
 }

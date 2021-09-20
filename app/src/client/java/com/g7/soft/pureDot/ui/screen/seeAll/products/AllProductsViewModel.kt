@@ -30,11 +30,11 @@ class AllProductsViewModel(
     var productsPagedList: LiveData<PagedList<ProductModel>>? = null
 
 
-    fun fetchScreenData(langTag: String) {
-        getOffersSlider(langTag, null, storeId)
+    fun fetchScreenData(langTag: String, tokenId: String?) {
+        getOffersSlider(langTag, tokenId, null, storeId)
     }
 
-    fun getOffersSlider(langTag: String, categoryId: String?, shopId: String?) {
+    fun getOffersSlider(langTag: String, tokenId: String?, categoryId: String?, shopId: String?) {
         sliderOffersResponse.value = NetworkRequestResponse.loading()
         sliderOffersTimer?.cancel() // release the auto slider timer
 
@@ -42,6 +42,7 @@ class AllProductsViewModel(
         sliderOffersResponse.apply {
             addSource(
                 ProductRepository(langTag).getSliderOffers(
+                    tokenId = tokenId,
                     categoryId = categoryId,
                     shopId = shopId,
                     type = sliderType.value

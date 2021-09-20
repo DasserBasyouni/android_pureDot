@@ -1,6 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.signUp
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -19,21 +20,26 @@ import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ProjectConstant
+import com.g7.soft.pureDot.constant.ProjectConstant.Companion.ValidationError
 import com.g7.soft.pureDot.databinding.FragmentSignUpBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.CityModel
 import com.g7.soft.pureDot.model.CountryModel
-import com.g7.soft.pureDot.model.ZipCodeModel
+import com.g7.soft.pureDot.model.UserDataModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.google.android.material.button.MaterialButton
 import com.zeugmasolutions.localehelper.currentLocale
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
     private lateinit var viewModel: SignUpViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,14 +62,10 @@ class SignUpFragment : Fragment() {
         // fetch data
         viewModel.getCounties(requireActivity().currentLocale.toLanguageTag())
         viewModel.getCities(requireActivity().currentLocale.toLanguageTag())
-        viewModel.getZipCodes(requireActivity().currentLocale.toLanguageTag())
 
         // observables
         viewModel.selectedCountryPosition.observe(viewLifecycleOwner, {
             viewModel.getCities(requireActivity().currentLocale.toLanguageTag())
-        })
-        viewModel.selectedCityPosition.observe(viewLifecycleOwner, {
-            viewModel.getZipCodes(requireActivity().currentLocale.toLanguageTag())
         })
         viewModel.countiesResponse.observe(viewLifecycleOwner, {
             setupSpinner(
@@ -79,19 +81,30 @@ class SignUpFragment : Fragment() {
                 initialText = getString(R.string.select_city)
             )
         })
-        viewModel.zipCodesResponse.observe(viewLifecycleOwner, {
-            setupSpinner(
-                binding.zipCodeSpinner,
-                viewModel.zipCodesResponse.value,
-                initialText = getString(R.string.select_zipcode)
-            )
-        })
 
         // setup listeners
-        setupUploaderBtn(binding.uploadLicenceBtn, 2, CAR_LICENCE_REQUEST_CODE)
-        setupUploaderBtn(binding.uploadCarFrontPlateBtn, 1, CAR_FRONT_PLATE_REQUEST_CODE)
-        setupUploaderBtn(binding.uploadCarBackPlateBtn, 1, CAR_BACK_PLATE_REQUEST_CODE)
-        setupUploaderBtn(binding.uploadNationalIdBtn, 2, CAR_NATIONAL_ID_REQUEST_CODE)
+        binding.birthDateTil.editText?.setOnClickListener {
+            val calendar = viewModel.dateOfBirthCalendar.value!!
+            DatePickerDialog(
+                requireContext(),
+                { _, year, monthOfYear, dayOfMonth ->
+                    viewModel.dateOfBirthCalendar.value?.set(Calendar.YEAR, year)
+                    viewModel.dateOfBirthCalendar.value?.set(Calendar.MONTH, monthOfYear)
+                    viewModel.dateOfBirthCalendar.value?.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    viewModel.dateOfBirth.value = SimpleDateFormat(
+                        getString(R.string.format_standard_date),
+                        requireActivity().currentLocale
+                    ).format(calendar.time)
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+        setupUploaderBtn(binding.uploadLicenceBtn, CAR_LICENCE_REQUEST_CODE)
+        setupUploaderBtn(binding.uploadCarFrontPlateBtn, CAR_FRONT_PLATE_REQUEST_CODE)
+        setupUploaderBtn(binding.uploadCarBackPlateBtn, CAR_BACK_PLATE_REQUEST_CODE)
+        setupUploaderBtn(binding.uploadNationalIdBtn, CAR_NATIONAL_ID_REQUEST_CODE)
         setupUploadImageLayoutRemoveButtons()
 
         binding.acceptTermsCb.makeLinks(
@@ -103,63 +116,66 @@ class SignUpFragment : Fragment() {
         )
 
         binding.submitRequestBtn.setOnClickListener {
-            viewModel.register(requireActivity().currentLocale.toLanguageTag()).observeApiResponse(this, {
-                // todo save user data
-                if (it?.tokenId != null)
-                    findNavController().navigate(
-                        SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
-                            false,
-                            viewModel.phoneNumber.value
-                        )
+            viewModel.register(requireActivity().currentLocale.toLanguageTag())
+                .observeApiResponse(this, {
+                    UserRepository("").saveUserData(
+                        requireContext(), UserDataModel(
+                            tokenId = it,
+                            name = viewModel.name.value,
+                            phoneNumber = viewModel.phoneNumber.value,
+                            carBrand = viewModel.carBrand.value,
+                            dateOfBirth = viewModel.dateOfBirthCalendar.value?.timeInMillis
+                                ?.div(1000),
+                            email = viewModel.email.value,
+                            isMale = viewModel.isMale.value,
+                            language = requireActivity().currentLocale.toLanguageTag()
+                        ), viewModel.password.value
                     )
-                else
-                    ProjectDialogUtils.showSimpleMessage(requireContext(), R.string.something_went_wrong, drawableResId = R.drawable.ic_cancel)
-            })
+
+                    if (it != null)
+                        findNavController().navigate(
+                            SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
+                                false,
+                                viewModel.phoneNumber.value
+                            )
+                        )
+                    else
+                        ProjectDialogUtils.showSimpleMessage(
+                            requireContext(),
+                            R.string.something_went_wrong,
+                            drawableResId = R.drawable.ic_cancel
+                        )
+                }, validationObserve = {
+                    binding.nameTil.error = if (it == ValidationError.EMPTY_NAME)
+                        getString(R.string.error_empty_name) else null
+
+                    binding.phoneNumberTil.error = if (it == ValidationError.EMPTY_PHONE_NUMBER)
+                        getString(R.string.error_empty_phone_number) else null
+
+                    binding.emailTil.error = if (it == ValidationError.EMPTY_EMAIL)
+                        getString(R.string.error_empty_email) else null
+
+                    binding.birthDateTil.error = if (it == ValidationError.EMPTY_DATE_OF_BIRTH)
+                        getString(R.string.error_empty_date_of_birth) else null
+
+                    binding.carBrandTil.error = if (it == ValidationError.EMPTY_CAR_BRAND)
+                        getString(R.string.error_empty_car_brand) else null
+                })
         }
     }
 
     private fun setupUploadImageLayoutRemoveButtons() {
-        binding.licencePhotoLayout1.apply {
-            this.removeTv.setOnClickListener {
-                viewModel.licenceImages.value = viewModel.licenceImages.value.apply {
-                    this?.removeAt(0)
-                }
-            }
-        }
-        binding.licencePhotoLayout2.apply {
-            this.removeTv.setOnClickListener {
-                viewModel.licenceImages.value = viewModel.licenceImages.value.apply {
-                    this?.removeAt(1)
-                }
-            }
+        binding.licencePhotoLayout.apply {
+            this.removeTv.setOnClickListener { viewModel.licenceImagePath.value = null }
         }
         binding.carFrontPlatePhotoLayout.apply {
-            this.removeTv.setOnClickListener {
-                viewModel.carFrontPlateImages.value = viewModel.carFrontPlateImages.value.apply {
-                    this?.removeAt(0)
-                }
-            }
+            this.removeTv.setOnClickListener { viewModel.carFrontImagePath.value = null }
         }
         binding.carBackPlatePhotoLayout.apply {
-            this.removeTv.setOnClickListener {
-                viewModel.carBackPlateImages.value = viewModel.carBackPlateImages.value.apply {
-                    this?.removeAt(0)
-                }
-            }
+            this.removeTv.setOnClickListener { viewModel.carBackImagePath.value = null }
         }
-        binding.nationalIdPhotoLayout1.apply {
-            this.removeTv.setOnClickListener {
-                viewModel.nationalIdImages.value = viewModel.nationalIdImages.value.apply {
-                    this?.removeAt(0)
-                }
-            }
-        }
-        binding.nationalIdPhotoLayout2.apply {
-            this.removeTv.setOnClickListener {
-                viewModel.nationalIdImages.value = viewModel.nationalIdImages.value.apply {
-                    this?.removeAt(1)
-                }
-            }
+        binding.nationalIdPhotoLayout.apply {
+            this.removeTv.setOnClickListener { viewModel.nationalIdImagePath.value = null }
         }
     }
 
@@ -169,32 +185,40 @@ class SignUpFragment : Fragment() {
             when (requestCode) {
                 CAR_LICENCE_REQUEST_CODE -> {
                     val returnValue = data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                    viewModel.licenceImages.value = returnValue?.toMutableList()
+                    viewModel.licenceImagePath.value = returnValue?.getOrNull(0)
                 }
                 CAR_FRONT_PLATE_REQUEST_CODE -> {
                     val returnValue = data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                    viewModel.carFrontPlateImages.value = returnValue?.toMutableList()
+                    viewModel.carFrontImagePath.value = returnValue?.getOrNull(0)
                 }
                 CAR_BACK_PLATE_REQUEST_CODE -> {
                     val returnValue = data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                    viewModel.carBackPlateImages.value = returnValue?.toMutableList()
+                    viewModel.carBackImagePath.value = returnValue?.getOrNull(0)
                 }
                 CAR_NATIONAL_ID_REQUEST_CODE -> {
                     val returnValue = data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                    viewModel.nationalIdImages.value = returnValue?.toMutableList()
+                    viewModel.nationalIdImagePath.value = returnValue?.getOrNull(0)
                 }
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         when (requestCode) {
             PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Pix.start(this, Options.init().setRequestCode(100))
                 } else {
-                    Toast.makeText(requireContext(), "Approve permissions to upload photos", Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        requireContext(),
+                        "Approve permissions to upload photos",
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 }
                 return
@@ -203,11 +227,11 @@ class SignUpFragment : Fragment() {
     }
 
 
-    private fun setupUploaderBtn(btn: MaterialButton, maxImages: Int, requestCode: Int) {
+    private fun setupUploaderBtn(btn: MaterialButton, requestCode: Int) {
         btn.setOnClickListener {
             val options = Options.init()
                 .setRequestCode(requestCode) //Request code for activity results
-                .setCount(maxImages) //Number of images to restict selection count
+                .setCount(1) //Number of images to restict selection count
                 .setFrontfacing(false) //Front Facing camera on start
                 //.setPreSelectedUrls(returnValue) //Pre selected Image Urls
                 .setSpanCount(4) //Span count for gallery min 1 & max 5
@@ -223,6 +247,8 @@ class SignUpFragment : Fragment() {
         networkResponse: NetworkRequestResponse<List<T>?>?,
         initialText: String
     ) {
+        var selectedPosition = 0
+
         val spinnerData = when (networkResponse?.status) {
             ProjectConstant.Companion.Status.IDLE -> {
                 spinner.isEnabled = false
@@ -232,19 +258,22 @@ class SignUpFragment : Fragment() {
                 spinner.isEnabled = false
                 arrayListOf(getString(R.string.loading_))
             }
-            ProjectConstant.Companion.Status.SUCCESS -> {
+            ProjectConstant.Companion.Status.SUCCESS, ProjectConstant.Companion.Status.API_ERROR -> {
                 val modelsList = networkResponse.data
                 val dataList = when {
                     modelsList?.firstOrNull() is CountryModel -> {
+                        selectedPosition = viewModel.selectedCountryPosition.value!!
                         modelsList.mapNotNull { (it as CountryModel).name }.toTypedArray()
                     }
                     modelsList?.firstOrNull() is CityModel -> {
+                        selectedPosition = viewModel.selectedCityPosition.value!!
                         modelsList.mapNotNull { (it as CityModel).name }.toTypedArray()
 
                     }
-                    modelsList?.firstOrNull() is ZipCodeModel -> {
+                    /*modelsList?.firstOrNull() is ZipCodeModel -> {
+                        selectedPosition = viewModel.selectedZipCodePosition.value!!
                         modelsList.mapNotNull { (it as ZipCodeModel).code }.toTypedArray()
-                    }
+                    }*/
                     else -> null
                 }
                 spinner.isEnabled = true
@@ -265,7 +294,7 @@ class SignUpFragment : Fragment() {
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
-            spinner.setSelection(viewModel.selectedCountryPosition.value!!) // todo made before in ProfileEdit
+            spinner.setSelection(selectedPosition)
         }
     }
 

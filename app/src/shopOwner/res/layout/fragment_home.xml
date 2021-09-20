@@ -10,516 +10,73 @@
             type="com.g7.soft.pureDot.ui.screen.home.HomeViewModel" />
     </data>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:animateLayoutChanges="true"
-            android:paddingBottom="56dp"
-            app:paddingBottomSystemWindowInsets="@{true}"
-            tools:background="@android:color/white"
-            tools:context=".ui.screen.MainActivity">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:paddingBottom="72dp"
+        app:paddingBottomSystemWindowInsets="@{true}"
+        tools:background="@android:color/white"
+        tools:context=".ui.screen.MainActivity">
 
-            <include
-                android:id="@+id/sliderOffersLceeLayout0"
-                layout="@layout/layout_lcee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:emptyText="@{@string/empty_offers}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:lceeModel="@{viewModel.sliderOffersLcee0}" />
+        <include
+            android:id="@+id/newOrderLayout"
+            layout="@layout/item_home_order_radio_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:isNewOrder="@{true}"
+            app:isSelected="@{viewModel.areNewOrdersSelected}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/sliderOffersLceeLayoutCv0"
-                android:visibility="@{viewModel.sliderOffersLcee0.contentVisibility}"
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                app:cardCornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+        <include
+            android:id="@+id/pendingOrdersLayout"
+            layout="@layout/item_home_order_radio_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:isNewOrder="@{false}"
+            app:isSelected="@{!viewModel.areNewOrdersSelected}"
+            app:layout_constraintEnd_toEndOf="@+id/newOrderLayout"
+            app:layout_constraintStart_toStartOf="@+id/newOrderLayout"
+            app:layout_constraintTop_toBottomOf="@+id/newOrderLayout" />
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/sliderOffersLceeLayoutVp0"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+        <include
+            android:id="@+id/bestSellingLcee"
+            layout="@layout/layout_lcee"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:emptyText="@{@string/empty_products}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pendingOrdersLayout"
+            app:lceeModel="@{viewModel.areNewOrdersSelected ? viewModel.newOrdersLcee : viewModel.pendingOrdersLcee}" />
 
-            </androidx.cardview.widget.CardView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ordersRv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:visibility="@{viewModel.areNewOrdersSelected ? viewModel.newOrdersLcee.contentVisibility : viewModel.pendingOrdersLcee.contentVisibility}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pendingOrdersLayout"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_home_order" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/sliderOffersLceeLayoutTl0"
-                android:layout_width="0dp"
-                android:background="@android:color/transparent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sliderOffersLceeLayoutCv0"
-                app:tabBackground="@drawable/tab_selector"
-                app:tabGravity="center"
-                app:tabIndicatorHeight="0dp" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/sliderOffersLceeLayout0Barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="sliderOffersLceeLayout0, sliderOffersLceeLayoutCv0, sliderOffersLceeLayoutTl0"
-                tools:layout_editor_absoluteY="165dp" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView44"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="3sp"
-                android:text="@string/stores"
-                android:textColor="#662f8f"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sliderOffersLceeLayout0Barrier" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/storesSeeAllTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="2sp"
-                android:text="@{@string/conc_see_all(viewModel.storesResponse.data.totalCount)}"
-                android:textColor="#818181"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="@{viewModel.storesLcee.contentVisibility}"
-                app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView44"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appCompatTextView44"
-                tools:text="See All (20)" />
-
-            <include
-                android:id="@+id/shopsLcee"
-                layout="@layout/layout_lcee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:emptyText="@{@string/empty_stores}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView44"
-                app:lceeModel="@{viewModel.storesLcee}" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/storesRv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
-                android:visibility="@{viewModel.storesLcee.contentVisibility}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView44"
-                tools:itemCount="10"
-                tools:listitem="@layout/item_store_horizontal" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/shopsBarrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="shopsLcee, storesRv"
-                tools:layout_editor_absoluteY="165dp" />
-
-            <include
-                android:id="@+id/sliderOffersLceeLayout1"
-                layout="@layout/layout_lcee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:emptyText="@{@string/empty_offers}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shopsBarrier"
-                app:lceeModel="@{viewModel.sliderOffersLcee1}" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/sliderOffersLceeLayoutCv1"
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:visibility="@{viewModel.sliderOffersLcee1.contentVisibility}"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                app:cardCornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shopsBarrier">
-
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/sliderOffersLceeLayoutVp1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </androidx.cardview.widget.CardView>
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/sliderOffersLceeLayoutTl1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:visibility="@{viewModel.sliderOffersLcee1.contentVisibility}"
-                android:background="@android:color/transparent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sliderOffersLceeLayoutCv1"
-                app:tabBackground="@drawable/tab_selector"
-                app:tabGravity="center"
-                app:tabIndicatorHeight="0dp" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/sliderOffersLceeLayoutBarrier1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="sliderOffersLceeLayout1, sliderOffersLceeLayoutCv1, sliderOffersLceeLayoutTl1"
-                tools:layout_editor_absoluteY="165dp" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="3sp"
-                android:text="@string/categories"
-                android:textColor="#662f8f"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sliderOffersLceeLayoutBarrier1" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/categoriesSeeAllTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="2sp"
-                android:text="@{@string/conc_see_all(viewModel.categoriesResponse.data.totalCount)}"
-                android:textColor="#818181"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="@{viewModel.categoriesLcee.contentVisibility}"
-                app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appCompatTextView4"
-                tools:text="See All (20)" />
-
-            <include
-                android:id="@+id/categoriesLcee"
-                layout="@layout/layout_lcee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:emptyText="@{@string/empty_categories}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView4"
-                app:lceeModel="@{viewModel.categoriesLcee}" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/categoriesRv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
-                android:visibility="@{viewModel.categoriesLcee.contentVisibility}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView4"
-                tools:itemCount="10"
-                tools:listitem="@layout/item_category_list_view" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/categoriesBarrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="categoriesLcee, categoriesRv" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/appCompatImageView17"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/categoriesBarrier"
-                app:srcCompat="@color/divider" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="3sp"
-                android:text="@string/latest_offers"
-                android:textColor="#662f8f"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/appCompatTextView4"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatImageView17" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/latestOffersSeeAllTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="2sp"
-                android:text="@{@string/conc_see_all(viewModel.latestOffersResponse.data.totalCount)}"
-                android:textColor="#818181"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="@{viewModel.latestOffersLcee.contentVisibility}"
-                app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView7"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appCompatTextView7"
-                tools:text="See All (20)" />
-
-            <include
-                android:id="@+id/latestOffersLcee"
-                layout="@layout/layout_lcee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:emptyText="@{@string/empty_offers}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView7"
-                app:lceeModel="@{viewModel.latestOffersLcee}" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/latestOffersRv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:visibility="@{viewModel.latestOffersLcee.contentVisibility}"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView7"
-                app:spanCount="2"
-                tools:itemCount="4"
-                tools:listitem="@layout/item_product_grid_view" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/latestOffersBarrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="latestOffersLcee, latestOffersRv" />
-
-            <include
-                android:id="@+id/sliderOffersLceeLayout2"
-                layout="@layout/layout_lcee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:emptyText="@{@string/empty_offers}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/latestOffersBarrier"
-                app:lceeModel="@{viewModel.sliderOffersLcee2}" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/sliderOffersLceeLayoutCv2"
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:visibility="@{viewModel.sliderOffersLcee2.contentVisibility}"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                app:cardCornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/latestOffersBarrier">
-
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/sliderOffersLceeLayoutVp2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </androidx.cardview.widget.CardView>
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/sliderOffersLceeLayoutTl2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sliderOffersLceeLayoutCv2"
-                app:tabBackground="@drawable/tab_selector"
-                app:tabGravity="center"
-                app:tabIndicatorHeight="0dp" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/sliderOffersLceeLayoutBarrier2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="sliderOffersLceeLayout2, sliderOffersLceeLayoutCv2, sliderOffersLceeLayoutTl2"
-                tools:layout_editor_absoluteY="165dp" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="3sp"
-                android:text="@string/latest_products"
-                android:textColor="@color/warm_purple"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/appCompatTextView7"
-                app:layout_constraintTop_toBottomOf="@id/sliderOffersLceeLayoutBarrier2" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/latestProductsSellAllTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="2sp"
-                android:text="@{@string/conc_see_all(viewModel.latestProductsResponse.data.totalCount)}"
-                android:textColor="#818181"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="@{viewModel.latestProductsLcee.contentVisibility}"
-                app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView8"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appCompatTextView8"
-                tools:text="See All (20)" />
-
-            <include
-                android:id="@+id/latestProductsLcee"
-                layout="@layout/layout_lcee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:emptyText="@{@string/empty_products}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView8"
-                app:lceeModel="@{viewModel.latestProductsLcee}" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/latestProductsRv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
-                android:visibility="@{viewModel.latestOffersLcee.contentVisibility}"
-                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView8"
-                app:spanCount="2"
-                tools:itemCount="3"
-                tools:listitem="@layout/item_staggered_product_small" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/latestProductsBarrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="latestProductsLcee, latestProductsRv" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="3sp"
-                android:text="@string/best_selling"
-                android:textColor="@color/warm_purple"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/appCompatTextView8"
-                app:layout_constraintTop_toBottomOf="@id/latestProductsBarrier" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/bestSellingSellAllTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="2sp"
-                android:text="@{@string/conc_see_all(viewModel.bestSellingResponse.data.totalCount)}"
-                android:textColor="#818181"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="@{viewModel.bestSellingLcee.contentVisibility}"
-                app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView9"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appCompatTextView9"
-                tools:text="See All (20)" />
-
-            <include
-                android:id="@+id/bestSellingLcee"
-                layout="@layout/layout_lcee"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:emptyText="@{@string/empty_products}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView9"
-                app:lceeModel="@{viewModel.bestSellingLcee}" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bestSellingRv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:visibility="@{viewModel.bestSellingLcee.contentVisibility}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appCompatTextView9"
-                tools:itemCount="10"
-                tools:listitem="@layout/item_staggered_product_small" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

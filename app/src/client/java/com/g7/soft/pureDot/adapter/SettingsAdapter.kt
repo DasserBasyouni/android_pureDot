@@ -2,13 +2,14 @@ package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemSettingsBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.screen.myAccount.MyAccountFragment
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
@@ -51,37 +52,46 @@ class SettingsAdapter(private val fragment: MyAccountFragment) :
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                when (adapterPosition) {
-                    0 -> fragment.findNavController().navigate(R.id.changeLanguageFragment)
-                    1 -> fragment.findNavController().navigate(R.id.myOrdersFragment)
-                    2 -> fragment.findNavController().navigate(R.id.myWalletFragment)
-                    3 -> fragment.findNavController().navigate(R.id.favouritesFragment)
-                    4 -> fragment.findNavController().navigate(R.id.customerServiceFragment)
-                    5 -> fragment.findNavController().navigate(R.id.contactUsFragment)
-                    6 -> fragment.findNavController().navigate(R.id.aboutUsFragment)
-                    7 -> fragment.findNavController().navigate(R.id.policyFragment)
-                    8 -> fragment.findNavController().navigate(R.id.termsFragment)
-                    9 -> {
-                        ProjectDialogUtils.showAskingDialog(
-                            fragment.requireContext(),
-                            R.drawable.ic_popup_logout,
-                            R.string.sign_out,
-                            R.string.question_sure_logout,
-                            positiveRunnable = {
-                                fragment.viewModel.viewModelScope.launch {
-                                    val isGuestAccount =
-                                        ClientRepository("").getLocalUserData(fragment.requireContext()).isGuestAccount
+                fragment.lifecycleScope.launch {
+                    val isGuestAccount =
+                        UserRepository("").getIsGuestAccount(fragment.requireContext())
 
-                                    if (isGuestAccount)
-                                        clearUserDataThenNavigate(fragment)
-                                    else
-                                        fragment.viewModel.logout(fragment.requireActivity().currentLocale.toLanguageTag())
-                                            .observeApiResponse(fragment, {
-                                                clearUserDataThenNavigate(fragment)
-                                            })
+                    when (adapterPosition) {
+                        0 -> fragment.findNavController().navigate(R.id.changeLanguageFragment)
+                        1 -> fragment.findNavController()
+                            .navigate(if (isGuestAccount) R.id.loginFragment else R.id.myOrdersFragment)
+                        2 -> fragment.findNavController()
+                            .navigate(if (isGuestAccount) R.id.loginFragment else R.id.myWalletFragment)
+                        3 -> fragment.findNavController()
+                            .navigate(if (isGuestAccount) R.id.loginFragment else R.id.favouritesFragment)
+                        4 -> fragment.findNavController()
+                            .navigate(if (isGuestAccount) R.id.loginFragment else R.id.customerServiceFragment)
+                        5 -> fragment.findNavController().navigate(R.id.contactUsFragment)
+                        6 -> fragment.findNavController().navigate(R.id.aboutUsFragment)
+                        7 -> fragment.findNavController().navigate(R.id.policyFragment)
+                        8 -> fragment.findNavController().navigate(R.id.termsFragment)
+                        9 -> {
+                            ProjectDialogUtils.showAskingDialog(
+                                fragment.requireContext(),
+                                R.drawable.ic_popup_logout,
+                                R.string.sign_out,
+                                R.string.question_sure_logout,
+                                positiveRunnable = {
+                                    fragment.viewModel.viewModelScope.launch {
+                                        val isGuestAccount =
+                                            UserRepository("").getIsGuestAccount(fragment.requireContext())
+
+                                        if (isGuestAccount)
+                                            clearUserDataThenNavigate(fragment)
+                                        else
+                                            fragment.viewModel.logout(fragment.requireActivity().currentLocale.toLanguageTag())
+                                                .observeApiResponse(fragment, {
+                                                    clearUserDataThenNavigate(fragment)
+                                                })
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
@@ -90,7 +100,7 @@ class SettingsAdapter(private val fragment: MyAccountFragment) :
 
         private fun clearUserDataThenNavigate(fragment: MyAccountFragment) {
             fragment.viewModel.viewModelScope.launch {
-                ClientRepository("").clearUserData(fragment.requireContext())
+                UserRepository("").clearUserData(fragment.requireContext())
                 fragment.findNavController()
                     .navigate(R.id.action_myAccountFragment_to_startFragment)
             }

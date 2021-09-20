@@ -69,7 +69,7 @@
                 app:layout_constraintBottom_toTopOf="@id/appCompatRatingBar"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="4sp"
-                android:text="@{viewModel.userDataResponse.data.fullName}"
+                android:text="@{viewModel.userDataResponse.data.name}"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"

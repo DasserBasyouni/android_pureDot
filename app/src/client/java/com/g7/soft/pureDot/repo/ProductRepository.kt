@@ -33,13 +33,13 @@ class ProductRepository(private val langTag: String) {
 
     fun getLatestOffers(
         pageNumber: Int?,
-        itemPerPage: Int?,
+        itemsPerPage: Int?,
         shopId: String?
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getLatestOffers(
                 pageNumber = pageNumber,
-                itemsPerPage = itemPerPage,
+                itemsPerPage = itemsPerPage,
                 shopId = shopId
             )
         }))
@@ -47,13 +47,13 @@ class ProductRepository(private val langTag: String) {
 
     fun getLatestProducts(
         pageNumber: Int?,
-        itemPerPage: Int?,
+        itemsPerPage: Int?,
         shopId: String?
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getLatestProducts(
                 pageNumber = pageNumber,
-                itemsPerPage = itemPerPage,
+                itemsPerPage = itemsPerPage,
                 shopId = shopId
             )
         }))
@@ -61,25 +61,27 @@ class ProductRepository(private val langTag: String) {
 
     fun getBestSelling(
         pageNumber: Int?,
-        itemPerPage: Int?,
+        itemsPerPage: Int?,
         shopId: String?
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getBestSelling(
                 pageNumber = pageNumber,
-                itemsPerPage = itemPerPage,
+                itemsPerPage = itemsPerPage,
                 shopId = shopId
             )
         }))
     }
 
     fun getSliderOffers(
+        tokenId: String?,
         categoryId: String?,
         shopId: String?,
         type: Int,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getSliderOffers(
+                tokenId = tokenId,
                 categoryId = categoryId,
                 shopId = shopId,
                 type = type
@@ -88,25 +90,25 @@ class ProductRepository(private val langTag: String) {
     }
 
     fun getProductDetails(
+        tokenId: String?,
         productId: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getProductDetails(
+                tokenId = tokenId,
                 productId = productId,
             )
         }))
     }
 
     fun getReviews(
-        itemId: String?,
-        tokenId: String?,
+        productId: String?,
         pageNumber: Int?,
         itemsPerPage: Int?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.getProductReviews(
-                itemId = itemId,
-                tokenId = tokenId,
+                productId = productId,
                 pageNumber = pageNumber,
                 itemsPerPage = itemsPerPage,
             )
@@ -116,7 +118,7 @@ class ProductRepository(private val langTag: String) {
     fun addReview(
         tokenId: String?,
         productId: String?,
-        rating: Float?,
+        rating: Int?,
         comment: String?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
@@ -143,7 +145,6 @@ class ProductRepository(private val langTag: String) {
         }))
     }
 
-
     fun getWishList(
         tokenId: String?,
         itemsPerPage: Int?,
@@ -154,6 +155,18 @@ class ProductRepository(private val langTag: String) {
                 tokenId = tokenId,
                 itemsPerPage = itemsPerPage,
                 pageNumber = pageNumber,
+            )
+        }))
+    }
+
+    fun getCost(
+        productId: String?,
+        variations: List<String>?
+    ) = liveData(Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.getProductCost(
+                productId = productId,
+                variations = ArrayList(variations ?: listOf())
             )
         }))
     }

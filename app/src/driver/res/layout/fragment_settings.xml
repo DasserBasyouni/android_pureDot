@@ -82,7 +82,7 @@
                         android:layout_marginEnd="32dp"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="4sp"
-                        android:text="@{viewModel.userDataResponse.data.fullName}"
+                        android:text="@{viewModel.userDataResponse.data.name}"
                         android:textAlignment="center"
                         android:textColor="@color/bluish"
                         android:textSize="18sp"

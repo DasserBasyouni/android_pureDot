@@ -1,9 +1,11 @@
 package com.g7.soft.pureDot.model.project
 
 import android.view.View
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import com.g7.soft.pureDot.constant.ProjectConstant
+import com.g7.soft.pureDot.model.DataWithCountModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 
 
@@ -27,19 +29,21 @@ class LceeModel {
     val contentVisibility
         get() = Transformations.map(response) {
             if (it?.status == ProjectConstant.Companion.Status.SUCCESS
-                && (it.data is ArrayList<*> && !it.data.isNullOrEmpty() || it.data !is ArrayList<*>)
+                && (it.data is ArrayList<*> && !it.data.isNullOrEmpty() || it.data !is ArrayList<*> && it.data != null)
             )
                 View.VISIBLE
             else
                 View.GONE
         }
 
-    val emptyVisibility
+    val emptyVisibility: LiveData<Int>
         get() = Transformations.map(response) {
-            if (it?.status != ProjectConstant.Companion.Status.IDLE && it?.status != ProjectConstant.Companion.Status.LOADING
-                && (it?.data is ArrayList<*> && it.data.isNullOrEmpty() || it?.data !is ArrayList<*> && it == null)
-            ) View.VISIBLE else View.GONE
-        }
+                if ((it?.status != ProjectConstant.Companion.Status.IDLE && it?.status != ProjectConstant.Companion.Status.LOADING)
+                    && (it?.data is ArrayList<*> && it.data.isNullOrEmpty() // case list
+                            || it?.data is DataWithCountModel<*> && it.data.data is ArrayList<*> && it.data.data.isNullOrEmpty() // case list with count
+                            || it?.data !is ArrayList<*> && it?.data == null) // case object
+                ) View.VISIBLE else View.GONE
+            }
 
     /* todo
     val noInternetVisibility

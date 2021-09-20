@@ -1,11 +1,8 @@
 package com.g7.soft.pureDot.ui
 
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -20,13 +17,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ApiConstant
-import com.g7.soft.pureDot.ext.dpToPx
 import com.g7.soft.pureDot.ext.toFormattedDateTime
-import com.g7.soft.pureDot.model.ProductVariationModel
 import com.g7.soft.pureDot.util.LogEventUtils
 import com.g7.soft.pureDot.util.UiUtils
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import com.kofigyan.stateprogressbar.StateProgressBar
 import java.io.File
@@ -114,46 +107,6 @@ fun bindPriceWithCurrency(
 
 }
 
-@BindingAdapter("bindChipsData", "bindChipsAreChecked")
-fun bindColorChipData(
-    chipGroup: ChipGroup,
-    productVariation: ProductVariationModel?,
-    areChecked: Boolean?
-) {
-    chipGroup.removeAllViewsInLayout()
-
-    productVariation?.values?.forEach { idValueModel ->
-        if (productVariation.isColor == true) {
-            val chip =
-                LayoutInflater.from(chipGroup.context)
-                    .inflate(R.layout.item_colored_chip, chipGroup, false) as Chip
-            chip.chipBackgroundColor = ColorStateList.valueOf(Color.parseColor(idValueModel.value))
-            chip.setOnCheckedChangeListener { _, isChecked ->
-                val padding = if (isChecked) 0 else 12.dpToPx()
-                chip.textStartPadding = padding.toFloat()
-                chip.textEndPadding = padding.toFloat()
-            }
-            areChecked?.let { chip.isChecked = it }
-
-            // case areChecked == false & first time to load data
-            val padding = if (chip.isChecked) 0 else 12.dpToPx()
-            chip.textStartPadding = padding.toFloat()
-            chip.textEndPadding = padding.toFloat()
-
-            chipGroup.addView(chip)
-
-        } else if (productVariation.isColor == false) {
-            val chip =
-                LayoutInflater.from(chipGroup.context)
-                    .inflate(R.layout.item_black_white_chip, chipGroup, false) as Chip
-            chip.text = idValueModel.value
-            areChecked?.let { chip.isChecked = it }
-            chipGroup.addView(chip)
-        }
-    }
-
-}
-
 @BindingAdapter("bindDate", "bindDateFormat")
 fun bindDate(textView: AppCompatTextView, date: Long?, dateFormat: String?) {
     date ?: LogEventUtils.logApiError("bindDate: null date").run { return }
@@ -225,7 +178,7 @@ fun bindOrderStatus(textView: TextView, orderStatus: Int?) {
             )
             textView.setBackgroundColor(ContextCompat.getColor(context, R.color.sick_green))
         }
-        ApiConstant.OrderStatus.BEING_SHIPPED -> {
+        ApiConstant.OrderStatus.BEING_SHIPPED, ApiConstant.OrderStatus.ORDER_IS_OUT -> {
             textView.text = context.getString(R.string.ready_for_delivery)
             textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.ic_order_shipping_small,
@@ -449,7 +402,7 @@ fun bindComplainStatus(textView: TextView, status: Int?) {
     val context = textView.context
     when (ApiConstant.ComplainStatus.fromInt(status)) {
         ApiConstant.ComplainStatus.NEW -> {
-            textView.text = context.getString(R.string.new_)
+            textView.text = context.getString(R.string.label_new)
             textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.ic_resource_new,
                 0,

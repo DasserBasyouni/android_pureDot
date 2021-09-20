@@ -17,18 +17,6 @@ class NotificationRepository(private val langTag: String) {
         }))
     }
 
-    fun readNotifications(
-        tokenId: String?,
-        notificationsIds: List<String>?
-    ) = liveData(Dispatchers.IO) {
-        emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.readNotifications(
-                tokenId = tokenId,
-                notificationsIds = notificationsIds,
-            )
-        }))
-    }
-
     fun doNotify(
         tokenId: String?,
         doNotify: Boolean?,

@@ -3,6 +3,7 @@ package com.g7.soft.pureDot.ui.screen.trackOrder
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.model.OrderModel
 import com.g7.soft.pureDot.model.OrderTrackingModel
 import com.g7.soft.pureDot.model.project.LceeModel
@@ -13,14 +14,14 @@ import kotlinx.coroutines.Dispatchers
 class TrackOrderViewModel(val order: OrderModel?, val masterOrderNumber: Int) : ViewModel() {
 
     val orderTrackingLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
-    val orderTrackingResponse = MediatorLiveData<NetworkRequestResponse<OrderTrackingModel>>()
+    val orderTrackingResponse = MediatorLiveData<NetworkRequestResponse<List<OrderTrackingModel>>>()
 
 
-    fun fetchScreenData(langTag: String, tokenId: String) {
+    fun fetchScreenData(langTag: String, tokenId: String?) {
         getOrderTracking(langTag, tokenId)
     }
 
-    fun getOrderTracking(langTag: String, tokenId: String) {
+    fun getOrderTracking(langTag: String, tokenId: String?) {
         orderTrackingResponse.value = NetworkRequestResponse.loading()
 
         // fetch request
@@ -28,19 +29,21 @@ class TrackOrderViewModel(val order: OrderModel?, val masterOrderNumber: Int) : 
             addSource(
                 OrderRepository(langTag).trackOrder(
                     tokenId = tokenId,
-                    orderNumber = masterOrderNumber,
+                    orderId = order?.id,
                 )
             ) { orderTrackingResponse.value = it }
         }
     }
 
-    fun cancelOrder(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun cancelOrder(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
 
         emitSource(
-            OrderRepository(langTag).cancelOrder(
+            OrderRepository(langTag).changeOrderStatus(
                 tokenId = tokenId,
-                orderNumber = masterOrderNumber,
+                orderId = order?.id,
+                status = ApiConstant.OrderStatus.CANCELED.value,
+                isReturn = order?.isReturn,
             )
         )
     }

@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.order.OrderViewModel" />
     </data>
@@ -21,6 +25,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".ui.screen.MainActivity">
+
+            <include
+                android:id="@+id/orderLcee"
+                layout="@layout/layout_lcee"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:emptyText="@{@string/something_went_wrong}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lceeModel="@{viewModel.orderLcee}" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/orderStatusCv"
@@ -46,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{@string/conc_order_(viewModel.masterOrder.number)}"
+                        android:text="@{@string/conc_order_(viewModel.orderResponse.data.number)}"
                         android:textColor="@color/greyish_brown"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -63,7 +80,7 @@
                         android:textColor="@color/warm_grey"
                         android:textSize="12sp"
                         android:textStyle="normal"
-                        app:bindDate="@{viewModel.masterOrder.dateTime}"
+                        app:bindDate="@{viewModel.orderResponse.data.dateTime}"
                         app:bindDateFormat="@{@string/format_order_date_time}"
                         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView48"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView48"
@@ -171,8 +188,8 @@
                         android:textColor="@color/warm_grey"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        app:bindCurrency="@{viewModel.masterOrder.currency}"
-                        app:bindPrice="@{viewModel.masterOrder.totalCost}"
+                        app:bindCurrency="@{currency}"
+                        app:bindPrice="@{viewModel.orderResponse.data.subTotal}"
                         app:layout_constraintBottom_toTopOf="@+id/appCompatTextView50"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/appCompatTextView49"
@@ -187,8 +204,8 @@
                         android:textColor="@color/warm_grey"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        app:bindCurrency="@{viewModel.masterOrder.currency}"
-                        app:bindPrice="@{viewModel.masterOrder.totalVat}"
+                        app:bindCurrency="@{currency}"
+                        app:bindPrice="@{viewModel.orderResponse.data.vat}"
                         app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView50"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/appCompatTextView50"
@@ -203,8 +220,8 @@
                         android:textColor="@color/warm_grey"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        app:bindCurrency="@{viewModel.masterOrder.currency}"
-                        app:bindPrice="@{viewModel.masterOrder.shippingCost}"
+                        app:bindCurrency="@{currency}"
+                        app:bindPrice="@{viewModel.orderResponse.data.shippingCost}"
                         app:layout_constraintBottom_toBottomOf="@+id/textView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/textView"
@@ -249,7 +266,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.masterOrder.toAddress}"
+                        android:text="@{viewModel.orderResponse.data.firstOrder.toAddress ?? viewModel.orderResponse.data.address.areaName}"
                         android:textColor="#3b3d3f"
                         android:textSize="14sp"
                         android:textStyle="normal"
@@ -278,7 +295,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.masterOrder.clientPhoneNumber}"
+                        android:text="@{viewModel.orderResponse.data.clientPhoneNumber}"
                         android:textColor="#3b3d3f"
                         android:textSize="14sp"
                         android:textStyle="normal"
@@ -299,28 +316,27 @@
                 android:textColor="@color/warm_purple"
                 android:textSize="18sp"
                 android:textStyle="normal"
-                app:bindCurrency="@{viewModel.masterOrder.currency}"
+                app:bindCurrency="@{currency}"
                 app:bindPrePriceText="@{@string/total_}"
-                app:bindPrice="@{viewModel.masterOrder.price}"
+                app:bindPrice="@{viewModel.orderResponse.data.totalOrderCost}"
                 app:layout_constraintEnd_toEndOf="@id/cardView8"
                 app:layout_constraintStart_toStartOf="@id/cardView8"
                 app:layout_constraintTop_toBottomOf="@+id/cardView10"
                 tools:text="Total: 500 SAR" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/trackOrRateBtn"
+                android:id="@+id/cancelBtn"
                 style="@style/ProjectPurpleFilledButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="@{viewModel.masterOrder.areDelivered == true ? viewModel.masterOrder.review == null ? @string/rate_order : @string/view_rate : @string/disabled}"
-                android:visibility="@{viewModel.masterOrder.areDelivered == true ? View.VISIBLE : View.GONE}"
+                android:text="@string/cancel"
+                android:visibility="@{viewModel.orderResponse.data.isCancelable == true ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/complaintBtn"
                 app:layout_constraintEnd_toStartOf="@id/complaintBtn"
                 app:layout_constraintStart_toStartOf="@+id/cardView7"
                 app:layout_constraintTop_toTopOf="@+id/complaintBtn"
                 app:layout_constraintVertical_bias="0.375"
-                tools:text="@string/rate_order"
                 tools:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
@@ -334,9 +350,15 @@
                 android:text="@string/complaint"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView38"
-                app:layout_constraintStart_toEndOf="@+id/trackOrRateBtn"
+                app:layout_constraintStart_toEndOf="@+id/cancelBtn"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView38"
                 tools:layout_marginStart="4dp" />
+
+            <androidx.constraintlayout.widget.Group
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewModel.orderLcee.contentVisibility}"
+                app:constraint_referenced_ids="cardView7,cardView10,appCompatTextView38,cancelBtn,complaintBtn,cardView8,orderStatusCv" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

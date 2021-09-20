@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.cart.CartViewModel" />
     </data>
@@ -20,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
-            android:paddingBottom="56dp"
+            android:paddingBottom="72dp"
             app:paddingBottomSystemWindowInsets="@{true}"
             tools:context=".ui.screen.MainActivity">
 
@@ -35,7 +39,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:lceeModel="@{viewModel.productsInCartLcee}" />
+                app:lceeModel="@{viewModel.orderLcee}" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/cartItemsRv"
@@ -45,7 +49,7 @@
                 android:nestedScrollingEnabled="false"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:visibility="@{viewModel.productsInCartLcee.contentVisibility}"
+                android:visibility="@{viewModel.orderLcee.contentVisibility}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -61,32 +65,35 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-black"
                 android:lineSpacingExtra="4sp"
-                app:bindPrice="@{viewModel.totalPrice}"
-                app:bindCurrency="@{viewModel.currency}"
-                app:bindPrePriceText="@{@string/total_}"
                 android:textColor="@color/bluish"
                 android:textSize="18sp"
                 android:textStyle="normal"
-                android:visibility="@{viewModel.productsInCartLcee.contentVisibility}"
+                android:visibility="@{viewModel.orderLcee.contentVisibility}"
+                app:bindCurrency="@{currency}"
+                app:bindPrePriceText="@{@string/total_}"
+                app:bindPrice="@{viewModel.orderResponse.data.totalOrderCost}"
+                app:layout_constraintBottom_toTopOf="@+id/appCompatTextView34"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cartItemsRv"
+                app:layout_constraintVertical_bias="1.0"
                 tools:text="Total: 500 SAR" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView34"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-black"
                 android:lineSpacingExtra="3sp"
                 android:text="@string/shipping_fees_will_be_added"
                 android:textColor="@color/greyish_brown"
                 android:textSize="14sp"
                 android:textStyle="normal"
-                android:visibility="@{viewModel.productsInCartLcee.contentVisibility}"
+                android:visibility="@{viewModel.orderLcee.contentVisibility}"
+                app:layout_constraintBottom_toTopOf="@+id/checkoutBtn"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView33" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/checkoutBtn"
@@ -94,16 +101,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:text="@string/proceed_to_checkout"
-                android:visibility="@{viewModel.productsInCartLcee.contentVisibility}"
+                android:visibility="@{viewModel.orderLcee.contentVisibility}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView34"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

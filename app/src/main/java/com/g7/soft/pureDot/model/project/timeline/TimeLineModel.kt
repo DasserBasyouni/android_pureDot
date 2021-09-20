@@ -5,8 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class TimeLineModel(
-        var activatedImageResId: Int,
-        var deactivatedImageResId: Int,
-        var title: String,
-        var subTitle: String
+    var activatedImageResId: Int,
+    var deactivatedImageResId: Int,
+    var title: String,
+    var subTitle: String?
 ) : Parcelable

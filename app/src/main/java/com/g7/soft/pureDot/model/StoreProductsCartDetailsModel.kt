@@ -11,7 +11,7 @@ data class StoreProductsCartDetailsModel(
     @Json(name = "vat") val vat: Double? = null,
     @Json(name = "discountedPrice") val discountedPrice: Double? = null,
     @Json(name = "subTotal") val subTotal: Double? = null,
-    @Json(name = "currency") val currency: String? = null,
+    //@Json(name = "currency") val currency: String? = null,
     @Json(name = "shippingCost") val shippingCost: Double? = null,
     @Json(name = "products") val products: MutableList<ProductModel>?,
 ) : Parcelable {

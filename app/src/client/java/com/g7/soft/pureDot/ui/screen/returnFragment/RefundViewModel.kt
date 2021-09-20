@@ -1,12 +1,13 @@
 package com.g7.soft.pureDot.ui.screen.returnFragment
 
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.model.ProductModel
 import com.g7.soft.pureDot.model.ShippingCostModel
+import com.g7.soft.pureDot.model.ShippingMethodModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.OrderRepository
@@ -15,7 +16,13 @@ import kotlinx.coroutines.Dispatchers
 class RefundViewModel(val masterOrder: MasterOrderModel?, val selectedProduct: ProductModel?) :
     ViewModel() {
 
-    val selectedShippingMethodViewId = MediatorLiveData<Int>().apply { this.value = R.id.deliveryAppRb }
+    val shippingMethodsResponse =
+        MediatorLiveData<NetworkRequestResponse<List<ShippingMethodModel>?>?>()
+    val shippingMethodsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
+
+    val selectedShippingMethodId = MutableLiveData<String?>()
+    val haveSelectedShippingMethod = MutableLiveData<Boolean?>()
+
     val shippingCostResponse = MediatorLiveData<NetworkRequestResponse<ShippingCostModel>>()
     val shippingCostLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
@@ -25,9 +32,8 @@ class RefundViewModel(val masterOrder: MasterOrderModel?, val selectedProduct: P
         shippingCostResponse.apply {
             this.addSource(
                 OrderRepository(langTag).calculateRefundShipping(
-                    orderNumber = masterOrder?.number,
-                    productId = selectedProduct?.id,
-                    shippingMethod = selectedShippingMethodViewId.value // todo
+                    detailsId = selectedProduct?.detailsId,
+                    shippingMethod = selectedShippingMethodId.value
                 )
             ) {
                 shippingCostResponse.value = it
@@ -35,15 +41,28 @@ class RefundViewModel(val masterOrder: MasterOrderModel?, val selectedProduct: P
         }
     }
 
-    fun refund(langTag: String, ) = liveData(Dispatchers.IO) {
+    fun returnItem(langTag: String) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
 
         emitSource(
-            OrderRepository(langTag).refund(
-                orderNumber = masterOrder?.number,
-                productId = selectedProduct?.id,
-                shippingMethod = selectedShippingMethodViewId.value // todo
+            OrderRepository(langTag).returnItem(
+                detailsId = selectedProduct?.detailsId,
+                itemTotalPrice = shippingCostResponse.value?.data?.itemTotalPrice,
+                refundAmount = shippingCostResponse.value?.data?.refundAmount,
+                shippingCost = shippingCostResponse.value?.data?.shippingCost,
+                commission = shippingCostResponse.value?.data?.commission,
+                vat = shippingCostResponse.value?.data?.vat,
+                shippingMethod = selectedShippingMethodId.value
             )
         )
+    }
+
+    fun getShippingMethods(langTag: String) {
+        shippingMethodsResponse.value = NetworkRequestResponse.loading()
+        shippingMethodsResponse.apply {
+            this.addSource(OrderRepository(langTag).getShippingMethods()) {
+                shippingMethodsResponse.value = it
+            }
+        }
     }
 }

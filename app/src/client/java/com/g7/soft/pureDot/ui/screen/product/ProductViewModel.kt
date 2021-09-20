@@ -12,15 +12,31 @@ import com.g7.soft.pureDot.repo.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 
-class ProductViewModel(val product: ProductModel?) : ViewModel() {
+class ProductViewModel(
+    val product: ProductModel?,
+    private val productId: String?
+) : ViewModel() {
 
     val selectedBranchPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedBranch
+        get() = productDetailsResponse.value?.data?.branches?.getOrNull(
+            selectedBranchPosition.value?.minus(1) ?: -1
+        )
+
     val reviewComment = MediatorLiveData<String>()
     val reviewRating = MediatorLiveData<Float>()
     val quantityInCart = MediatorLiveData<Int>().apply { this.value = 1 }
     val productDetailsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     val productDetailsResponse = MediatorLiveData<NetworkRequestResponse<ProductDetailsModel>>()
-    val selectedVariationsIds = MediatorLiveData<List<String>>().apply { this.value = listOf() }
+
+    val costResponse = MediatorLiveData<NetworkRequestResponse<Double>?>()
+    val costLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
+
+    val selectedVariationsIdsMap =
+        MediatorLiveData<HashMap<Int, String?>>().apply { this.value = hashMapOf() }
+    val selectedVariationsIds = Transformations.map(selectedVariationsIdsMap) {
+        it.values.toList().filterNotNull()
+    }
 
     private var sliderOffersTimer: Timer? = null
     val sliderOffersPosition = MediatorLiveData<Int>().apply { this.value = 0 }
@@ -30,12 +46,12 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
         MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ReviewModel>>>>()*/
 
 
-    fun fetchScreenData(langTag: String) {
-        getItemDetails(langTag)
+    fun fetchData(langTag: String, tokenId: String?) {
+        getItemDetails(langTag, tokenId)
     }
 
 
-    fun getItemDetails(langTag: String) {
+    fun getItemDetails(langTag: String, tokenId: String?) {
         productDetailsResponse.value = NetworkRequestResponse.loading()
         sliderOffersTimer?.cancel() // release the auto slider timer
 
@@ -43,7 +59,8 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
         productDetailsResponse.apply {
             addSource(
                 ProductRepository(langTag).getProductDetails(
-                    productId = product?.id,
+                    tokenId = tokenId,
+                    productId = product?.id ?: productId,
                 )
             ) {
                 productDetailsResponse.value = it
@@ -70,14 +87,22 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
         CartRepository(langTag).addProductToCart(
             lifecycleScope = viewModelScope,
             context = context,
-            product= product,
+            price = costResponse.value?.data,
+            productId = product?.id,
+            categoryId = product?.categoryId,
+            storeId = product?.shop?.id,
+            selectedBranchId = selectedBranch?.id,
             quantityInCart = quantityInCart.value,
             variationsIds = selectedVariationsIds.value,
             onComplete = onComplete
         )
     }
 
-    fun getTotalProductsPriceInCart(langTag: String, context: Context, onComplete: (totalPrice: Double) -> Unit) {
+    fun getTotalProductsPriceInCart(
+        langTag: String,
+        context: Context,
+        onComplete: (totalPrice: Double) -> Unit
+    ) {
         CartRepository(langTag).getTotalProductsPriceInCart(
             viewModelScope,
             context,
@@ -93,7 +118,7 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
                 ProductRepository(langTag).addReview(
                     tokenId = tokenId,
                     productId = product?.id,
-                    rating = reviewRating.value,
+                    rating = reviewRating.value?.toInt(),
                     comment = reviewComment.value
                 )
             )
@@ -110,6 +135,22 @@ class ProductViewModel(val product: ProductModel?) : ViewModel() {
                 )
             )
         }
+
+    fun getCost(langTag: String) {
+        costResponse.value = NetworkRequestResponse.loading()
+
+        // fetch request
+        costResponse.apply {
+            addSource(
+                ProductRepository(langTag).getCost(
+                    productId = product?.id,
+                    variations = selectedVariationsIds.value
+                )
+            ) {
+                costResponse.value = it
+            }
+        }
+    }
 
     /*fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())

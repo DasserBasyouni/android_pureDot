@@ -14,7 +14,7 @@ import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentFavouritesBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.ProductModel
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
@@ -31,12 +31,9 @@ class FavouritesFragment : Fragment() {
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_favourites, container, false)
 
         lifecycleScope.launch {
-            val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            val tokenId = UserRepository("").getTokenId(requireContext())
 
-            viewModelFactory = FavouriteViewModelFactory(
-                tokenId = tokenId
-            )
+            viewModelFactory = FavouriteViewModelFactory(tokenId = tokenId)
             viewModel = ViewModelProvider(
                 this@FavouritesFragment,
                 viewModelFactory
@@ -88,7 +85,7 @@ class FavouritesFragment : Fragment() {
     ) {
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
 
             viewModel.editWishList(
                 requireActivity().currentLocale.toLanguageTag(),

@@ -2,10 +2,10 @@ package com.g7.soft.pureDot.ui.screen.profileEdit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.g7.soft.pureDot.model.ClientDataModel
+import com.g7.soft.pureDot.model.UserDataModel
 
 class ProfileEditViewModelFactory(
-    private val userData: ClientDataModel?,
+    private val userData: UserDataModel?,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

@@ -8,8 +8,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class OrderReviewModel(
-    @Json(name = "orderRating") val orderRating: Float?,
+    @Json(name = "orderRating") val orderRating: Int?,
     @Json(name = "orderComment") val orderComment: String?,
-    @Json(name = "deliveryRating") val deliveryRating: Float?,
+    @Json(name = "deliveryRating") val deliveryRating: Int?,
     @Json(name = "deliveryComment") val deliveryComment: String?,
 ) : Parcelable

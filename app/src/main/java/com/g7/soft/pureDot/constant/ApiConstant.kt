@@ -18,7 +18,13 @@ class ApiConstant {
         ACCOUNT_NOT_FOUND(1010),
         NOT_VERIFIED(1013),
         INCORRECT_VERIFICATION(1014),
-        EXIST_BEFORE(1015);
+        EXIST_BEFORE(1015),
+        CAN_NOT_CANCEL_ORDER(1016),
+        INVALID_CART_ITEMS(1017),
+        CAN_NOT_RETURN(1018),
+        CAN_NOT_ACCEPT(1019),
+        ORDER_STATUS_CHANGED(1020),
+        ORDER_LIMIT(1021);
 
         companion object {
             fun fromInt(value: Int) = values().first { it.value == value }
@@ -32,6 +38,12 @@ class ApiConstant {
                 NOT_VERIFIED -> R.string.not_verified
                 INCORRECT_VERIFICATION -> R.string.incorrect_verification
                 EXIST_BEFORE -> R.string.exists_before
+                CAN_NOT_CANCEL_ORDER -> R.string.can_not_cancel_order
+                INVALID_CART_ITEMS -> R.string.msg_invalid_cart_items
+                CAN_NOT_RETURN -> R.string.msg_can_not_return
+                CAN_NOT_ACCEPT -> R.string.msg_can_not_accept
+                ORDER_STATUS_CHANGED -> R.string.msg_status_already_changed
+                ORDER_LIMIT -> R.string.msg_order_does_not_meet_min
             }
         }
     }
@@ -60,17 +72,8 @@ class ApiConstant {
         BEING_SHIPPED(2002),
         PICKED(2003),
         DELIVERED(2004),
-        CANCELED(2005);
-
-        /*PENDING(2000),
-        ACCEPTED(2001),
-        DELIVERED(2002),
-        CANCELED(2003),
-        OUT_FOR_DELIVERY(2004),
-        SHIPPING(2005),
-        ORDER_PLACED(2006),
-        DRIVER_ACCEPT(2007),
-        DRIVER_REJECT(2008);*/
+        CANCELED(2005),
+        ORDER_IS_OUT(2006);
 
         companion object {
             fun fromInt(value: Int?) = values().firstOrNull { it.value == value }
@@ -83,11 +86,22 @@ class ApiConstant {
                     3 -> PICKED
                     4 -> DELIVERED
                     5 -> CANCELED
+                    6 -> ORDER_IS_OUT
                     else -> null
                 }
             }
 
             fun isCancelable(value: Int?) = value == NEW.value
+
+            fun doShopOwnerHaveAction(status: Int?): Boolean =
+                status == NEW.value || status == CONFIRMED.value || status == BEING_SHIPPED.value
+
+            fun getShopOwnerNextStatus(status: Int?) = when (fromInt(status)) {
+                NEW -> CONFIRMED
+                CONFIRMED -> BEING_SHIPPED
+                BEING_SHIPPED -> ORDER_IS_OUT
+                else -> null
+            }
 
             // todo check this cycle
             fun isReached(currentStatus: Int?, reachedStatus: Int?): Boolean =
@@ -168,7 +182,9 @@ class ApiConstant {
         HOME_LATEST_PRODUCT(6002),
         INNER_LATEST_PRODUCTS(6003),
         INNER_LATEST_OFFERS(6004),
-        INNER_BEST_SELLING(6005);
+        INNER_BEST_SELLING(6005),
+        INNER_CATEGORY(6006),
+        INNER_SHOP(6007);
 
         companion object {
             fun fromInt(value: Int) = values().firstOrNull { it.value == value }
@@ -183,12 +199,31 @@ class ApiConstant {
         }
     }
 
+    enum class Language(val value: Int) {
+        ARABIC(0),
+        ENGLISH(1);
+
+        companion object {
+            fun fromInt(value: Int) = values().firstOrNull { it.value == value }
+
+            fun fromIsEnglish(isEnglish: Boolean) = if (isEnglish) ENGLISH else ARABIC
+        }
+    }
+
 
     companion object {
 
+        // mock api
+        //const val BASE_URL = "https://tests.free.beeceptor.com/api/"
+
+        // live
+        //const val BASE_URL = "https://api.puredot.com.sa/api/"
+        //const val IMG_BASE_URL = "https://cp.puredot.com.sa/api/"
+
         const val BASE_URL = "http://207.38.87.126:2222/api/"
-        const val SOCKET_IO_URL = "https://mars.udacity.com/"
         const val IMG_BASE_URL = "http://207.38.87.126:3333/"
+
+        const val SOCKET_IO_URL = "https://mars.udacity.com/"
 
     }
 }

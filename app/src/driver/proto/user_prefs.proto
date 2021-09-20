@@ -1,12 +1,14 @@
 syntax = "proto3";
 
-option java_package = "com.g7.soft.liveCoach.data";
+option java_package = "com.g7.soft.pureDot.data.database";
 option java_multiple_files = true;
 
 message UserData {
-  // filter for showing / hiding completed tasks
   string tokenId = 1;
-  string name = 2;
-  string phoneNumber = 3;
-  string password = 4;
+  string emailOrPhoneNumber = 2;
+  string password = 3;
+  string currencySymbol = 4;
+  string fcmToken = 5;
+  string language = 6;
+  bool doNotify = 7;
 }

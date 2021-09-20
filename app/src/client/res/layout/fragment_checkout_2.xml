@@ -6,8 +6,12 @@
     <data>
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutViewModel" />
+            type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -48,6 +52,19 @@
                     android:layout_height="wrap_content"
                     android:padding="12dp">
 
+                    <include
+                        android:id="@+id/userDataLcee"
+                        layout="@layout/layout_lcee"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:emptyText="@{@string/something_went_wrong}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lceeModel="@{viewModel.shippingMethodsLcee}" />
+
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatTextView36"
                         android:layout_width="0dp"
@@ -58,6 +75,7 @@
                         android:textColor="@color/warm_purple"
                         android:textSize="14sp"
                         android:textStyle="bold"
+                        android:visibility="@{viewModel.shippingMethodsLcee.contentVisibility}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -68,52 +86,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:checkedButton="@id/maleRb"
+                        android:visibility="@{viewModel.shippingMethodsLcee.contentVisibility}"
+                        app:bindShippingMethodsRadioButtons="@{viewModel.shippingMethodsResponse.data}"
                         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView36"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView36"
-                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView36">
-
-                        <RadioButton
-                            android:id="@+id/maleRb"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingHorizontal="12dp"
-                            android:text="Delivery App"
-                            android:textColor="@color/warm_grey"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-
-                        <RadioButton
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingHorizontal="12dp"
-                            android:text="Ship via TNT"
-                            android:textColor="@color/warm_grey"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-
-                        <RadioButton
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingHorizontal="12dp"
-                            android:text="Ship via FedEx"
-                            android:textColor="@color/warm_grey"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-
-                        <RadioButton
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingHorizontal="12dp"
-                            android:text="Ship via DHL"
-                            android:textColor="@color/warm_grey"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-
-                    </RadioGroup>
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView36" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
@@ -134,6 +111,19 @@
                     android:layout_height="wrap_content"
                     android:padding="12dp">
 
+                    <include
+                        android:id="@+id/orderLcee"
+                        layout="@layout/layout_lcee"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:emptyText="@{@string/something_went_wrong}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lceeModel="@{viewModel.orderLcee}" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/cartReviewItemsRv"
                         android:layout_width="0dp"
@@ -153,11 +143,11 @@
                         android:layout_height="1dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="8dp"
-                        app:srcCompat="@color/divider"
                         android:layout_marginEnd="12dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/cartReviewItemsRv" />
+                        app:layout_constraintTop_toBottomOf="@id/cartReviewItemsRv"
+                        app:srcCompat="@color/divider" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatImageView11"
@@ -169,9 +159,9 @@
                         android:textColor="@color/greyish_brown"
                         android:textSize="16sp"
                         android:textStyle="normal"
-                        app:bindCurrency="@{viewModel.currency}"
+                        app:bindCurrency="@{currency}"
                         app:bindPrePriceText="@{@string/shipping_cost_}"
-                        app:bindPrice="@{viewModel.shippingCostModel.shippingCost}"
+                        app:bindPrice="@{viewModel.orderResponse.data.shippingCost}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/appCompatImageView10"
@@ -186,9 +176,9 @@
                         android:textColor="@color/bluish"
                         android:textSize="18sp"
                         android:textStyle="normal"
-                        app:bindCurrency="@{viewModel.currency}"
+                        app:bindCurrency="@{currency}"
                         app:bindPrePriceText="@{@string/total_}"
-                        app:bindPrice="@{viewModel.totalPrice}"
+                        app:bindPrice="@{viewModel.orderResponse.data.totalOrderCost}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/appCompatImageView11"
@@ -198,9 +188,8 @@
                     <androidx.constraintlayout.widget.Group
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:constraint_referenced_ids="appCompatImageView11,appCompatTextView38,cartReviewItemsRv,appCompatImageView10"
-                        tools:layout_editor_absoluteX="12dp"
-                        tools:layout_editor_absoluteY="12dp" />
+                        android:visibility="@{viewModel.orderLcee.contentVisibility}"
+                        app:constraint_referenced_ids="appCompatImageView11,appCompatTextView38,cartReviewItemsRv,appCompatImageView10" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

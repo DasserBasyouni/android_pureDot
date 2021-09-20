@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,8 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagedList
 import androidx.transition.ChangeBounds
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
@@ -25,9 +26,12 @@ import com.g7.soft.pureDot.adapter.ProductsAdapter
 import com.g7.soft.pureDot.adapter.SideNavMenuAdapter
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.constant.ProjectConstant
+import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentHomeBinding
 import com.g7.soft.pureDot.ext.dpToPx
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.model.MasterOrderModel
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.g7.soft.pureDot.util.ProjectDialogUtils
@@ -95,6 +99,7 @@ import java.util.*
 open class HomeFragment : Fragment() {
 
     internal lateinit var binding: FragmentHomeBinding
+    internal lateinit var viewModelFactory: HomeViewModelFactory
     internal lateinit var viewModel: HomeViewModel
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
@@ -303,10 +308,23 @@ open class HomeFragment : Fragment() {
 
         mapboxMap = binding.mapView.getMapboxMap()
 
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        lifecycleScope.launch {
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
+            val tokenId = UserRepository("").getTokenId(requireContext())
 
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+
+            viewModelFactory = HomeViewModelFactory(
+                tokenId = tokenId
+            )
+            viewModel = ViewModelProvider(
+                this@HomeFragment,
+                viewModelFactory
+            ).get(HomeViewModel::class.java)
+
+            binding.currency = currencySymbol
+            binding.lifecycleOwner = this@HomeFragment
+            binding.viewModel = viewModel
+        }
 
         return binding.root
     }
@@ -635,8 +653,12 @@ open class HomeFragment : Fragment() {
 
         // setup observable
         viewModel.userDataResponse.observe(viewLifecycleOwner, {
-            viewModel.userDataLcee.value!!.response.value = it
-            sideNavMenuAdapter.updateWallet(it.data?.balance, it.data?.currency)
+            lifecycleScope.launch {
+                val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
+
+                viewModel.userDataLcee.value!!.response.value = it
+                sideNavMenuAdapter.updateWallet(it.data?.balance, currencySymbol)
+            }
         })
     }
 
@@ -646,19 +668,30 @@ open class HomeFragment : Fragment() {
             binding.isAvailableS.isChecked = it.data?.isAvailable ?: false
         })
 
+        // setup pagination
+        viewModel.ordersPagedList =
+            PaginationDataSource.initializedPagedListBuilder<MasterOrderModel>(
+                config = PagedList.Config.Builder()
+                    .setPageSize(ProjectConstant.ITEMS_PER_PAGE)
+                    .setEnablePlaceholders(true)
+                    .build(),
+                fragment = this@HomeFragment,
+            ).build()
+
+        // setup observers
         val ordersAdapter = PendingOrdersAdapter(this)
         binding.ordersRv.adapter = ordersAdapter
-        viewModel.ordersResponse.observe(viewLifecycleOwner, {
-            viewModel.ordersLcee.value!!.response.value = it
-            ordersAdapter.submitList(it?.data)
+        viewModel.ordersPagedList?.observe(viewLifecycleOwner, {
+            ordersAdapter.submitList(it)
         })
 
         viewModel.selectedOrder.observe(viewLifecycleOwner, {
-            binding.productsRv.adapter = ProductsAdapter().apply { this.submitList(it?.products) }
-            Log.e("Z_", "status: ${it?.deliveryStatus}")
+            binding.productsRv.adapter =
+                ProductsAdapter().apply { this.submitList(it?.firstOrder?.products) }
+
             val isCollapsedSheet =
-                !(it != null && it.deliveryStatus != ApiConstant.OrderDeliveryStatus.ACCEPTED.value
-                        && it.deliveryStatus != ApiConstant.OrderDeliveryStatus.NEW.value)
+                !(it != null && it.firstOrder?.deliveryStatus != ApiConstant.OrderDeliveryStatus.ACCEPTED.value
+                        && it.firstOrder?.deliveryStatus != ApiConstant.OrderDeliveryStatus.NEW.value)
 
             // do collapse or not & adjust peekHeight
             val peekHeight: Int
@@ -677,16 +710,16 @@ open class HomeFragment : Fragment() {
 
         binding.mapView.location.addOnIndicatorPositionChangedListener {
             lifecycleScope.launch {
-                val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
-                if (viewModel.ordersResponse.value == null && viewModel.isAvailable.value == true)
+                // todo send location to api
+                /*if (viewModel.ordersResponse.value == null && viewModel.isAvailable.value == true)
                     viewModel.getPendingOrders(
                         requireActivity().currentLocale.toLanguageTag(),
                         tokenId = tokenId,
                         lat = it.latitude(),
                         lng = it.longitude()
-                    )
+                    )*/
 
                 // setup location icon
                 /*googleMap?.clear() todo does mapBox auto changes location marker?
@@ -711,7 +744,7 @@ open class HomeFragment : Fragment() {
         viewModel.isAvailable.observe(viewLifecycleOwner, {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 if (!viewModel.isFirstFetchData) {
                     // fetch pending orders for the first time
@@ -749,7 +782,7 @@ open class HomeFragment : Fragment() {
     private fun fetchData() {
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
 
             viewModel.fetchData(
                 requireActivity().currentLocale.toLanguageTag(),
@@ -825,13 +858,13 @@ open class HomeFragment : Fragment() {
 
         binding.positiveBtn.setOnClickListener {
             // in case action button is "Done"
-            if (viewModel.selectedOrder.value?.deliveryStatusEnum == ApiConstant.OrderDeliveryStatus.DELIVERED) {
+            if (viewModel.selectedOrder.value?.firstOrder?.deliveryStatusEnum == ApiConstant.OrderDeliveryStatus.DELIVERED) {
                 viewModel.selectedOrder.value = null
                 return@setOnClickListener
             }
 
             val nextStatus =
-                when (viewModel.selectedOrder.value?.deliveryStatusEnum) {
+                when (viewModel.selectedOrder.value?.firstOrder?.deliveryStatusEnum) {
                     ApiConstant.OrderDeliveryStatus.NEW -> ApiConstant.OrderDeliveryStatus.ACCEPTED.value
                     ApiConstant.OrderDeliveryStatus.ACCEPTED -> ApiConstant.OrderDeliveryStatus.STARTED.value
                     ApiConstant.OrderDeliveryStatus.STARTED -> ApiConstant.OrderDeliveryStatus.PICKED.value
@@ -842,22 +875,18 @@ open class HomeFragment : Fragment() {
 
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.changeOrderStatus(
                     langTag = requireActivity().currentLocale.toLanguageTag(),
                     tokenId = tokenId,
-                    orderNumber = viewModel.selectedOrder.value?.number,
-                    status = nextStatus
-                ).observeApiResponse(this, {
-                    viewModel.ordersResponse.value =
-                        viewModel.ordersResponse.value.also {
-                            it?.data?.firstOrNull { order ->
-                                order.number == viewModel.selectedOrder.value?.number
-                            }?.deliveryStatus = nextStatus
-                        }
+                    orderId = viewModel.selectedOrder.value?.firstOrder?.id,
+                    status = nextStatus,
+                    isReturn = viewModel.selectedOrder.value?.firstOrder?.isReturn
+                ).observeApiResponse(this@HomeFragment, {
+                    viewModel.ordersPagedList?.value?.dataSource?.invalidate()
                     viewModel.selectedOrder.value = viewModel.selectedOrder.value?.also {
-                        it.deliveryStatus = nextStatus
+                        it.firstOrder?.deliveryStatus = nextStatus
                     }
                 })
             }
@@ -866,20 +895,16 @@ open class HomeFragment : Fragment() {
         binding.rejectBtn.setOnClickListener {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.changeOrderStatus(
                     langTag = requireActivity().currentLocale.toLanguageTag(),
                     tokenId = tokenId,
-                    orderNumber = viewModel.selectedOrder.value?.number,
-                    status = ApiConstant.OrderDeliveryStatus.REJECTED.value
-                ).observeApiResponse(this, {
-                    viewModel.ordersResponse.value =
-                        viewModel.ordersResponse.value.also {
-                            it?.data?.removeAt(it.data.indexOfFirst { order ->
-                                order.number == viewModel.selectedOrder.value?.number
-                            })
-                        }
+                    orderId = viewModel.selectedOrder.value?.firstOrder?.id,
+                    status = ApiConstant.OrderDeliveryStatus.REJECTED.value,
+                    isReturn = viewModel.selectedOrder.value?.firstOrder?.isReturn
+                ).observeApiResponse(this@HomeFragment, {
+                    viewModel.ordersPagedList?.value?.dataSource?.invalidate()
                     viewModel.selectedOrder.value = null
                 })
             }
@@ -918,17 +943,13 @@ open class HomeFragment : Fragment() {
         binding.screenClickableIv.visibility = View.VISIBLE
     }
 
-    private fun getOrRemovePendingOrders(tokenId: String) {
+    private fun getOrRemovePendingOrders(tokenId: String?) {
         if (viewModel.location.value != null) {
             if (viewModel.isAvailable.value == true) {
-                viewModel.getPendingOrders(
-                    requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId,
-                    lat = viewModel.location.value?.latitude,
-                    lng = viewModel.location.value?.longitude
-                )
+                viewModel.ordersPagedList?.value?.dataSource?.invalidate()
             } else
-                viewModel.ordersResponse.value = null
+                viewModel.ordersPagedList?.value?.dataSource?.invalidate()
+            //viewModel.ordersResponse.value = null
         }
     }
 }

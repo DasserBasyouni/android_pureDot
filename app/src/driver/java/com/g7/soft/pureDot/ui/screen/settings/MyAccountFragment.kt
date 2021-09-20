@@ -8,12 +8,15 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.SettingsAdapter
 import com.g7.soft.pureDot.databinding.FragmentSettingsBinding
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class MyAccountFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
@@ -40,7 +43,7 @@ class MyAccountFragment : Fragment() {
         // fetch data
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
             viewModel.getUserData(requireActivity().currentLocale.toLanguageTag(), tokenId)
         }
 

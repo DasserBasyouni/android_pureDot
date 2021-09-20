@@ -3,7 +3,6 @@ package com.g7.soft.pureDot.ui.screen.seeAll.products
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.ImageView
@@ -29,12 +28,10 @@ import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
 import android.view.inputmethod.EditorInfo
 
-import android.widget.TextView
-import android.widget.TextView.OnEditorActionListener
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.launch
 
 
@@ -85,7 +82,10 @@ class AllProductsFragment : Fragment() {
         }
 
         // fetch data
-        viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag())
+        lifecycleScope.launch {
+            val tokenId = UserRepository("").getTokenId(requireContext())
+            viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup pagination
         viewModel.productsPagedList =
@@ -144,13 +144,7 @@ class AllProductsFragment : Fragment() {
                 } else false
             }
         binding.root.findViewById<ImageView>(R.id.filterIv).setOnClickListener {
-            lifecycleScope.launch {
-                val currencySymbol =
-                    ClientRepository("").getLocalUserData(requireContext()).currencySymbol
-
-                val bundle = bundleOf("currency" to currencySymbol)
-                findNavController().navigate(R.id.filterFragment, bundle)
-            }
+            findNavController().navigate(R.id.filterFragment)
         }
         binding.root.findViewById<ImageView>(R.id.searchIv).setOnClickListener {
             refreshSearch()
@@ -169,14 +163,19 @@ class AllProductsFragment : Fragment() {
     ) {
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
+            val isGuestAccount =
+                UserRepository("").getIsGuestAccount(requireContext())
 
-            viewModel.editWishList(
-                requireActivity().currentLocale.toLanguageTag(),
-                tokenId = tokenId,
-                productId = productId,
-                doAdd = doAdd
-            ).observeApiResponse(this@AllProductsFragment, { onComplete.invoke() })
+            if (isGuestAccount)
+                findNavController().navigate(R.id.loginFragment)
+            else
+                viewModel.editWishList(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId,
+                    productId = productId,
+                    doAdd = doAdd
+                ).observeApiResponse(this@AllProductsFragment, { onComplete.invoke() })
         }
     }
 }

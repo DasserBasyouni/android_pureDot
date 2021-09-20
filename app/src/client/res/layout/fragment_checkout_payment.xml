@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutViewModel" />
+            type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -70,7 +70,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:checkedButton="@id/cashOnDelivery"
+                        android:checkedButton="@{viewModel.selectedShippingMethodId == null ? @id/cashOnDelivery : @id/onlinePaymentRb }"
                         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView36"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView36"
                         app:layout_constraintTop_toBottomOf="@+id/appCompatTextView36">
@@ -84,9 +84,11 @@
                             android:text="@string/cash_on_delivery"
                             android:textColor="@color/warm_grey"
                             android:textSize="16sp"
-                            android:textStyle="normal" />
+                            android:textStyle="normal"
+                            android:visibility="@{viewModel.selectedShippingMethodId == null ? View.VISIBLE : View.GONE}" />
 
                         <RadioButton
+                            android:id="@+id/onlinePaymentRb"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"

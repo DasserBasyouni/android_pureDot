@@ -2,60 +2,43 @@ package com.g7.soft.pureDot.ui.screen.cart
 
 import android.content.Context
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.g7.soft.pureDot.model.StoreProductsCartDetailsModel
+import com.g7.soft.pureDot.model.ApiShopOrderModel
+import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.CartRepository
+import com.g7.soft.pureDot.repo.OrderRepository
 
 class CartViewModel : ViewModel() {
 
-    val productsInCartLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
-    val productsInCartResponse =
-        MediatorLiveData<NetworkRequestResponse<MutableList<StoreProductsCartDetailsModel>>>()
+    val orderLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
+    val orderResponse = MediatorLiveData<NetworkRequestResponse<MasterOrderModel>>()
+    val apiShopOrders = MediatorLiveData<List<ApiShopOrderModel>>()
 
-    val totalPrice
-        get() = Transformations.map(productsInCartResponse) {
-            it.data?.sumOf { dataModel ->
-                dataModel.totalCost ?: 0.0
-            }
-        }
-    val currency
-        get() = Transformations.map(productsInCartResponse) {
-            it.data?.first()?.currency
-        }
 
-    /*fun editCartQuantity(langTag: String, itemId: Int?, quantity: Int) = liveData(Dispatchers.IO) {
-        emit(NetworkRequestResponse.loading())
-
-        emitSource(
-            CartRepository(langTag).editCartQuantity(
-                itemId = itemId,
-                quantity = quantity,
-                serviceDateTime = null
-            )
-        )
-    }*/
-
-    fun getProductsInCart(langTag: String, tokenId: String, context: Context) {
-        productsInCartResponse.value = NetworkRequestResponse.loading()
+    fun checkCartItems(langTag: String, tokenId: String?, context: Context) {
+        orderResponse.value = NetworkRequestResponse.loading()
 
         CartRepository(langTag).getProductsInCart(
             viewModelScope,
             context,
-            onComplete = {
+            onComplete = { productCart ->
+                apiShopOrders.value = productCart?.mapNotNull { apiShopOrder -> apiShopOrder?.apiShopOrder }
+
                 // fetch request
-                productsInCartResponse.apply {
-                    addSource(
-                        CartRepository(langTag).checkCartProducts(
-                            tokenId = tokenId,
-                            ids = it?.mapNotNull { it?.apiId },
-                            quantities = it?.mapNotNull { it?.quantityInCart },
-                        )
-                    ) { productsInCartResponse.value = it }
-                }
+                if (productCart.isNullOrEmpty())
+                    orderResponse.value = NetworkRequestResponse.success()
+                else
+                    orderResponse.apply {
+                        addSource(
+                            OrderRepository(langTag).checkCartItems(
+                                tokenId = tokenId,
+                                apiShopOrders = apiShopOrders.value
+                            )
+                        ) { orderResponse.value = it }
+                    }
             }
         )
     }

@@ -1,21 +1,19 @@
 package com.g7.soft.pureDot.ui.screen.home
 
 import android.location.Location
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
+import androidx.paging.PagedList
 import com.g7.soft.pureDot.model.DriverAvailabilityModel
-import com.g7.soft.pureDot.model.DriverDataModel
-import com.g7.soft.pureDot.model.OrderModel
+import com.g7.soft.pureDot.model.MasterOrderModel
+import com.g7.soft.pureDot.model.UserDataModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.AvailabilityRepository
-import com.g7.soft.pureDot.repo.DriverRepository
 import com.g7.soft.pureDot.repo.OrderRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.Dispatchers
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(internal val tokenId: String?) : ViewModel() {
 
     val isSideNavMenuOpened = MediatorLiveData<Boolean>().apply { this.value = false }
     val location = MutableLiveData<Location?>()
@@ -26,12 +24,12 @@ class HomeViewModel : ViewModel() {
     val availabilityResponse = MediatorLiveData<NetworkRequestResponse<DriverAvailabilityModel>>()
     val availabilityLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
-    val ordersResponse = MediatorLiveData<NetworkRequestResponse<MutableList<OrderModel>>>()
     val ordersLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
+    var ordersPagedList: LiveData<PagedList<MasterOrderModel>>? = null
 
-    val selectedOrder = MutableLiveData<OrderModel?>()
+    val selectedOrder = MutableLiveData<MasterOrderModel?>()
 
-    val userDataResponse = MediatorLiveData<NetworkRequestResponse<DriverDataModel>>()
+    val userDataResponse = MediatorLiveData<NetworkRequestResponse<UserDataModel>>()
     val userDataLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
     init {
@@ -39,12 +37,12 @@ class HomeViewModel : ViewModel() {
         isFirstFetchData = false
     }
 
-    fun fetchData(langTag: String, tokenId: String){
+    fun fetchData(langTag: String, tokenId: String?) {
         checkAvailability(langTag, tokenId)
         getUserData(langTag, tokenId)
     }
 
-    fun checkAvailability(langTag: String, tokenId: String) {
+    fun checkAvailability(langTag: String, tokenId: String?) {
         availabilityResponse.value = NetworkRequestResponse.loading()
         availabilityResponse.apply {
             this.addSource(
@@ -57,7 +55,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun changeAvailability(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun changeAvailability(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
 
         // fetch request
@@ -69,42 +67,34 @@ class HomeViewModel : ViewModel() {
         )
     }
 
-
-    fun getPendingOrders(langTag: String, tokenId: String, lat: Double?, lng: Double?) {
-        ordersResponse.value = NetworkRequestResponse.loading()
-        ordersResponse.apply {
-            this.addSource(
-                OrderRepository(langTag).getPendingOrders(
-                    tokenId = tokenId,
-                    lat = lat,
-                    lng = lng
-                )
-            ) {
-                ordersResponse.value = it
-            }
-        }
-    }
-
-    fun getUserData(langTag: String, tokenId: String) {
+    fun getUserData(langTag: String, tokenId: String?) {
         userDataResponse.value = NetworkRequestResponse.loading()
         userDataResponse.apply {
-            this.addSource(DriverRepository(langTag).getUserData(tokenId = tokenId)) {
+            this.addSource(UserRepository(langTag).getUserData(tokenId = tokenId)) {
                 userDataResponse.value = it
             }
         }
     }
 
-    fun changeOrderStatus(langTag: String, tokenId: String, orderNumber: Int?, status: Int?) = liveData(Dispatchers.IO) {
-        emit(NetworkRequestResponse.loading())
+    fun changeOrderStatus(
+        langTag: String,
+        tokenId: String?,
+        orderId: String?,
+        status: Int?,
+        isReturn: Boolean?
+    ) =
+        liveData(Dispatchers.IO) {
+            emit(NetworkRequestResponse.loading())
 
-        // fetch request
-        emitSource(
-            OrderRepository(langTag).changeOrderStatus(
-                tokenId = tokenId,
-                orderNumber = orderNumber,
-                status = status,
+            // fetch request
+            emitSource(
+                OrderRepository(langTag).changeOrderStatus(
+                    tokenId = tokenId,
+                    orderId = orderId,
+                    status = status,
+                    isReturn = isReturn,
+                )
             )
-        )
-    }
+        }
 
 }

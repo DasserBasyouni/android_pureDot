@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.util.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 
 class ForgetPasswordViewModel : ViewModel() {
@@ -13,8 +13,17 @@ class ForgetPasswordViewModel : ViewModel() {
 
     fun forgetPassword(langTag: String) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
+
+        // validate inputs
+        ValidationUtils()
+            .setPhoneNumberOrEmail(emailOrPhoneNumber.value)
+            .getError()?.let {
+                emit(NetworkRequestResponse.invalidInputData(validationError = it))
+                return@liveData
+            }
+
         emitSource(
-            com.g7.soft.pureDot.repo.ClientRepository(langTag).sendForgetPasswordCode(
+            com.g7.soft.pureDot.repo.UserRepository(langTag).sendForgetPasswordCode(
                 emailOrPhoneNumber = emailOrPhoneNumber.value
             )
         )

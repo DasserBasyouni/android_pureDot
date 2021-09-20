@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentForgetPasswordBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.zeugmasolutions.localehelper.currentLocale
@@ -22,7 +23,12 @@ class ForgetPasswordFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_forget_password, container, false)
+            DataBindingUtil.inflate(
+                layoutInflater,
+                R.layout.fragment_forget_password,
+                container,
+                false
+            )
 
         viewModel = ViewModelProvider(this).get(ForgetPasswordViewModel::class.java)
 
@@ -37,14 +43,19 @@ class ForgetPasswordFragment : Fragment() {
 
         // setup listeners
         binding.submitBtn.setOnClickListener {
-            viewModel.forgetPassword(requireActivity().currentLocale.toLanguageTag()).observeApiResponse(this, {
-                findNavController().navigate(
-                    ForgetPasswordFragmentDirections.actionForgetPasswordFragmentToPhoneVerificationFragment(
-                        true,
-                        viewModel.emailOrPhoneNumber.value
+            viewModel.forgetPassword(requireActivity().currentLocale.toLanguageTag())
+                .observeApiResponse(this, {
+                    findNavController().navigate(
+                        ForgetPasswordFragmentDirections.actionForgetPasswordFragmentToPhoneVerificationFragment(
+                            true,
+                            viewModel.emailOrPhoneNumber.value
+                        )
                     )
-                )
-            })
+                }, validationObserve = {
+                    binding.emailOrPhoneNumberTil.error =
+                        if (it == ProjectConstant.Companion.ValidationError.EMPTY_PHONE_NUMBER_OR_EMAIL)
+                            getString(R.string.error_empty_phone_number_or_email) else null
+                })
         }
     }
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.g7.soft.pureDot.model.ComplainModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ComplainRepository
+import com.g7.soft.pureDot.repo.ComplaintRepository
 
 class CustomerServiceViewModel : ViewModel() {
 
@@ -13,10 +13,10 @@ class CustomerServiceViewModel : ViewModel() {
     val complainLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
 
-    fun getComplains(langTag: String, tokenId: String) {
+    fun getComplains(langTag: String, tokenId: String?) {
         complainResponse.value = NetworkRequestResponse.loading()
         complainResponse.apply {
-            this.addSource(ComplainRepository(langTag).getComplains(tokenId = tokenId)) {
+            this.addSource(ComplaintRepository(langTag).getComplains(tokenId = tokenId)) {
                 complainResponse.value = it
             }
         }

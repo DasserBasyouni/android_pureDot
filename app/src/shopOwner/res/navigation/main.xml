@@ -14,25 +14,22 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_root"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/nav_root"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_phoneVerificationFragment"
+            app:destination="@id/phoneVerificationFragment"
+            app:popUpTo="@id/nav_root"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.g7.soft.pureDot.ui.screen.home.HomeFragment"
-        android:label=""
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_homeFragment_to_allCategoriesFragment"
-            app:destination="@id/allCategoriesFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_filterFragment"
-            app:destination="@id/filterFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_allProductsFragment"
-            app:destination="@id/allProductsFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_allStoresFragment"
-            app:destination="@id/allStoresFragment" />
-    </fragment>
+        android:label="@string/home"
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.g7.soft.pureDot.ui.screen.login.LoginFragment"
@@ -47,8 +44,10 @@
             android:id="@+id/action_loginFragment_to_forgetPasswordFragment"
             app:destination="@id/forgetPasswordFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            android:id="@+id/action_loginFragment_to_phoneVerificationFragment"
+            app:destination="@id/phoneVerificationFragment"
+            app:popUpTo="@id/nav_root"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/forgetPasswordFragment"
@@ -78,116 +77,10 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/signUpFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.signUp.SignUpFragment"
-        android:label="@string/create_new_account"
-        tools:layout="@layout/fragment_sign_up">
-        <action
-            android:id="@+id/action_signUpFragment_to_phoneVerificationFragment"
-            app:destination="@id/phoneVerificationFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/allCategoriesFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.seeAll.categories.AllCategoriesFragment"
-        android:label="@string/categories"
-        tools:layout="@layout/fragment_all_categories">
-        <action
-            android:id="@+id/action_allCategoriesFragment_to_allProductsFragment"
-            app:destination="@id/allProductsFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/filterFragment"
         android:name="com.g7.soft.pureDot.ui.screen.filter.FilterFragment"
         android:label="@string/filter"
-        tools:layout="@layout/fragment_filter">
-        <argument
-            android:name="currency"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/allProductsFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.seeAll.products.AllProductsFragment"
-        android:label=""
-        tools:layout="@layout/fragment_all_products">
-        <argument
-            android:name="sliderType"
-            app:argType="com.g7.soft.pureDot.constant.ApiConstant$SliderOfferType" />
-        <argument
-            android:name="storeId"
-            android:defaultValue="-1"
-            app:argType="integer" />
-    </fragment>
-    <fragment
-        android:id="@+id/browseFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.browse.BrowseFragment"
-        android:label="@string/browse"
-        tools:layout="@layout/fragment_browse" />
-    <fragment
-        android:id="@+id/allStoresFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.seeAll.stores.AllStoresFragment"
-        android:label="@string/stores"
-        tools:layout="@layout/fragment_all_stores" />
-    <fragment
-        android:id="@+id/storeFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.store.StoreFragment"
-        android:label=""
-        tools:layout="@layout/fragment_store">
-        <argument
-            android:name="store"
-            app:argType="com.g7.soft.pureDot.model.StoreModel" />
-    </fragment>
-    <fragment
-        android:id="@+id/productFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.product.ProductFragment"
-        android:label=""
-        tools:layout="@layout/fragment_product">
-        <argument
-            android:name="item"
-            app:argType="com.g7.soft.pureDot.model.ProductModel" />
-    </fragment>
-    <fragment
-        android:id="@+id/allReviewsFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.seeAll.reviews.AllReviewsFragment"
-        android:label="@string/reviews"
-        tools:layout="@layout/fragment_all_reviews">
-        <argument
-            android:name="itemId"
-            app:argType="integer" />
-    </fragment>
-    <fragment
-        android:id="@+id/cartFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.cart.CartFragment"
-        android:label="@string/cart"
-        tools:layout="@layout/fragment_cart">
-        <action
-            android:id="@+id/action_cartFragment_to_checkoutFragment"
-            app:destination="@id/checkoutFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/checkoutFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutFragment"
-        android:label="@string/checkout"
-        tools:layout="@layout/fragment_checkout">
-        <action
-            android:id="@+id/action_checkoutFragment_to_trackOrderFragment"
-            app:destination="@id/trackOrderFragment"
-            app:popUpTo="@id/homeFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/trackOrderFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.trackOrder.TrackOrderFragment"
-        android:label=""
-        tools:layout="@layout/fragment_track_order">
-        <argument
-            android:name="order"
-            app:argType="com.g7.soft.pureDot.model.OrderModel" />
-        <action
-            android:id="@+id/action_trackOrderFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/nav_root"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_filter" />
     <fragment
         android:id="@+id/myAccountFragment"
         android:name="com.g7.soft.pureDot.ui.screen.myAccount.MyAccountFragment"
@@ -213,8 +106,8 @@
         android:label=""
         tools:layout="@layout/fragment_order">
         <argument
-            android:name="order"
-            app:argType="com.g7.soft.pureDot.model.OrderModel" />
+            android:name="masterOrder"
+            app:argType="com.g7.soft.pureDot.model.MasterOrderModel" />
     </fragment>
     <fragment
         android:id="@+id/notificationFragment"
@@ -233,7 +126,7 @@
         tools:layout="@layout/fragment_profile_edit">
         <argument
             android:name="userData"
-            app:argType="com.g7.soft.pureDot.model.ClientDataModel" />
+            app:argType="com.g7.soft.pureDot.model.UserDataModel" />
     </fragment>
     <fragment
         android:id="@+id/termsFragment"
@@ -261,16 +154,6 @@
         android:label="@string/my_wallet"
         tools:layout="@layout/fragment_my_wallet" />
     <fragment
-        android:id="@+id/transferMoneyFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.transferMoney.TransferMoneyFragment"
-        android:label="@string/transfer_money"
-        tools:layout="@layout/fragment_transfer_money" />
-    <fragment
-        android:id="@+id/favouritesFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.favourite.FavouritesFragment"
-        android:label="@string/my_favourite"
-        tools:layout="@layout/fragment_favourites" />
-    <fragment
         android:id="@+id/customerServiceFragment"
         android:name="com.g7.soft.pureDot.ui.screen.customService.CustomerServiceFragment"
         android:label="@string/customer_support"
@@ -285,24 +168,10 @@
             app:argType="com.g7.soft.pureDot.model.ComplainModel" />
     </fragment>
     <fragment
-        android:id="@+id/servicesFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.services.ServicesFragment"
-        android:label="@string/services"
-        tools:layout="@layout/fragment_services" />
-    <fragment
         android:id="@+id/submitComplainFragment"
         android:name="com.g7.soft.pureDot.ui.screen.submitComplain.SubmitComplainFragment"
         android:label="@string/submit_a_complain"
         tools:layout="@layout/fragment_submit_complain" />
-    <fragment
-        android:id="@+id/serviceFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.service.ServiceFragment"
-        android:label=""
-        tools:layout="@layout/fragment_service">
-        <argument
-            android:name="service"
-            app:argType="com.g7.soft.pureDot.model.ServiceModel" />
-    </fragment>
     <fragment
         android:id="@+id/changeLanguageFragment"
         android:name="com.g7.soft.pureDot.ui.screen.changeLanguage.ChangeLanguageFragment"

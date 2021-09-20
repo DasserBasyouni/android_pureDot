@@ -1,5 +1,6 @@
 package com.g7.soft.pureDot.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
@@ -211,6 +212,7 @@ class UiUtils(private val window: Window, private val view: View) {
             }
         }
 
+        @SuppressLint("CutPasteId")
         fun setupToolNavBars(
             destinationId: Int,
             activity: MainActivity,
@@ -264,7 +266,7 @@ class UiUtils(private val window: Window, private val view: View) {
                     binding.appBarLayout.setExpanded(true, true)
 
                     binding.toolbarContent.visibility = View.VISIBLE
-                    binding.toolbarHomeContent.root.visibility = View.GONE
+                    binding.root.findViewById<View>(R.id.toolbarHomeContent)?.visibility = View.GONE
                     binding.collapsingToolbarLayout.layoutParams.height = 250.dpToPx()
                     binding.appBarLayout.setBackgroundResource(R.drawable.app_gradient_scrim)
 
@@ -291,7 +293,7 @@ class UiUtils(private val window: Window, private val view: View) {
                     //binding.appBarLayout.setBackgroundResource(android.R.color.transparent)
                     //binding.collapsingToolbarLayout.setContentScrimResource(android.R.color.transparent)
                     binding.toolbarContent.visibility = View.GONE
-                    binding.toolbarHomeContent.root.visibility = View.GONE
+                    binding.root.findViewById<View>(R.id.toolbarHomeContent)?.visibility = View.GONE
                     binding.collapsingToolbarLayout.layoutParams.height = 56.dpToPx()
                     binding.appBarLayout.setBackgroundResource(android.R.color.transparent)
 
@@ -315,7 +317,7 @@ class UiUtils(private val window: Window, private val view: View) {
                     binding.appBarLayout.setExpanded(true, true)
 
                     binding.toolbarContent.visibility = View.GONE
-                    binding.toolbarHomeContent.root.visibility = View.GONE
+                    binding.root.findViewById<View>(R.id.toolbarHomeContent)?.visibility = View.GONE
                     binding.collapsingToolbarLayout.layoutParams.height = 124.dpToPx()
                     binding.appBarLayout.setBackgroundResource(R.drawable.app_gradient_scrim)
 
@@ -341,13 +343,15 @@ class UiUtils(private val window: Window, private val view: View) {
                     binding.appBarLayout.setExpanded(true, true)
 
                     binding.toolbarContent.visibility = View.GONE
-                    binding.toolbarHomeContent.root.visibility = View.VISIBLE
+                    binding.root.findViewById<View>(R.id.toolbarHomeContent)?.visibility =
+                        View.VISIBLE
                     binding.collapsingToolbarLayout.layoutParams.height = 250.dpToPx()
                     binding.appBarLayout.setBackgroundResource(R.drawable.app_gradient_scrim_round)
 
                     // todo
-                    binding.toolbarHomeContent.root.findViewById<TextView>(R.id.welcomeTv)?.text =
-                        "Welcome, Retaj!"
+                    binding.root.findViewById<View>(R.id.toolbarHomeContent)?.rootView?.findViewById<TextView>(
+                        R.id.welcomeTv
+                    )?.text = "Welcome, Retaj!"
 
                     binding.appBarLayout.visibility = View.VISIBLE
                     binding.appBarLayout.requestLayout()
@@ -371,7 +375,7 @@ class UiUtils(private val window: Window, private val view: View) {
                     //binding.appBarLayout.setBackgroundResource(android.R.color.transparent)
                     //binding.collapsingToolbarLayout.setContentScrimResource(android.R.color.transparent)
                     binding.toolbarContent.visibility = View.GONE
-                    binding.toolbarHomeContent.root.visibility = View.GONE
+                    binding.root.findViewById<View>(R.id.toolbarHomeContent)?.visibility = View.GONE
                     binding.appBarLayout.visibility = View.VISIBLE
                     binding.collapsingToolbarLayout.layoutParams.height = 56.dpToPx()
                     binding.appBarLayout.setBackgroundResource(R.drawable.app_gradient_scrim_part_1)

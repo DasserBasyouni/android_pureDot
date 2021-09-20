@@ -66,13 +66,13 @@
                 tools:listitem="@layout/item_timeline" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/trackOrRateBtn"
+                android:id="@+id/cancelBtn"
                 style="@style/ProjectPurpleFilledButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="@{viewModel.order.isDelivered == true ? @string/rate_order : @string/cancel}"
-                android:visibility="@{viewModel.order.isDelivered == true || viewModel.order.isCancelable == true? View.GONE : View.VISIBLE}"
+                android:visibility="@{viewModel.order.isCancelable == true ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/complaintBtn"
                 app:layout_constraintEnd_toStartOf="@id/complaintBtn"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView57"
@@ -91,7 +91,7 @@
                 app:layoutMarginStart="@{viewModel.order.isDelivered == true ? @dimen/_0dp : @dimen/_4dp}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView57"
-                app:layout_constraintStart_toEndOf="@+id/trackOrRateBtn"
+                app:layout_constraintStart_toEndOf="@+id/cancelBtn"
                 app:layout_constraintTop_toBottomOf="@+id/timelineRv"
                 app:layout_constraintVertical_bias="1.0"
                 tools:layout_marginStart="4dp" />

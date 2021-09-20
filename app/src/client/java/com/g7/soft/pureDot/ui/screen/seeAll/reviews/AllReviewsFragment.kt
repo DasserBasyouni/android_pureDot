@@ -15,7 +15,7 @@ import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentAllReviewsBinding
 import com.g7.soft.pureDot.model.ReviewModel
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import kotlinx.coroutines.launch
 
@@ -35,10 +35,11 @@ class AllReviewsFragment : Fragment() {
 
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
 
             viewModelFactory = AllReviewsViewModelFactory(
                 itemId = args.itemId,
+                isProduct = args.isProduct,
                 tokenId = tokenId
             )
             viewModel =

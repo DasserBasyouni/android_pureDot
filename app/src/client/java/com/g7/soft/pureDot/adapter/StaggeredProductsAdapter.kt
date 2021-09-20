@@ -19,13 +19,13 @@ import com.g7.soft.pureDot.databinding.ItemStaggeredProductLargeBinding
 import com.g7.soft.pureDot.databinding.ItemStaggeredProductSmallBinding
 import com.g7.soft.pureDot.ext.dpToPx
 import com.g7.soft.pureDot.model.ProductModel
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.launch
 
 
 class StaggeredProductsAdapter(
     private val fragment: Fragment,
-    private val editWishList: (tokenId: String, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
+    private val editWishList: (tokenId: String?, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
 ) :
     ListAdapter<ProductModel, StaggeredProductsAdapter.ViewHolder>(StaggeredProductsDiffCallback()) {
 
@@ -43,7 +43,7 @@ class StaggeredProductsAdapter(
         fun bind(
             dataModel: ProductModel,
             fragment: Fragment,
-            editWishList: (tokenId: String, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
+            editWishList: (tokenId: String?, productId: String?, doAdd: Boolean, onComplete: () -> Unit) -> Unit
         ) {
             if (binding is ItemStaggeredProductSmallBinding) {
                 binding.dataModel = dataModel
@@ -61,7 +61,7 @@ class StaggeredProductsAdapter(
                 binding.wishListCiv.setOnClickListener {
                     fragment.lifecycleScope.launch {
                         val tokenId =
-                            ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+                            UserRepository("").getTokenId(fragment.requireContext())
 
                         editWishList.invoke(
                             tokenId,
@@ -79,7 +79,7 @@ class StaggeredProductsAdapter(
                 binding.wishListCiv.setOnClickListener {
                     fragment.lifecycleScope.launch {
                         val tokenId =
-                            ClientRepository("").getLocalUserData(fragment.requireContext()).tokenId
+                            UserRepository("").getTokenId(fragment.requireContext())
 
                         editWishList.invoke(
                             tokenId,

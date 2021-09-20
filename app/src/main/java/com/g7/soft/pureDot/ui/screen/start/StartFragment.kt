@@ -13,7 +13,7 @@ import com.g7.soft.pureDot.Application
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentStartBinding
 import com.g7.soft.pureDot.ext.makeLinks
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.launch
 
 // todo make this fragment MVVM arch
@@ -49,7 +49,7 @@ class StartFragment : Fragment() {
             binding.continueAsGuestTv.visibility = View.VISIBLE
             binding.continueAsGuestTv.makeLinks(Pair(getString(R.string.part_guest), View.OnClickListener {
                 lifecycleScope.launch {
-                    ClientRepository("").updateIsGuestAccount(requireContext(), true)
+                    UserRepository("").updateIsGuestAccount(requireContext(), true)
                 }
                 findNavController().navigate(R.id.action_startFragment_to_homeFragment)
             }), doChangeColor = false)

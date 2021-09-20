@@ -27,7 +27,7 @@
         tools:context=".ui.screen.MainActivity">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
+            android:id="@+id/emailOrPhoneNumberTil"
             style="@style/ProjectTextInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -44,19 +44,19 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/username"
                 android:imeOptions="actionNext"
-                android:text="@={viewModel.username}" />
+                android:text="@={viewModel.emailOrPhoneNumber}" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout2"
+            android:id="@+id/passwordTil"
             style="@style/ProjectTextInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+            app:layout_constraintEnd_toEndOf="@+id/emailOrPhoneNumberTil"
+            app:layout_constraintStart_toStartOf="@+id/emailOrPhoneNumberTil"
+            app:layout_constraintTop_toBottomOf="@+id/emailOrPhoneNumberTil"
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -76,9 +76,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="@string/log_in"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
-            app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+            app:layout_constraintEnd_toEndOf="@+id/passwordTil"
+            app:layout_constraintStart_toStartOf="@+id/passwordTil"
+            app:layout_constraintTop_toBottomOf="@+id/passwordTil" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/forgetPasswordTv"

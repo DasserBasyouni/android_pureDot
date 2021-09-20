@@ -5,13 +5,7 @@ import com.g7.soft.pureDot.network.Fetcher
 import com.g7.soft.pureDot.network.NetworkRequestHandler
 import kotlinx.coroutines.Dispatchers
 
-class GeneralRepository(private val langTag: String) {
-
-    fun getSignUpFields() = liveData(Dispatchers.IO) {
-        emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.getSignUpFields()
-        }))
-    }
+class GeneralRepository(private val langTag: String) : GeneralRepositoryFlavour(langTag) {
 
     fun getCounties() = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
@@ -51,9 +45,17 @@ class GeneralRepository(private val langTag: String) {
 
     fun changeLanguage(
         fcmToken: String?,
+        language: Int
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.changeLanguage(fcmToken = fcmToken)
+            return@handle Fetcher().getInstance(langTag)
+                ?.changeLanguage(fcmToken = fcmToken, language = language)
+        }))
+    }
+
+    fun getAppCurrency() = liveData(Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.getAppCurrency()
         }))
     }
 }

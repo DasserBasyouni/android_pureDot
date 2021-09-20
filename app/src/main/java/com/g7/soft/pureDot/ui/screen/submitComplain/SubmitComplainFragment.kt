@@ -15,11 +15,10 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentSubmitComplainBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.model.CategoryModel
 import com.g7.soft.pureDot.model.ComplaintOrderModel
-import com.g7.soft.pureDot.model.DataWithCountModel
+import com.g7.soft.pureDot.model.IdNameModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
@@ -53,7 +52,7 @@ class SubmitComplainFragment : Fragment() {
         // fetch data
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
             viewModel.fetchData(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
         }
 
@@ -68,19 +67,26 @@ class SubmitComplainFragment : Fragment() {
             setupCategoriesSpinner(
                 binding.categorySpinner,
                 viewModel.categoriesResponse.value,
-                initialText = getString(R.string.category)
+                initialText = getString(R.string.select_category)
             )
         })
 
         // setup onClick
         binding.submitBtn.setOnClickListener {
             lifecycleScope.launch {
-                val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
                 viewModel.submit(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
                     .observeApiResponse(this@SubmitComplainFragment, {
                         findNavController().popBackStack()
+                    }, validationObserve = {
+                        binding.titleTil.error =
+                            if (it == ProjectConstant.Companion.ValidationError.EMPTY_COMPLAINT_TITLE)
+                                getString(R.string.error_empty_title) else null
+
+                        binding.descriptionTil.error =
+                            if (it == ProjectConstant.Companion.ValidationError.EMPTY_COMPLAINT_DESCRIPTION)
+                                getString(R.string.error_empty_description) else null
                     })
             }
         }
@@ -129,7 +135,7 @@ class SubmitComplainFragment : Fragment() {
 
     private fun setupCategoriesSpinner(
         spinner: AppCompatSpinner,
-        networkResponse: NetworkRequestResponse<DataWithCountModel<List<CategoryModel>?>>?,
+        networkResponse: NetworkRequestResponse<List<IdNameModel>?>?,
         initialText: String
     ) {
         val spinnerData = when (networkResponse?.status) {
@@ -142,7 +148,7 @@ class SubmitComplainFragment : Fragment() {
                 arrayListOf(getString(R.string.loading_))
             }
             ProjectConstant.Companion.Status.SUCCESS -> {
-                val modelsList = networkResponse.data?.data
+                val modelsList = networkResponse.data
                 val dataList = modelsList?.mapNotNull { it.name }?.toTypedArray()
 
                 spinner.isEnabled = true

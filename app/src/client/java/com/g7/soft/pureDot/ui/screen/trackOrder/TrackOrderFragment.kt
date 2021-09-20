@@ -14,7 +14,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.TimeLineAdapter
 import com.g7.soft.pureDot.databinding.FragmentTrackOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -51,12 +51,12 @@ class TrackOrderFragment : Fragment() {
         // fetch data
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
             viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag(), tokenId)
         }
 
         // setup observers
-        val timelineAdapter = TimeLineAdapter()
+        val timelineAdapter = TimeLineAdapter(viewModel.order?.status)
         binding.timelineRv.adapter = timelineAdapter
         viewModel.orderTrackingResponse.observe(viewLifecycleOwner, {
             viewModel.orderTrackingLcee.value!!.response.value = it
@@ -67,12 +67,7 @@ class TrackOrderFragment : Fragment() {
         binding.complaintBtn.setOnClickListener {
             findNavController().navigate(R.id.submitComplainFragment)
         }
-        binding.trackOrRateBtn.setOnClickListener {
-            if (viewModel.order?.isDelivered == true) {
-                // todo rate
-            } else
-                cancelOrder()
-        }
+        binding.cancelBtn.setOnClickListener { cancelOrder() }
     }
 
     fun cancelOrder() {
@@ -84,7 +79,7 @@ class TrackOrderFragment : Fragment() {
             positiveRunnable = {
                 lifecycleScope.launch {
                     val tokenId =
-                        ClientRepository("").getLocalUserData(requireContext()).tokenId
+                        UserRepository("").getTokenId(requireContext())
 
                     viewModel.cancelOrder(
                         requireActivity().currentLocale.toLanguageTag(),

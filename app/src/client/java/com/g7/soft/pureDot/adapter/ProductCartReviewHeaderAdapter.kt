@@ -3,14 +3,17 @@ package com.g7.soft.pureDot.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.databinding.ItemCartReviewHeaderBinding
-import com.g7.soft.pureDot.model.StoreProductsCartDetailsModel
+import com.g7.soft.pureDot.model.OrderModel
+import com.g7.soft.pureDot.repo.UserRepository
+import kotlinx.coroutines.launch
 
 
 class ProductCartReviewHeaderAdapter(
     private val fragment: Fragment,
-    private val data: MutableList<StoreProductsCartDetailsModel>?,
+    private val data: MutableList<OrderModel>?,
 ) :
     RecyclerView.Adapter<ProductCartReviewHeaderAdapter.ViewHolder>() {
 
@@ -29,20 +32,21 @@ class ProductCartReviewHeaderAdapter(
     class ViewHolder private constructor(private val binding: ItemCartReviewHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            dataModel: StoreProductsCartDetailsModel?,
+            dataModel: OrderModel?,
             fragment: Fragment
         ) {
-            binding.vat = dataModel?.vat
-            binding.subTotal = dataModel?.totalCost
-            binding.currency = dataModel?.currency
+            fragment.lifecycleScope.launch {
+                val currencySymbol = UserRepository("").getCurrencySymbol(fragment.requireContext())
 
-            binding.storeName = dataModel?.products?.firstOrNull()?.shop?.name
-            binding.executePendingBindings()
+                binding.vat = dataModel?.vat
+                binding.subTotal = dataModel?.subTotal
+                binding.currency = currencySymbol
+                binding.storeName = dataModel?.shop?.name
+                binding.executePendingBindings()
+            }
 
             binding.recyclerView.adapter =
-                ProductCartReviewInnerAdapter(
-                    dataModel?.products
-                )
+                ProductCartReviewInnerAdapter(dataModel?.products, fragment)
         }
 
         companion object {

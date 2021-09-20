@@ -2,12 +2,15 @@ package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemSideNavItemBinding
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.screen.home.HomeFragment
 import com.g7.soft.pureDot.util.ProjectDialogUtils
+import kotlinx.coroutines.launch
 
 
 class SideNavMenuAdapter(private val fragment: HomeFragment) :
@@ -49,7 +52,7 @@ class SideNavMenuAdapter(private val fragment: HomeFragment) :
             walletBalance: Double?,
             walletCurrency: String?,
         ) {
-            binding.showWalletCurrency =  dataModel.first == R.drawable.ic_nav_my_wallet
+            binding.showWalletCurrency = dataModel.first == R.drawable.ic_nav_my_wallet
             binding.walletBalance = walletBalance
             binding.walletCurrency = walletCurrency
             binding.iconResId = dataModel.first
@@ -72,9 +75,11 @@ class SideNavMenuAdapter(private val fragment: HomeFragment) :
                                 R.string.sign_out,
                                 R.string.question_sure_logout,
                                 positiveRunnable = {
-                                    // todo clear tokenId
-                                    fragment.findNavController()
-                                        .navigate(R.id.action_homeFragment_to_startFragment)
+                                    fragment.lifecycleScope.launch {
+                                        UserRepository("").clearUserData(fragment.requireContext())
+                                        fragment.findNavController()
+                                            .navigate(R.id.action_homeFragment_to_startFragment)
+                                    }
                                 }
                             )
                         }

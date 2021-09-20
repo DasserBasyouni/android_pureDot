@@ -70,22 +70,19 @@ class MainActivity : LocaleAwareCompatActivity() {
                 destination.id,
                 this,
                 scrollLockedDestinationIds = arrayListOf(),
-                fullScreenDestinationIds = arrayListOf(),
+                fullScreenDestinationIds = arrayListOf(R.id.splashFragment),
                 loginDestinationIds = arrayListOf(R.id.loginFragment),
                 transparentDestinationIds = arrayListOf(
+                    R.id.homeFragment,
                     R.id.forgetPasswordFragment,
                     R.id.phoneVerificationFragment,
                     R.id.filterFragment,
-                    R.id.allReviewsFragment,
                     R.id.myOrdersFragment,
                     R.id.orderFragment,
-                    R.id.trackOrderFragment,
                     R.id.notificationFragment,
-                    R.id.favouritesFragment,
                     R.id.customerServiceFragment,
                     R.id.complainFragment,
                     R.id.myWalletFragment,
-                    R.id.transferMoneyFragment,
                     R.id.contactUsFragment,
                     R.id.aboutUsFragment,
                     R.id.policyFragment,
@@ -94,8 +91,8 @@ class MainActivity : LocaleAwareCompatActivity() {
                     R.id.changeLanguageFragment,
                     R.id.changePasswordFragment,
                 ),
-                collapsingToolBarTitleDestinationIds = arrayListOf(R.id.signUpFragment),
-                collapsingHomeDestinationIds = arrayListOf(R.id.homeFragment),
+                collapsingToolBarTitleDestinationIds = arrayListOf(),
+                collapsingHomeDestinationIds = arrayListOf(),
                 bottomNavBarDestinationIds = arrayListOf(
                     R.id.homeFragment,
                     R.id.myOrdersFragment,
@@ -108,6 +105,12 @@ class MainActivity : LocaleAwareCompatActivity() {
             )
             setupToolbarCancelButton(destination, bundle)
             setupSelectedNabBarIcon(destination.id)
+
+            // un clean fix
+            if (destination.id == R.id.homeFragment){
+                supportActionBar?.setDisplayShowHomeEnabled(false)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            }
 
 /*
             // setup after destination change message
@@ -160,7 +163,6 @@ class MainActivity : LocaleAwareCompatActivity() {
                     findNavController(R.id.navHostFragment).navigate(R.id.notificationFragment)
                 NAV_ID_ACCOUNT ->
                     findNavController(R.id.navHostFragment).navigate(R.id.myAccountFragment)
-
             }
         }
     }

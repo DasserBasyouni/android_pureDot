@@ -10,8 +10,9 @@ import com.g7.soft.pureDot.model.SignUpFieldsModel
 import com.g7.soft.pureDot.model.ZipCodeModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.repo.GeneralRepository
+import com.g7.soft.pureDot.repo.UserRepository
+import com.g7.soft.pureDot.util.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 
 // TODO IMP ADD VALIDATION LAYER ON INPUTS FOR THE WHOLE APP
@@ -91,9 +92,25 @@ class SignUpViewModel : ViewModel() {
     fun register(langTag: String) = liveData(Dispatchers.IO) {
         val fcmToken: String? = null // todo
 
+        // validate inputs
+        ValidationUtils().setFirstName(firstName.value)
+            .setLastName(lastName.value)
+            .setPhoneNumber(phoneNumber.value)
+            .setEmail(email.value)
+            .setCity(selectedCity)
+            .setZipCode(selectedZipCode, signUpFieldsResponse.value?.data?.haveZipCode)
+            .setPassword(password.value)
+            .setPasswordRepeat(password.value, confirmPassword.value)
+            .setIsMale(isMale.value)
+            .setDoAcceptTerms(doAcceptTerms.value)
+            .getError()?.let {
+                emit(NetworkRequestResponse.invalidInputData(validationError = it))
+                return@liveData
+            }
+
         emit(NetworkRequestResponse.loading())
         emitSource(
-            ClientRepository(langTag).signUp(
+            UserRepository(langTag).signUp(
                 fcmToken = fcmToken,
                 firstName = firstName.value,
                 lastName = lastName.value,

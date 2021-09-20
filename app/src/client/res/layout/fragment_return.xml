@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.returnFragment.RefundViewModel" />
 
@@ -25,7 +29,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             tools:context=".ui.screen.MainActivity">
 
             <androidx.cardview.widget.CardView
@@ -118,16 +122,30 @@
                 android:layout_width="@dimen/_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp"
                 app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="@+id/cardView8"
-                app:layout_constraintStart_toStartOf="@+id/cardView8"
+                app:layout_constraintEnd_toEndOf="@+id/cardView7"
+                app:layout_constraintStart_toStartOf="@+id/cardView7"
                 app:layout_constraintTop_toBottomOf="@+id/cardView7">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="12dp">
+
+                    <include
+                        android:id="@+id/userDataLcee"
+                        layout="@layout/layout_lcee"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:emptyText="@{@string/something_went_wrong}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lceeModel="@{viewModel.shippingMethodsLcee}" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatTextView36"
@@ -139,62 +157,23 @@
                         android:textColor="@color/warm_purple"
                         android:textSize="14sp"
                         android:textStyle="bold"
+                        android:visibility="@{viewModel.shippingMethodsLcee.contentVisibility}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <RadioGroup
-                        android:id="@+id/shippingMethodRg"
+                        android:id="@+id/radioGroup"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:checkedButton="@={viewModel.selectedShippingMethodViewId}"
+                        android:checkedButton="@id/maleRb"
+                        android:visibility="@{viewModel.shippingMethodsLcee.contentVisibility}"
+                        app:bindShippingMethodsRadioButtons="@{viewModel.shippingMethodsResponse.data}"
                         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView36"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView36"
-                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView36">
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView36" />
 
-                        <androidx.appcompat.widget.AppCompatRadioButton
-                            android:id="@+id/deliveryAppRb"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingHorizontal="12dp"
-                            android:text="Delivery App"
-                            android:textColor="@color/warm_grey"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-
-                        <androidx.appcompat.widget.AppCompatRadioButton
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingHorizontal="12dp"
-                            android:text="Ship via TNT"
-                            android:textColor="@color/warm_grey"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-
-                        <androidx.appcompat.widget.AppCompatRadioButton
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingHorizontal="12dp"
-                            android:text="Ship via FedEx"
-                            android:textColor="@color/warm_grey"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-
-                        <androidx.appcompat.widget.AppCompatRadioButton
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:paddingHorizontal="12dp"
-                            android:text="Ship via DHL"
-                            android:textColor="@color/warm_grey"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-
-                    </RadioGroup>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
@@ -204,10 +183,11 @@
                 android:layout_width="@dimen/_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:visibility="@{viewModel.shippingCostLcee.contentVisibility}"
                 app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="@+id/cardView7"
-                app:layout_constraintStart_toStartOf="@+id/cardView7"
+                app:layout_constraintEnd_toEndOf="@+id/cardView10"
+                app:layout_constraintStart_toStartOf="@+id/cardView10"
                 app:layout_constraintTop_toBottomOf="@+id/cardView10">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -275,8 +255,8 @@
                         android:textColor="@color/greyish_brown"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        app:bindCurrency="@{viewModel.masterOrder.currency}"
-                        app:bindPrice="@{viewModel.masterOrder.subTotalCost}"
+                        app:bindCurrency="@{currency}"
+                        app:bindPrice="@{viewModel.shippingCostResponse.data.itemTotalPrice}"
                         app:layout_constraintBottom_toTopOf="@+id/appCompatTextView50"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/appCompatTextView49"
@@ -291,8 +271,8 @@
                         android:textColor="@color/greyish_brown"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        app:bindCurrency="@{viewModel.masterOrder.currency}"
-                        app:bindPrice="@{viewModel.masterOrder.totalVat}"
+                        app:bindCurrency="@{currency}"
+                        app:bindPrice="@{viewModel.shippingCostResponse.data.vat}"
                         app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView50"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/appCompatTextView50"
@@ -307,7 +287,7 @@
                         android:textColor="@color/greyish_brown"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        app:bindCurrency="@{viewModel.masterOrder.currency}"
+                        app:bindCurrency="@{currency}"
                         app:bindPrice="@{viewModel.shippingCostResponse.data.shippingCost}"
                         app:layout_constraintBottom_toBottomOf="@+id/textView"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -336,9 +316,9 @@
                 android:textSize="18sp"
                 android:textStyle="normal"
                 android:visibility="@{viewModel.shippingCostLcee.contentVisibility}"
-                app:bindCurrency="@{viewModel.masterOrder.currency}"
+                app:bindCurrency="@{currency}"
                 app:bindPrePriceText="@{@string/total_}"
-                app:bindPrice="@{viewModel.masterOrder.totalCost}"
+                app:bindPrice="@{viewModel.shippingCostResponse.data.refundAmount}"
                 app:layout_constraintEnd_toEndOf="@id/cardView8"
                 app:layout_constraintStart_toStartOf="@id/cardView8"
                 app:layout_constraintTop_toBottomOf="@+id/cardView8"

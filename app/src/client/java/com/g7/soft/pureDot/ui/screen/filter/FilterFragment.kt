@@ -8,8 +8,8 @@ import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.paging.PagedList
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.PagedCategoriesAdapter
@@ -21,14 +21,15 @@ import com.g7.soft.pureDot.databinding.FragmentFilterBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.model.CategoryModel
 import com.g7.soft.pureDot.model.StoreModel
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.GridSpacingItemDecoration
+import kotlinx.coroutines.launch
 
 class FilterFragment : Fragment() {
     private lateinit var binding: FragmentFilterBinding
     internal val viewModel: FilterViewModel by viewModels(
         ownerProducer = { requireActivity() }
     )
-    private val args: FilterFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,10 +38,13 @@ class FilterFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_filter, container, false)
 
-        viewModel.currency = args.currency
+        lifecycleScope.launch {
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            binding.currency = currencySymbol
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@FilterFragment
+        }
 
         return binding.root
     }
@@ -92,9 +96,13 @@ class FilterFragment : Fragment() {
             )
             findNavController().navigate(R.id.allProductsFragment, bundle)
         }
-        binding.resetFilterTv.makeLinks(Pair(getString(R.string.reset_filter), View.OnClickListener {
-            viewModel.resetFilter()
-        }), doChangeColor = false)
+        binding.resetFilterTv.makeLinks(
+            Pair(
+                getString(R.string.reset_filter),
+                View.OnClickListener {
+                    viewModel.resetFilter()
+                }), doChangeColor = false
+        )
     }
 
 }

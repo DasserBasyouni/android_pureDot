@@ -58,7 +58,7 @@
                 android:layout_marginEnd="32dp"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="4sp"
-                android:text="@{viewModel.userData.fullName}"
+                android:text="@{viewModel.userData.name}"
                 android:textAlignment="center"
                 android:textColor="@color/warm_purple"
                 android:textSize="18sp"
@@ -69,7 +69,7 @@
                 tools:text="Abdelrahman Ahmed" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/firstNameTil"
+                android:id="@+id/nameTil"
                 style="@style/ProjectTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -81,33 +81,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView42">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/first_name"
+                    android:hint="@string/name"
                     android:imeOptions="actionNext"
                     android:inputType="textPersonName"
-                    android:text="@={viewModel.firstName}" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/lastNameTil"
-                style="@style/ProjectTextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/firstNameTil"
-                app:layout_constraintStart_toStartOf="@+id/firstNameTil"
-                app:layout_constraintTop_toBottomOf="@+id/firstNameTil">
-
-                <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/last_name"
-                    android:imeOptions="actionNext"
-                    android:inputType="textPersonName"
-                    android:text="@={viewModel.lastName}" />
+                    android:text="@={viewModel.name}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -116,12 +96,12 @@ style="@style/ProjectTextInputEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/lastNameTil"
-                app:layout_constraintStart_toStartOf="@+id/firstNameTil"
-                app:layout_constraintTop_toBottomOf="@+id/lastNameTil">
+                app:layout_constraintEnd_toEndOf="@+id/nameTil"
+                app:layout_constraintStart_toStartOf="@+id/nameTil"
+                app:layout_constraintTop_toBottomOf="@+id/nameTil">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/mobile_number"
@@ -141,7 +121,7 @@ style="@style/ProjectTextInputEditText"
                 app:layout_constraintTop_toBottomOf="@+id/phoneNumberTil">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
@@ -161,7 +141,7 @@ style="@style/ProjectTextInputEditText"
                 app:layout_constraintTop_toBottomOf="@+id/emailTil">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/date_of_birth"

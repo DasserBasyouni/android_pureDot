@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.g7.soft.pureDot.data.database.converter.DataConverter
 
-@Database(entities = [ProductCart::class], version = 14, exportSchema = false)
+@Database(entities = [ProductCart::class], version = 15, exportSchema = false)
 @TypeConverters(DataConverter::class)
 internal abstract class ProductCartDatabase : RoomDatabase() {
 

@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.CartHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentCartBinding
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -30,10 +30,15 @@ class CartFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_cart, container, false)
 
-        viewModel = ViewModelProvider(this).get(CartViewModel::class.java)
+        lifecycleScope.launch {
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModel = ViewModelProvider(this@CartFragment).get(CartViewModel::class.java)
+
+            binding.currency = currencySymbol
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@CartFragment
+        }
 
         return binding.root
     }
@@ -43,9 +48,9 @@ class CartFragment : Fragment() {
 
         // fetch data
         lifecycleScope.launch {
-            val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
-            viewModel.getProductsInCart(
+            val tokenId = UserRepository("").getTokenId(requireContext())
+
+            viewModel.checkCartItems(
                 requireActivity().currentLocale.toLanguageTag(),
                 tokenId = tokenId,
                 context = requireContext()
@@ -53,12 +58,12 @@ class CartFragment : Fragment() {
         }
 
         // setup observers
-        viewModel.productsInCartResponse.observe(viewLifecycleOwner, {
-            viewModel.productsInCartLcee.value!!.response.value = it
+        viewModel.orderResponse.observe(viewLifecycleOwner, {
+            viewModel.orderLcee.value!!.response.value = it
 
             CartHeaderAdapter(this).let { adapter ->
                 binding.cartItemsRv.adapter = adapter
-                adapter.submitList(it.data)
+                adapter.submitList(it.data?.orders)
             }
         })
 
@@ -72,7 +77,8 @@ class CartFragment : Fragment() {
         // setup click listener
         binding.checkoutBtn.setOnClickListener {
             val bundle = bundleOf(
-                "storesProductsCartDetails" to viewModel.productsInCartResponse.value?.data?.toTypedArray()
+                "masterOrder" to viewModel.orderResponse.value?.data,
+                "productApiShopOrder" to viewModel.apiShopOrders.value?.toTypedArray()
             )
             findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment, bundle)
         }

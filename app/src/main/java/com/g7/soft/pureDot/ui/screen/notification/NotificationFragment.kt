@@ -13,12 +13,13 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.NotificationsAdapter
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentNotificationBinding
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
+// todo lock it in case of guest
 class NotificationFragment : Fragment() {
     private lateinit var binding: FragmentNotificationBinding
     internal lateinit var viewModel: NotificationViewModel
@@ -49,7 +50,7 @@ class NotificationFragment : Fragment() {
         // fetch data
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
             viewModel.getNotifications(requireActivity().currentLocale.toLanguageTag(), tokenId)
         }
 
@@ -72,7 +73,7 @@ class NotificationFragment : Fragment() {
         viewModel.doNotify.observe(viewLifecycleOwner, {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.doNotify(
                     requireActivity().currentLocale.toLanguageTag(),

@@ -4,18 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.adapter.CartReviewHeaderAdapter
+import com.g7.soft.pureDot.adapter.ProductsAdapter
+import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 
 class OrderFragment : Fragment() {
@@ -34,12 +37,17 @@ class OrderFragment : Fragment() {
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_order, container, false)
 
         viewModelFactory = OrderViewModelFactory(
-            order = args.order,
+            masterOrder = args.masterOrder,
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(OrderViewModel::class.java)
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        lifecycleScope.launch {
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
+
+            binding.viewModel = viewModel
+            binding.currency = currencySymbol
+            binding.lifecycleOwner = this@OrderFragment
+        }
 
         return binding.root
     }
@@ -47,26 +55,26 @@ class OrderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //init data
-        CartReviewHeaderAdapter(args.order.products ?: listOf()).let { adapter ->
+        // init data
+        ProductsAdapter(this).let { adapter ->
             binding.cartReviewItemsRv.adapter = adapter
-            adapter.submitList(args.order.products?.map { product ->
-                product.shop?.name
-            }?.toSet()?.toList())
+            adapter.submitList(args.masterOrder.firstOrder?.products)
         }
 
         // setup listeners
-        binding.trackOrRateBtn.setOnClickListener {
-            if (viewModel.order?.isDelivered == true) {
-                ProjectDialogUtils.showOrderRating(this, viewModel = viewModel)
+        binding.actionBtn.setOnClickListener {
+            lifecycleScope.launch {
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
-            } else {
-                val bundle = bundleOf("order" to args.order, "masterOderNumber" to)
-                findNavController().navigate(R.id.trackOrderFragment, bundle)
+                viewModel.changeOrderStatus(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId
+                ).observeApiResponse(this@OrderFragment, {
+                    viewModel.masterOrder?.firstOrder?.status =
+                        ApiConstant.OrderStatus.getShopOwnerNextStatus(viewModel.masterOrder?.firstOrder?.status)?.value
+                    binding.invalidateAll()
+                })
             }
-        }
-        binding.complaintBtn.setOnClickListener {
-            findNavController().navigate(R.id.submitComplainFragment)
         }
     }
 
@@ -79,8 +87,7 @@ class OrderFragment : Fragment() {
             messageResId = R.string.amount_will_be_refunded_to_your_wallet,
             positiveRunnable = {
                 lifecycleScope.launch {
-                    val tokenId =
-                        ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    val tokenId = UserRepository("").getTokenId(requireContext())
 
                     viewModel.cancelOrder(
                         requireActivity().currentLocale.toLanguageTag(),

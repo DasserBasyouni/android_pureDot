@@ -30,9 +30,9 @@ class CategoryViewModel(val category: CategoryModel?) : ViewModel() {
     var productsPagedList: LiveData<PagedList<ProductModel>>? = null
 
 
-    fun fetchScreenData(langTag: String) {
+    fun fetchScreenData(langTag: String, tokenId: String?) {
         //getStores(langTag)
-        getOffersSlider(langTag, category?.id, null)
+        getOffersSlider(langTag, tokenId, category?.id, null)
     }
 
     /*fun getStores(langTag: String) {
@@ -51,7 +51,7 @@ class CategoryViewModel(val category: CategoryModel?) : ViewModel() {
         }
     }*/
 
-    fun getOffersSlider(langTag: String, categoryId: String?, shopId: String?) {
+    fun getOffersSlider(langTag: String, tokenId: String?, categoryId: String?, shopId: String?) {
         sliderOffersResponse.value = NetworkRequestResponse.loading()
         sliderOffersTimer?.cancel() // release the auto slider timer
 
@@ -59,9 +59,10 @@ class CategoryViewModel(val category: CategoryModel?) : ViewModel() {
         sliderOffersResponse.apply {
             addSource(
                 ProductRepository(langTag).getSliderOffers(
+                    tokenId = tokenId,
                     categoryId = categoryId,
                     shopId = shopId,
-                    type = ApiConstant.SliderOfferType.HOME_LATEST_PRODUCT.value,
+                    type = ApiConstant.SliderOfferType.INNER_CATEGORY.value,
                 )
             ) {
                 sliderOffersResponse.value = it

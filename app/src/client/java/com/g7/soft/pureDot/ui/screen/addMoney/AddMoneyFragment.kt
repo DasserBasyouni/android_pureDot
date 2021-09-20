@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentAddMoneyBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
@@ -47,7 +47,7 @@ class AddMoneyFragment : Fragment() {
         binding.addMoneyBtn.setOnClickListener {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.addMoney(
                     requireActivity().currentLocale.toLanguageTag(),

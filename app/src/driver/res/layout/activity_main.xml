@@ -73,16 +73,6 @@
 
                 </LinearLayout>
 
-                <include
-                    android:id="@+id/toolbarHomeContent"
-                    layout="@layout/toolbar_home_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical"
-                    app:layout_collapseMode="parallax"
-                    app:layout_collapseParallaxMultiplier="0" />
-
                 <!-- Thw attribute app:layout_collapseMode="pin" is set so that
                      sticks to the top when the user scrolls the view up-->
                 <androidx.appcompat.widget.Toolbar

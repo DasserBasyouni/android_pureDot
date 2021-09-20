@@ -6,14 +6,17 @@ import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.*
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.databinding.FragmentHomeBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
+import com.g7.soft.pureDot.repo.UserRepository
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -41,9 +44,7 @@ class HomeFragment : Fragment() {
         // setup search
         requireActivity().findViewById<View>(R.id.filterIv).setOnClickListener {
             findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToFilterFragment(
-                    viewModel.latestOffersResponse.value?.data?.data?.first()?.currency
-                )
+                HomeFragmentDirections.actionHomeFragmentToFilterFragment()
             )
         }
         requireActivity().findViewById<View>(R.id.searchIv).setOnClickListener {
@@ -54,7 +55,11 @@ class HomeFragment : Fragment() {
         }
 
         // fetch data
-        viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag())
+        lifecycleScope.launch {
+            val tokenId =
+                UserRepository("").getTokenId(requireContext())
+            viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val sliderOffersAdapter0 = OffersSliderAdapter(this)
@@ -126,14 +131,16 @@ class HomeFragment : Fragment() {
             binding.sliderOffersLceeLayoutVp2.currentItem = it
         })
 
-        val latestProductsAdapter = StaggeredProductsAdapter(this, editWishList = this::editWishList)
+        val latestProductsAdapter =
+            StaggeredProductsAdapter(this, editWishList = this::editWishList)
         binding.latestProductsRv.adapter = latestProductsAdapter
         viewModel.latestProductsResponse.observe(viewLifecycleOwner, {
             viewModel.latestProductsLcee.value!!.response.value = it
             latestProductsAdapter.submitList(it.data?.data)
         })
 
-        val bestSellingAdapter = ProductsAdapter(this, isGrid = false, editWishList = this::editWishList)
+        val bestSellingAdapter =
+            ProductsAdapter(this, isGrid = false, editWishList = this::editWishList)
         binding.bestSellingRv.adapter = bestSellingAdapter
         viewModel.bestSellingResponse.observe(viewLifecycleOwner, {
             viewModel.bestSellingLcee.value!!.response.value = it
@@ -179,16 +186,24 @@ class HomeFragment : Fragment() {
 
 
     private fun editWishList(
-        tokenId: String,
+        tokenId: String?,
         productId: String?,
         doAdd: Boolean,
         onComplete: () -> Unit
     ) {
-        viewModel.editWishList(
-            requireActivity().currentLocale.toLanguageTag(),
-            tokenId = tokenId,
-            productId = productId,
-            doAdd = doAdd
-        ).observeApiResponse(this, { onComplete.invoke() })
+        lifecycleScope.launch {
+            val isGuestAccount =
+                UserRepository("").getIsGuestAccount(requireContext())
+
+            if (isGuestAccount)
+                findNavController().navigate(R.id.loginFragment)
+            else
+                viewModel.editWishList(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId,
+                    productId = productId,
+                    doAdd = doAdd
+                ).observeApiResponse(this@HomeFragment, { onComplete.invoke() })
+        }
     }
 }

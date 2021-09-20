@@ -121,22 +121,100 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/round_expandable_view_line" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/firstNameTil"
-                        style="@style/ProjectTextInputLayout"
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/countriesSpinner"
+                        style="@style/ProjectTheme.Spinner"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/bg_rounded_spinner"
+                        android:selectedItemPosition="@={viewModel.selectedCountryPosition}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/appCompatImageView5" />
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/citiesSpinner"
+                        style="@style/ProjectTheme.Spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_rounded_spinner"
+                        android:selectedItemPosition="@={viewModel.selectedCityPosition}"
+                        app:layout_constraintEnd_toEndOf="@+id/countriesSpinner"
+                        app:layout_constraintStart_toStartOf="@+id/countriesSpinner"
+                        app:layout_constraintTop_toBottomOf="@+id/countriesSpinner" />
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/zipCodeSpinner"
+                        style="@style/ProjectTheme.Spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_rounded_spinner"
+                        android:selectedItemPosition="@={viewModel.selectedZipCodePosition}"
+                        app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
+                        app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
+                        app:layout_constraintTop_toBottomOf="@+id/citiesSpinner" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/areaTil"
+                        style="@style/ProjectTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/zipCodeSpinner"
+                        app:layout_constraintStart_toStartOf="@+id/zipCodeSpinner"
+                        app:layout_constraintTop_toBottomOf="@+id/zipCodeSpinner">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/ProjectTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/area"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:text="@={viewModel.areaName}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/streetNameTil"
+                        style="@style/ProjectTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/areaTil"
+                        app:layout_constraintStart_toStartOf="@+id/areaTil"
+                        app:layout_constraintTop_toBottomOf="@+id/areaTil">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/ProjectTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/street_name"
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:text="@={viewModel.streetName}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nameTil"
+                        style="@style/ProjectTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="4dp"
                         app:layout_constraintEnd_toStartOf="@+id/lastNameTil"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_weight="1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView5">
+                        app:layout_constraintStart_toStartOf="@+id/streetNameTil"
+                        app:layout_constraintTop_toBottomOf="@+id/streetNameTil">
 
                         <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                            style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/flat"
@@ -152,15 +230,15 @@ style="@style/ProjectTextInputEditText"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="4dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/firstNameTil"
+                        app:layout_constraintBottom_toBottomOf="@+id/nameTil"
                         app:layout_constraintEnd_toStartOf="@+id/homeNumberTil"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_weight="1"
-                        app:layout_constraintStart_toEndOf="@+id/firstNameTil"
-                        app:layout_constraintTop_toTopOf="@+id/firstNameTil">
+                        app:layout_constraintStart_toEndOf="@+id/nameTil"
+                        app:layout_constraintTop_toTopOf="@+id/nameTil">
 
                         <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                            style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/floor"
@@ -175,62 +253,21 @@ style="@style/ProjectTextInputEditText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:layout_marginEnd="16dp"
                         app:layout_constraintBottom_toBottomOf="@+id/lastNameTil"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/areaTil"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_weight="2"
                         app:layout_constraintStart_toEndOf="@+id/lastNameTil"
                         app:layout_constraintTop_toTopOf="@+id/lastNameTil">
 
                         <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                            style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/home_number"
+                            android:hint="@string/building_number"
                             android:imeOptions="actionNext"
                             android:inputType="textPersonName"
-                            android:text="@={viewModel.homeNumber}" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/streetNameTil"
-                        style="@style/ProjectTextInputLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="@+id/homeNumberTil"
-                        app:layout_constraintStart_toStartOf="@+id/firstNameTil"
-                        app:layout_constraintTop_toBottomOf="@+id/homeNumberTil">
-
-                        <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/street_name"
-                            android:imeOptions="actionNext"
-                            android:inputType="text"
-                            android:text="@={viewModel.streetName}" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/areaTil"
-                        style="@style/ProjectTextInputLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="@+id/streetNameTil"
-                        app:layout_constraintStart_toStartOf="@+id/streetNameTil"
-                        app:layout_constraintTop_toBottomOf="@+id/streetNameTil">
-
-                        <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/area"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:text="@={viewModel.area}" />
+                            android:text="@={viewModel.buildingNumber}" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <androidx.appcompat.widget.AppCompatCheckBox
@@ -245,9 +282,9 @@ style="@style/ProjectTextInputEditText"
                         android:textColor="@color/warm_grey"
                         android:textSize="14sp"
                         android:textStyle="normal"
-                        app:layout_constraintEnd_toEndOf="@+id/areaTil"
-                        app:layout_constraintStart_toStartOf="@+id/areaTil"
-                        app:layout_constraintTop_toBottomOf="@+id/areaTil" />
+                        app:layout_constraintEnd_toEndOf="@+id/homeNumberTil"
+                        app:layout_constraintStart_toStartOf="@+id/nameTil"
+                        app:layout_constraintTop_toBottomOf="@+id/homeNumberTil" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/saveBtn"

@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -12,9 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemServiceBinding
 import com.g7.soft.pureDot.model.ServiceModel
+import com.g7.soft.pureDot.ui.screen.services.ServicesFragment
 
 
-class PagedServicesAdapter(private val fragment: Fragment) :
+class PagedServicesAdapter(private val fragment: ServicesFragment) :
     PagedListAdapter<ServiceModel, PagedServicesAdapter.ViewHolder>(PagedServicesDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
@@ -28,7 +28,7 @@ class PagedServicesAdapter(private val fragment: Fragment) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             dataModel: ServiceModel?,
-            fragment: Fragment,
+            fragment: ServicesFragment,
         ) {
             binding.dataModel = dataModel
             binding.executePendingBindings()
@@ -39,10 +39,32 @@ class PagedServicesAdapter(private val fragment: Fragment) :
             }
             binding.detailsBtn.setOnClickListener(detailsOnClick)
             binding.root.setOnClickListener(detailsOnClick)
+            binding.buyNowBtn.setOnClickListener(detailsOnClick)
 
-            binding.buyNowBtn.setOnClickListener {
+            /*binding.buyNowBtn.setOnClickListener {
+                fragment.lifecycleScope.launch {
+                    val isGuestAccount =
+                        UserRepository("").getIsGuestAccount(fragment.requireContext())
 
-            }
+                    if (isGuestAccount)
+                        fragment.findNavController().navigate(R.id.loginFragment)
+                    else {
+                        fragment.lifecycleScope.launch {
+                            val tokenId = UserRepository("").getTokenId(fragment.requireContext())
+
+                            fragment.viewModel.checkCartItems(
+                                fragment.requireActivity().currentLocale.toLanguageTag(),
+                                tokenId = tokenId
+                            ).observeApiResponse(fragment, {
+                                val bundle = bundleOf("masterOrder" to it)
+                                fragment.findNavController().navigate(R.id.checkoutFragment, bundle)
+                            })
+                        }
+
+                    }
+                }
+
+            }*/
         }
 
         companion object {

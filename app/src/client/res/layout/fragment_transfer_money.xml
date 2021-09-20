@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.transferMoney.TransferMoneyViewModel" />
     </data>
@@ -81,7 +85,7 @@
                         android:textColor="@color/warm_purple"
                         android:textSize="32sp"
                         android:textStyle="bold"
-                        app:bindCurrency="@{viewModel.walletResponse.data.currency}"
+                        app:bindCurrency="@{currency}"
                         app:bindPrice="@{viewModel.walletResponse.data.balance}"
                         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView64"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView64"

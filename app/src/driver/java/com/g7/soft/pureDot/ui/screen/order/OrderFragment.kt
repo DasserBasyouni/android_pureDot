@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
-import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.util.ProjectDialogUtils
-import com.zeugmasolutions.localehelper.currentLocale
+import com.g7.soft.pureDot.repo.UserRepository
+import kotlinx.coroutines.launch
 
 
 class OrderFragment : Fragment() {
@@ -31,13 +31,21 @@ class OrderFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_order, container, false)
 
-        viewModelFactory = OrderViewModelFactory(
-            order = args.order,
-        )
-        viewModel = ViewModelProvider(this, viewModelFactory).get(OrderViewModel::class.java)
+        lifecycleScope.launch {
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModelFactory = OrderViewModelFactory(
+                masterOrder = args.masterOrder,
+            )
+            viewModel = ViewModelProvider(
+                this@OrderFragment,
+                viewModelFactory
+            ).get(OrderViewModel::class.java)
+
+            binding.currency = currencySymbol
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@OrderFragment
+        }
 
         return binding.root
     }
@@ -47,23 +55,22 @@ class OrderFragment : Fragment() {
 
         // setup listeners
         binding.cancelBtn.setOnClickListener {
-            lifecycleScope.launch {
+            /*lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.cancelOrder(
                     requireActivity().currentLocale.toLanguageTag(),
                     tokenId = tokenId
                 )
-            }
+            }*/
         }
         binding.complaintBtn.setOnClickListener {
             findNavController().navigate(R.id.submitComplainFragment)
         }
     }
 
-
-    fun cancelOrder() {
+    /*fun cancelOrder() {
         ProjectDialogUtils.showAskingDialog(
             context = requireContext(),
             iconResId = R.drawable.ic_cancel,
@@ -72,16 +79,16 @@ class OrderFragment : Fragment() {
             positiveRunnable = {
                 lifecycleScope.launch {
                     val tokenId =
-                        ClientRepository("").getLocalUserData(requireContext()).tokenId
+                        UserRepository("").getTokenId(requireContext())
 
                     viewModel.cancelOrder(
                         requireActivity().currentLocale.toLanguageTag(),
                         tokenId = tokenId,
-                    ).observeApiResponse(this, {
+                    ).observeApiResponse(this@OrderFragment, {
                         findNavController().popBackStack()
                     })
                 }
             }
         )
-    }
+    }*/
 }

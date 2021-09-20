@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="dataModel"
             type="com.g7.soft.pureDot.model.ProductModel" />
     </data>
@@ -39,7 +43,7 @@
             android:layout_weight="1"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
-            android:text="@{@string/conc_x(dataModel.quantityInCart)}"
+            android:text="@{@string/conc_x(dataModel.quantity)}"
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -54,8 +58,8 @@
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:bindCurrency="@{dataModel.currency}"
-            app:bindPrice="@{dataModel.priceWithDiscount}"
+            app:bindCurrency="@{currency}"
+            app:bindPrice="@{dataModel.unitPrice}"
             app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView28"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView24"
             app:layout_constraintTop_toTopOf="@+id/appCompatTextView28"

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ProjectConstant
+import com.g7.soft.pureDot.constant.ProjectConstant.Companion.ValidationError
 import com.g7.soft.pureDot.databinding.FragmentSignUpBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.ext.observeApiResponse
@@ -19,7 +20,7 @@ import com.g7.soft.pureDot.model.CityModel
 import com.g7.soft.pureDot.model.CountryModel
 import com.g7.soft.pureDot.model.ZipCodeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 
@@ -94,8 +95,8 @@ class SignUpFragment : Fragment() {
                     if (it?.tokenId != null) {
                         // ClientRepository("").saveUserData(requireContext(), it, viewModel.password.value) todo
                         // save user data
-                        ClientRepository("").updateIsGuestAccount(requireContext(), false)
-                        ClientRepository("").updateTokenId(requireContext(), it.tokenId)
+                        UserRepository("").updateIsGuestAccount(requireContext(), false)
+                        UserRepository("").updateTokenId(requireContext(), it.tokenId)
 
                         findNavController().navigate(
                             SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
@@ -109,6 +110,30 @@ class SignUpFragment : Fragment() {
                             R.string.something_went_wrong,
                             R.drawable.ic_secure_shield
                         )
+                }, validationObserve = {
+                    binding.firstNameTil.error = if (it == ValidationError.EMPTY_FIRST_NAME)
+                        getString(R.string.error_empty_first_name) else null
+
+                    binding.lastNameTil.error = if (it == ValidationError.EMPTY_LAST_NAME)
+                        getString(R.string.error_empty_last_name) else null
+
+                    binding.phoneNumberTil.error = if (it == ValidationError.EMPTY_PHONE_NUMBER)
+                        getString(R.string.error_empty_phone_number) else null
+
+                    binding.emailTil.error = when (it) {
+                        ValidationError.EMPTY_EMAIL -> getString(R.string.error_empty_email)
+                        ValidationError.INVALID_EMAIL -> getString(R.string.error_invalid_email)
+                        else -> null
+                    }
+
+                    binding.passwordTil.error = when (it) {
+                        ValidationError.EMPTY_PASSWORD -> getString(R.string.error_empty_password)
+                        ValidationError.INVALID_PASSWORD -> getString(R.string.error_invalid_password)
+                        else -> null
+                    }
+
+                    binding.confirmPasswordTil.error = if (it == ValidationError.NON_IDENTICAL_PASSWORD)
+                        getString(R.string.error_non_identical_passwords) else null
                 })
         }
     }

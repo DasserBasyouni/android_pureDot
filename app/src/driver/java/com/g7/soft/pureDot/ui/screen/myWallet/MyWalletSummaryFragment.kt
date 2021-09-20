@@ -30,7 +30,7 @@ class MyWalletSummaryFragment(internal val viewModel: MyWalletViewModel) : Fragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.transactionRv.adapter = SummaryAdapter(viewModel)
+        binding.transactionRv.adapter = SummaryAdapter(viewModel, this@MyWalletSummaryFragment)
     }
 
 }

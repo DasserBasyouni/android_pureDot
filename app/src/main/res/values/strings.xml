@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PureDot</string>
+    <string name="app_name" translatable="false">PurDot</string>
     <string name="log_in">Log in</string>
     <string name="sign_up">Sign Up</string>
     <string name="continue_as_guest">Continue as Guest</string>
@@ -12,47 +12,45 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="hello_">Hello,</string>
-    <string name="nice_to_see_you">Nice To See You</string>
+    <string name="nice_to_see_you">Nice To See You Again</string>
     <string name="question_forgot_password">Forgot Password?</string>
-    <string name="msg_forget_password">A code will be sent to your email/phone you can use it to login to the app</string>
+    <string name="msg_forget_password">"A code will be sent to your email/mobile you can use it to verify your mobile number "</string>
     <string name="submit">Submit</string>
     <string name="phone_number_or_email">Phone Number or Email</string>
     <string name="verification_page">Verification Page</string>
     <string name="msg_phone_verification">Enter the 4-digit verification code</string>
-    <string name="enter_4_digital_code">Enter 4 digital code</string>
+    <string name="enter_4_digital_code">Enter code here</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="resent_code">Resent code</string>
+    <string name="resent_code">Resend code</string>
     <string name="format_remaining_time" translatable="false">%02d:%02d</string>
     <string name="reset_password">Reset Password</string>
     <string name="verify">Verify</string>
-    <string name="message">Message</string>
     <string name="ok">Ok</string>
     <string name="msg_password_reset">Your password has been reset!</string>
     <string name="conc_hello_">Hello %s</string>
     <string name="start_shopping">Start Shopping</string>
-    <string name="start_delivering">Start Delivering</string>
-    <string name="msg_account_created">Create Account Is Successful !</string>
+    <string name="start_delivery">Start Delivery</string>
+    <string name="msg_account_created">Your account is created Successfully !</string>
     <string name="create_new_account">Create New Account</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="email">Email</string>
     <string name="register">Register</string>
-    <string name="select_country">Select country</string>
-    <string name="select_branch">Select branch</string>
-    <string name="select_address">Select address</string>
-    <string name="loading_">Loading..</string>
+    <string name="select_country">Select Country</string>
+    <string name="select_branch">Select Branch</string>
+    <string name="select_address">Select Address</string>
+    <string name="loading_">Loading…</string>
     <string name="select_city">Select city</string>
-    <string name="select_zipcode">Select Zipcode</string>
+    <string name="select_zipcode">"Select Zip Code "</string>
     <string name="male">Male</string>
-    <string name="female">Female</string>
     <string name="accept_terms_and_conditions">Accept Terms and conditions</string>
     <string name="general_details">General Details</string>
     <string name="car_details">Car Details</string>
     <string name="hint_car_brand">Car brand ex.BMW</string>
     <string name="submit_request">Submit Request</string>
     <string name="upload_licence">Upload Licence</string>
-    <string name="conc_file_size_in_kb">(%dKB)</string>
+    <string name="conc_file_size_in_kb" translatable="false">(%dKB)</string>
     <string name="upload_car_front_with_plate_image">Upload Car Front With Plate Image</string>
     <string name="upload_car_back_with_plate_image">Upload Car Back With Plate Image</string>
     <string name="search">Search</string>
@@ -71,25 +69,25 @@
     <string name="latest_offers">Latest Offers</string>
     <string name="conc_two_strings" translatable="false">%s %s</string>
     <string name="format_price_with_currency" translatable="false">%.02f %s</string>
-    <string name="symbol_plus">+</string>
-    <string name="symbol_minus">-</string>
-    <string name="conc_offer">%d%% Off</string>
-    <string name="conc_quantity_with_measuring_unit">%d %s</string>
+    <string name="symbol_plus" translatable="false">+</string>
+    <string name="symbol_minus" translatable="false">-</string>
+    <string name="conc_offer">%.2f%% Off</string>
+    <string name="conc_quantity_with_measuring_unit" translatable="false">%d %s</string>
     <string name="latest_products">Latest Products</string>
-    <string name="best_selling">Best selling</string>
+    <string name="best_selling">Best Selling</string>
     <string name="filter">Filter</string>
     <string name="category">Category</string>
     <string name="stores">Stores</string>
     <string name="minimum_rating">Minimum Rating</string>
-    <string name="_1">1</string>
-    <string name="_2">2</string>
-    <string name="_5">5</string>
-    <string name="_4">4</string>
-    <string name="_3">3</string>
+    <string name="_1" translatable="false">1</string>
+    <string name="_2" translatable="false">2</string>
+    <string name="_5" translatable="false">5</string>
+    <string name="_4" translatable="false">4</string>
+    <string name="_3" translatable="false">3</string>
     <string name="price_range">Price Range</string>
     <string name="min">Min</string>
-    <string name="_0">0</string>
-    <string name="_9999">9999</string>
+    <string name="_0" translatable="false">0</string>
+    <string name="_9999" translatable="false">9999</string>
     <string name="max">Max</string>
     <string name="reset_filter">Reset Filter</string>
     <string name="apply">Apply</string>
@@ -105,21 +103,22 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="was_this_review_helpful">Was this review helpful?</string>
-    <string name="format_standard_date">dd/MM/yyyy</string>
+    <string name="format_standard_date" translatable="false">dd/MM/yyyy</string>
     <string name="empty_reviews">No reviews</string>
+    <string name="empty_comments">No comments</string>
     <string name="qty">QTY</string>
-    <string name="add_to_card">Add to card</string>
-    <string name="format_integer">%d</string>
-    <string name="added_to_card">Added to card</string>
+    <string name="add_to_card">Add to Cart</string>
+    <string name="format_integer" translatable="false">%d</string>
+    <string name="added_to_card">Added to Cart</string>
     <string name="checkout">Checkout</string>
-    <string name="continue_shopping">Continue shopping</string>
+    <string name="continue_shopping">Continue Shopping</string>
     <string name="cart_total">Cart Total</string>
     <string name="cart">Cart</string>
     <string name="empty_items">No items</string>
     <string name="sub_total">Sub Total</string>
     <string name="vat">VAT</string>
     <string name="sort_by">Sort By</string>
-    <string name="proceed_to_checkout">Proceed To Checkout</string>
+    <string name="proceed_to_checkout">Proceed to Checkout</string>
     <string name="shipping_fees_will_be_added">Shipping fees will be added</string>
     <string name="total_">Total:</string>
     <string name="shipping_cost_">Shipping cost:</string>
@@ -130,13 +129,13 @@
     <string name="add_new_location">Add New Location</string>
     <string name="next">Next</string>
     <string name="pickup_location">Pickup Location</string>
-    <string name="conc_x">x%d</string>
+    <string name="conc_x" translatable="false">x%d</string>
     <string name="coupon">Coupon</string>
     <string name="track_order">Track Order</string>
     <string name="disabled">Disabled</string>
     <string name="order_placed_successfully">Order Placed Successfully</string>
     <string name="order_placed">Order Placed</string>
-    <string name="msg_order_placed">You Have Received Your Order</string>
+    <string name="msg_order_placed">We Have Received Your Order</string>
     <string name="delivered">Delivered</string>
     <string name="delivered_to_customer">Delivered to customer</string>
     <string name="out_for_delivery">Out For Delivery</string>
@@ -153,9 +152,9 @@
     <string name="logout">Logout</string>
     <string name="conc_order_">Order #%d</string>
     <string name="conc_order_id_">Order ID: %d</string>
-    <string name="format_order_date_time">dd/MM/yyyy hh:mm a</string>
+    <string name="format_order_date_time" translatable="false">dd/MM/yyyy hh:mm a</string>
     <string name="conc_items_in_order">%d items in order</string>
-    <string name="total_item">Total Item</string>
+    <string name="total_item">Total Items</string>
     <string name="total_vat">Total VAT</string>
     <string name="shipping_cost">Shipping Cost</string>
     <string name="phone_number">Phone Number</string>
@@ -166,8 +165,8 @@
     <string name="view_rate">View rate</string>
     <string name="complaint">Complaint</string>
     <string name="complaints">Complaints</string>
-    <string name="format_date_order_tracking">dd MMMM</string>
-    <string name="turn_push_notification_on">Turn Push Notification ON</string>
+    <string name="format_date_order_tracking" translatable="false">dd MMMM</string>
+    <string name="turn_push_notification_on">Turn Push Notification ON/OFF</string>
     <string name="profile">Profile</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="full_name">Full Name</string>
@@ -175,7 +174,7 @@
     <string name="gender">Gender</string>
     <string name="country">Country</string>
     <string name="city">City</string>
-    <string name="symbol_password">*******</string>
+    <string name="symbol_password" translatable="false">*******</string>
     <string name="change_password">Change Password</string>
     <string name="save">Save</string>
     <string name="sign_out">Sign Out</string>
@@ -184,34 +183,34 @@
     <string name="add_money">Add Money</string>
     <string name="transfer_money">Transfer Money</string>
     <string name="transaction_list">Transaction List</string>
-    <string name="replacement">Replacement</string>
+    <string name="replacement">Redeam</string>
     <string name="conc_points_equal_currency">You have %d points = %.2f %s</string>
-    <string name="msg_deposit">Money added to wallet via credit card</string>
-    <string name="msg_withdraw">Money withdraw and sent to bank account</string>
-    <string name="msg_to_your_account">Money transaction to your bank account</string>
-    <string name="msg_from_your_account">Money transaction from your bank account</string>
+    <string name="msg_deposit">Money Added to Wallet via Payment Gateway</string>
+    <string name="msg_withdraw">Money Withdraw and Sent to Bank Account</string>
+    <string name="msg_to_your_account">Money Transferred to Your Bank Account</string>
+    <string name="msg_from_your_account">"Money Transferred from Your Bank Account "</string>
     <string name="transfer">Transfer</string>
     <string name="withdraw">Withdraw</string>
     <string name="deposit">Deposit</string>
     <string name="amount">Amount</string>
-    <string name="msg_transfer_success">The transformation was successful</string>
+    <string name="msg_transfer_success">Transfered Successfully</string>
     <string name="empty_transactions">No transactions</string>
     <string name="empty_favourites">No favourites</string>
-    <string name="not_available">Not\nAvailable</string>
-    <string name="conc_complain_">Complain #%d</string>
+    <string name="not_available">Not Available</string>
+    <string name="conc_complain_">Complaint #%d</string>
     <string name="resolved">Resolved</string>
     <string name="in_progress">In progress</string>
-    <string name="new_">New</string>
+    <string name="label_new">New</string>
     <string name="complaint_details">Complaint details</string>
     <string name="rating_service">Rating Service</string>
     <string name="buy_now">Buy Now</string>
     <string name="services">Services</string>
-    <string name="title">Title</string>
+    <string name="complaint_title">Complaint Title</string>
     <string name="description">Description</string>
     <string name="submit_a_complain">Submit a complain</string>
     <string name="related_order">Related Order</string>
     <string name="english">English</string>
-    <string name="app_version">App version</string>
+    <string name="app_version">App Version</string>
     <string name="rate_app_on_store">Rate App On Store</string>
     <string name="payment_method">Payment Method</string>
     <string name="shop_name">Shop Name</string>
@@ -237,9 +236,7 @@
     <string name="summary">Summary</string>
     <string name="total_earnings">Total Earnings</string>
     <string name="total_deliveries">Total Deliveries</string>
-    <string name="current_wallet">Current Wallet</string>
     <string name="account">Account</string>
-    <string name="basket">Basket</string>
     <string name="total_transfers">Total Transfers</string>
     <string name="offer_include">Offer Include</string>
     <string name="date_amp_time"><![CDATA[Date & Time]]></string>
@@ -248,27 +245,26 @@
     <string name="your_email">Your Email</string>
     <string name="submit_review">Submit Review</string>
     <string name="what_do_you_think_of_this_products">What do you think of this products?</string>
-    <string name="add_your_review_here">Add your review here....</string>
+    <string name="add_your_review_here">Add your review here…</string>
     <string name="text_do_not_have_account">You don\'t have an account? Register</string>
     <string name="upload_national_id">Upload National ID</string>
     <string name="accepted">Accepted</string>
-    <string name="error_empty_title">Empty fields</string>
     <string name="the_main_address">The Main Address</string>
     <string name="floor">Floor</string>
     <string name="flat">Flat</string>
-    <string name="home_number">Home number</string>
+    <string name="building_number">Building Number</string>
     <string name="street_name">Street Name</string>
     <string name="area">Area</string>
     <string name="shipping_address">Shipping Address</string>
     <string name="update_bank_account_details">Update Bank Account Details</string>
-    <string name="bank_name">Bank name</string>
+    <string name="bank_name">Bank Name</string>
     <string name="iban">IBAN</string>
     <string name="bank_account">Bank Account</string>
     <string name="submit_rate">Submit Rate</string>
     <string name="rate_product">Rate Product</string>
     <string name="your_message_here">Your message here</string>
     <string name="payment">Payment</string>
-    <string name="cash_on_delivery">Cash on delivery</string>
+    <string name="cash_on_delivery">Cash on Delivery</string>
     <string name="online_payment">Online Payment</string>
     <string name="select_payment_method">Select Payment Method</string>
     <string name="confirmed">Confirmed</string>
@@ -276,9 +272,9 @@
     <string name="change_language">Change Language</string>
     <string name="arabic">Arabic</string>
     <string name="send">Send</string>
-    <string name="msg_points_replaced">You have transaction from replacement point</string>
+    <string name="msg_points_replaced">"Points Redeemed and Money Transferred to your Wallet "</string>
     <string name="points">Points</string>
-    <string name="msg_driver_account_in_review">your account is being reviewed,\nwe will contact you shortly</string>
+    <string name="msg_driver_account_in_review">your account is under review, we will contact you shortly</string>
     <string name="mapbox_access_token" translatable="false">sk.eyJ1IjoiZzdzb2Z0d2FyZWhvdXNlIiwiYSI6ImNrczMxczRqeTB4ZXMycHFtY3NzNHFpZHcifQ.Yqd8Fd1Jhgehryl9jgU10w</string>
     <string name="orders">Orders</string>
     <string name="rejected">Rejected</string>
@@ -302,4 +298,61 @@
     <string name="exists_before">Exists before</string>
     <string name="name">Name</string>
     <string name="zip_code">Zip Code</string>
+    <string name="female">Female</string>
+    <string name="select_category">Select Category</string>
+    <string name="current_balance">Current Balance</string>
+    <string name="part_register">Register</string>
+    <string name="branch_is_required">Branch is Required</string>
+    <string name="variations_are_required">Variations are Required</string>
+    <string name="address_is_required">Address is Required</string>
+    <string name="delivery_app">Delivery App</string>
+    <string name="shipping_method_is_required">Shipping Method is Required</string>
+    <string name="coupon_discount">Coupon Discount</string>
+    <string name="question_what_do_you_think_of_this_service">What do you think of this service?</string>
+    <string name="can_not_cancel_order">Can not cancel order</string>
+    <string name="msg_invalid_cart_items">Your cart have unavailable items</string>
+    <string name="new_orders">New Orders</string>
+    <string name="pending_orders">Pending Orders</string>
+    <string name="error_empty_name">Name is required</string>
+    <string name="error_empty_phone_number">Phone number is required</string>
+    <string name="error_empty_phone_number_or_email">Phone number or email is required</string>
+    <string name="error_empty_email">Email is required</string>
+    <string name="error_empty_city">City is required</string>
+    <string name="error_empty_date_of_birth">Date of birth is requried</string>
+    <string name="error_empty_car_brand">Car brand is required</string>
+    <string name="error_empty_is_male">Gender is required</string>
+    <string name="error_empty_licence_image">Licence image is required</string>
+    <string name="error_empty_car_front_image">"Car front image is required "</string>
+    <string name="error_empty_car_back_image">Car back image is required</string>
+    <string name="error_empty_national_id_image">National id image is required</string>
+    <string name="deliver_to">Deliver To</string>
+    <string name="payment_details">Payment Details</string>
+    <string name="conc_qty_">Qty: %d</string>
+    <string name="confirm_order">Confirm Order</string>
+    <string name="order_is_ready">Order Is Ready</string>
+    <string name="order_is_out">Order Is Out</string>
+    <string name="order_details">Order Details</string>
+    <string name="being_shipping">Being Shipping</string>
+    <string name="picked">Picked</string>
+    <string name="msg_can_not_return">Can not return item</string>
+    <string name="msg_can_not_accept">Can not accept</string>
+    <string name="msg_status_already_changed">Status already changed</string>
+    <string name="msg_order_does_not_meet_min">Order does not meet minimum price</string>
+    <string name="error_empty_first_name">First name is required</string>
+    <string name="error_empty_last_name">Last name is required</string>
+    <string name="error_empty_zip_code">Zipcode is required</string>
+    <string name="error_empty_password">Password is required</string>
+    <string name="error_invalid_password">"Password is at least 8 numbers, contains numbers, special characters, upper and lower cases</string>
+    <string name="error_non_identical_passwords">Non identical passwords</string>
+    <string name="error_accept_terms">Accepting terms is required</string>
+    <string name="error_empty_verification_code">Verification is required</string>
+    <string name="error_invalid_verification_code">Invalid verification code</string>
+    <string name="error_invalid_email">Invalid email</string>
+    <string name="error_empty_rating">Rating is required</string>
+    <string name="error_empty_country">Country is required</string>
+    <string name="error_empty_title">Title is required</string>
+    <string name="error_empty_description">Description is required</string>
+    <string name="error_empty_related_order">Related order is required</string>
+    <string name="error_empty_category">Category is required</string>
+    <string name="error_comment">Comment is required</string>
 </resources>

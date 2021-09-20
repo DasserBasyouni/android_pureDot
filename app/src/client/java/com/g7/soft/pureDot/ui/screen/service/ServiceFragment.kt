@@ -22,12 +22,12 @@ import com.g7.soft.pureDot.adapter.SmallServicesAdapter
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentServiceBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.ext.toDateWithoutTime
 import com.g7.soft.pureDot.model.ServiceDetailsModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
+import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
@@ -52,8 +52,15 @@ class ServiceFragment : Fragment() {
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(ServiceViewModel::class.java)
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+        lifecycleScope.launch {
+            val isGuestAccount = UserRepository("").getIsGuestAccount(requireContext())
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
+
+            binding.currency = currencySymbol
+            binding.isGuestAccount = isGuestAccount
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@ServiceFragment
+        }
 
         return binding.root
     }
@@ -71,13 +78,21 @@ class ServiceFragment : Fragment() {
                 viewModel.serviceDetailsResponse.value,
                 initialText = getString(R.string.servant)
             )
+            setupBranchSpinner(
+                binding.branchesSpinner,
+                it,
+                initialText = getString(R.string.select_branch)
+            )
         })
 
         // setup date picker todo
         binding.calendarView.minDate = Calendar.getInstance().timeInMillis
 
         // fetch data
-        viewModel.fetchScreenData(requireActivity().currentLocale.toLanguageTag())
+        lifecycleScope.launch {
+            val tokenId = UserRepository("").getTokenId(requireContext())
+            viewModel.fetchData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+        }
 
         // setup observers
         val imagesOffersAdapter = ImagesSliderAdapter(this)
@@ -100,6 +115,12 @@ class ServiceFragment : Fragment() {
         viewModel.sliderOffersPosition.observe(viewLifecycleOwner, {
             binding.sliderOffersLceeLayoutVp.currentItem = it
         })
+        viewModel.selectedVariations.observe(viewLifecycleOwner, {
+            viewModel.getCost(requireActivity().currentLocale.toLanguageTag())
+        })
+        viewModel.costResponse.observe(viewLifecycleOwner, {
+            viewModel.costLcee.value!!.response.value = it
+        })
 
         // add decoration divider
         binding.reviewsRv.addItemDecoration(
@@ -119,7 +140,7 @@ class ServiceFragment : Fragment() {
         binding.sendBtn.setOnClickListener {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.addReview(requireActivity().currentLocale.toLanguageTag(), tokenId)
                     .observeApiResponse(this@ServiceFragment, {
@@ -136,16 +157,45 @@ class ServiceFragment : Fragment() {
             viewModel.quantityInCart.value = viewModel.quantityInCart.value?.plus(1)
         }
         binding.addToCartBtn.setOnClickListener {
-            val bundle =
-                bundleOf(
-                    "service" to viewModel.service,
-                    "selectedVariations" to viewModel.selectedVariations.value?.toIntArray(),
-                    "servantsNumber" to viewModel.servantsSelectedPosition.value,
-                    "time" to viewModel.timeInSeconds,
-                    "date" to binding.calendarView.date.toDateWithoutTime(),
-                    "quantity" to viewModel.quantityInCart.value
+            if (viewModel.selectedBranch == null)
+                ProjectDialogUtils.showSimpleMessage(
+                    requireContext(),
+                    R.string.branch_is_required,
+                    R.drawable.ic_secure_shield
                 )
-            findNavController().navigate(R.id.checkoutFragment, bundle)
+            else if (viewModel.serviceDetailsResponse.value?.data?.variations != null
+                && viewModel.selectedVariations.value?.size
+                != viewModel.serviceDetailsResponse.value?.data?.variations?.size
+            )
+                ProjectDialogUtils.showSimpleMessage(
+                    requireContext(),
+                    R.string.variations_are_required,
+                    R.drawable.ic_secure_shield
+                )
+            else
+                lifecycleScope.launch {
+                    val isGuestAccount = UserRepository("").getIsGuestAccount(requireContext())
+                    val tokenId = UserRepository("").getTokenId(requireContext())
+
+                    if (isGuestAccount)
+                        findNavController().navigate(R.id.loginFragment)
+                    else {
+                        viewModel.checkCartItems(
+                            requireActivity().currentLocale.toLanguageTag(),
+                            tokenId = tokenId
+                        ).observeApiResponse(this@ServiceFragment, {
+                            val bundle = bundleOf(
+                                "masterOrder" to it,
+                                "serviceBranchId" to viewModel.selectedBranch?.id,
+                                "serviceVariations" to viewModel.selectedVariations.value?.toTypedArray(),
+                                "serviceId" to viewModel.service?.id,
+                                "serviceShopId" to viewModel.service?.shop?.id,
+                                "serviceQuantity" to viewModel.quantityInCart.value
+                            )
+                            findNavController().navigate(R.id.checkoutFragment, bundle)
+                        })
+                    }
+                }
         }
     }
 
@@ -189,6 +239,46 @@ class ServiceFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
             spinner.setSelection(viewModel.servantsSelectedPosition.value!!)
+        }
+    }
+
+
+    private fun setupBranchSpinner(
+        spinner: AppCompatSpinner,
+        networkResponse: NetworkRequestResponse<ServiceDetailsModel>?,
+        initialText: String
+    ) {
+        val spinnerData = when (networkResponse?.status) {
+            ProjectConstant.Companion.Status.IDLE -> {
+                spinner.isEnabled = false
+                arrayListOf(initialText)
+            }
+            ProjectConstant.Companion.Status.LOADING -> {
+                spinner.isEnabled = false
+                arrayListOf(getString(R.string.loading_))
+            }
+            ProjectConstant.Companion.Status.SUCCESS -> {
+                val modelsList = networkResponse.data?.branches
+                val dataList = modelsList?.mapNotNull { it.name }?.toTypedArray()
+                spinner.isEnabled = true
+                arrayListOf(initialText).apply {
+                    this.addAll((dataList ?: arrayOf()))
+                }
+            }
+            else -> {
+                spinner.isEnabled = false
+                arrayListOf(getString(R.string.something_went_wrong))
+            }
+        }
+
+        ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            spinnerData
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+            spinner.setSelection(viewModel.selectedBranchPosition.value!!)
         }
     }
 }

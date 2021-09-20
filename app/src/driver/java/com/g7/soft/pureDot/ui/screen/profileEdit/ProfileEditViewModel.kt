@@ -7,17 +7,19 @@ import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.ext.toFormattedDateTime
 import com.g7.soft.pureDot.model.CityModel
 import com.g7.soft.pureDot.model.CountryModel
-import com.g7.soft.pureDot.model.DriverDataModel
+import com.g7.soft.pureDot.model.UserDataModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.DriverRepository
 import com.g7.soft.pureDot.repo.GeneralRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.Dispatchers
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
 // TODO IMP ADD VALIDATION LAYER ON INPUTS FOR THE WHOLE APP
-class ProfileEditViewModel(val userData: DriverDataModel?) : ViewModel() {
+class ProfileEditViewModel(
+    val userData: UserDataModel?
+) : ViewModel() {
 
     val dateFormat = "dd/MM/yyyy"
 
@@ -25,20 +27,29 @@ class ProfileEditViewModel(val userData: DriverDataModel?) : ViewModel() {
     val countiesResponse = MediatorLiveData<NetworkRequestResponse<List<CountryModel>?>?>()
     val citiesResponse = MediatorLiveData<NetworkRequestResponse<List<CityModel>?>>()
 
-    val firstName = MutableLiveData<String?>()
-    val lastName = MutableLiveData<String?>()
+    val name = MutableLiveData<String?>()
     val phoneNumber = MutableLiveData<String?>()
     val email = MutableLiveData<String?>()
     val dateOfBirth = MutableLiveData<String?>()
+    val dateOfBirthCalendar =
+        MutableLiveData<Calendar?>().apply { this.value = Calendar.getInstance() }
     val selectedGenderPosition = MutableLiveData<Int?>().apply { this.value = 0 }
-    val selectedCountryPosition = MutableLiveData<Int?>().apply { this.value = 0 }
-    val selectedCityPosition = MutableLiveData<Int?>().apply { this.value = 0 }
 
+    val selectedCountryPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedCountry
+        get() = countiesResponse.value?.data?.getOrNull(
+            selectedCountryPosition.value?.minus(1) ?: -1
+        )
+
+    val selectedCityPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val selectedCity
+        get() = citiesResponse.value?.data?.getOrNull(
+            selectedCityPosition.value?.minus(1) ?: -1
+        )
 
     init {
-        firstName.value = userData?.firstName
-        lastName.value = userData?.lastName
-        phoneNumber.value = userData?.mobileNumber
+        name.value = userData?.name
+        phoneNumber.value = userData?.phoneNumber
         email.value = userData?.email
 
         dateOfBirth.value = userData?.dateOfBirth?.toFormattedDateTime(dateFormat)
@@ -46,12 +57,15 @@ class ProfileEditViewModel(val userData: DriverDataModel?) : ViewModel() {
     }
 
 
+    fun fetchData(langTag: String) {
+        getCounties(langTag)
+        getCities(langTag)
+    }
+
     fun getCounties(langTag: String) {
         countiesResponse.value = NetworkRequestResponse.loading()
         countiesResponse.apply {
-            this.addSource(GeneralRepository(langTag).getCounties()) {
-                countiesResponse.value = it
-            }
+            this.addSource(GeneralRepository(langTag).getCounties()) { countiesResponse.value = it }
         }
     }
 
@@ -60,17 +74,13 @@ class ProfileEditViewModel(val userData: DriverDataModel?) : ViewModel() {
         citiesResponse.apply {
             this.addSource(
                 GeneralRepository(langTag).getCities(
-                    countryId = countiesResponse.value?.data?.get(
-                        selectedCountryPosition.value!!
-                    )?.id
+                    countryId = selectedCountry?.id
                 )
-            ) {
-                citiesResponse.value = it
-            }
+            ) { citiesResponse.value = it }
         }
     }
 
-    fun save(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun save(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
 
         var timestamp: Timestamp? = null
 
@@ -83,16 +93,13 @@ class ProfileEditViewModel(val userData: DriverDataModel?) : ViewModel() {
 
         emit(NetworkRequestResponse.loading())
         emitSource(
-            DriverRepository(langTag).editUserData(
+            UserRepository(langTag).editUserData(
                 tokenId = tokenId,
-                firstName = firstName.value,
-                lastName = lastName.value,
+                name = name.value,
                 phoneNumber = phoneNumber.value,
                 email = email.value,
-                countryId = countiesResponse.value?.data?.get(selectedCountryPosition.value!!)?.id,
-                cityId = citiesResponse.value?.data?.get(selectedCityPosition.value!!)?.id,
+                cityId = selectedCity?.id,
                 isMale = selectedGenderPosition.value == 0,
-                countryCode = null,
                 dateOfBirth = timestamp?.time?.div(1000),
                 imageUrl = null //todo
             )

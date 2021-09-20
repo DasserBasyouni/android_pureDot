@@ -3,17 +3,20 @@ package com.g7.soft.pureDot.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.databinding.ItemCartHeaderBinding
-import com.g7.soft.pureDot.model.StoreProductsCartDetailsModel
+import com.g7.soft.pureDot.model.OrderModel
+import com.g7.soft.pureDot.repo.UserRepository
+import kotlinx.coroutines.launch
 
 
 class CartHeaderAdapter(
     private val fragment: Fragment
 ) :
-    ListAdapter<StoreProductsCartDetailsModel, CartHeaderAdapter.ViewHolder>(FitnessTrainingClassesDiffCallback()) {
+    ListAdapter<OrderModel, CartHeaderAdapter.ViewHolder>(FitnessTrainingClassesDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder.from(viewGroup)
@@ -25,18 +28,24 @@ class CartHeaderAdapter(
     class ViewHolder private constructor(private val binding: ItemCartHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            dataModel: StoreProductsCartDetailsModel,
+            dataModel: OrderModel,
             fragment: Fragment,
         ) {
-            //val brandItems = items.filter { item -> item.shop?.name == storeName } // todo tell api that store name must be unique
-            binding.storeName = dataModel.products?.firstOrNull()?.shop?.name
-            binding.subTotal = dataModel.subTotal
-            binding.vat = dataModel.vat
-            binding.currency = dataModel.currency
-            binding.executePendingBindings()
+            fragment.lifecycleScope.launch {
+                val currencySymbol = UserRepository("").getCurrencySymbol(fragment.requireContext())
+
+                binding.storeName = dataModel.shop?.name
+                binding.subTotal = dataModel.subTotal
+                binding.vat = dataModel.vat
+                binding.currency = currencySymbol
+                binding.executePendingBindings()
+            }
 
             binding.recyclerView.adapter =
-                CartInnerAdapter(fragment).also { it.submitList(dataModel.products) }
+                CartInnerAdapter(
+                    fragment,
+                    dataModel.shop
+                ).also { it.submitList(dataModel.products) }
         }
 
         companion object {
@@ -53,14 +62,14 @@ class CartHeaderAdapter(
 
 }
 
-class FitnessTrainingClassesDiffCallback : DiffUtil.ItemCallback<StoreProductsCartDetailsModel>() {
+class FitnessTrainingClassesDiffCallback : DiffUtil.ItemCallback<OrderModel>() {
     override fun areItemsTheSame(
-        oldItem: StoreProductsCartDetailsModel,
-        newItem: StoreProductsCartDetailsModel,
+        oldItem: OrderModel,
+        newItem: OrderModel,
     ): Boolean = oldItem == newItem
 
     override fun areContentsTheSame(
-        oldItem: StoreProductsCartDetailsModel,
-        newItem: StoreProductsCartDetailsModel,
+        oldItem: OrderModel,
+        newItem: OrderModel,
     ): Boolean = oldItem == newItem
 }

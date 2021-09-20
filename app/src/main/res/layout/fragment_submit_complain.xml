@@ -27,7 +27,7 @@
             tools:context=".ui.screen.MainActivity">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/emailTil"
+                android:id="@+id/titleTil"
                 style="@style/ProjectTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -39,28 +39,27 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/title"
+                    android:hint="@string/complaint_title"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:text="@={viewModel.title}" />
             </com.google.android.material.textfield.TextInputLayout>
-
-
+            
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/messageTil"
+                android:id="@+id/descriptionTil"
                 style="@style/ProjectTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/emailTil"
-                app:layout_constraintStart_toStartOf="@+id/emailTil"
-                app:layout_constraintTop_toBottomOf="@+id/emailTil">
+                app:layout_constraintEnd_toEndOf="@+id/titleTil"
+                app:layout_constraintStart_toStartOf="@+id/titleTil"
+                app:layout_constraintTop_toBottomOf="@+id/titleTil">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="154dp"
                     android:gravity="start"
@@ -78,9 +77,9 @@ style="@style/ProjectTextInputEditText"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_rounded_spinner"
                 android:selectedItemPosition="@={viewModel.ordersPosition}"
-                app:layout_constraintEnd_toEndOf="@+id/messageTil"
-                app:layout_constraintStart_toStartOf="@+id/messageTil"
-                app:layout_constraintTop_toBottomOf="@+id/messageTil" />
+                app:layout_constraintEnd_toEndOf="@+id/descriptionTil"
+                app:layout_constraintStart_toStartOf="@+id/descriptionTil"
+                app:layout_constraintTop_toBottomOf="@+id/descriptionTil" />
 
             <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/categorySpinner"
@@ -104,8 +103,8 @@ style="@style/ProjectTextInputEditText"
                 android:layout_marginBottom="24dp"
                 android:text="@string/submit"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/messageTil"
-                app:layout_constraintStart_toStartOf="@+id/messageTil" />
+                app:layout_constraintEnd_toEndOf="@+id/descriptionTil"
+                app:layout_constraintStart_toStartOf="@+id/descriptionTil" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

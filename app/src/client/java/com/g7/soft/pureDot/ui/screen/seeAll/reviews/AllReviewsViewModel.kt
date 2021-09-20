@@ -9,7 +9,8 @@ import com.g7.soft.pureDot.model.project.LceeModel
 
 class AllReviewsViewModel(
     internal val itemId: String?,
-    internal val tokenId: String
+    internal val tokenId: String?,
+    internal val isProduct: Boolean
 ) : ViewModel() {
 
     val reviewsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }

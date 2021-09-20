@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.myAccount.MyAccountViewModel" />
     </data>
@@ -75,7 +79,7 @@
                 android:layout_marginEnd="32dp"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="4sp"
-                android:text="@{viewModel.userDataResponse.data.fullName}"
+                android:text="@{viewModel.userDataResponse.data.name}"
                 android:textAlignment="center"
                 android:textColor="@color/warm_purple"
                 android:textSize="18sp"
@@ -97,7 +101,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="@{viewModel.userDataLcee.contentVisibility}"
-                app:bindCurrency="@{viewModel.userDataResponse.data.currency.name}"
+                app:bindCurrency="@{currency}"
                 app:bindPrice="@{viewModel.userDataResponse.data.credit}"
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView42"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView42"

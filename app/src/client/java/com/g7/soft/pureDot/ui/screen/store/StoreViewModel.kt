@@ -14,7 +14,10 @@ import com.g7.soft.pureDot.repo.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 
-class StoreViewModel(val store: StoreModel?) : ViewModel() {
+class StoreViewModel(val store: StoreModel?, shopId: String?) : ViewModel() {
+
+    val shopId = store?.id ?: shopId
+
 
     val categoriesLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     var categoriesPagedList: LiveData<PagedList<CategoryModel>>? = null
@@ -25,19 +28,21 @@ class StoreViewModel(val store: StoreModel?) : ViewModel() {
     val sliderOffersPosition = MediatorLiveData<Int>().apply { this.value = 0 }
 
     val latestOffersLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
-    val latestOffersResponse = MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
+    val latestOffersResponse =
+        MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
 
     val latestProductsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
-    val latestProductsResponse = MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
+    val latestProductsResponse =
+        MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<ProductModel>>>>()
 
 
-    fun fetchScreenData(langTag: String) {
-        getOffersSlider(langTag, null, store?.id)
+    fun fetchScreenData(langTag: String, tokenId: String?) {
+        getOffersSlider(langTag, tokenId, null, shopId)
         getLatestOffers(langTag)
         getLatestProducts(langTag)
     }
 
-    fun getOffersSlider(langTag: String, categoryId: String?, shopId: String?) {
+    fun getOffersSlider(langTag: String, tokenId: String?, categoryId: String?, shopId: String?) {
         sliderOffersResponse.value = NetworkRequestResponse.loading()
         sliderOffersTimer?.cancel() // release the auto slider timer
 
@@ -45,9 +50,10 @@ class StoreViewModel(val store: StoreModel?) : ViewModel() {
         sliderOffersResponse.apply {
             addSource(
                 ProductRepository(langTag).getSliderOffers(
+                    tokenId = tokenId,
                     categoryId = categoryId,
                     shopId = shopId,
-                    type = ApiConstant.SliderOfferType.HOME_LATEST_PRODUCT.value,
+                    type = ApiConstant.SliderOfferType.INNER_SHOP.value,
                 )
             ) {
                 sliderOffersResponse.value = it
@@ -78,8 +84,8 @@ class StoreViewModel(val store: StoreModel?) : ViewModel() {
             addSource(
                 ProductRepository(langTag).getLatestOffers(
                     pageNumber = 1,
-                    itemPerPage = 4,
-                    shopId = store?.id
+                    itemsPerPage = 4,
+                    shopId = shopId
                 )
             ) { latestOffersResponse.value = it }
         }
@@ -93,8 +99,8 @@ class StoreViewModel(val store: StoreModel?) : ViewModel() {
             addSource(
                 ProductRepository(langTag).getLatestProducts(
                     pageNumber = 1,
-                    itemPerPage = 9,
-                    shopId = store?.id,
+                    itemsPerPage = 9,
+                    shopId = shopId,
                 )
             ) { latestProductsResponse.value = it }
         }

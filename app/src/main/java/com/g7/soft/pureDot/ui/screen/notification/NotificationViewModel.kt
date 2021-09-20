@@ -18,7 +18,7 @@ class NotificationViewModel : ViewModel() {
     val notificationsResponse = MediatorLiveData<NetworkRequestResponse<List<NotificationModel>>>()
 
 
-    fun getNotifications(langTag: String, tokenId: String) {
+    fun getNotifications(langTag: String, tokenId: String?) {
         notificationsResponse.value = NetworkRequestResponse.loading()
 
         // fetch request
@@ -31,7 +31,7 @@ class NotificationViewModel : ViewModel() {
         }
     }
 
-    fun doNotify(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun doNotify(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
 
         emitSource(

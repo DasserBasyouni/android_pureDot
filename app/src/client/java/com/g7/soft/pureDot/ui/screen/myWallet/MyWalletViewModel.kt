@@ -22,7 +22,7 @@ class MyWalletViewModel(internal val tokenId: String?) : ViewModel() {
 
 
 
-    fun getWalletData(langTag: String, tokenId: String) {
+    fun getWalletData(langTag: String, tokenId: String?) {
         walletResponse.value = NetworkRequestResponse.loading()
         walletResponse.apply {
             this.addSource(WalletRepository(langTag).getWalletData(tokenId = tokenId)) {
@@ -31,7 +31,7 @@ class MyWalletViewModel(internal val tokenId: String?) : ViewModel() {
         }
     }
 
-    fun replacePoints(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun replacePoints(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
             WalletRepository(langTag).replacePoints(

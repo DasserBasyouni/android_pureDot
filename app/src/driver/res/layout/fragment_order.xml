@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="currency"
+            type="String" />
+        
+        <variable
             name="viewModel"
             type="com.g7.soft.pureDot.ui.screen.order.OrderViewModel" />
     </data>
@@ -45,7 +49,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{@string/conc_order_(viewModel.order.number)}"
+                        android:text="@{@string/conc_order_(viewModel.masterOrder.firstOrder.number)}"
                         android:textColor="@color/greyish_brown"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -63,7 +67,7 @@
                         android:textColor="@color/warm_grey"
                         android:textSize="12sp"
                         android:textStyle="normal"
-                        app:bindDate="@{viewModel.order.dateTime}"
+                        app:bindDate="@{viewModel.masterOrder.dateTime}"
                         app:bindDateFormat="@{@string/format_order_date_time}"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView45"
                         app:layout_constraintTop_toBottomOf="@+id/appCompatTextView45"
@@ -88,7 +92,7 @@
                             android:textColor="#ffffff"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            app:bindOrderStatus="@{viewModel.order.status}"
+                            app:bindOrderStatus="@{viewModel.masterOrder.firstOrder.status}"
                             tools:background="@color/bluish"
                             tools:drawableStart="@drawable/ic_order_placed_small"
                             tools:text="Order Placed" />
@@ -109,7 +113,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
-                            app:bindApiImageUrl="@{viewModel.order.finalRouteImageUrl}"
+                            app:bindApiImageUrl="@{viewModel.masterOrder.firstOrder.finalRouteImageUrl}"
                             tools:src="@tools:sample/backgrounds/scenic" />
 
                     </androidx.cardview.widget.CardView>
@@ -132,9 +136,8 @@
                         android:id="@+id/appCompatImageView7"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:layout_marginTop="8dp"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView7"
-                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView7"
+                        app:layout_constraintTop_toTopOf="@+id/appCompatTextView12"
                         app:srcCompat="@drawable/ring" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -142,14 +145,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
                         android:fontFamily="sans-serif"
-                        android:text="@{viewModel.order.fromAddress}"
+                        android:text="@{viewModel.masterOrder.firstOrder.fromAddress}"
                         android:textColor="@color/textColor"
                         android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView7"
                         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView7"
                         app:layout_constraintStart_toEndOf="@+id/appCompatImageView7"
-                        app:layout_constraintTop_toTopOf="@+id/appCompatImageView7"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView7"
                         tools:text="14 Luran, Alexandria, Egypt." />
 
                     <FrameLayout
@@ -166,22 +169,24 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginTop="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView11"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView7"
                         app:layout_constraintTop_toBottomOf="@+id/appCompatImageView7"
                         app:srcCompat="@drawable/ring" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView11"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
                         android:fontFamily="sans-serif"
-                        android:text="@{viewModel.order.toAddress}"
+                        android:text="@{viewModel.masterOrder.firstOrder.toAddress}"
                         android:textColor="@color/textColor"
                         android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView8"
                         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView12"
                         app:layout_constraintStart_toEndOf="@+id/appCompatImageView8"
-                        app:layout_constraintTop_toTopOf="@+id/appCompatImageView8"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView12"
                         tools:text="20 Moustafa Kamel st., Roushdy, Alexandria, Egypt." />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -246,9 +251,9 @@
                 android:textColor="@color/driverRed"
                 android:textSize="18sp"
                 android:textStyle="normal"
-                app:bindCurrency="@{viewModel.order.currency}"
+                app:bindCurrency="@{currency}"
                 app:bindPrePriceText="@{@string/total_}"
-                app:bindPrice="@{viewModel.order.price}"
+                app:bindPrice="@{viewModel.masterOrder.totalOrderCost}"
                 app:layout_constraintEnd_toEndOf="@+id/cardView10"
                 app:layout_constraintStart_toStartOf="@+id/cardView10"
                 app:layout_constraintTop_toBottomOf="@+id/cardView10"
@@ -261,7 +266,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="@string/cancel"
-                android:visibility="@{viewModel.order.isDelivered == true ? View.GONE : View.VISIBLE}"
+                android:visibility="@{viewModel.masterOrder.firstOrder.isDelivered == true ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="@+id/complaintBtn"
                 app:layout_constraintEnd_toStartOf="@id/complaintBtn"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView38"
@@ -277,7 +282,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="24dp"
                 android:text="@string/complaint"
-                app:layoutMarginStart="@{viewModel.order.isDelivered == true ? @dimen/_0dp : @dimen/_4dp}"
+                app:layoutMarginStart="@{viewModel.masterOrder.firstOrder.isDelivered == true ? @dimen/_0dp : @dimen/_4dp}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView38"
                 app:layout_constraintStart_toEndOf="@+id/cancelBtn"

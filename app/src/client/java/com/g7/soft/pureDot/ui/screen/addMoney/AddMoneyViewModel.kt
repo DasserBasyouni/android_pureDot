@@ -12,7 +12,7 @@ class AddMoneyViewModel : ViewModel() {
     val amount = MutableLiveData<String?>()
 
 
-    fun addMoney(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun addMoney(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
             WalletRepository(langTag).addMoney(

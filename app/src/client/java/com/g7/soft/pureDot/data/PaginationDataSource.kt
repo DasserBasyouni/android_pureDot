@@ -17,6 +17,7 @@ import com.g7.soft.pureDot.ui.screen.browse.BrowseFragment
 import com.g7.soft.pureDot.ui.screen.category.CategoryFragment
 import com.g7.soft.pureDot.ui.screen.favourite.FavouritesFragment
 import com.g7.soft.pureDot.ui.screen.filter.FilterFragment
+import com.g7.soft.pureDot.ui.screen.myOrders.MyOrdersFragment
 import com.g7.soft.pureDot.ui.screen.myWallet.MyWalletFragment
 import com.g7.soft.pureDot.ui.screen.seeAll.categories.AllCategoriesFragment
 import com.g7.soft.pureDot.ui.screen.seeAll.products.AllProductsFragment
@@ -54,9 +55,6 @@ class PaginationDataSource<T>(
             return LivePagedListBuilder(dataSourceFactory, config)
         }
     }
-
-
-    //private var pageNumber = 1
 
 
     override fun loadInitial(
@@ -112,7 +110,6 @@ class PaginationDataSource<T>(
         fragment: Fragment,
         pageKey: Int,
     ) = coroutineScope {
-        Log.e("Z_", "fetchData: ${params?.key} - pageNumber - ")
         val isInitialLoad = params == null
 
         when {
@@ -171,7 +168,7 @@ class PaginationDataSource<T>(
                 // todo use filter values with saving them locally maybe
                 ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getLatestProducts(
                     pageNumber = if (isInitialLoad) 1 else params?.key,
-                    itemPerPage = itemsPerPage,
+                    itemsPerPage = itemsPerPage,
                     shopId = null
                 ).observe(fragment, {
                     initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
@@ -193,7 +190,7 @@ class PaginationDataSource<T>(
                 // todo use filter values with saving them locally maybe
                 ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getLatestOffers(
                     pageNumber = if (isInitialLoad) 1 else params?.key,
-                    itemPerPage = itemsPerPage,
+                    itemsPerPage = itemsPerPage,
                     shopId = null
                 ).observe(fragment, {
                     initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
@@ -215,7 +212,7 @@ class PaginationDataSource<T>(
                 // todo use filter values with saving them locally maybe
                 ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getBestSelling(
                     pageNumber = if (isInitialLoad) 1 else params?.key,
-                    itemPerPage = itemsPerPage,
+                    itemsPerPage = itemsPerPage,
                     shopId = null
                 ).observe(fragment, {
                     initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
@@ -393,18 +390,38 @@ class PaginationDataSource<T>(
                     handleErrors(it.status, it.apiErrorStatus)
                 })
             }
-            fragment is AllReviewsFragment -> {
+            fragment is AllReviewsFragment && fragment.viewModel.isProduct -> {
                 val viewModel = fragment.viewModel
 
                 if (isInitialLoad)
                     viewModel.reviewsLcee.value!!.response.value =
                         NetworkRequestResponse.loading<List<*>>()
 
-                ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getReviews( // todo
+                ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getReviews(
                     pageNumber = if (isInitialLoad) 1 else params?.key,
                     itemsPerPage = itemsPerPage,
-                    itemId = viewModel.itemId,
-                    tokenId = viewModel.tokenId
+                    productId = viewModel.itemId,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.reviewsLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is AllReviewsFragment && !fragment.viewModel.isProduct -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.reviewsLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                ServiceRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getReviews(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    serviceId = viewModel.itemId,
                 ).observe(fragment, {
                     initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
                     callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
@@ -453,6 +470,27 @@ class PaginationDataSource<T>(
 
                     if (isInitialLoad)
                         viewModel.productsLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is MyOrdersFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.ordersLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                OrderRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getMyOrders(
+                    tokenId = viewModel.tokenId,
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.ordersLcee.value!!.response.value = it
 
                     handleErrors(it.status, it.apiErrorStatus)
                 })

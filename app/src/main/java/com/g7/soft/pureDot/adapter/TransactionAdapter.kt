@@ -3,19 +3,24 @@ package com.g7.soft.pureDot.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.databinding.ItemTransactionBinding
 import com.g7.soft.pureDot.model.TransactionModel
+import com.g7.soft.pureDot.repo.UserRepository
+import kotlinx.coroutines.launch
 
 
 class TransactionAdapter(private val fragment: Fragment) :
     PagedListAdapter<TransactionModel, TransactionAdapter.ViewHolder>(MyWalletDiffCallback()) {
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder = ViewHolder.from(viewGroup)
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder.from(viewGroup)
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position), fragment)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+        holder.bind(getItem(position), fragment)
 
 
     class ViewHolder private constructor(private val binding: ItemTransactionBinding) :
@@ -24,8 +29,13 @@ class TransactionAdapter(private val fragment: Fragment) :
             dataModel: TransactionModel?,
             fragment: Fragment,
         ) {
-            binding.dataModel = dataModel
-            binding.executePendingBindings()
+            fragment.lifecycleScope.launch { // optimize this and make it sigle time call
+                val currencySymbol = UserRepository("").getCurrencySymbol(fragment.requireContext())
+
+                binding.currency = currencySymbol
+                binding.dataModel = dataModel
+                binding.executePendingBindings()
+            }
         }
 
         companion object {

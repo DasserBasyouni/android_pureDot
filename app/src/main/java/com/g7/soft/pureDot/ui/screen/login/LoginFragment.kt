@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.Application
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ProjectConstant.Companion.ValidationError
 import com.g7.soft.pureDot.databinding.FragmentLoginBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 
@@ -46,7 +49,11 @@ class LoginFragment : Fragment() {
             viewModel.login(requireActivity().currentLocale.toLanguageTag())
                 .observeApiResponse(this, {
                     if (it?.tokenId != null) {
-                        ClientRepository("").saveUserData(requireContext(), it, viewModel.password.value)
+                        UserRepository("").saveUserData(
+                            requireContext(),
+                            it,
+                            viewModel.password.value
+                        )
 
                         findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                     } else
@@ -55,7 +62,28 @@ class LoginFragment : Fragment() {
                             R.string.something_went_wrong,
                             R.drawable.ic_secure_shield
                         )
-                })
+                }, validationObserve = {
+                    binding.emailOrPhoneNumberTil.error =
+                        if (it == ValidationError.EMPTY_PHONE_NUMBER_OR_EMAIL)
+                            getString(R.string.error_empty_phone_number_or_email) else null
+
+                    binding.passwordTil.error = when (it) {
+                        ValidationError.EMPTY_PASSWORD -> getString(R.string.error_empty_password)
+                        ValidationError.INVALID_PASSWORD -> getString(R.string.error_invalid_password)
+                        else -> null
+                    }
+                },
+                    apiStatusToObserve = arrayOf(ApiConstant.Status.NOT_VERIFIED),
+                    chosenApiStatusObserve = {
+                        val bundle = bundleOf(
+                            "isPasswordReset" to false,
+                            "emailOrPhoneNumber" to viewModel.emailOrPhoneNumber.value
+                        )
+                        findNavController().navigate(
+                            R.id.action_loginFragment_to_phoneVerificationFragment, bundle
+                        )
+
+                    })
         }
         binding.forgetPasswordTv.makeLinks(
             Pair(
@@ -66,7 +94,7 @@ class LoginFragment : Fragment() {
         )
         binding.registerTextTv.makeLinks(
             Pair(
-                getString(R.string.register),
+                getString(R.string.part_register),
                 View.OnClickListener {
                     findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
                 }), doChangeColor = false, isFakeBoldText = true

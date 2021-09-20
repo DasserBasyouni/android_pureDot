@@ -32,13 +32,10 @@
             android:textColor="@color/greyish_brown"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/materialsCg"
-            app:layout_constraintStart_toStartOf="@+id/appCompatTextView39"
-            app:layout_constraintTop_toBottomOf="@+id/sizesCg"
             tools:text="Color" />
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/materialsCg"
+            android:id="@+id/chipGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -48,8 +45,6 @@
             app:bindChipsData="@{dataModel}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/appCompatTextView41"
-            app:layout_constraintTop_toBottomOf="@+id/sizesCg"
             app:singleSelection="true"
             tools:layout_height="46dp" />
 

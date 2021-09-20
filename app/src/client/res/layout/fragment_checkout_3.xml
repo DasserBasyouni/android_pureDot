@@ -5,9 +5,15 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="currency"
+            type="String" />
+
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutViewModel" />
+            type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -67,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.selectedAddress.area}"
+                        android:text="@{viewModel.selectedAddress.areaName}"
                         android:textColor="@color/warm_grey"
                         android:textSize="14sp"
                         android:textStyle="normal"
@@ -201,6 +207,19 @@
                     android:layout_height="wrap_content"
                     android:padding="12dp">
 
+                    <include
+                        android:id="@+id/orderLcee"
+                        layout="@layout/layout_lcee"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:emptyText="@{@string/something_went_wrong}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:lceeModel="@{viewModel.orderLcee}" />
+
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatTextView40"
                         android:layout_width="0dp"
@@ -211,50 +230,79 @@
                         android:textColor="@color/warm_purple"
                         android:textSize="14sp"
                         android:textStyle="bold"
+                        android:visibility="@{viewModel.orderLcee.contentVisibility}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/phoneNumberTil"
+                        android:id="@+id/couponTil"
                         style="@style/ProjectTextInputLayout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:visibility="@{viewModel.orderLcee.contentVisibility}"
                         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView40"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView40"
                         app:layout_constraintTop_toBottomOf="@+id/appCompatTextView40">
 
                         <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                            style="@style/ProjectTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/coupon"
-                            android:imeOptions="actionNext"
-                            android:inputType="phone"
-                            android:text="@={viewModel.coupon}" />
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:text="@={viewModel.couponCode}" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textView5"
+                android:layout_width="16dp"
+                android:layout_height="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardView8" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/couponDiscountTv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:gravity="center"
+                android:lineSpacingExtra="4sp"
+                android:textAlignment="center"
+                android:textColor="@color/driverRed"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                android:visibility="@{viewModel.orderLcee.contentVisibility == View.VISIBLE &amp;&amp; viewModel.orderResponse.data.totalCouponDiscount != 0.0 ? View.VISIBLE : View.GONE}"
+                app:bindCurrency="@{currency}"
+                app:bindPrice="@{viewModel.orderResponse.data.totalCouponDiscount}"
+                app:layout_constraintEnd_toEndOf="@id/cardView8"
+                app:layout_constraintStart_toStartOf="@id/cardView8"
+                app:layout_constraintTop_toBottomOf="@id/textView5"
+                tools:text="500 SAR" />
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView38"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-black"
+                android:gravity="center"
                 android:lineSpacingExtra="4sp"
                 android:textAlignment="center"
                 android:textColor="@color/bluish"
                 android:textSize="18sp"
                 android:textStyle="normal"
-                app:bindCurrency="@{viewModel.currency}"
+                app:bindCurrency="@{currency}"
                 app:bindPrePriceText="@{@string/total_}"
-                app:bindPrice="@{viewModel.totalPrice}"
+                app:bindPrice="@{viewModel.orderResponse.data.totalOrderCost}"
                 app:layout_constraintEnd_toEndOf="@id/cardView8"
                 app:layout_constraintStart_toStartOf="@id/cardView8"
-                app:layout_constraintTop_toBottomOf="@id/cardView8"
+                app:layout_constraintTop_toBottomOf="@id/couponDiscountTv"
                 tools:text="Total: 500 SAR" />
 
             <com.google.android.material.button.MaterialButton
@@ -262,7 +310,7 @@ style="@style/ProjectTextInputEditText"
                 style="@style/ProjectPurpleFilledButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="24dp"
                 android:text="@string/checkout"
                 app:layout_constraintBottom_toBottomOf="parent"

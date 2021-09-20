@@ -17,7 +17,7 @@ import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentMyWalletBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.model.TransactionModel
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
@@ -34,14 +34,17 @@ class MyWalletFragment : Fragment() {
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_my_wallet, container, false)
 
         lifecycleScope.launch {
-            val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
-            viewModelFactory = MyWalletViewModelFactory(tokenId = tokenId)
-        }
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MyWalletViewModel::class.java)
+            val tokenId = UserRepository("").getTokenId(requireContext())
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
+            viewModelFactory = MyWalletViewModelFactory(tokenId = tokenId)
+
+            viewModel = ViewModelProvider(this@MyWalletFragment, viewModelFactory).get(MyWalletViewModel::class.java)
+
+            binding.currency = currencySymbol
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@MyWalletFragment
+        }
 
         return binding.root
     }
@@ -62,7 +65,7 @@ class MyWalletFragment : Fragment() {
         // fetch data
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
             viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
         }
 
@@ -86,7 +89,7 @@ class MyWalletFragment : Fragment() {
         binding.replacePointsBtn.setOnClickListener {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.replacePoints(
                     requireActivity().currentLocale.toLanguageTag(),

@@ -15,7 +15,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ContactsAdapter
 import com.g7.soft.pureDot.databinding.FragmentTransferMoneyBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -39,8 +39,8 @@ class TransferMoneyFragment : Fragment() {
             )
 
         lifecycleScope.launch {
-            val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+            val tokenId = UserRepository("").getTokenId(requireContext())
+            val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
             viewModelFactory = TransferMoneyViewModelFactory(
                 tokenId = tokenId,
@@ -50,6 +50,7 @@ class TransferMoneyFragment : Fragment() {
                     TransferMoneyViewModel::class.java
                 )
 
+            binding.currency = currencySymbol
             binding.viewModel = viewModel
             binding.lifecycleOwner = this@TransferMoneyFragment
         }
@@ -63,7 +64,7 @@ class TransferMoneyFragment : Fragment() {
         // fetch data
         lifecycleScope.launch {
             val tokenId =
-                ClientRepository("").getLocalUserData(requireContext()).tokenId
+                UserRepository("").getTokenId(requireContext())
             viewModel.getWalletData(requireActivity().currentLocale.toLanguageTag(), tokenId)
         }
 
@@ -93,7 +94,7 @@ class TransferMoneyFragment : Fragment() {
                 if (s.isNotEmpty()) {
                     lifecycleScope.launch {
                         val tokenId =
-                            ClientRepository("").getLocalUserData(requireContext()).tokenId
+                            UserRepository("").getTokenId(requireContext())
 
                         viewModel.suggestContact(
                             requireActivity().currentLocale.toLanguageTag(),
@@ -108,7 +109,7 @@ class TransferMoneyFragment : Fragment() {
         binding.transferBtn.setOnClickListener {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.transferMoney(
                     requireActivity().currentLocale.toLanguageTag(),

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
@@ -11,6 +12,8 @@ import com.g7.soft.pureDot.databinding.ItemOrderReviewInnerBinding
 import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.model.OrderModel
 import com.g7.soft.pureDot.model.ProductModel
+import com.g7.soft.pureDot.repo.UserRepository
+import kotlinx.coroutines.launch
 
 
 class OrderReviewInnerAdapter(
@@ -48,10 +51,15 @@ class OrderReviewInnerAdapter(
             fragment: Fragment,
             masterOrder: MasterOrderModel?,
         ) {
-            binding.masterOrder = masterOrder
-            binding.order = order
-            binding.dataModel = dataModel
-            binding.executePendingBindings()
+            fragment.lifecycleScope.launch { // optimize this and make it single time call
+                val currencySymbol = UserRepository("").getCurrencySymbol(fragment.requireContext())
+
+                binding.currency = currencySymbol
+                binding.masterOrder = masterOrder
+                binding.order = order
+                binding.dataModel = dataModel
+                binding.executePendingBindings()
+            }
 
             binding.refundIv.setOnClickListener {
                 val bundle = bundleOf(

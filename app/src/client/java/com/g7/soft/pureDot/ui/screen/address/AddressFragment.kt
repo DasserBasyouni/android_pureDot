@@ -8,13 +8,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -23,10 +27,17 @@ import androidx.navigation.fragment.findNavController
 import com.essam.simpleplacepicker.utils.FetchAddressIntentService
 import com.essam.simpleplacepicker.utils.SimplePlacePicker
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ProjectConstant
+import com.g7.soft.pureDot.constant.ProjectConstant.Companion.BUNDLE_ADDRESS
 import com.g7.soft.pureDot.databinding.FragmentAddressBinding
 import com.g7.soft.pureDot.ext.dpToPx
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.model.AddressModel
+import com.g7.soft.pureDot.model.CityModel
+import com.g7.soft.pureDot.model.CountryModel
+import com.g7.soft.pureDot.model.ZipCodeModel
+import com.g7.soft.pureDot.network.response.NetworkRequestResponse
+import com.g7.soft.pureDot.repo.UserRepository
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -68,7 +79,6 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentAddressBinding
     internal lateinit var viewModel: AddressViewModel
     private var googleMap: GoogleMap? = null
-    private lateinit var locationVM: LocationVM
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
 
@@ -83,9 +93,7 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
             false
         )
 
-
         viewModel = ViewModelProvider(this).get(AddressViewModel::class.java)
-        locationVM = ViewModelProvider(this).get(LocationVM::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -98,6 +106,39 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // fetch data
+        viewModel.getCounties(requireActivity().currentLocale.toLanguageTag())
+
+        viewModel.selectedCountryPosition.observe(viewLifecycleOwner, {
+            viewModel.getCities(requireActivity().currentLocale.toLanguageTag())
+        })
+        viewModel.selectedCityPosition.observe(viewLifecycleOwner, {
+            viewModel.getZipCodes(requireActivity().currentLocale.toLanguageTag())
+        })
+
+        // observables
+        viewModel.countiesResponse.observe(viewLifecycleOwner, {
+            setupSpinner(
+                binding.countriesSpinner,
+                viewModel.countiesResponse.value,
+                initialText = getString(R.string.select_country)
+            )
+        })
+        viewModel.citiesResponse.observe(viewLifecycleOwner, {
+            setupSpinner(
+                binding.citiesSpinner,
+                viewModel.citiesResponse.value,
+                initialText = getString(R.string.select_city)
+            )
+        })
+        viewModel.zipCodesResponse.observe(viewLifecycleOwner, {
+            setupSpinner(
+                binding.zipCodeSpinner,
+                viewModel.zipCodesResponse.value,
+                initialText = getString(R.string.select_zipcode)
+            )
+        })
+
         // setup click listener
         binding.navMenuIv.setOnClickListener {
             findNavController().popBackStack()
@@ -105,14 +146,33 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
         binding.saveBtn.setOnClickListener {
             lifecycleScope.launch {
                 val tokenId =
-                    ClientRepository("").getLocalUserData(requireContext()).tokenId
+                    UserRepository("").getTokenId(requireContext())
 
                 viewModel.addAddress(
                     langTag = requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId
+                    tokenId = tokenId,
+                    latitude = currentMarkerPosition.latitude,
+                    longitude = currentMarkerPosition.longitude
                 ).observeApiResponse(this@AddressFragment, {
-                    // todo send created address with the return id to the previous screen
-                    findNavController().popBackStack()
+                    requireActivity().supportFragmentManager.setFragmentResult(
+                        ProjectConstant.RESULTS_ADD_ADDRESS, bundleOf(
+                            BUNDLE_ADDRESS to AddressModel(
+                                id = it?.id,
+                                flat = viewModel.flat.value,
+                                floor = viewModel.floor.value,
+                                buildingNumber = viewModel.buildingNumber.value,
+                                streetName = viewModel.streetName.value,
+                                areaName = viewModel.areaName.value,
+                                isMainAddress = viewModel.isMainAddress.value,
+                                cityId = viewModel.selectedCity?.id,
+                                latitude = currentMarkerPosition.latitude?.toString(),
+                                longitude = currentMarkerPosition.longitude?.toString(),
+                                zipCodeId = viewModel.selectedZipCode?.id,
+                            )
+                        )
+                    )
+
+                    findNavController().navigateUp()
                 })
             }
         }
@@ -138,12 +198,12 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
                     0,
                     binding.bottomSheet.height + bottomSheetShiftDown
                 )
-                if (locationVM.location?.value != null) {
+                if (viewModel.location?.value != null) {
                     val cameraPosition = CameraPosition.Builder()
                         .target(
                             LatLng(
-                                locationVM.location!!.value!!.latitude,
-                                locationVM.location!!.value!!.longitude
+                                viewModel.location!!.value!!.latitude,
+                                viewModel.location!!.value!!.longitude
                             )
                         ) // Sets the center of the map to location user
                         .zoom(17f) // Sets the zoom
@@ -236,6 +296,64 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }//remove location updates in order not to continues check location unnecessarily
+
+
+    private fun <T> setupSpinner(
+        spinner: AppCompatSpinner,
+        networkResponse: NetworkRequestResponse<List<T>?>?,
+        initialText: String
+    ) {
+        var selectedPosition = 0
+
+        val spinnerData = when (networkResponse?.status) {
+            ProjectConstant.Companion.Status.IDLE -> {
+                spinner.isEnabled = false
+                arrayListOf(initialText)
+            }
+            ProjectConstant.Companion.Status.LOADING -> {
+                spinner.isEnabled = false
+                arrayListOf(getString(R.string.loading_))
+            }
+            ProjectConstant.Companion.Status.SUCCESS, ProjectConstant.Companion.Status.API_ERROR -> {
+                val modelsList = networkResponse.data
+                val dataList = when {
+                    modelsList?.firstOrNull() is CountryModel -> {
+                        selectedPosition = viewModel.selectedCountryPosition.value!!
+                        modelsList.mapNotNull { (it as CountryModel).name }.toTypedArray()
+                    }
+                    modelsList?.firstOrNull() is CityModel -> {
+                        selectedPosition = viewModel.selectedCityPosition.value!!
+                        modelsList.mapNotNull { (it as CityModel).name }.toTypedArray()
+
+                    }
+                    modelsList?.firstOrNull() is ZipCodeModel -> {
+                        selectedPosition = viewModel.selectedZipCodePosition.value!!
+                        modelsList.mapNotNull { (it as ZipCodeModel).code }.toTypedArray()
+                    }
+                    else -> null
+                }
+                spinner.isEnabled = true
+                arrayListOf(initialText).apply {
+                    this.addAll((dataList ?: arrayOf()))
+                }
+            }
+            else -> {
+                spinner.isEnabled = false
+                arrayListOf(getString(R.string.something_went_wrong))
+            }
+        }
+
+        ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            spinnerData
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+            spinner.setSelection(selectedPosition)
+        }
+    }
+
 
     /**
      * is triggered whenever we want to fetch device location
@@ -386,6 +504,7 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
 
     internal inner class AddressResultReceiver(handler: Handler?) : ResultReceiver(handler) {
         override fun onReceiveResult(resultCode: Int, resultData: Bundle) {
+            Log.e("Z_", "onReceiveResult")
             addressResultCode = resultCode
 
             // Display the address string

@@ -1,17 +1,22 @@
 package com.g7.soft.pureDot.data
 
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
+import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ProductRepository
+import com.g7.soft.pureDot.repo.OrderRepository
 import com.g7.soft.pureDot.repo.WalletRepository
-import com.g7.soft.pureDot.ui.screen.favourite.FavouritesFragment
+import com.g7.soft.pureDot.ui.screen.home.HomeFragment
+import com.g7.soft.pureDot.ui.screen.myOrders.MyOrdersFragment
 import com.g7.soft.pureDot.ui.screen.myWallet.MyWalletFragment
-import com.g7.soft.pureDot.ui.screen.seeAll.reviews.AllReviewsFragment
+import com.g7.soft.pureDot.util.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -43,16 +48,14 @@ class PaginationDataSource<T>(
     }
 
 
-    private var pageNumber = 1
-
-
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, T>
     ) {
+        Log.e("Z_", "loadInitial")
         fragment.lifecycleScope.launch {
             try {
-                fetchData(initCallback = callback, fragment = fragment, pageKey = ++pageNumber)
+                fetchData(initCallback = callback, fragment = fragment, pageKey = 2)
             } catch (exception: Exception) {
                 Timber.e("Failed to fetch data!")
             }
@@ -62,13 +65,14 @@ class PaginationDataSource<T>(
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
+        Log.e("Z_", "loadAfter")
         fragment.lifecycleScope.launch {
             try {
                 fetchData(
                     params = params,
                     callback = callback,
                     fragment = fragment,
-                    pageKey = ++pageNumber
+                    pageKey = params.key.inc()
                 )
             } catch (exception: Exception) {
                 Timber.e("Failed to fetch data!")
@@ -77,13 +81,14 @@ class PaginationDataSource<T>(
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
+        Log.e("Z_", "loadBefore")
         fragment.lifecycleScope.launch {
             try {
                 fetchData(
                     params = params,
                     callback = callback,
                     fragment = fragment,
-                    pageKey = --pageNumber
+                    pageKey = params.key.dec()
                 )
             } catch (exception: Exception) {
                 Timber.e("Failed to fetch data!")
@@ -101,71 +106,104 @@ class PaginationDataSource<T>(
     ) = coroutineScope {
         val isInitialLoad = params == null
 
-        if (params == null || params.key != 0)
-            when {
-                fragment is AllReviewsFragment -> {
-                    val viewModel = fragment.viewModel
+        when {
+            fragment is MyWalletFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.transactionLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                WalletRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getTransactions(
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                    tokenId = viewModel.tokenId
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
 
                     if (isInitialLoad)
-                        viewModel.reviewsLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
+                        viewModel.transactionLcee.value!!.response.value = it
 
-                    ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getItemReviews(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        itemId = viewModel.itemId,
-                        tokenId = viewModel.tokenId
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.reviewsLcee.value!!.response.value = it
-                    })
-                }
-                fragment is MyWalletFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.transactionLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    WalletRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getTransactions(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        tokenId = viewModel.tokenId
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.transactionLcee.value!!.response.value = it
-                    })
-                }
-                fragment is FavouritesFragment -> {
-                    val viewModel = fragment.viewModel
-
-                    if (isInitialLoad)
-                        viewModel.productsLcee.value!!.response.value =
-                            NetworkRequestResponse.loading<List<*>>()
-
-                    ProductRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getProducts(
-                        pageNumber = pageNumber,
-                        itemsPerPage = itemsPerPage,
-                        searchText = null,
-                        categoriesIds = null,
-                        fromPrice = null,
-                        toPrice = null,
-                        storesIds = null,
-                        minStars = null,
-                    ).observe(fragment, {
-                        initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, 0, pageKey)
-                        callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
-
-                        if (isInitialLoad)
-                            viewModel.productsLcee.value!!.response.value = it
-                    })
-                }
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
             }
+            fragment is MyOrdersFragment -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.ordersLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                OrderRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getMyOrders(
+                    tokenId = viewModel.tokenId,
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.ordersLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is HomeFragment && fragment.viewModel.areNewOrdersSelected.value == true -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.newOrdersLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                OrderRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getNewOrders(
+                    tokenId = viewModel.tokenId,
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.newOrdersLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+            fragment is HomeFragment && fragment.viewModel.areNewOrdersSelected.value == false -> {
+                val viewModel = fragment.viewModel
+
+                if (isInitialLoad)
+                    viewModel.pendingOrdersLcee.value!!.response.value =
+                        NetworkRequestResponse.loading<List<*>>()
+
+                OrderRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getPendingOrders(
+                    tokenId = viewModel.tokenId,
+                    pageNumber = if (isInitialLoad) 1 else params?.key,
+                    itemsPerPage = itemsPerPage,
+                ).observe(fragment, {
+                    initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
+                    callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
+
+                    if (isInitialLoad)
+                        viewModel.pendingOrdersLcee.value!!.response.value = it
+
+                    handleErrors(it.status, it.apiErrorStatus)
+                })
+            }
+        }
+    }
+
+
+    private fun handleErrors(
+        status: ProjectConstant.Companion.Status,
+        apiErrorStatus: ApiConstant.Status?
+    ) {
+        if (status == ProjectConstant.Companion.Status.API_ERROR)
+            ProjectDialogUtils.showSimpleMessage(
+                fragment.requireContext(),
+                ApiConstant.Status.getMessageResId(apiErrorStatus),
+                R.drawable.ic_secure_shield
+            )
     }
 }

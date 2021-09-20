@@ -8,11 +8,12 @@ import kotlinx.coroutines.Dispatchers
 
 class ChangeLanguageViewModel : ViewModel() {
 
-    fun changeLanguage(langTag: String, fcmToken: String) = liveData(Dispatchers.IO) {
+    fun changeLanguage(langTag: String, fcmToken: String, language: Int) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
             GeneralRepository(langTag).changeLanguage(
                 fcmToken = fcmToken,
+                language = language,
             )
         )
     }

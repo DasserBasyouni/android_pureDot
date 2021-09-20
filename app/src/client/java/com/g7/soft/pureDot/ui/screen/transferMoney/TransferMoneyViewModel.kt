@@ -23,7 +23,7 @@ class TransferMoneyViewModel(internal val tokenId: String?) : ViewModel() {
     val contactsResponse = MediatorLiveData<NetworkRequestResponse<MutableList<ContactModel>?>>()
     val contactsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
-    fun getWalletData(langTag: String, tokenId: String) {
+    fun getWalletData(langTag: String, tokenId: String?) {
         walletResponse.value = NetworkRequestResponse.loading()
         walletResponse.apply {
             this.addSource(WalletRepository(langTag).getWalletData(tokenId = tokenId)) {
@@ -32,7 +32,7 @@ class TransferMoneyViewModel(internal val tokenId: String?) : ViewModel() {
         }
     }
 
-    fun suggestContact(langTag: String, tokenId: String) {
+    fun suggestContact(langTag: String, tokenId: String?) {
         contactsResponse.value = NetworkRequestResponse.loading()
         contactsResponse.apply {
             this.addSource(
@@ -46,7 +46,7 @@ class TransferMoneyViewModel(internal val tokenId: String?) : ViewModel() {
         }
     }
 
-    fun transferMoney(langTag: String, tokenId: String) = liveData(Dispatchers.IO) {
+    fun transferMoney(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
             WalletRepository(langTag).transferMoney(

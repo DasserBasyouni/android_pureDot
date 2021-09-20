@@ -2,11 +2,14 @@ package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.databinding.ItemSliderOfferBinding
 import com.g7.soft.pureDot.model.SliderOfferModel
 
@@ -14,9 +17,11 @@ import com.g7.soft.pureDot.model.SliderOfferModel
 class OffersSliderAdapter(private val fragment: Fragment) :
     ListAdapter<SliderOfferModel, OffersSliderAdapter.ViewHolder>(OffersSliderDiffCallback()) {
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder = ViewHolder.from(viewGroup)
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder.from(viewGroup)
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position), fragment)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+        holder.bind(getItem(position), fragment)
 
 
     class ViewHolder private constructor(private val binding: ItemSliderOfferBinding) :
@@ -29,7 +34,14 @@ class OffersSliderAdapter(private val fragment: Fragment) :
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                fragment.findNavController() // todo
+                if (dataModel.redirectType == ApiConstant.RedirectType.OFFER.value || dataModel.redirectType == ApiConstant.RedirectType.PRODUCT.value) {
+                    val bundle = bundleOf("productId" to dataModel.redirectId)
+                    fragment.findNavController().navigate(R.id.productFragment, bundle)
+
+                } else if (dataModel.redirectType == ApiConstant.RedirectType.SHOP.value) {
+                    val bundle = bundleOf("shopId" to dataModel.redirectId)
+                    fragment.findNavController().navigate(R.id.storeFragment, bundle)
+                }
             }
         }
 

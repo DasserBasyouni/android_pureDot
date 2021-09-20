@@ -8,12 +8,16 @@
         <import type="android.view.View" />
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="isLastItem"
             type="Boolean" />
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.OrderModel" />
+            type="com.g7.soft.pureDot.model.MasterOrderModel" />
     </data>
 
 
@@ -68,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="3sp"
-                    android:text="@{@string/conc_order_(dataModel.number)}"
+                    android:text="@{@string/conc_order_(dataModel.firstOrder.number)}"
                     android:textColor="@color/greyish_brown"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -111,7 +115,7 @@
                         android:textColor="#ffffff"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        app:bindOrderStatus="@{dataModel.status}"
+                        app:bindOrderStatus="@{dataModel.firstOrder.status}"
                         tools:background="@color/bluish"
                         tools:drawableStart="@drawable/ic_order_placed_small"
                         tools:text="Order Placed" />
@@ -132,7 +136,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        app:bindApiImageUrl="@{dataModel.finalRouteImageUrl}"
+                        app:bindApiImageUrl="@{dataModel.firstOrder.finalRouteImageUrl}"
                         tools:src="@tools:sample/backgrounds/scenic" />
 
                 </androidx.cardview.widget.CardView>

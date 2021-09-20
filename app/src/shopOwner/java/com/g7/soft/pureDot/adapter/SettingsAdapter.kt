@@ -7,11 +7,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemSettingsBinding
-import com.g7.soft.pureDot.model.ClientDataModel
+import com.g7.soft.pureDot.model.UserDataModel
 import com.g7.soft.pureDot.util.ProjectDialogUtils
 
 
-class SettingsAdapter(private val fragment: Fragment, data: ClientDataModel?) :
+class SettingsAdapter(private val fragment: Fragment, data: UserDataModel?) :
     RecyclerView.Adapter<SettingsAdapter.ViewHolder>() {
 
     val list = listOf(

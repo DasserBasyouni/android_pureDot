@@ -19,6 +19,11 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/nav_root"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_phoneVerificationFragment"
+            app:destination="@id/phoneVerificationFragment"
+            app:popUpTo="@id/nav_root"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/startFragment"
@@ -71,6 +76,11 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_phoneVerificationFragment"
+            app:destination="@id/phoneVerificationFragment"
+            app:popUpTo="@id/nav_root"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/forgetPasswordFragment"
@@ -121,12 +131,7 @@
         android:id="@+id/filterFragment"
         android:name="com.g7.soft.pureDot.ui.screen.filter.FilterFragment"
         android:label="@string/filter"
-        tools:layout="@layout/fragment_filter">
-        <argument
-            android:name="currency"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>
+        tools:layout="@layout/fragment_filter" />
     <fragment
         android:id="@+id/allProductsFragment"
         android:name="com.g7.soft.pureDot.ui.screen.seeAll.products.AllProductsFragment"
@@ -159,6 +164,11 @@
         <argument
             android:name="store"
             app:argType="com.g7.soft.pureDot.model.StoreModel" />
+        <argument
+            android:name="shopId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/productFragment"
@@ -168,6 +178,11 @@
         <argument
             android:name="item"
             app:argType="com.g7.soft.pureDot.model.ProductModel" />
+        <argument
+            android:name="productId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/categoryFragment"
@@ -202,48 +217,46 @@
     </fragment>
     <fragment
         android:id="@+id/checkoutFragment"
-        android:name="com.g7.soft.pureDot.ui.screen.productCheckout.ProductCheckoutFragment"
+        android:name="com.g7.soft.pureDot.ui.screen.checkout.CheckoutFragment"
         android:label="@string/checkout"
         tools:layout="@layout/fragment_checkout">
-        <!--<action
-            android:id="@+id/action_checkoutFragment_to_trackOrderFragment"
-            app:destination="@id/trackOrderFragment"
-            app:popUpTo="@id/homeFragment" />-->
         <action
             android:id="@+id/action_checkoutFragment_to_orderFragment"
             app:destination="@id/orderFragment"
             app:popUpTo="@id/homeFragment" />
         <argument
-            android:name="service"
-            android:defaultValue="@null"
-            app:argType="com.g7.soft.pureDot.model.ServiceModel"
+            android:name="masterOrder"
+            app:argType="com.g7.soft.pureDot.model.MasterOrderModel"
             app:nullable="true" />
         <argument
-            android:name="selectedVariations"
+            android:name="productApiShopOrder"
             android:defaultValue="@null"
-            app:argType="integer[]"
+            app:argType="com.g7.soft.pureDot.model.ApiShopOrderModel[]"
             app:nullable="true" />
         <argument
-            android:name="servantsNumber"
+            android:name="serviceBranchId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="serviceVariations"
+            android:defaultValue="@null"
+            app:argType="com.g7.soft.pureDot.model.ServiceVariationValueModel[]"
+            app:nullable="true" />
+        <argument
+            android:name="serviceId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="serviceShopId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="serviceQuantity"
             android:defaultValue="0"
             app:argType="integer" />
-        <argument
-            android:name="time"
-            android:defaultValue="0L"
-            app:argType="long" />
-        <argument
-            android:name="date"
-            android:defaultValue="0L"
-            app:argType="long" />
-        <argument
-            android:name="quantity"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
-            android:name="storesProductsCartDetails"
-            android:defaultValue="@null"
-            app:argType="com.g7.soft.pureDot.model.StoreProductsCartDetailsModel[]"
-            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/trackOrderFragment"
@@ -288,7 +301,14 @@
         tools:layout="@layout/fragment_order">
         <argument
             android:name="masterOrder"
-            app:argType="com.g7.soft.pureDot.model.MasterOrderModel" />
+            android:defaultValue="@null"
+            app:argType="com.g7.soft.pureDot.model.MasterOrderModel"
+            app:nullable="true" />
+        <argument
+            android:name="masterOrderId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/notificationFragment"
@@ -307,7 +327,7 @@
         tools:layout="@layout/fragment_profile_edit">
         <argument
             android:name="userData"
-            app:argType="com.g7.soft.pureDot.model.ClientDataModel" />
+            app:argType="com.g7.soft.pureDot.model.UserDataModel" />
         <argument
             android:name="signUpFields"
             app:argType="com.g7.soft.pureDot.model.SignUpFieldsModel"

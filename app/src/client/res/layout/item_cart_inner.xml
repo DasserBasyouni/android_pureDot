@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="shop"
+            type="com.g7.soft.pureDot.model.StoreModel" />
+
+        <variable
             name="dataModel"
             type="com.g7.soft.pureDot.model.ProductModel" />
     </data>
@@ -46,16 +50,21 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView31"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="3sp"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@{dataModel.name}"
                 android:textColor="@color/warm_grey"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/appCompatTextView29"
+                app:layout_constraintEnd_toStartOf="@+id/cartControlLayout"
                 app:layout_constraintStart_toEndOf="@+id/materialCardView"
                 app:layout_constraintTop_toTopOf="@+id/materialCardView"
                 tools:text="Item Name" />
@@ -81,27 +90,31 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="3sp"
+                android:text="@string/sort_by"
                 android:textColor="@color/greyish_brown"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/materialCardView"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView31"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView31"
-                android:text="@string/sort_by" />
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView31" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView30"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif"
-                android:text="@{dataModel.shop.name}"
                 android:lineSpacingExtra="3sp"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@{shop.name}"
                 android:textAllCaps="true"
                 android:textColor="#ff0909"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView29"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView31"
                 app:layout_constraintStart_toEndOf="@+id/appCompatTextView29"
                 app:layout_constraintTop_toTopOf="@+id/appCompatTextView29"
                 tools:text="Beetnuts" />
@@ -111,11 +124,11 @@
                 layout="@layout/view_item_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="@{dataModel.quantityInCart == null ? View.GONE : dataModel.quantityInCart > 0 ? View.VISIBLE : View.GONE}"
-                app:layout_constraintBottom_toTopOf="@+id/appCompatTextView29"
+                android:visibility="@{dataModel.quantity == null ? View.GONE : dataModel.quantity > 0 ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appCompatTextView31"
-                app:quantityInCart="@{dataModel.quantityInCart}" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:quantityInCart="@{dataModel.quantity}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

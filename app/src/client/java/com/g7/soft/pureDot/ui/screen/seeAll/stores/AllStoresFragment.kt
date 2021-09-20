@@ -12,7 +12,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import com.g7.soft.pureDot.R
@@ -22,9 +21,7 @@ import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentAllStoresBinding
 import com.g7.soft.pureDot.model.StoreModel
-import com.g7.soft.pureDot.repo.ClientRepository
 import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
-import kotlinx.coroutines.launch
 
 class AllStoresFragment : Fragment() {
     private lateinit var binding: FragmentAllStoresBinding
@@ -79,13 +76,7 @@ class AllStoresFragment : Fragment() {
                 } else false
             }
         binding.root.findViewById<ImageView>(R.id.filterIv).setOnClickListener {
-            lifecycleScope.launch {
-                val currencySymbol =
-                    ClientRepository("").getLocalUserData(requireContext()).currencySymbol
-
-                val bundle = bundleOf("currency" to currencySymbol)
-                findNavController().navigate(R.id.filterFragment, bundle)
-            }
+            findNavController().navigate(R.id.filterFragment)
         }
         binding.root.findViewById<ImageView>(R.id.searchIv).setOnClickListener {
             navigateToAllProductsSearch()

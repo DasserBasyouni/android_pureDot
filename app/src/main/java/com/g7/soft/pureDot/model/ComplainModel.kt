@@ -13,4 +13,5 @@ data class ComplainModel(
     @Json(name = "dateTime") val dateTime: Long?,
     @Json(name = "description") val description: String?,
     @Json(name = "number") val number: Int?,
+    @Json(name = "review") var review: ReviewModel?,
 ): Parcelable

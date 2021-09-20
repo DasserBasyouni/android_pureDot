@@ -11,13 +11,13 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemProfileBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.ext.toFormattedDateTime
-import com.g7.soft.pureDot.model.ClientDataModel
 import com.g7.soft.pureDot.model.SignUpFieldsModel
+import com.g7.soft.pureDot.model.UserDataModel
 
 
 class ProfileAdapter(
     private val fragment: Fragment,
-    private val userData: ClientDataModel?,
+    private val userData: UserDataModel?,
     private val signUpFields: SignUpFieldsModel?
 ) :
     RecyclerView.Adapter<ProfileAdapter.ViewHolder>() {
@@ -38,7 +38,7 @@ class ProfileAdapter(
 
     private fun getDataList(context: Context, position: Int): Pair<Int, String?> =
         if (signUpFields?.haveZipCode == true) listOf(
-            Pair(R.string.full_name, userData?.fullName),
+            Pair(R.string.full_name, userData?.name),
             Pair(R.string.email, userData?.email),
             Pair(R.string.phone_number, userData?.phoneNumber),
             Pair(
@@ -55,7 +55,7 @@ class ProfileAdapter(
             Pair(R.string.zip_code, userData?.zipCode?.code),
             Pair(R.string.password, context.getString(R.string.symbol_password)),
         )[position] else listOf(
-            Pair(R.string.full_name, userData?.fullName),
+            Pair(R.string.full_name, userData?.name),
             Pair(R.string.email, userData?.email),
             Pair(R.string.phone_number, userData?.phoneNumber),
             Pair(

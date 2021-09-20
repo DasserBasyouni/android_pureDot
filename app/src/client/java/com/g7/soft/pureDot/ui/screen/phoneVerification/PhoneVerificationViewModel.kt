@@ -6,20 +6,24 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.lifecycle.*
 import com.g7.soft.pureDot.constant.ProjectConstant
-import com.g7.soft.pureDot.model.ClientDataModel
+import com.g7.soft.pureDot.model.UserDataModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.repo.ClientRepository
+import com.g7.soft.pureDot.repo.UserRepository
+import com.g7.soft.pureDot.util.ValidationUtils
 import com.g7.soft.pureDot.util.combine
 import kotlinx.coroutines.Dispatchers
 
-class PhoneVerificationViewModel(val isPasswordReset: Boolean, private val emailOrPhoneNumber: String?) :
+class PhoneVerificationViewModel(
+    val isPasswordReset: Boolean,
+    private val emailOrPhoneNumber: String?
+) :
     ViewModel() {
 
     val verificationCode = MutableLiveData<String?>()
     val password = MutableLiveData<String?>()
 
-    val verificationResponse = MediatorLiveData<NetworkRequestResponse<ClientDataModel?>>()
+    val verificationResponse = MediatorLiveData<NetworkRequestResponse<UserDataModel?>>()
     val verificationLcee = MediatorLiveData<LceeModel>().apply {
         this.value = LceeModel()
     }
@@ -82,15 +86,25 @@ class PhoneVerificationViewModel(val isPasswordReset: Boolean, private val email
 
     fun verify(langTag: String) {
         verificationResponse.value = NetworkRequestResponse.loading()
+
+        // validate inputs
+        ValidationUtils().setVerificationCode(verificationCode.value)
+            .getError()?.let {
+                verificationResponse.value =
+                    NetworkRequestResponse.invalidInputData(validationError = it)
+                return
+            }
+
         verificationResponse.apply {
             this.addSource(
-                ClientRepository(langTag).verify(
+                UserRepository(langTag).verify(
                     emailOrPhoneNumber = emailOrPhoneNumber,
                     verificationCode = verificationCode.value
                 )
             ) {
                 if (it.status == ProjectConstant.Companion.Status.SUCCESS)
                     timer.cancel()
+
                 verificationResponse.value = it
             }
         }
@@ -99,7 +113,7 @@ class PhoneVerificationViewModel(val isPasswordReset: Boolean, private val email
     fun resendCode(langTag: String) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
-            com.g7.soft.pureDot.repo.ClientRepository(langTag).resendVerification(
+            com.g7.soft.pureDot.repo.UserRepository(langTag).resendVerification(
                 emailOrPhoneNumber = emailOrPhoneNumber
             )
         )
@@ -108,7 +122,7 @@ class PhoneVerificationViewModel(val isPasswordReset: Boolean, private val email
     fun changePassword(langTag: String) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
-            com.g7.soft.pureDot.repo.ClientRepository(langTag).resetPassword(
+            UserRepository(langTag).resetPassword(
                 emailOrPhoneNumber = emailOrPhoneNumber,
                 password = password.value
             )
