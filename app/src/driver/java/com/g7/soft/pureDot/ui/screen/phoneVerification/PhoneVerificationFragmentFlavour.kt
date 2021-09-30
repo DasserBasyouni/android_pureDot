@@ -1,7 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.phoneVerification
 
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 
 class PhoneVerificationFragmentFlavour {
     fun signUpSuccessfulAction(fragment: PhoneVerificationFragment) {
@@ -17,8 +17,8 @@ class PhoneVerificationFragmentFlavour {
             // todo show invalid verification or something went wrong, both are valid cases, make sure of that!
             ProjectDialogUtils.showSimpleMessage(
                 fragment.requireContext(),
-                R.string.something_went_wrong,
-                R.drawable.ic_secure_shield
+                messageResId = R.string.something_went_wrong,
+                drawableResId = R.drawable.ic_secure_shield
             )
         }
     }

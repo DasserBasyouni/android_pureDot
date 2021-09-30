@@ -15,7 +15,7 @@ import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentNotificationBinding
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 

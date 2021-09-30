@@ -22,8 +22,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
         android:background="?selectableItemBackground"
+        android:paddingVertical="8dp"
         tools:layout_gravity="center">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -42,22 +42,25 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/deleteIv"
-            android:padding="16dp"
             android:layout_width="14dp"
             android:layout_height="14dp"
+            android:padding="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView29"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/appCompatTextView29"
             app:srcCompat="@color/warm_grey" />
 
         <include
-            android:id="@+id/include"
+            android:id="@+id/fromLayout"
             layout="@layout/view_date_picker"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:hour="@{dataModel.fromHour}"
+            app:isAm="@{dataModel.fromIsAm}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/appCompatTextView29"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView29" />
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView29"
+            app:minute="@{dataModel.fromMin}" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appCompatTextView30"
@@ -71,15 +74,20 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/include" />
+            app:layout_constraintTop_toBottomOf="@+id/fromLayout" />
 
         <include
+            android:id="@+id/toLayout"
             layout="@layout/view_date_picker"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:hour="@{dataModel.toHour}"
+            app:isAm="@{dataModel.toIsAm}"
+            app:minute="@{dataModel.toMin}"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView30"
             app:layout_constraintStart_toStartOf="@+id/appCompatTextView30"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView30" />
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView30"
+          />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

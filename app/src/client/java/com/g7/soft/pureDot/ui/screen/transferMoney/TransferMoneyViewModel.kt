@@ -9,6 +9,7 @@ import com.g7.soft.pureDot.model.WalletDataModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.WalletRepository
+import com.g7.soft.pureDot.utils.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 
 class TransferMoneyViewModel(internal val tokenId: String?) : ViewModel() {
@@ -48,6 +49,16 @@ class TransferMoneyViewModel(internal val tokenId: String?) : ViewModel() {
 
     fun transferMoney(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
+
+        // validate inputs
+        ValidationUtils()
+            .setPhoneNumberOrEmail(emailOrPhoneNumber.value)
+            .setAmount(amount.value)
+            .getError()?.let {
+                emit(NetworkRequestResponse.invalidInputData(validationError = it))
+                return@liveData
+            }
+
         emitSource(
             WalletRepository(langTag).transferMoney(
                 tokenId = tokenId,

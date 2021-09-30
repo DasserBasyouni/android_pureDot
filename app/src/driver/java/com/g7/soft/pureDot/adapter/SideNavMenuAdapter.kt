@@ -9,7 +9,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemSideNavItemBinding
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.screen.home.HomeFragment
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import kotlinx.coroutines.launch
 
 

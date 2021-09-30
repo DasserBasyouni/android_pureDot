@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.constant.ProjectConstant
+import com.g7.soft.pureDot.constant.ProjectConstant.Companion.ValidationError
 import com.g7.soft.pureDot.databinding.FragmentChangePasswordBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
@@ -57,19 +57,19 @@ class ChangePasswordFragment : Fragment() {
                     findNavController().popBackStack()
                 }, validationObserve = {
                     binding.currentPasswordTil.error = when (it) {
-                        ProjectConstant.Companion.ValidationError.EMPTY_PASSWORD -> getString(R.string.error_empty_password)
-                        ProjectConstant.Companion.ValidationError.INVALID_PASSWORD -> getString(R.string.error_invalid_password)
+                        ValidationError.EMPTY_PASSWORD -> getString(R.string.error_empty_password)
+                        ValidationError.INVALID_PASSWORD -> getString(R.string.error_invalid_password)
                         else -> null
                     }
 
                     binding.newPasswordTil1.error = when (it) {
-                        ProjectConstant.Companion.ValidationError.EMPTY_PASSWORD -> getString(R.string.error_empty_password)
-                        ProjectConstant.Companion.ValidationError.INVALID_PASSWORD -> getString(R.string.error_invalid_password)
+                        ValidationError.EMPTY_PASSWORD -> getString(R.string.error_empty_password)
+                        ValidationError.INVALID_PASSWORD -> getString(R.string.error_invalid_password)
                         else -> null
                     }
 
                     binding.newPasswordTil2.error =
-                        if (it == ProjectConstant.Companion.ValidationError.NON_IDENTICAL_PASSWORD)
+                        if (it == ValidationError.NON_IDENTICAL_PASSWORD)
                             getString(R.string.error_non_identical_passwords) else null
                 })
             }

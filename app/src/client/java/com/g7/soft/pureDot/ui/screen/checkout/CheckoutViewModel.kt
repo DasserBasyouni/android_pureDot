@@ -4,11 +4,13 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.model.*
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.CartRepository
 import com.g7.soft.pureDot.repo.OrderRepository
+import com.g7.soft.pureDot.repo.PaymentRepository
 import com.g7.soft.pureDot.repo.UserRepository
 import com.kofigyan.stateprogressbar.StateProgressBar
 import kotlinx.coroutines.Dispatchers
@@ -100,15 +102,15 @@ class CheckoutViewModel(
     val orderLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }.also {
         it.value?.response?.value = NetworkRequestResponse.success(data = masterOrder)
     }
-    val orderResponse = MediatorLiveData<NetworkRequestResponse<MasterOrderModel>>().also {
+    val masterOrderResponse = MediatorLiveData<NetworkRequestResponse<MasterOrderModel>>().also {
         it.value = NetworkRequestResponse.success(data = masterOrder)
     }
 
 
     fun checkCartItems(langTag: String, tokenId: String?) {
-        orderResponse.value = NetworkRequestResponse.loading()
+        masterOrderResponse.value = NetworkRequestResponse.loading()
 
-        orderResponse.apply {
+        masterOrderResponse.apply {
             addSource(
                 OrderRepository(langTag).checkCartItems(
                     tokenId = tokenId,
@@ -116,7 +118,12 @@ class CheckoutViewModel(
                     addressId = selectedAddress?.id,
                     shippingId = selectedShippingMethodId.value,
                     couponCode = couponCode.value,
-                    servantsCount = orderResponse.value?.data?.servants,
+                    servantsCount = masterOrderResponse.value?.data?.servants,
+                    paymentMethod = ApiConstant.PaymentMethod.fromBooleans(
+                        isMasterCardChecked = isMasterCardChecked.value,
+                        isStcPayChecked = isStcPayChecked.value,
+                        isCashOnDelivery = isCashOnDelivery.value,
+                    )?.value,
                     apiShopOrders = if (isProductCheckout)
                         productApiShopOrder
                     else
@@ -139,7 +146,7 @@ class CheckoutViewModel(
                         ))
                 )
             ) {
-                orderResponse.value = it
+                masterOrderResponse.value = it
             }
         }
     }
@@ -157,10 +164,22 @@ class CheckoutViewModel(
         }
     }*/
 
+
     // checkout 3
     val isCashOnDelivery = MutableLiveData<Boolean?>().apply { this.value = true }
     val isStcPayChecked = MutableLiveData<Boolean?>().apply { this.value = true }
     val isMasterCardChecked = MutableLiveData<Boolean?>().apply { this.value = false }
+
+    val masterCardNameOnCard = MutableLiveData<String?>()
+    val masterCardNumber = MutableLiveData<String?>()
+    val masterCardSecurityCode = MutableLiveData<String?>()
+    val masterCardExpiryMonth = MutableLiveData<String?>()
+    val masterCardExpiryYear = MutableLiveData<String?>()
+
+    val stcMobileNumber = MutableLiveData<String?>()
+    val stcMobileOtp = MutableLiveData<String?>()
+
+    val stcPayAuthResponse = MediatorLiveData<NetworkRequestResponse<StcPayAuthModel>>()
 
 
     // checkout 4
@@ -188,7 +207,12 @@ class CheckoutViewModel(
                     email = email.value,
                     phoneNumber = phoneNumber.value,
                     serviceId = serviceId,
-                    servantsCount = orderResponse.value?.data?.servants,
+                    servantsCount = masterOrderResponse.value?.data?.servants,
+                    paymentMethod = ApiConstant.PaymentMethod.fromBooleans(
+                        isMasterCardChecked = isMasterCardChecked.value,
+                        isStcPayChecked = isStcPayChecked.value,
+                        isCashOnDelivery = isCashOnDelivery.value,
+                    )?.value,
                     apiShopOrders = if (isProductCheckout) productApiShopOrder
                     else listOf(ApiShopOrderModel(
                         shopId = serviceShopId,
@@ -211,6 +235,50 @@ class CheckoutViewModel(
             )
         }
 
+    fun authenticateStcPay(langTag: String, orderDescription: String?) {
+        stcPayAuthResponse.value = NetworkRequestResponse.loading()
+
+        stcPayAuthResponse.apply {
+            addSource(
+                PaymentRepository(langTag).authenticateStcPay(
+                    mobile = stcMobileNumber.value,
+                    masterOrderNumber = masterOrderResponse.value?.data?.number,
+                    masterOrderId = masterOrderResponse.value?.data?.id,
+                    orderAmount = masterOrderResponse.value?.data?.totalOrderCost,
+                    description = orderDescription
+                )
+            ) {
+                stcPayAuthResponse.value = it
+            }
+        }
+    }
+
+    fun confirmStcPay(langTag: String) = liveData(Dispatchers.IO) {
+        masterOrderResponse.value = NetworkRequestResponse.loading()
+
+        emitSource(
+            PaymentRepository(langTag).confirmStcPay(
+                stcPayPmtReference = stcPayAuthResponse.value?.data?.stcPayPmtReference,
+                otpReference = stcPayAuthResponse.value?.data?.otpReference,
+                otpValue = stcMobileOtp.value,
+                payType = ApiConstant.PaymentType.ORDER.value
+            )
+        )
+    }
+
+    fun createMasterCardSession(langTag: String, orderDescription: String?) =
+        liveData(Dispatchers.IO) {
+            emit(NetworkRequestResponse.loading())
+
+            emitSource(
+                PaymentRepository(langTag).createMasterCardSession(
+                    masterOrderId = masterOrderResponse.value?.data?.id,
+                    orderAmount = masterOrderResponse.value?.data?.totalOrderCost,
+                    description = orderDescription
+                )
+            )
+        }
+
     fun checkoutIsPaid(langTag: String, tokenId: String?, isPaid: Boolean) =
         liveData(Dispatchers.IO) {
             emit(NetworkRequestResponse.loading())
@@ -218,7 +286,7 @@ class CheckoutViewModel(
             emitSource(
                 CartRepository(langTag).checkoutIsPaid(
                     tokenId = tokenId,
-                    orderId = orderResponse.value?.data?.id,
+                    masterOrderId = masterOrderResponse.value?.data?.id,
                     isPaid = isPaid,
                 )
             )

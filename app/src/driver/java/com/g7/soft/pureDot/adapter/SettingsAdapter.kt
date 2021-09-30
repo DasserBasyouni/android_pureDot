@@ -9,7 +9,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemSettingsBinding
 
 
-class SettingsAdapter(private val fragment: Fragment) :
+class SettingsAdapter(private val fragment: Fragment, private val isGuestAccount: Boolean = false) :
     RecyclerView.Adapter<SettingsAdapter.ViewHolder>() {
 
     val list = listOf(
@@ -27,7 +27,7 @@ class SettingsAdapter(private val fragment: Fragment) :
         ViewHolder.from(viewGroup)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(list[position], fragment)
+        holder.bind(list[position], fragment, isGuestAccount)
 
     override fun getItemCount(): Int = list.size
 
@@ -36,6 +36,7 @@ class SettingsAdapter(private val fragment: Fragment) :
         fun bind(
             dataModel: Pair<Int, Int>,
             fragment: Fragment,
+            isGuestAccount: Boolean,
         ) {
             binding.iconResId = dataModel.first
             binding.settingsName = binding.root.context.getString(dataModel.second)

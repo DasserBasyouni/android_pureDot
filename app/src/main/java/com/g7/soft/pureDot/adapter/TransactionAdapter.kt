@@ -29,7 +29,7 @@ class TransactionAdapter(private val fragment: Fragment) :
             dataModel: TransactionModel?,
             fragment: Fragment,
         ) {
-            fragment.lifecycleScope.launch { // optimize this and make it sigle time call
+            fragment.lifecycleScope.launch { // optimize this and make it single time call
                 val currencySymbol = UserRepository("").getCurrencySymbol(fragment.requireContext())
 
                 binding.currency = currencySymbol

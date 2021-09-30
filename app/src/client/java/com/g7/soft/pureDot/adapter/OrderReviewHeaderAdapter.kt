@@ -17,7 +17,7 @@ import com.g7.soft.pureDot.model.OrderReviewModel
 import com.g7.soft.pureDot.model.ProductModel
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.screen.order.OrderFragment
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.main.dialog_rating.*
 import kotlinx.coroutines.launch
@@ -124,8 +124,8 @@ class OrderReviewHeaderAdapter(
                         }
                     else {
                         val bundle = bundleOf(
-                            "order" to dataModel,
-                            "masterOrderNumber" to masterOrder?.number
+                            "orderId" to dataModel?.id,
+                            "orderNumber" to dataModel?.number
                         )
                         fragment.findNavController().navigate(R.id.trackOrderFragment, bundle)
                     }

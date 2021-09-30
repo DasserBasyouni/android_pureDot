@@ -2,7 +2,6 @@ package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -11,12 +10,18 @@ import com.g7.soft.pureDot.databinding.ItemSettingsBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.screen.myAccount.MyAccountFragment
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
-class SettingsAdapter(private val fragment: MyAccountFragment) :
+class SettingsAdapter(
+    private val fragment: MyAccountFragment,
+    private val isGuestAccount: Boolean
+) :
     RecyclerView.Adapter<SettingsAdapter.ViewHolder>() {
 
     val list = listOf(
@@ -29,7 +34,7 @@ class SettingsAdapter(private val fragment: MyAccountFragment) :
         Pair(R.drawable.ic_about_us, R.string.about_us),
         Pair(R.drawable.ic_privacy_policy, R.string.privacy_policy),
         Pair(R.drawable.ic_settings_terms_and_conditions, R.string.terms_and_conditions),
-        Pair(R.drawable.ic_logout, R.string.logout),
+        Pair(R.drawable.ic_logout, if (isGuestAccount) R.string.log_in else R.string.logout),
     )
 
 
@@ -37,7 +42,7 @@ class SettingsAdapter(private val fragment: MyAccountFragment) :
         ViewHolder.from(viewGroup)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(list[position], fragment)
+        holder.bind(list[position], fragment, isGuestAccount)
 
     override fun getItemCount(): Int = list.size
 
@@ -46,31 +51,31 @@ class SettingsAdapter(private val fragment: MyAccountFragment) :
         fun bind(
             dataModel: Pair<Int, Int>,
             fragment: MyAccountFragment,
+            isGuestAccount: Boolean,
         ) {
             binding.iconResId = dataModel.first
             binding.settingsName = binding.root.context.getString(dataModel.second)
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                fragment.lifecycleScope.launch {
-                    val isGuestAccount =
-                        UserRepository("").getIsGuestAccount(fragment.requireContext())
-
-                    when (adapterPosition) {
-                        0 -> fragment.findNavController().navigate(R.id.changeLanguageFragment)
-                        1 -> fragment.findNavController()
-                            .navigate(if (isGuestAccount) R.id.loginFragment else R.id.myOrdersFragment)
-                        2 -> fragment.findNavController()
-                            .navigate(if (isGuestAccount) R.id.loginFragment else R.id.myWalletFragment)
-                        3 -> fragment.findNavController()
-                            .navigate(if (isGuestAccount) R.id.loginFragment else R.id.favouritesFragment)
-                        4 -> fragment.findNavController()
-                            .navigate(if (isGuestAccount) R.id.loginFragment else R.id.customerServiceFragment)
-                        5 -> fragment.findNavController().navigate(R.id.contactUsFragment)
-                        6 -> fragment.findNavController().navigate(R.id.aboutUsFragment)
-                        7 -> fragment.findNavController().navigate(R.id.policyFragment)
-                        8 -> fragment.findNavController().navigate(R.id.termsFragment)
-                        9 -> {
+                when (adapterPosition) {
+                    0 -> fragment.findNavController().navigate(R.id.changeLanguageFragment)
+                    1 -> fragment.findNavController()
+                        .navigate(if (isGuestAccount) R.id.loginFragment else R.id.myOrdersFragment)
+                    2 -> fragment.findNavController()
+                        .navigate(if (isGuestAccount) R.id.loginFragment else R.id.myWalletFragment)
+                    3 -> fragment.findNavController()
+                        .navigate(if (isGuestAccount) R.id.loginFragment else R.id.favouritesFragment)
+                    4 -> fragment.findNavController()
+                        .navigate(if (isGuestAccount) R.id.loginFragment else R.id.customerServiceFragment)
+                    5 -> fragment.findNavController().navigate(R.id.contactUsFragment)
+                    6 -> fragment.findNavController().navigate(R.id.aboutUsFragment)
+                    7 -> fragment.findNavController().navigate(R.id.policyFragment)
+                    8 -> fragment.findNavController().navigate(R.id.termsFragment)
+                    9 -> {
+                        if (isGuestAccount)
+                            clearUserDataThenNavigate(fragment)
+                        else
                             ProjectDialogUtils.showAskingDialog(
                                 fragment.requireContext(),
                                 R.drawable.ic_popup_logout,
@@ -78,22 +83,29 @@ class SettingsAdapter(private val fragment: MyAccountFragment) :
                                 R.string.question_sure_logout,
                                 positiveRunnable = {
                                     fragment.viewModel.viewModelScope.launch {
-                                        val isGuestAccount =
-                                            UserRepository("").getIsGuestAccount(fragment.requireContext())
+                                        FirebaseMessaging.getInstance().token.addOnCompleteListener(
+                                            OnCompleteListener { task ->
+                                                if (!task.isSuccessful) {
+                                                    Timber.w("Fetching FCM registration token failed")
+                                                    Timber.w(task.exception)
+                                                    return@OnCompleteListener
+                                                }
 
-                                        if (isGuestAccount)
-                                            clearUserDataThenNavigate(fragment)
-                                        else
-                                            fragment.viewModel.logout(fragment.requireActivity().currentLocale.toLanguageTag())
-                                                .observeApiResponse(fragment, {
+                                                val fcmToken = task.result
+
+                                                fragment.viewModel.logout(
+                                                    fragment.requireActivity().currentLocale.toLanguageTag(),
+                                                    fcmToken
+                                                ).observeApiResponse(fragment, {
                                                     clearUserDataThenNavigate(fragment)
                                                 })
+                                            })
                                     }
                                 }
                             )
-                        }
                     }
                 }
+
             }
         }
 

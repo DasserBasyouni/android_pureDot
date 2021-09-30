@@ -15,16 +15,34 @@ import com.g7.soft.pureDot.adapter.TimeLineAdapter
 import com.g7.soft.pureDot.databinding.FragmentTrackOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.ui.screen.myOrders.MyOrdersFragment
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
 class TrackOrderFragment : Fragment() {
 
+    companion object {
+        var refreshData: ((String?) -> Unit)? = null
+        var isRunning = false
+    }
+
+
     private lateinit var binding: FragmentTrackOrderBinding
     private lateinit var viewModelFactory: TrackOrderViewModelFactory
     internal lateinit var viewModel: TrackOrderViewModel
     private val args: TrackOrderFragmentArgs by navArgs()
+
+
+    override fun onStart() {
+        super.onStart()
+        MyOrdersFragment.isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        MyOrdersFragment.isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,8 +52,8 @@ class TrackOrderFragment : Fragment() {
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_track_order, container, false)
 
         viewModelFactory = TrackOrderViewModelFactory(
-            order = args.order,
-            masterOrderNumber = args.masterOrderNumber
+            orderId = args.orderId,
+            orderNumber = args.orderNumber,
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(TrackOrderViewModel::class.java)
 
@@ -48,6 +66,16 @@ class TrackOrderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        refreshData = { orderId ->
+            if (viewModel.orderId == orderId)
+                lifecycleScope.launch {
+                    val tokenId = UserRepository("").getTokenId(requireContext())
+                    viewModel.fetchScreenData(
+                        requireActivity().currentLocale.toLanguageTag(), tokenId
+                    )
+                }
+        }
+
         // fetch data
         lifecycleScope.launch {
             val tokenId =
@@ -56,11 +84,13 @@ class TrackOrderFragment : Fragment() {
         }
 
         // setup observers
-        val timelineAdapter = TimeLineAdapter(viewModel.order?.status)
-        binding.timelineRv.adapter = timelineAdapter
         viewModel.orderTrackingResponse.observe(viewLifecycleOwner, {
             viewModel.orderTrackingLcee.value!!.response.value = it
+
+            val timelineAdapter = TimeLineAdapter(it.data?.last()?.status)
+            binding.timelineRv.adapter = timelineAdapter
             timelineAdapter.updateOrderStatus(it.data)
+            binding.invalidateAll()
         })
 
         // setup click listener

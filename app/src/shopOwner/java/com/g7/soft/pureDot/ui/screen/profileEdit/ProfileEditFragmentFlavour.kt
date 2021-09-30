@@ -92,4 +92,13 @@ class ProfileEditFragmentFlavour {
             ).show()
         }
     }
+
+    fun saveValidationObserve(
+        fragment: ProfileEditFragment,
+        validationError: ProjectConstant.Companion.ValidationError?
+    ) {
+        fragment.binding.nameTil.error =
+            if (validationError == ProjectConstant.Companion.ValidationError.EMPTY_NAME)
+                fragment.getString(R.string.error_empty_name) else null
+    }
 }

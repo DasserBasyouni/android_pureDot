@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagedList
@@ -14,12 +15,35 @@ import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentMyOrdersBinding
 import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.repo.UserRepository
+import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
+import com.g7.soft.pureDot.ui.screen.order.OrderFragment
 import kotlinx.coroutines.launch
 
 class MyOrdersFragment : Fragment() {
+
+    companion object {
+        var refreshData: (() -> Unit)? = null
+        var isRunning = false
+    }
+
+
     private lateinit var binding: FragmentMyOrdersBinding
     internal lateinit var viewModelFactory: MyOrdersViewModelFactory
     internal lateinit var viewModel: MyOrdersViewModel
+    internal val filterViewModel: FilterViewModel by viewModels(
+        ownerProducer = { requireActivity() }
+    )
+
+
+    override fun onStart() {
+        super.onStart()
+        OrderFragment.isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        OrderFragment.isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +56,8 @@ class MyOrdersFragment : Fragment() {
             val tokenId = UserRepository("").getTokenId(requireContext())
 
             viewModelFactory = MyOrdersViewModelFactory(
-                tokenId = tokenId
+                tokenId = tokenId,
+                filterViewModel = filterViewModel
             )
             viewModel = ViewModelProvider(
                 this@MyOrdersFragment,
@@ -50,6 +75,10 @@ class MyOrdersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        refreshData = {
+            viewModel.ordersPagedList?.value?.dataSource?.invalidate()
+        }
 
         // setup pagination
         viewModel.ordersPagedList =

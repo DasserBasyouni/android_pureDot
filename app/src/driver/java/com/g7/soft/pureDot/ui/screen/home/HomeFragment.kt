@@ -24,7 +24,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.PendingOrdersAdapter
 import com.g7.soft.pureDot.adapter.ProductsAdapter
 import com.g7.soft.pureDot.adapter.SideNavMenuAdapter
-import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ApiConstant.OrderDeliveryStatus
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentHomeBinding
@@ -34,11 +34,13 @@ import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.ui.screen.order.OrderFragment
 import com.g7.soft.pureDot.utils.MapBoxUtils
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
+import com.g7.soft.pureDot.utils.PermissionsHelper
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.mapbox.api.directions.v5.DirectionsCriteria.GEOMETRY_POLYLINE6
+import com.mapbox.api.directions.v5.DirectionsCriteria.PROFILE_DRIVING
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.RouteOptions
 import com.mapbox.bindgen.Expected
@@ -49,7 +51,6 @@ import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.Style
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.animation.camera
-import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.maps.plugin.logo.logo
 import com.mapbox.navigation.base.TimeFormat
@@ -97,6 +98,12 @@ import java.util.*
 
 
 open class HomeFragment : Fragment() {
+
+    companion object {
+        var refreshData: ((String?) -> Unit)? = null
+        var isRunning = false
+    }
+
 
     internal lateinit var binding: FragmentHomeBinding
     internal lateinit var viewModelFactory: HomeViewModelFactory
@@ -237,15 +244,12 @@ open class HomeFragment : Fragment() {
             val maneuvers = maneuverApi.getManeuvers(routeProgress)
             maneuvers.fold(
                 { error ->
-                    Toast.makeText(
-                        requireActivity(),
-                        error.errorMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                },
-                {
-                    binding.maneuverView.visibility = View.VISIBLE
+                    Toast.makeText(requireActivity(), error.errorMessage, Toast.LENGTH_SHORT).show()
+                }, {
+                    //if (viewModel.isNavigationView.value == true) {
+                    //binding.maneuverView.visibility = View.VISIBLE
                     binding.maneuverView.renderManeuvers(maneuvers)
+                    //}
                 }
             )
 
@@ -295,6 +299,26 @@ open class HomeFragment : Fragment() {
     }
 
 
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+        mapboxNavigation.registerRoutesObserver(routesObserver)
+        mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
+        mapboxNavigation.registerLocationObserver(locationObserver)
+        mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver)
+        OrderFragment.isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView.onStop()
+        mapboxNavigation.unregisterRoutesObserver(routesObserver)
+        mapboxNavigation.unregisterRouteProgressObserver(routeProgressObserver)
+        mapboxNavigation.unregisterLocationObserver(locationObserver)
+        mapboxNavigation.unregisterVoiceInstructionsObserver(voiceInstructionsObserver)
+        OrderFragment.isRunning = false
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -311,7 +335,6 @@ open class HomeFragment : Fragment() {
         lifecycleScope.launch {
             val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
             val tokenId = UserRepository("").getTokenId(requireContext())
-
 
             viewModelFactory = HomeViewModelFactory(
                 tokenId = tokenId
@@ -333,22 +356,9 @@ open class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setupSideNavigationMenu()
-        setupObservables()
-        fetchData()
-        setupBottomSheet()
-        setupOnClick()
-
-        // initialize the location puck
-        binding.mapView.location.apply {
-            this.locationPuck = LocationPuck2D(
-                bearingImage = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.navigation_puck_icon
-                )
-            )
-            setLocationProvider(navigationLocationProvider)
-            enabled = true
+        refreshData = { _ -> // orderId
+            viewModel.selectedOrder.value = null
+            viewModel.ordersPagedList?.value?.dataSource?.invalidate()
         }
 
         // initialize Mapbox Navigation
@@ -357,31 +367,6 @@ open class HomeFragment : Fragment() {
                 .accessToken(getMapboxAccessTokenFromResources())
                 .build()
         )
-        // setup map ui
-        //binding.mapView.get.
-        binding.mapView.logo.marginBottom = (384.dpToPx() - 110.dpToPx()).toFloat()
-
-        // move the camera to current location on the first update
-        mapboxNavigation.registerLocationObserver(object : LocationObserver {
-            override fun onRawLocationChanged(rawLocation: Location) {
-                val point = Point.fromLngLat(rawLocation.longitude, rawLocation.latitude)
-                val cameraOptions = CameraOptions.Builder()
-                    .center(point)
-                    .zoom(13.0)
-                    .build()
-                mapboxMap.setCamera(cameraOptions)
-                mapboxNavigation.unregisterLocationObserver(this)
-            }
-
-            override fun onEnhancedLocationChanged(
-                enhancedLocation: Location,
-                keyPoints: List<Location>
-            ) {
-                // not handled
-            }
-        })
-
-        // initialize Navigation Camera
         viewportDataSource = MapboxNavigationViewportDataSource(
             binding.mapView.getMapboxMap()
         )
@@ -390,127 +375,168 @@ open class HomeFragment : Fragment() {
             binding.mapView.camera,
             viewportDataSource
         )
-        binding.mapView.camera.addCameraAnimationsLifecycleListener(
-            NavigationBasicGesturesHandler(navigationCamera)
-        )
-        navigationCamera.registerNavigationCameraStateChangeObserver { navigationCameraState -> // shows/hide the recenter button depending on the camera state
-            when (navigationCameraState) {
-                NavigationCameraState.TRANSITION_TO_FOLLOWING,
-                NavigationCameraState.FOLLOWING -> binding.recenter.visibility =
-                    View.INVISIBLE
 
-                NavigationCameraState.TRANSITION_TO_OVERVIEW,
-                NavigationCameraState.OVERVIEW,
-                NavigationCameraState.IDLE -> binding.recenter.visibility = View.VISIBLE
-            }
-        }
-        if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            viewportDataSource.overviewPadding = landscapeOverviewPadding
-        } else {
-            viewportDataSource.overviewPadding = overviewPadding
-        }
-        if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            viewportDataSource.followingPadding = landscapeFollowingPadding
-        } else {
-            viewportDataSource.followingPadding = followingPadding
-        }
+        PermissionsHelper.requestLocationPermission(requireContext(), {
+            setupSideNavigationMenu()
+            setupObservables()
+            fetchData()
+            setupBottomSheet()
+            setupOnClick()
 
-        // initialize top maneuver view
-        maneuverApi = MapboxManeuverApi(
-            MapboxDistanceFormatter(DistanceFormatterOptions.Builder(requireContext()).build())
-        )
-
-        // initialize bottom progress view
-        tripProgressApi = MapboxTripProgressApi(
-            TripProgressUpdateFormatter.Builder(requireContext())
-                .distanceRemainingFormatter(
-                    DistanceRemainingFormatter(
-                        mapboxNavigation.navigationOptions.distanceFormatterOptions
+            // initialize the location puck
+            binding.mapView.location.apply {
+                this.locationPuck = LocationPuck2D(
+                    bearingImage = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.navigation_puck_icon
                     )
                 )
-                .timeRemainingFormatter(TimeRemainingFormatter(requireContext()))
-                .percentRouteTraveledFormatter(PercentDistanceTraveledFormatter())
-                .estimatedTimeToArrivalFormatter(
-                    EstimatedTimeToArrivalFormatter(requireContext(), TimeFormat.NONE_SPECIFIED)
-                )
-                .build()
-        )
-
-        // initialize voice instructions
-        speechAPI = MapboxSpeechApi(
-            requireContext(),
-            getMapboxAccessTokenFromResources(),
-            Locale.US.language
-        )
-        voiceInstructionsPlayer = MapboxVoiceInstructionsPlayer(
-            requireContext(),
-            getMapboxAccessTokenFromResources(),
-            Locale.US.language
-        )
-
-        // initialize route line
-        val mapboxRouteLineOptions = MapboxRouteLineOptions.Builder(requireContext())
-            .withRouteLineBelowLayerId("road-label")
-            .build()
-        routeLineAPI = MapboxRouteLineApi(mapboxRouteLineOptions)
-        routeLineView = MapboxRouteLineView(mapboxRouteLineOptions)
-        val routeArrowOptions = RouteArrowOptions.Builder(requireContext()).build()
-        routeArrowView = MapboxRouteArrowView(routeArrowOptions)
-
-        // load map style
-        mapboxMap.loadStyleUri(
-            Style.MAPBOX_STREETS
-        ) { // add long click listener that search for a route to the clicked destination
-            binding.mapView.gestures.addOnMapLongClickListener { point ->
-                findRoute(point)
-                true
+                setLocationProvider(navigationLocationProvider)
+                enabled = true
             }
-        }
 
-        // initialize view interactions
-        binding.stop.setOnClickListener {
-            clearRouteAndStopNavigation()
-        }
-        binding.recenter.setOnClickListener {
-            navigationCamera.requestNavigationCameraToFollowing()
-        }
-        binding.routeOverview.setOnClickListener {
-            navigationCamera.requestNavigationCameraToOverview()
-            binding.recenter.showTextAndExtend(2000L)
-        }
-        binding.soundButton.setOnClickListener {
-            // mute/unmute voice instructions
-            isVoiceInstructionsMuted = !isVoiceInstructionsMuted
-            if (isVoiceInstructionsMuted) {
-                binding.soundButton.muteAndExtend(2000L)
-                voiceInstructionsPlayer.volume(SpeechVolume(0f))
+            // setup map ui
+            //binding.mapView.get.
+            binding.mapView.logo.marginBottom =
+                (384.dpToPx() - 110.dpToPx() - 204.dpToPx() - 26.dpToPx()).toFloat()
+
+            // setup map bottom padding
+            binding.mapView.setPadding(
+                0,
+                0,
+                0,
+                384.dpToPx() - 110.dpToPx()
+            )
+
+            // move the camera to current location on the first update
+            mapboxNavigation.registerLocationObserver(object : LocationObserver {
+                override fun onRawLocationChanged(rawLocation: Location) {
+                    val point = Point.fromLngLat(rawLocation.longitude, rawLocation.latitude)
+                    val cameraOptions = CameraOptions.Builder()
+                        .center(point)
+                        .zoom(13.0)
+                        .build()
+                    mapboxMap.setCamera(cameraOptions)
+                    mapboxNavigation.unregisterLocationObserver(this)
+                }
+
+                override fun onEnhancedLocationChanged(
+                    enhancedLocation: Location,
+                    keyPoints: List<Location>
+                ) {
+                    // not handled
+                }
+            })
+
+            // initialize Navigation Camera
+            binding.mapView.camera.addCameraAnimationsLifecycleListener(
+                NavigationBasicGesturesHandler(navigationCamera)
+            )
+            navigationCamera.registerNavigationCameraStateChangeObserver { navigationCameraState -> // shows/hide the recenter button depending on the camera state
+                when (navigationCameraState) {
+                    NavigationCameraState.TRANSITION_TO_FOLLOWING,
+                        //NavigationCameraState.FOLLOWING -> binding.recenter.visibility = View.INVISIBLE
+
+                    NavigationCameraState.TRANSITION_TO_OVERVIEW,
+                    NavigationCameraState.OVERVIEW,
+                        //NavigationCameraState.IDLE -> binding.recenter.visibility = View.VISIBLE
+                    NavigationCameraState.IDLE -> {
+                    }
+                    NavigationCameraState.FOLLOWING -> {
+                    }
+                }
+            }
+            if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                viewportDataSource.overviewPadding = landscapeOverviewPadding
             } else {
-                binding.soundButton.unmuteAndExtend(2000L)
-                voiceInstructionsPlayer.volume(SpeechVolume(1f))
+                viewportDataSource.overviewPadding = overviewPadding
             }
-        }
+            if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                viewportDataSource.followingPadding = landscapeFollowingPadding
+            } else {
+                viewportDataSource.followingPadding = followingPadding
+            }
 
-        // start the trip session to being receiving location updates in free drive
-        // and later when a route is set, also receiving route progress updates
-        mapboxNavigation.startTripSession()
-    }
+            // initialize top maneuver view
+            maneuverApi = MapboxManeuverApi(
+                MapboxDistanceFormatter(DistanceFormatterOptions.Builder(requireContext()).build())
+            )
 
-    override fun onStart() {
-        super.onStart()
-        binding.mapView.onStart()
-        mapboxNavigation.registerRoutesObserver(routesObserver)
-        mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
-        mapboxNavigation.registerLocationObserver(locationObserver)
-        mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver)
-    }
+            // initialize bottom progress view
+            tripProgressApi = MapboxTripProgressApi(
+                TripProgressUpdateFormatter.Builder(requireContext())
+                    .distanceRemainingFormatter(
+                        DistanceRemainingFormatter(
+                            mapboxNavigation.navigationOptions.distanceFormatterOptions
+                        )
+                    )
+                    .timeRemainingFormatter(TimeRemainingFormatter(requireContext()))
+                    .percentRouteTraveledFormatter(PercentDistanceTraveledFormatter())
+                    .estimatedTimeToArrivalFormatter(
+                        EstimatedTimeToArrivalFormatter(requireContext(), TimeFormat.NONE_SPECIFIED)
+                    )
+                    .build()
+            )
 
-    override fun onStop() {
-        super.onStop()
-        binding.mapView.onStop()
-        mapboxNavigation.unregisterRoutesObserver(routesObserver)
-        mapboxNavigation.unregisterRouteProgressObserver(routeProgressObserver)
-        mapboxNavigation.unregisterLocationObserver(locationObserver)
-        mapboxNavigation.unregisterVoiceInstructionsObserver(voiceInstructionsObserver)
+            // initialize voice instructions
+            speechAPI = MapboxSpeechApi(
+                requireContext(),
+                getMapboxAccessTokenFromResources(),
+                Locale.US.language
+            )
+            voiceInstructionsPlayer = MapboxVoiceInstructionsPlayer(
+                requireContext(),
+                getMapboxAccessTokenFromResources(),
+                Locale.US.language
+            )
+
+            // initialize route line
+            val mapboxRouteLineOptions = MapboxRouteLineOptions.Builder(requireContext())
+                .withRouteLineBelowLayerId("road-label")
+                .build()
+            routeLineAPI = MapboxRouteLineApi(mapboxRouteLineOptions)
+            routeLineView = MapboxRouteLineView(mapboxRouteLineOptions)
+            val routeArrowOptions = RouteArrowOptions.Builder(requireContext()).build()
+            routeArrowView = MapboxRouteArrowView(routeArrowOptions)
+
+            // load map style
+            mapboxMap.loadStyleUri(
+                Style.MAPBOX_STREETS
+            ) { // add long click listener that search for a route to the clicked destination
+                /*binding.mapView.gestures.addOnMapLongClickListener { point ->
+                    findRoute(point)
+                    true
+                }*/
+            }
+
+            // initialize view interactions
+            binding.stop.setOnClickListener {
+                clearRouteAndStopNavigation()
+                viewModel.isNavigationView.value = false
+            }
+            /*binding.recenter.setOnClickListener {
+                navigationCamera.requestNavigationCameraToFollowing()
+            }*/
+            /*binding.routeOverview.setOnClickListener {
+                navigationCamera.requestNavigationCameraToOverview()
+                //binding.recenter.showTextAndExtend(2000L)
+            }*/
+            binding.soundButton.setOnClickListener {
+                // mute/unmute voice instructions
+                isVoiceInstructionsMuted = !isVoiceInstructionsMuted
+                if (isVoiceInstructionsMuted) {
+                    binding.soundButton.muteAndExtend(2000L)
+                    voiceInstructionsPlayer.volume(SpeechVolume(0f))
+                } else {
+                    binding.soundButton.unmuteAndExtend(2000L)
+                    voiceInstructionsPlayer.volume(SpeechVolume(1f))
+                }
+            }
+
+            // start the trip session to being receiving location updates in free drive
+            // and later when a route is set, also receiving route progress updates
+            mapboxNavigation.startTripSession()
+        })
     }
 
     override fun onDestroy() {
@@ -577,25 +603,24 @@ open class HomeFragment : Fragment() {
     }
 
 
-    private fun findRoute(destination: Point) {
+    private fun findRoute(destination1: Point, destination2: Point) {
         val origin = navigationLocationProvider.lastLocation?.let {
             Point.fromLngLat(it.longitude, it.latitude)
         } ?: return
-
         mapboxNavigation.requestRoutes(
             RouteOptions.builder()
                 .applyDefaultNavigationOptions()
                 .applyLanguageAndVoiceUnitOptions(requireContext())
                 //.accessToken(getMapboxAccessTokenFromResources())
-                .coordinatesList(listOf(origin, destination))
+                .coordinatesList(listOf(origin, destination1, destination2))
+                .geometries(GEOMETRY_POLYLINE6)
+                .profile(PROFILE_DRIVING)
                 .build(),
             object : RouterCallback {
                 override fun onRoutesReady(
                     routes: List<DirectionsRoute>,
                     routerOrigin: RouterOrigin
-                ) {
-                    setRouteAndStartNavigation(routes.first(), routerOrigin)
-                }
+                ) = setRouteAndStartNavigation(routes.first(), routerOrigin)
 
                 override fun onFailure(
                     reasons: List<RouterFailure>,
@@ -617,9 +642,9 @@ open class HomeFragment : Fragment() {
 
         // show UI elements
         binding.soundButton.visibility = View.VISIBLE
-        binding.routeOverview.visibility = View.VISIBLE
-        binding.tripProgressCard.visibility = View.VISIBLE
-        binding.routeOverview.showTextAndExtend(2000L)
+        //binding.routeOverview.visibility = View.VISIBLE
+        //binding.tripProgressCard.visibility = View.VISIBLE
+        //binding.routeOverview.showTextAndExtend(2000L)
         binding.soundButton.unmuteAndExtend(2000L)
 
         // move the camera to overview when new route is available
@@ -632,8 +657,8 @@ open class HomeFragment : Fragment() {
 
         // hide UI elements
         binding.soundButton.visibility = View.INVISIBLE
-        binding.maneuverView.visibility = View.INVISIBLE
-        binding.routeOverview.visibility = View.INVISIBLE
+        //binding.maneuverView.visibility = View.INVISIBLE
+        //binding.routeOverview.visibility = View.INVISIBLE
         binding.tripProgressCard.visibility = View.INVISIBLE
     }
 
@@ -663,9 +688,35 @@ open class HomeFragment : Fragment() {
     }
 
     private fun setupObservables() {
+        viewModel.isNavigationView.observe(viewLifecycleOwner, {
+            val logoBottomMargin: Float
+            val mapBottomMargin: Int
+
+            if (it == true) {
+                navigationCamera.requestNavigationCameraToFollowing()
+                logoBottomMargin = 146.dpToPx().toFloat()
+                mapBottomMargin = 0.dpToPx()
+            } else {
+                navigationCamera.requestNavigationCameraToOverview()
+                logoBottomMargin = 24.dpToPx().toFloat()
+                mapBottomMargin = 164.dpToPx()
+            }
+
+            // setup mapbox logo padding
+            binding.mapView.logo.marginBottom = logoBottomMargin
+
+            // setup map bottom padding
+            binding.mapView.setPadding(
+                0,
+                0,
+                0,
+                mapBottomMargin
+            )
+        })
+
         viewModel.availabilityResponse.observe(viewLifecycleOwner, {
             viewModel.availabilityLcee.value!!.response.value = it
-            binding.isAvailableS.isChecked = it.data?.isAvailable ?: false
+            binding.isAvailableS.isChecked = it?.data?.isAvailable ?: false
         })
 
         // setup pagination
@@ -690,15 +741,27 @@ open class HomeFragment : Fragment() {
                 ProductsAdapter().apply { this.submitList(it?.firstOrder?.products) }
 
             val isCollapsedSheet =
-                !(it != null && it.firstOrder?.deliveryStatus != ApiConstant.OrderDeliveryStatus.ACCEPTED.value
-                        && it.firstOrder?.deliveryStatus != ApiConstant.OrderDeliveryStatus.NEW.value)
+                !(it != null && it.firstOrder?.deliveryStatus != OrderDeliveryStatus.ACCEPTED.value
+                        && it.firstOrder?.deliveryStatus != OrderDeliveryStatus.NEW.value)
 
             // do collapse or not & adjust peekHeight
             val peekHeight: Int
             if (isCollapsedSheet) {
                 peekHeight = 384.dpToPx()
             } else {
-                peekHeight = 432.dpToPx()
+                peekHeight = 252.dpToPx()
+
+                // setup mapbox logo padding
+                binding.mapView.logo.marginBottom = (24.dpToPx()).toFloat()
+
+                // setup map bottom padding
+                binding.mapView.setPadding(
+                    0,
+                    0,
+                    0,
+                    164.dpToPx()
+                )
+
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
             bottomSheetBehavior.peekHeight = peekHeight
@@ -706,6 +769,26 @@ open class HomeFragment : Fragment() {
             // enable/disable dragging
             bottomSheetBehavior.isDraggable = isCollapsedSheet
 
+            // draw route
+            if (it == null) {
+                clearRouteAndStopNavigation()
+            } else {
+                val clientLat = it.clientAddress?.latitude?.toDoubleOrNull()
+                val clientLng = it.clientAddress?.longitude?.toDoubleOrNull()
+
+                val branchLat = it.firstOrder?.branch?.latitude?.toDoubleOrNull()
+                val branchLng = it.firstOrder?.branch?.longitude?.toDoubleOrNull()
+
+                if (branchLat != null && branchLng != null && clientLat != null && clientLng != null) {
+                    val clientPoint = Point.fromLngLat(clientLat, clientLng)
+                    val branchPoint = Point.fromLngLat(branchLat, branchLng)
+
+                    if (it.firstOrder.isReturn == true)
+                        findRoute(clientPoint, branchPoint)
+                    else
+                        findRoute(branchPoint, clientPoint)
+                }
+            }
         })
 
         binding.mapView.location.addOnIndicatorPositionChangedListener {
@@ -809,14 +892,14 @@ open class HomeFragment : Fragment() {
                 val bottomSheetShiftDown = currentHeight - bottomSheet.top
 
                 binding.mapView.logo.marginBottom =
-                    (binding.bottomSheet.height + bottomSheetShiftDown - 110.dpToPx()).toFloat()
+                    (binding.bottomSheet.height + bottomSheetShiftDown - 110.dpToPx() - 204.dpToPx() - 26.dpToPx()).toFloat()
                 /*googleMap?.setPadding(
                     0,
                     24.dpToPx(),
                     0, todo
                     binding.bottomSheet.height + bottomSheetShiftDown - 42.dpToPx()
                 )*/
-                if (viewModel.location.value != null) {
+                /*if (viewModel.location.value != null) {
                     val cameraPosition = CameraPosition.Builder()
                         .target(
                             LatLng(
@@ -833,7 +916,7 @@ open class HomeFragment : Fragment() {
                             cameraPosition
                         ) todo
                     )*/
-                }
+                }*/
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) = Unit
@@ -841,6 +924,10 @@ open class HomeFragment : Fragment() {
     }
 
     private fun setupOnClick() {
+        binding.navigationFab.setOnClickListener {
+            viewModel.isNavigationView.value = !viewModel.isNavigationView.value!!
+        }
+
         binding.screenClickableIv.setOnClickListener {
             closeSideNavigationMenu()
         }
@@ -858,18 +945,18 @@ open class HomeFragment : Fragment() {
 
         binding.positiveBtn.setOnClickListener {
             // in case action button is "Done"
-            if (viewModel.selectedOrder.value?.firstOrder?.deliveryStatusEnum == ApiConstant.OrderDeliveryStatus.DELIVERED) {
+            if (viewModel.selectedOrder.value?.firstOrder?.deliveryStatusEnum == OrderDeliveryStatus.DELIVERED) {
                 viewModel.selectedOrder.value = null
                 return@setOnClickListener
             }
 
             val nextStatus =
                 when (viewModel.selectedOrder.value?.firstOrder?.deliveryStatusEnum) {
-                    ApiConstant.OrderDeliveryStatus.NEW -> ApiConstant.OrderDeliveryStatus.ACCEPTED.value
-                    ApiConstant.OrderDeliveryStatus.ACCEPTED -> ApiConstant.OrderDeliveryStatus.STARTED.value
-                    ApiConstant.OrderDeliveryStatus.STARTED -> ApiConstant.OrderDeliveryStatus.PICKED.value
-                    ApiConstant.OrderDeliveryStatus.PICKED -> ApiConstant.OrderDeliveryStatus.ARRIVED.value
-                    ApiConstant.OrderDeliveryStatus.ARRIVED -> ApiConstant.OrderDeliveryStatus.DELIVERED.value
+                    OrderDeliveryStatus.NEW -> OrderDeliveryStatus.ACCEPTED.value
+                    OrderDeliveryStatus.ACCEPTED -> OrderDeliveryStatus.STARTED.value
+                    OrderDeliveryStatus.STARTED -> OrderDeliveryStatus.PICKED.value
+                    OrderDeliveryStatus.PICKED -> OrderDeliveryStatus.ARRIVED.value
+                    OrderDeliveryStatus.ARRIVED -> OrderDeliveryStatus.DELIVERED.value
                     else -> null
                 }
 
@@ -901,7 +988,7 @@ open class HomeFragment : Fragment() {
                     langTag = requireActivity().currentLocale.toLanguageTag(),
                     tokenId = tokenId,
                     orderId = viewModel.selectedOrder.value?.firstOrder?.id,
-                    status = ApiConstant.OrderDeliveryStatus.REJECTED.value,
+                    status = OrderDeliveryStatus.REJECTED.value,
                     isReturn = viewModel.selectedOrder.value?.firstOrder?.isReturn
                 ).observeApiResponse(this@HomeFragment, {
                     viewModel.ordersPagedList?.value?.dataSource?.invalidate()

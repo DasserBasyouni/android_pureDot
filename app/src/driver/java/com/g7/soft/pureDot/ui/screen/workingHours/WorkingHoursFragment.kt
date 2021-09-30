@@ -6,8 +6,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.adapter.WorkingHoursHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentWorkingHoursBinding
+import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -49,11 +53,24 @@ class WorkingHoursFragment : Fragment() {
         // setup observers
         viewModel.workingHoursResponse.observe(viewLifecycleOwner, {
             viewModel.workingHoursLcee.value!!.response.value = it
-            //binding.workingHoursRv.adapter = WorkingHoursHeaderAdapter(this, it.data)
+            binding.workingHoursRv.adapter = WorkingHoursHeaderAdapter(this, it.data)
         })
 
         // setup click listener
+        binding.submitBtn.setOnClickListener {
+            lifecycleScope.launch {
+                val tokenId = UserRepository("").getTokenId(requireContext())
+                val data = (binding.workingHoursRv.adapter as WorkingHoursHeaderAdapter)
+                    .getWorkingDays(binding.workingHoursRv.layoutManager as LinearLayoutManager)
 
+                //Log.e("Z_", "data: $data")
+                viewModel.submitWorkingDays(
+                    requireActivity().currentLocale.toLanguageTag(), tokenId, data
+                ).observeApiResponse(this@WorkingHoursFragment, {
+                    findNavController().popBackStack()
+                })
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

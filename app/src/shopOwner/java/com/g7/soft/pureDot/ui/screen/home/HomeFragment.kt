@@ -16,12 +16,31 @@ import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentHomeBinding
 import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.repo.UserRepository
+import com.g7.soft.pureDot.ui.screen.order.OrderFragment
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
+
+    companion object {
+        var refreshData: ((String?) -> Unit)? = null
+        var isRunning = false
+    }
+
+
     private lateinit var binding: FragmentHomeBinding
     internal lateinit var viewModelFactory: HomeViewModelFactory
     internal lateinit var viewModel: HomeViewModel
+
+
+    override fun onStart() {
+        super.onStart()
+        OrderFragment.isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        OrderFragment.isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +69,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        refreshData = {
+            viewModel.newOrdersPagedList?.value?.dataSource?.invalidate()
+            viewModel.pendingOrdersPagedList?.value?.dataSource?.invalidate()
+        }
 
         // setup observers
         viewModel.areNewOrdersSelected.observe(viewLifecycleOwner, { isNewOrder ->
@@ -92,7 +116,11 @@ class HomeFragment : Fragment() {
 
 
         // setup onClick
-        binding.newOrderLayout.root.setOnClickListener { viewModel.areNewOrdersSelected.value = true }
-        binding.pendingOrdersLayout.root.setOnClickListener { viewModel.areNewOrdersSelected.value = false }
+        binding.newOrderLayout.root.setOnClickListener {
+            viewModel.areNewOrdersSelected.value = true
+        }
+        binding.pendingOrdersLayout.root.setOnClickListener {
+            viewModel.areNewOrdersSelected.value = false
+        }
     }
 }

@@ -2,8 +2,7 @@ package com.g7.soft.pureDot.ui.screen.phoneVerification
 
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
-import com.g7.soft.pureDot.databinding.FragmentPhoneVerificationBinding
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 
 class PhoneVerificationFragmentFlavour {
     fun signUpSuccessfulAction(fragment: PhoneVerificationFragment) {

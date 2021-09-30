@@ -8,7 +8,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import kotlinx.coroutines.launch
 
 
@@ -21,7 +21,8 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
     chosenApiStatusObserve: (suspend (status: ApiConstant.Status) -> Unit)? = null
 ) {
     this.observe(fragment, {
-        Log.e("Z_", "here - ${it.status} - ${it.apiErrorStatus} - ${it.exception}")
+        Log.e("Z_", "here - ${it.status} - ${it.apiErrorStatus} - ${it.exception} - ${it.validationError}")
+
         fragment.context?.let { context ->
             when (it.status) {
                 ProjectConstant.Companion.Status.LOADING -> {
@@ -53,7 +54,7 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
                             ProjectDialogUtils.showSimpleMessage(
                                 fragment.requireContext(),
                                 R.string.something_went_wrong,
-                                R.drawable.ic_secure_shield
+                                drawableResId = R.drawable.ic_secure_shield
                             )
                         }
                         apiStatusToObserve?.contains(it.apiErrorStatus) == true -> {
@@ -65,13 +66,18 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
                             ProjectDialogUtils.showSimpleMessage(
                                 fragment.requireContext(),
                                 ApiConstant.Status.getMessageResId(it.apiErrorStatus),
-                                R.drawable.ic_secure_shield
+                                drawableResId = R.drawable.ic_secure_shield
                             )
 
                     }
                 }
                 ProjectConstant.Companion.Status.NETWORK_ERROR -> {
                     if (doLoading) ProjectDialogUtils.hideLoading()
+                    ProjectDialogUtils.showSimpleMessage(
+                        fragment.requireContext(),
+                        ApiConstant.Status.getMessageResId(it.apiErrorStatus),
+                        drawableResId = R.drawable.ic_secure_shield
+                    )
                 }
                 else -> {
                     if (doLoading)
@@ -79,7 +85,7 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
                     ProjectDialogUtils.showSimpleMessage(
                         fragment.requireContext(),
                         R.string.something_went_wrong,
-                        R.drawable.ic_secure_shield
+                        drawableResId = R.drawable.ic_secure_shield
                     )
                 }
             }

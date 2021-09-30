@@ -20,6 +20,9 @@ class ProfileEditFragmentFlavour {
     )
 
     fun observe(fragment: ProfileEditFragment) {
+        fragment.viewModel.selectedCityPosition.observe(fragment.viewLifecycleOwner, {
+            fragment.viewModel.getZipCodes(fragment.requireActivity().currentLocale.toLanguageTag())
+        })
         fragment.viewModel.zipCodesResponse.observe(fragment.viewLifecycleOwner, {
             setupSpinner(
                 fragment = fragment,
@@ -111,5 +114,18 @@ class ProfileEditFragmentFlavour {
                 calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
+    }
+
+    fun saveValidationObserve(
+        fragment: ProfileEditFragment,
+        validationError: ProjectConstant.Companion.ValidationError?
+    ) {
+        fragment.binding.firstNameTil.error =
+            if (validationError == ProjectConstant.Companion.ValidationError.EMPTY_FIRST_NAME)
+                fragment.getString(R.string.error_empty_first_name) else null
+
+        fragment.binding.lastNameTil.error =
+            if (validationError == ProjectConstant.Companion.ValidationError.EMPTY_LAST_NAME)
+                fragment.getString(R.string.error_empty_last_name) else null
     }
 }

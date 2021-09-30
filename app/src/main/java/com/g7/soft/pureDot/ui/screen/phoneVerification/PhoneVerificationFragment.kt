@@ -19,7 +19,7 @@ import com.g7.soft.pureDot.databinding.FragmentPhoneVerificationBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 
 class PhoneVerificationFragment : Fragment() {
@@ -73,13 +73,13 @@ class PhoneVerificationFragment : Fragment() {
                             ProjectDialogUtils.showSimpleMessage(
                                 requireContext(),
                                 R.string.something_went_wrong,
-                                R.drawable.ic_secure_shield
+                                drawableResId = R.drawable.ic_secure_shield
                             )
                         }
                         else -> ProjectDialogUtils.showSimpleMessage(
                             requireContext(),
                             ApiConstant.Status.getMessageResId(it.apiErrorStatus),
-                            R.drawable.ic_secure_shield
+                            drawableResId = R.drawable.ic_secure_shield
                         )
                     }
         })

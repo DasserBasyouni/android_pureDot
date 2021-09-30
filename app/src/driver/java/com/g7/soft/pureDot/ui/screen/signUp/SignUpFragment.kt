@@ -29,9 +29,12 @@ import com.g7.soft.pureDot.model.CountryModel
 import com.g7.soft.pureDot.model.UserDataModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.messaging.FirebaseMessaging
 import com.zeugmasolutions.localehelper.currentLocale
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,7 +42,6 @@ import java.util.*
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
     private lateinit var viewModel: SignUpViewModel
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -116,51 +118,62 @@ class SignUpFragment : Fragment() {
         )
 
         binding.submitRequestBtn.setOnClickListener {
-            viewModel.register(requireActivity().currentLocale.toLanguageTag())
-                .observeApiResponse(this, {
-                    UserRepository("").saveUserData(
-                        requireContext(), UserDataModel(
-                            tokenId = it,
-                            name = viewModel.name.value,
-                            phoneNumber = viewModel.phoneNumber.value,
-                            carBrand = viewModel.carBrand.value,
-                            dateOfBirth = viewModel.dateOfBirthCalendar.value?.timeInMillis
-                                ?.div(1000),
-                            email = viewModel.email.value,
-                            isMale = viewModel.isMale.value,
-                            language = requireActivity().currentLocale.toLanguageTag()
-                        ), viewModel.password.value
-                    )
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Timber.w("Fetching FCM registration token failed")
+                    Timber.w(task.exception)
+                    return@OnCompleteListener
+                }
 
-                    if (it != null)
-                        findNavController().navigate(
-                            SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
-                                false,
-                                viewModel.phoneNumber.value
+                val fcmToken = task.result
+
+                viewModel.register(requireActivity().currentLocale.toLanguageTag(), fcmToken)
+                    .observeApiResponse(this, {
+                        if (it != null) {
+                            UserRepository("").saveUserData(
+                                requireContext(), UserDataModel(
+                                    tokenId = it,
+                                    name = viewModel.name.value,
+                                    phoneNumber = viewModel.phoneNumber.value,
+                                    carBrand = viewModel.carBrand.value,
+                                    dateOfBirth = viewModel.dateOfBirthCalendar.value?.timeInMillis
+                                        ?.div(1000),
+                                    email = viewModel.email.value,
+                                    isMale = viewModel.isMale.value,
+                                    language = requireActivity().currentLocale.toLanguageTag()
+                                ), viewModel.password.value
                             )
-                        )
-                    else
-                        ProjectDialogUtils.showSimpleMessage(
-                            requireContext(),
-                            R.string.something_went_wrong,
-                            drawableResId = R.drawable.ic_cancel
-                        )
-                }, validationObserve = {
-                    binding.nameTil.error = if (it == ValidationError.EMPTY_NAME)
-                        getString(R.string.error_empty_name) else null
 
-                    binding.phoneNumberTil.error = if (it == ValidationError.EMPTY_PHONE_NUMBER)
-                        getString(R.string.error_empty_phone_number) else null
+                            findNavController().navigate(
+                                SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
+                                    false,
+                                    viewModel.phoneNumber.value
+                                )
+                            )
+                        } else
+                            ProjectDialogUtils.showSimpleMessage(
+                                requireContext(),
+                                R.string.something_went_wrong,
+                                drawableResId = R.drawable.ic_cancel
+                            )
+                        //Hyperion.open(requireActivity()) todo remove with its dependency
+                    }, validationObserve = {
+                        binding.nameTil.error = if (it == ValidationError.EMPTY_NAME)
+                            getString(R.string.error_empty_name) else null
 
-                    binding.emailTil.error = if (it == ValidationError.EMPTY_EMAIL)
-                        getString(R.string.error_empty_email) else null
+                        binding.phoneNumberTil.error = if (it == ValidationError.EMPTY_PHONE_NUMBER)
+                            getString(R.string.error_empty_phone_number) else null
 
-                    binding.birthDateTil.error = if (it == ValidationError.EMPTY_DATE_OF_BIRTH)
-                        getString(R.string.error_empty_date_of_birth) else null
+                        binding.emailTil.error = if (it == ValidationError.EMPTY_EMAIL)
+                            getString(R.string.error_empty_email) else null
 
-                    binding.carBrandTil.error = if (it == ValidationError.EMPTY_CAR_BRAND)
-                        getString(R.string.error_empty_car_brand) else null
-                })
+                        binding.birthDateTil.error = if (it == ValidationError.EMPTY_DATE_OF_BIRTH)
+                            getString(R.string.error_empty_date_of_birth) else null
+
+                        binding.carBrandTil.error = if (it == ValidationError.EMPTY_CAR_BRAND)
+                            getString(R.string.error_empty_car_brand) else null
+                    })
+            })
         }
     }
 

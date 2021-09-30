@@ -24,9 +24,7 @@ class MyAccountViewModel : ViewModel() {
         }
     }
 
-    fun logout(langTag: String) = liveData(Dispatchers.IO) {
-        val fcmToken: String? = null // todo
-
+    fun logout(langTag: String, fcmToken: String) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
             UserRepository(langTag).logout(

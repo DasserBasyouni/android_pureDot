@@ -266,7 +266,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.orderResponse.data.firstOrder.toAddress ?? viewModel.orderResponse.data.address.areaName}"
+                        android:text="@{viewModel.orderResponse.data.firstOrder.toAddress ?? viewModel.orderResponse.data.clientAddress.areaName}"
                         android:textColor="#3b3d3f"
                         android:textSize="14sp"
                         android:textStyle="normal"
@@ -358,7 +358,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="@{viewModel.orderLcee.contentVisibility}"
-                app:constraint_referenced_ids="cardView7,cardView10,appCompatTextView38,cancelBtn,complaintBtn,cardView8,orderStatusCv" />
+                app:constraint_referenced_ids="cardView7,cardView10,appCompatTextView38,complaintBtn,cardView8,orderStatusCv" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

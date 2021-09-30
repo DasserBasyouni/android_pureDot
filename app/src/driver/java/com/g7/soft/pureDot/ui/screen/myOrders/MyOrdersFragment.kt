@@ -14,12 +14,31 @@ import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentMyOrdersBinding
 import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.repo.UserRepository
+import com.g7.soft.pureDot.ui.screen.order.OrderFragment
 import kotlinx.coroutines.launch
 
 class MyOrdersFragment : Fragment() {
+
+    companion object {
+        var refreshData: (() -> Unit)? = null
+        var isRunning = false
+    }
+
+
     private lateinit var binding: FragmentMyOrdersBinding
     internal lateinit var viewModelFactory: MyOrdersViewModelFactory
     internal lateinit var viewModel: MyOrdersViewModel
+
+
+    override fun onStart() {
+        super.onStart()
+        OrderFragment.isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        OrderFragment.isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +53,10 @@ class MyOrdersFragment : Fragment() {
             viewModelFactory = MyOrdersViewModelFactory(
                 tokenId = tokenId
             )
-            viewModel = ViewModelProvider(this@MyOrdersFragment, viewModelFactory).get(MyOrdersViewModel::class.java)
+            viewModel = ViewModelProvider(
+                this@MyOrdersFragment,
+                viewModelFactory
+            ).get(MyOrdersViewModel::class.java)
 
             binding.viewModel = viewModel
             binding.lifecycleOwner = this@MyOrdersFragment
@@ -47,6 +69,10 @@ class MyOrdersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        refreshData = {
+            viewModel.ordersPagedList?.value?.dataSource?.invalidate()
+        }
 
         // setup pagination
         viewModel.ordersPagedList =

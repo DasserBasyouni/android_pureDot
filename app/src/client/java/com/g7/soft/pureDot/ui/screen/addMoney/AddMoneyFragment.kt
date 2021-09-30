@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentAddMoneyBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
@@ -46,16 +47,18 @@ class AddMoneyFragment : Fragment() {
         // setup onClick
         binding.addMoneyBtn.setOnClickListener {
             lifecycleScope.launch {
-                val tokenId =
-                    UserRepository("").getTokenId(requireContext())
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
                 viewModel.addMoney(
                     requireActivity().currentLocale.toLanguageTag(),
                     tokenId = tokenId
-                )
-                    .observeApiResponse(this@AddMoneyFragment, {
-                        findNavController().popBackStack()
-                    })
+                ).observeApiResponse(this@AddMoneyFragment, {
+                    findNavController().popBackStack()
+                }, validationObserve = {
+                    binding.amountTil.error =
+                        if (it == ProjectConstant.Companion.ValidationError.EMPTY_AMOUNT)
+                            getString(R.string.error_empty_amount) else null
+                })
             }
         }
     }

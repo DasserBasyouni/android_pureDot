@@ -377,7 +377,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:checked="@{viewModel.doAcceptTerms}"
+            android:checked="@={viewModel.doAcceptTerms}"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
             android:text="@string/accept_terms_and_conditions"

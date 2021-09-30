@@ -35,7 +35,7 @@ class CartViewModel : ViewModel() {
                         addSource(
                             OrderRepository(langTag).checkCartItems(
                                 tokenId = tokenId,
-                                apiShopOrders = apiShopOrders.value
+                                apiShopOrders = apiShopOrders.value,
                             )
                         ) { orderResponse.value = it }
                     }

@@ -11,7 +11,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ProductCartReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentCheckout2Binding
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.kofigyan.stateprogressbar.StateProgressBar
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -59,7 +59,7 @@ class CheckoutShippingFragment(
                 )
             }
         })
-        viewModel.orderResponse.observe(viewLifecycleOwner, {
+        viewModel.masterOrderResponse.observe(viewLifecycleOwner, {
             viewModel.orderLcee.value!!.response.value = it
         })
 
@@ -83,7 +83,7 @@ class CheckoutShippingFragment(
                 ProjectDialogUtils.showSimpleMessage(
                     requireContext(),
                     R.string.shipping_method_is_required,
-                    R.drawable.ic_secure_shield
+                    drawableResId = R.drawable.ic_secure_shield
                 )
         }
     }

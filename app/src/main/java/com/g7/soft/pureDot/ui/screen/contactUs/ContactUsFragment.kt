@@ -9,14 +9,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentContactUsBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
-import com.g7.soft.pureDot.repo.UserRepository
 import com.zeugmasolutions.localehelper.currentLocale
-import kotlinx.coroutines.launch
 
 
 class ContactUsFragment : Fragment() {
@@ -42,15 +40,24 @@ class ContactUsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.submitBtn.setOnClickListener {
-            lifecycleScope.launch {
-                val tokenId =
-                    UserRepository("").getTokenId(requireContext())
+            viewModel.submit(requireActivity().currentLocale.toLanguageTag())
+                .observeApiResponse(this@ContactUsFragment, {
+                    findNavController().popBackStack()
+                }, validationObserve = {
+                    binding.nameTil.error =
+                        if (it == ProjectConstant.Companion.ValidationError.EMPTY_NAME)
+                            getString(R.string.error_empty_name) else null
 
-                viewModel.submit(requireActivity().currentLocale.toLanguageTag())
-                    .observeApiResponse(this@ContactUsFragment, {
-                        findNavController().popBackStack()
-                    })
-            }
+                    binding.emailTil.error = when (it) {
+                        ProjectConstant.Companion.ValidationError.EMPTY_EMAIL -> getString(R.string.error_empty_email)
+                        ProjectConstant.Companion.ValidationError.INVALID_EMAIL -> getString(R.string.error_invalid_email)
+                        else -> null
+                    }
+
+                    binding.messageTil.error =
+                        if (it == ProjectConstant.Companion.ValidationError.EMPTY_MESSAGE)
+                            getString(R.string.error_empty_message) else null
+                })
         }
 
         binding.twitterIb.setOnClickListener {

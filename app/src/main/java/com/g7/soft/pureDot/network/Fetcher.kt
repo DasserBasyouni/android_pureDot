@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit
 
 class Fetcher {
 
+    //private lateinit var firebaseAnalytics: FirebaseAnalytics
     private var arService: ApiService? = null
     private var enService: ApiService? = null
 
@@ -54,6 +55,16 @@ class Fetcher {
 
             val response = chain.proceed(request)
 
+            /*firebaseAnalytics = Firebase.analytics
+            Firebase.analytics.logEvent(
+                "Fetcher_createService", bundleOf(
+                    "request" to request.url.toString(),
+                    "response" to response.toString(),
+                    "response_peekBody" to response.peekBody(2048).string(),
+                )
+            )*/
+            Timber.i("request: %s", request.toString())
+            Timber.i("response: $response - ${response.peekBody(2048).string()}")
             Log.e("Z_", "request: $request")
             Log.e("Z_", "response: $response - ${response.peekBody(2048).string()}")
 

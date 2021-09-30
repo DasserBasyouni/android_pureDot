@@ -16,18 +16,34 @@ import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
 
 class OrderFragment : Fragment() {
 
+    companion object {
+        var refreshData: ((String?) -> Unit)? = null
+        var isRunning = false
+    }
+
+
     internal lateinit var binding: FragmentOrderBinding
     private lateinit var viewModelFactory: OrderViewModelFactory
     internal lateinit var viewModel: OrderViewModel
     private val args: OrderFragmentArgs by navArgs()
 
+
+    override fun onStart() {
+        super.onStart()
+        isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,27 +71,36 @@ class OrderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // init data
-        ProductsAdapter(this).let { adapter ->
-            binding.cartReviewItemsRv.adapter = adapter
-            adapter.submitList(args.masterOrder.firstOrder?.products)
-        }
-
-        // setup listeners
-        binding.actionBtn.setOnClickListener {
+        refreshData = {
             lifecycleScope.launch {
                 val tokenId = UserRepository("").getTokenId(requireContext())
-
-                viewModel.changeOrderStatus(
-                    requireActivity().currentLocale.toLanguageTag(),
-                    tokenId = tokenId
-                ).observeApiResponse(this@OrderFragment, {
-                    viewModel.masterOrder?.firstOrder?.status =
-                        ApiConstant.OrderStatus.getShopOwnerNextStatus(viewModel.masterOrder?.firstOrder?.status)?.value
-                    binding.invalidateAll()
-                })
+                viewModel.getMasterOrder(requireActivity().currentLocale.toLanguageTag(), tokenId)
             }
         }
+
+        viewModel.orderResponse.observe(viewLifecycleOwner, {
+            // init data
+            ProductsAdapter(this).let { adapter ->
+                binding.cartReviewItemsRv.adapter = adapter
+                adapter.submitList(it.data?.firstOrder?.products)
+            }
+
+            // setup listeners
+            binding.actionBtn.setOnClickListener {
+                lifecycleScope.launch {
+                    val tokenId = UserRepository("").getTokenId(requireContext())
+
+                    viewModel.changeOrderStatus(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId
+                    ).observeApiResponse(this@OrderFragment, {
+                        viewModel.orderResponse.value?.data?.firstOrder?.status =
+                            ApiConstant.OrderStatus.getShopOwnerNextStatus(viewModel.orderResponse.value?.data?.firstOrder?.status)?.value
+                        binding.invalidateAll()
+                    })
+                }
+            }
+        })
     }
 
 

@@ -57,7 +57,7 @@ interface ApiService : ApiServiceFlavour {
     ): ApiResponseModel<UserDataModel>?
 
     @FormUrlEncoded
-    @POST("{flavour}/resetPassword")
+    @POST("{flavour}/changePassword")
     suspend fun changePassword(
         @Path("flavour") flavour: String = BuildConfig.FLAVOR,
         @Field("tokenId") tokenId: String?,
@@ -77,9 +77,8 @@ interface ApiService : ApiServiceFlavour {
     suspend fun getAppCurrency(): ApiResponseModel<CurrencyModel>
 
     @FormUrlEncoded
-    @POST("{flavour}/changeLang")
+    @POST("client/changeLang")
     suspend fun changeLanguage(
-        @Path("flavour") flavour: String = BuildConfig.FLAVOR,
         @Field("fcmToken") fcmToken: String?,
         @Field("language") language: Int?
     ): ApiResponseModel<*>?
@@ -203,4 +202,32 @@ interface ApiService : ApiServiceFlavour {
         @Field("tokenId") tokenId: String?,
         @Field("rating") rating: Int?,
     ): ApiResponseModel<String?>?
+
+    // payment
+    @FormUrlEncoded
+    @POST("payment/StcPayAuth")
+    suspend fun authenticateStcPay( // todo add to mock api
+        @Field("mobile") mobile: String?,
+        @Field("orderNumber") masterOrderNumber: Int?,
+        @Field("orderId") masterOrderId: String?,
+        @Field("orderAmount") orderAmount: Double?,
+        @Field("description") description: String?
+    ): ApiResponseModel<StcPayAuthModel>?
+
+    @FormUrlEncoded
+    @POST("payment/stcPayConfirm")
+    suspend fun confirmStcPay( // todo add to mock api
+        @Field("stcpayPmtReference") stcPayPmtReference: String?,
+        @Field("otpValue") otpValue: String?,
+        @Field("otpReference") otpReference: String?,
+        @Field("payType") payType: Int?
+    ): ApiResponseModel<*>?
+
+    @FormUrlEncoded
+    @POST("payment/createMasterCardSession")
+    suspend fun createMasterCardSession( // todo add to mock api
+        @Field("orderId") masterOrderId: String?,
+        @Field("orderAmount") orderAmount: Double?,
+        @Field("description") description: String?
+    ): ApiResponseModel<SessionModel>?
 }

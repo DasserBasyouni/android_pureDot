@@ -29,6 +29,11 @@ interface ApiServiceFlavour {
         @Field("tokenId") tokenId: String?,
         @Field("pageNumber") pageNumber: Int?,
         @Field("itemsPerPage") itemsPerPage: Int?,
+        @Field("fromDate") fromDate: Long?,
+        @Field("toDate") toDate: Long?,
+        @Field("customerName") customerName: String?,
+        @Field("orderNumber") orderNumber: Int?,
+        @Field("status") status: Int?,
     ): ApiResponseModel<List<MasterOrderModel>>?
 
     @FormUrlEncoded
@@ -46,4 +51,14 @@ interface ApiServiceFlavour {
         @Field("pageNumber") pageNumber: Int?,
         @Field("itemsPerPage") itemsPerPage: Int?,
     ): ApiResponseModel<List<MasterOrderModel>>?
+
+    // orders
+    // order
+    @FormUrlEncoded
+    @POST("shopOwner/getMasterOrder")
+    suspend fun getMasterOrder(
+        @Field("tokenId") tokenId: String?,
+        @Field("orderId") id: String?
+    ): ApiResponseModel<MasterOrderModel>?
+
 }

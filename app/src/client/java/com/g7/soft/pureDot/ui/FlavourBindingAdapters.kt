@@ -3,9 +3,12 @@ package com.g7.soft.pureDot.ui
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
+import android.text.Html
 import android.view.LayoutInflater
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.g7.soft.pureDot.R
@@ -14,6 +17,7 @@ import com.g7.soft.pureDot.model.ProductVariationModel
 import com.g7.soft.pureDot.model.ShippingMethodModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import java.net.URLDecoder
 
 
 @BindingAdapter("bindChipsData", "bindChipsAreChecked")
@@ -84,4 +88,18 @@ fun bindShippingMethodsRadioButtons(
 fun getStyleRadioButton(context: Context) = RadioButton(context).apply {
     setTextColor(ContextCompat.getColor(context, R.color.warm_grey))
     setPadding(0, 12.dpToPx(), 0, 12.dpToPx())
+}
+
+@BindingAdapter("renderEncodedHtml")
+fun renderEncodedHtml(
+    tv: TextView,
+    encodedText: String?
+) {
+    val decodedText: String = URLDecoder.decode(encodedText ?: "", "UTF-8")
+
+    tv.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        Html.fromHtml(decodedText, Html.FROM_HTML_MODE_COMPACT)
+    } else {
+        Html.fromHtml(decodedText)
+    }
 }

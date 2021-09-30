@@ -15,16 +15,15 @@ class SplashViewModel : ViewModel() {
     }
 
 
-    fun login(langTag: String, emailOrPhoneNumber: String?, password: String?) = liveData(Dispatchers.IO) {
-        val fcmToken: String? = null // todo
-
-        emit(NetworkRequestResponse.loading())
-        emitSource(
-            UserRepository(langTag).login(
-                fcmToken = fcmToken,
-                emailOrPhoneNumber = emailOrPhoneNumber,
-                password = password
+    fun login(langTag: String, emailOrPhoneNumber: String?, password: String?, fcmToken: String) =
+        liveData(Dispatchers.IO) {
+            emit(NetworkRequestResponse.loading())
+            emitSource(
+                UserRepository(langTag).login(
+                    fcmToken = fcmToken,
+                    emailOrPhoneNumber = emailOrPhoneNumber,
+                    password = password
+                )
             )
-        )
-    }
+        }
 }

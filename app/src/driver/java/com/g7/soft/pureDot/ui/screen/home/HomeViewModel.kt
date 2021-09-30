@@ -32,6 +32,9 @@ class HomeViewModel(internal val tokenId: String?) : ViewModel() {
     val userDataResponse = MediatorLiveData<NetworkRequestResponse<UserDataModel>>()
     val userDataLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
+    val isNavigationView = MediatorLiveData<Boolean>().apply { this.value = false }
+
+
     init {
         availabilityResponse.value = null
         isFirstFetchData = false

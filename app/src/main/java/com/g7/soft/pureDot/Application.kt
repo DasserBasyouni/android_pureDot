@@ -5,6 +5,7 @@ import androidx.multidex.MultiDex
 import com.zeugmasolutions.localehelper.LocaleAwareApplication
 import timber.log.Timber
 
+
 // TODO: Migrate your existing splash screen implementation to Android 12
 //  https://developer.android.com/about/versions/12/splash-screen-migration
 class Application : LocaleAwareApplication() {

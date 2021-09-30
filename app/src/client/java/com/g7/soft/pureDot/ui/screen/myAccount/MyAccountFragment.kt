@@ -1,6 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.myAccount
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -30,7 +31,8 @@ class MyAccountFragment : Fragment() {
         lifecycleScope.launch { // optimize this and make it single time call
             val currencySymbol = UserRepository("").getCurrencySymbol(requireContext())
 
-            viewModel = ViewModelProvider(this@MyAccountFragment).get(MyAccountViewModel::class.java)
+            viewModel =
+                ViewModelProvider(this@MyAccountFragment).get(MyAccountViewModel::class.java)
 
             binding.currency = currencySymbol
             binding.viewModel = viewModel
@@ -58,7 +60,11 @@ class MyAccountFragment : Fragment() {
         })
 
         // setup settings
-        binding.settingsRv.adapter = SettingsAdapter(this)
+        lifecycleScope.launch {
+            val isGuestAccount = UserRepository("").getIsGuestAccount(requireContext())
+            Log.e("Z_", "isGuestAccount: $isGuestAccount")
+            binding.settingsRv.adapter = SettingsAdapter(this@MyAccountFragment, isGuestAccount)
+        }
 
         // add decoration divider
         binding.settingsRv.addItemDecoration(

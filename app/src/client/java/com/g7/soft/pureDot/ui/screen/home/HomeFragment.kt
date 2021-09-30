@@ -48,9 +48,7 @@ class HomeFragment : Fragment() {
             )
         }
         requireActivity().findViewById<View>(R.id.searchIv).setOnClickListener {
-            val bundle = bundleOf(
-                "sliderType" to ApiConstant.SliderOfferType.SEARCH_RESULTS,
-            )
+            val bundle = bundleOf("sliderType" to ApiConstant.SliderOfferType.SEARCH_RESULTS)
             findNavController().navigate(R.id.allProductsFragment, bundle)
         }
 

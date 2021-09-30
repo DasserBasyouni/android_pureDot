@@ -71,7 +71,7 @@
                 tools:text="Abdelrahman Ahmed" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/nameTil"
+                android:id="@+id/firstNameTil"
                 style="@style/ProjectTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -98,9 +98,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/nameTil"
-                app:layout_constraintStart_toStartOf="@+id/nameTil"
-                app:layout_constraintTop_toBottomOf="@+id/nameTil">
+                app:layout_constraintEnd_toEndOf="@+id/firstNameTil"
+                app:layout_constraintStart_toStartOf="@+id/firstNameTil"
+                app:layout_constraintTop_toBottomOf="@+id/firstNameTil">
 
                 <com.google.android.material.textfield.TextInputEditText
                     style="@style/ProjectTextInputEditText"
@@ -119,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="@+id/lastNameTil"
-                app:layout_constraintStart_toStartOf="@+id/nameTil"
+                app:layout_constraintStart_toStartOf="@+id/firstNameTil"
                 app:layout_constraintTop_toBottomOf="@+id/lastNameTil">
 
                 <com.google.android.material.textfield.TextInputEditText

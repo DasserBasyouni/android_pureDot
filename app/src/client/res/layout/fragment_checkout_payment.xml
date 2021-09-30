@@ -132,6 +132,144 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView7"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="@{viewModel.isMasterCardChecked == true ? View.VISIBLE : View.GONE}"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView6">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView37"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@string/payment_details"
+                        android:textColor="@color/warm_purple"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nameOnCardTil"
+                        style="@style/ProjectTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView37"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView37"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView37">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/ProjectTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/name_on_card"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPersonName"
+                            android:text="@={viewModel.masterCardNameOnCard}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/cardNumberTil"
+                        style="@style/ProjectTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/nameOnCardTil"
+                        app:layout_constraintStart_toStartOf="@+id/nameOnCardTil"
+                        app:layout_constraintTop_toBottomOf="@+id/nameOnCardTil">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/ProjectTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/number"
+                            android:imeOptions="actionNext"
+                            android:inputType="numberSigned"
+                            android:text="@={viewModel.masterCardNumber}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/cardSecurityCodeTil"
+                        style="@style/ProjectTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/cardNumberTil"
+                        app:layout_constraintStart_toStartOf="@+id/cardNumberTil"
+                        app:layout_constraintTop_toBottomOf="@+id/cardNumberTil">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/ProjectTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/security_code"
+                            android:imeOptions="actionNext"
+                            android:inputType="numberSigned"
+                            android:text="@={viewModel.masterCardSecurityCode}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/cardExpiryMonthTil"
+                        style="@style/ProjectTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="4dp"
+                        app:layout_constraintEnd_toStartOf="@id/cardExpiryYearTil"
+                        app:layout_constraintStart_toStartOf="@+id/cardSecurityCodeTil"
+                        app:layout_constraintTop_toBottomOf="@+id/cardSecurityCodeTil">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/ProjectTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/expiry_month"
+                            android:imeOptions="actionNext"
+                            android:inputType="numberSigned"
+                            android:text="@={viewModel.masterCardExpiryMonth}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/cardExpiryYearTil"
+                        style="@style/ProjectTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/cardSecurityCodeTil"
+                        app:layout_constraintStart_toEndOf="@+id/cardExpiryMonthTil"
+                        app:layout_constraintTop_toBottomOf="@+id/cardSecurityCodeTil">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/ProjectTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/expiry_year"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberSigned"
+                            android:text="@={viewModel.masterCardExpiryYear}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/nextBtn"
                 style="@style/ProjectPurpleFilledButton"
@@ -143,7 +281,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/cardView6"
                 app:layout_constraintStart_toStartOf="@+id/cardView6"
-                app:layout_constraintTop_toBottomOf="@+id/cardView6"
+                app:layout_constraintTop_toBottomOf="@+id/cardView7"
                 app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

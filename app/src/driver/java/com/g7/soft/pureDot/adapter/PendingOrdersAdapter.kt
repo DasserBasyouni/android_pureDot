@@ -24,8 +24,8 @@ class PendingOrdersAdapter(private val fragment: HomeFragment) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
         holder.bind(getItem(position), fragment, isLastItem = position + 1 == itemCount)
-/*
-    // a fix @link: https://stackoverflow.com/a/50062174/5873832 todo apply to all pureDot & liveCoach?
+
+    /*// a fix @link: https://stackoverflow.com/a/50062174/5873832 todo apply to all pureDot & liveCoach?
     override fun submitList(list: MutableList<OrderModel>?) =
         super.submitList(list?.let { ArrayList(it) })*/
 

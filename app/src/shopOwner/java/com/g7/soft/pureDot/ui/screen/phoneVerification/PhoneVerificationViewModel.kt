@@ -10,7 +10,7 @@ import com.g7.soft.pureDot.model.UserDataModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.combine
+import com.g7.soft.pureDot.utils.combine
 import kotlinx.coroutines.Dispatchers
 
 class PhoneVerificationViewModel(val isPasswordReset: Boolean, private val emailOrPhoneNumber: String?) :

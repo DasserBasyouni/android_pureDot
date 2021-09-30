@@ -14,8 +14,8 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ActivityMainBinding
-import com.g7.soft.pureDot.ui.screen.home.HomeFragment
-import com.g7.soft.pureDot.util.UiUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.UiUtils
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
 
 
@@ -23,7 +23,7 @@ class MainActivity : LocaleAwareCompatActivity() {
 
     internal lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration // with this or without menu+upButton bug still the same so we can remove the line?
-
+    private var firstTimeExitPopup = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -51,7 +51,7 @@ class MainActivity : LocaleAwareCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.collapsingToolbarLayout, null)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        navController.addOnDestinationChangedListener { controller, destination, _ ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
 
             // an un-clean fix for screen title when having only toolbar without collapsingToolbar
             binding.toolbarTitle.text = destination.label
@@ -127,12 +127,18 @@ class MainActivity : LocaleAwareCompatActivity() {
                 || super.onOptionsItemSelected(item)
 
     override fun onBackPressed() {
-        if (findNavController(R.id.navHostFragment).currentDestination?.id == R.id.homeFragment) {
-            val currentFragment =
-                supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()
-            (currentFragment as HomeFragment).doBackPressed()
-        } else
-            super.onBackPressed()
+        when {
+            /*findNavController(R.id.navHostFragment).currentDestination?.id == R.id.homeFragment -> {
+                val currentFragment =
+                    supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()
+                (currentFragment as HomeFragment).doBackPressed()
+            }*/
+            firstTimeExitPopup -> {
+                firstTimeExitPopup = false
+                ProjectDialogUtils.onExitApp(this) { firstTimeExitPopup = true }
+            }
+            else -> super.onBackPressed()
+        }
     }
 
     fun superOnBackPressed() = super.onBackPressed()

@@ -36,4 +36,9 @@ open class OrderRepositoryFlavour(private val langTag: String) {
             }))
         }
 
+    fun getMasterOrder(tokenId: String?, id: String?) = liveData(Dispatchers.IO) {
+        emitSource(NetworkRequestHandler().handle(request = {
+            return@handle Fetcher().getInstance(langTag)?.getMasterOrder(tokenId = tokenId, id = id)
+        }))
+    }
 }

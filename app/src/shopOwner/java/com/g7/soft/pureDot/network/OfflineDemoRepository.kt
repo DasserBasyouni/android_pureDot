@@ -314,7 +314,7 @@ class OfflineDemoRepository {
                 this.set(Calendar.MILLISECOND, 0)
                 this.set(Calendar.ZONE_OFFSET, 0)
             }.timeInMillis / 1000,
-            "type" to ApiConstant.TransactionType.FROM_YOUR_ACCOUNT.value,
+            "type" to ApiConstant.TransactionType.RETURN_ORDER.value,
             "amount" to 15.00,
             "currency" to "EGP"
         )
@@ -327,7 +327,7 @@ class OfflineDemoRepository {
                 this.set(Calendar.MILLISECOND, 0)
                 this.set(Calendar.ZONE_OFFSET, 0)
             }.timeInMillis / 1000,
-            "type" to ApiConstant.TransactionType.TO_YOUR_ACCOUNT.value,
+            "type" to ApiConstant.TransactionType.REFUND_MONEY.value,
             "amount" to 5.50,
             "currency" to "EGP"
         )
@@ -340,7 +340,7 @@ class OfflineDemoRepository {
                 this.set(Calendar.MILLISECOND, 0)
                 this.set(Calendar.ZONE_OFFSET, 0)
             }.timeInMillis / 1000,
-            "type" to ApiConstant.TransactionType.WITHDRAW.value,
+            "type" to ApiConstant.TransactionType.SALES.value,
             "amount" to 15.00,
             "currency" to "EGP"
         )
@@ -353,7 +353,7 @@ class OfflineDemoRepository {
                 this.set(Calendar.MILLISECOND, 0)
                 this.set(Calendar.ZONE_OFFSET, 0)
             }.timeInMillis / 1000,
-            "type" to ApiConstant.TransactionType.POINTS.value,
+            "type" to ApiConstant.TransactionType.TRANSFER.value,
             "amount" to 8.50,
             "currency" to "EGP"
         )

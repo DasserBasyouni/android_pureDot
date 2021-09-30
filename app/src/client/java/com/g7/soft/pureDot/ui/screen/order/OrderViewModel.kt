@@ -10,8 +10,8 @@ import com.g7.soft.pureDot.repo.OrderRepository
 import kotlinx.coroutines.Dispatchers
 
 class OrderViewModel(
-    private val masterOrder: MasterOrderModel?,
-    private val masterOrderId: String?
+    internal val masterOrder: MasterOrderModel?,
+    internal val masterOrderId: String?
 ) :
     ViewModel() {
 

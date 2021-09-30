@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ProjectConstant.Companion.ValidationError
 import com.g7.soft.pureDot.databinding.FragmentBankAccountBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
@@ -26,13 +27,12 @@ class BankAccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding =
-            DataBindingUtil.inflate(
-                layoutInflater,
-                R.layout.fragment_bank_account,
-                container,
-                false
-            )
+        binding = DataBindingUtil.inflate(
+            layoutInflater,
+            R.layout.fragment_bank_account,
+            container,
+            false
+        )
 
         viewModel = ViewModelProvider(this).get(BankAccountViewModel::class.java)
 
@@ -52,12 +52,17 @@ class BankAccountFragment : Fragment() {
         // set onClick listener
         binding.saveBtn.setOnClickListener {
             lifecycleScope.launch {
-                val tokenId =
-                    UserRepository("").getTokenId(requireContext())
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
                 viewModel.save(requireActivity().currentLocale.toLanguageTag(), tokenId = tokenId)
                     .observeApiResponse(this@BankAccountFragment, {
                         findNavController().popBackStack()
+                    }, validationObserve = {
+                        binding.bankNameTil.error = if (it == ValidationError.EMPTY_BANK_NAME)
+                            getString(R.string.error_empty_bank_name) else null
+
+                        binding.ibanTil.error = if (it == ValidationError.EMPTY_IBAN)
+                            getString(R.string.error_empty_iban) else null
                     })
             }
         }

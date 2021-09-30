@@ -10,7 +10,7 @@ import com.g7.soft.pureDot.model.ZipCodeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.GeneralRepository
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ValidationUtils
+import com.g7.soft.pureDot.utils.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -91,9 +91,7 @@ class SignUpViewModel : ViewModel() {
         }
     }*/
 
-    fun register(langTag: String) = liveData(Dispatchers.IO) {
-        val fcmToken: String? = null // todo
-
+    fun register(langTag: String, fcmToken: String) = liveData(Dispatchers.IO) {
         var timestamp: Timestamp? = null
 
         try {
@@ -107,7 +105,7 @@ class SignUpViewModel : ViewModel() {
         ValidationUtils().setName(name.value)
             .setPhoneNumber(phoneNumber.value)
             .setEmail(email.value)
-            .setSelectedCity(selectedCity)
+            .setCity(selectedCity)
             .setDateOfBirth(timestamp)
             .setCarBrand(carBrand.value)
             .setIsMale(isMale.value)

@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentProfileEditBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
@@ -98,6 +99,22 @@ class ProfileEditFragment : Fragment() {
                 viewModel.save(requireActivity().currentLocale.toLanguageTag(), tokenId)
                     .observeApiResponse(this@ProfileEditFragment, {
                         findNavController().popBackStack()
+                    }, validationObserve = {
+                        ProfileEditFragmentFlavour().saveValidationObserve(this@ProfileEditFragment, it)
+
+                        binding.phoneNumberTil.error =
+                            if (it == ProjectConstant.Companion.ValidationError.EMPTY_PHONE_NUMBER)
+                                getString(R.string.error_empty_phone_number) else null
+
+                        binding.emailTil.error = when (it) {
+                            ProjectConstant.Companion.ValidationError.EMPTY_EMAIL -> getString(R.string.error_empty_email)
+                            ProjectConstant.Companion.ValidationError.INVALID_EMAIL -> getString(R.string.error_invalid_email)
+                            else -> null
+                        }
+
+                        binding.birthDateTil.error =
+                            if (it == ProjectConstant.Companion.ValidationError.EMPTY_DATE_OF_BIRTH)
+                                getString(R.string.error_empty_date_of_birth) else null
                     })
             }
         }

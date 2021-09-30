@@ -9,5 +9,7 @@ data class TransactionModel(
     @Json(name = "dateTime") val dateTime: Long?,
     @Json(name = "type") val type: Int?,
     @Json(name = "amount") val amount: Double?,
+    @Json(name = "typeName") val typeName: String?,
+    @Json(name = "description") val description: String?,
     //@Json(name = "currency") val currency: String?,
 )

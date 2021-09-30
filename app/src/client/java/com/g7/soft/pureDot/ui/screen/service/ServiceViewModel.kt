@@ -7,6 +7,7 @@ import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.OrderRepository
 import com.g7.soft.pureDot.repo.ServiceRepository
+import com.g7.soft.pureDot.utils.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -108,6 +109,15 @@ class ServiceViewModel(val service: ServiceModel?) : ViewModel() {
 
     fun addReview(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
+
+        // validate inputs
+        ValidationUtils()
+            .setComment(reviewComment.value)
+            .setRating(reviewRating.value)
+            .getError()?.let {
+                emit(NetworkRequestResponse.invalidInputData(validationError = it))
+                return@liveData
+            }
 
         emitSource(
             ServiceRepository(langTag).addReview(

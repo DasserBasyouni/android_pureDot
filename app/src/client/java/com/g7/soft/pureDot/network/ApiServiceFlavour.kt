@@ -27,7 +27,7 @@ interface ApiServiceFlavour {
         @Field("cityId") cityId: String?,
         @Field("zipCodeId") zipCodeId: String?,
         @Field("fcmToken") fcmToken: String?
-    ): ApiResponseModel<TokenIdModel>?
+    ): ApiResponseModel<String?>?
 
     @FormUrlEncoded
     @POST("client/getAddresses")
@@ -49,7 +49,7 @@ interface ApiServiceFlavour {
         @Field("cityId") cityId: String?,
         @Field("zipCodeId") zipCodeId: String?,
         @Field("buildingNumber") buildingNumber: String?,
-    ): ApiResponseModel<IdModel>?
+    ): ApiResponseModel<String>?
 
     @FormUrlEncoded
     @POST("client/editUserData")
@@ -223,13 +223,13 @@ interface ApiServiceFlavour {
     suspend fun checkCartItems(@Body body: RequestBody): ApiResponseModel<MasterOrderModel>?
 
     @POST("orders/checkout")
-    suspend fun checkout(@Body body: RequestBody): ApiResponseModel<IdModel>?
+    suspend fun checkout(@Body body: RequestBody): ApiResponseModel<CheckoutResponseModel>?
 
     @FormUrlEncoded
-    @POST("orders/getMasterOrder")
+    @POST("client/getMasterOrder")
     suspend fun getMasterOrder(
         @Field("tokenId") tokenId: String?,
-        @Field("orderId") id: String?
+        @Field("masterOrderId") id: String?
     ): ApiResponseModel<MasterOrderModel>?
 
     @FormUrlEncoded

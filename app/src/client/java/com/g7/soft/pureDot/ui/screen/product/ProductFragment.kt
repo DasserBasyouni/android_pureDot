@@ -27,17 +27,38 @@ import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.ui.screen.order.OrderFragment
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
 import kotlinx.coroutines.launch
 
+
 class ProductFragment : Fragment() {
+
+
+    companion object {
+        var refreshData: ((String?) -> Unit)? = null
+        var isRunning = false
+    }
+
+
     private lateinit var binding: FragmentProductBinding
     private lateinit var viewModelFactory: ProductViewModelFactory
     internal lateinit var viewModel: ProductViewModel
     private val args: ProductFragmentArgs by navArgs()
+
+
+    override fun onStart() {
+        super.onStart()
+        OrderFragment.isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        OrderFragment.isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,14 +89,19 @@ class ProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        refreshData = { productId ->
+            if (productId == viewModel.product?.id ?: viewModel.productId)
+                lifecycleScope.launch {
+                    val tokenId = UserRepository("").getTokenId(requireContext())
+                    viewModel.fetchData(requireActivity().currentLocale.toLanguageTag(), tokenId)
+                }
+        }
+
         // set screen title
         (requireActivity() as MainActivity).toolbar_title.text = args.item.name
 
         // fetch data
-        lifecycleScope.launch {
-            val tokenId = UserRepository("").getTokenId(requireContext())
-            viewModel.fetchData(requireActivity().currentLocale.toLanguageTag(), tokenId)
-        }
+        refreshData?.invoke(viewModel.product?.id ?: viewModel.productId)
 
         // setup observers
         val imagesOffersAdapter = ImagesSliderAdapter(this)
@@ -156,6 +182,10 @@ class ProductFragment : Fragment() {
                     .observeApiResponse(this@ProductFragment, {
                         viewModel.productDetailsResponse.value?.data?.userReview = it
                         binding.invalidateAll()
+                    }, validationObserve = {
+                        binding.messageTil.error =
+                            if (it == ProjectConstant.Companion.ValidationError.EMPTY_MESSAGE)
+                                getString(R.string.error_empty_message) else null
                     })
             }
         }
@@ -171,7 +201,7 @@ class ProductFragment : Fragment() {
                 ProjectDialogUtils.showSimpleMessage(
                     requireContext(),
                     R.string.branch_is_required,
-                    R.drawable.ic_secure_shield
+                    drawableResId = R.drawable.ic_secure_shield
                 )
             else if (viewModel.productDetailsResponse.value?.data?.variations != null
                 && viewModel.selectedVariationsIds.value?.size
@@ -180,7 +210,7 @@ class ProductFragment : Fragment() {
                 ProjectDialogUtils.showSimpleMessage(
                     requireContext(),
                     R.string.variations_are_required,
-                    R.drawable.ic_secure_shield
+                    drawableResId = R.drawable.ic_secure_shield
                 )
             else
                 lifecycleScope.launch {

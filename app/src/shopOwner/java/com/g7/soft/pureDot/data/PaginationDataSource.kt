@@ -16,11 +16,14 @@ import com.g7.soft.pureDot.repo.WalletRepository
 import com.g7.soft.pureDot.ui.screen.home.HomeFragment
 import com.g7.soft.pureDot.ui.screen.myOrders.MyOrdersFragment
 import com.g7.soft.pureDot.ui.screen.myWallet.MyWalletFragment
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PaginationDataSource<T>(
     private val fragment: Fragment,
@@ -130,15 +133,39 @@ class PaginationDataSource<T>(
             }
             fragment is MyOrdersFragment -> {
                 val viewModel = fragment.viewModel
+                val filterViewModel = fragment.filterViewModel
 
                 if (isInitialLoad)
                     viewModel.ordersLcee.value!!.response.value =
                         NetworkRequestResponse.loading<List<*>>()
 
+                var fromDateTimestamp: Timestamp? = null
+                try {
+                    val dateFormat =
+                        SimpleDateFormat(fragment.getString(R.string.format_standard_date))
+                    val parsedDate: Date = dateFormat.parse(filterViewModel.fromDate.value)
+                    fromDateTimestamp = Timestamp(parsedDate.time)
+                } catch (e: Exception) {
+                }
+
+                var toDateTimestamp: Timestamp? = null
+                try {
+                    val dateFormat =
+                        SimpleDateFormat(fragment.getString(R.string.format_standard_date))
+                    val parsedDate: Date = dateFormat.parse(filterViewModel.fromDate.value)
+                    toDateTimestamp = Timestamp(parsedDate.time)
+                } catch (e: Exception) {
+                }
+
                 OrderRepository(fragment.requireActivity().currentLocale.toLanguageTag()).getMyOrders(
                     tokenId = viewModel.tokenId,
                     pageNumber = if (isInitialLoad) 1 else params?.key,
                     itemsPerPage = itemsPerPage,
+                    fromDate = fromDateTimestamp?.time?.div(1000),
+                    toDate = toDateTimestamp?.time?.div(1000),
+                    customerName = filterViewModel.customerName.value,
+                    orderNumber = filterViewModel.orderNumber.value?.toIntOrNull(),
+                    status = filterViewModel.selectedStatus?.value,
                 ).observe(fragment, {
                     initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
                     callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
@@ -203,7 +230,7 @@ class PaginationDataSource<T>(
             ProjectDialogUtils.showSimpleMessage(
                 fragment.requireContext(),
                 ApiConstant.Status.getMessageResId(apiErrorStatus),
-                R.drawable.ic_secure_shield
+                drawableResId = R.drawable.ic_secure_shield
             )
     }
 }

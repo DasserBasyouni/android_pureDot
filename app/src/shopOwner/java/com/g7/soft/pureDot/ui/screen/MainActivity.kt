@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
@@ -20,8 +21,10 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ApiConstant.OrderStatus.Companion.isCancelable
 import com.g7.soft.pureDot.databinding.ActivityMainBinding
 import com.g7.soft.pureDot.model.OrderModel
+import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
 import com.g7.soft.pureDot.ui.screen.order.OrderFragment
-import com.g7.soft.pureDot.util.UiUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.UiUtils
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
 
 
@@ -36,6 +39,8 @@ class MainActivity : LocaleAwareCompatActivity() {
 
     internal lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration // with this or without menu+upButton bug still the same so we can remove the line?
+    internal val filterViewModel: FilterViewModel by viewModels()
+    private var firstTimeExitPopup = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +78,7 @@ class MainActivity : LocaleAwareCompatActivity() {
                 fullScreenDestinationIds = arrayListOf(R.id.splashFragment),
                 loginDestinationIds = arrayListOf(R.id.loginFragment),
                 transparentDestinationIds = arrayListOf(
+                    R.id.filterFragment,
                     R.id.homeFragment,
                     R.id.forgetPasswordFragment,
                     R.id.phoneVerificationFragment,
@@ -107,7 +113,7 @@ class MainActivity : LocaleAwareCompatActivity() {
             setupSelectedNabBarIcon(destination.id)
 
             // un clean fix
-            if (destination.id == R.id.homeFragment){
+            if (destination.id == R.id.homeFragment) {
                 supportActionBar?.setDisplayShowHomeEnabled(false)
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
             }
@@ -180,7 +186,13 @@ class MainActivity : LocaleAwareCompatActivity() {
                 supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()
             (currentFragment as CheckoutFragment).doBackPressed()
         } else*/
-            super.onBackPressed()
+        when {
+            firstTimeExitPopup -> {
+                firstTimeExitPopup = false
+                ProjectDialogUtils.onExitApp(this) { firstTimeExitPopup = true }
+            }
+            else -> super.onBackPressed()
+        }
     }
 
     fun superOnBackPressed() = super.onBackPressed()

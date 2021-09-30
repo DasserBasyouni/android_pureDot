@@ -9,7 +9,7 @@ import com.g7.soft.pureDot.model.ComplainModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.ComplaintRepository
-import com.g7.soft.pureDot.util.ValidationUtils
+import com.g7.soft.pureDot.utils.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 
 class ComplainViewModel(val complain: ComplainModel?) : ViewModel() {

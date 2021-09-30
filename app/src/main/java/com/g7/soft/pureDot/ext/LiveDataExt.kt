@@ -1,4 +1,4 @@
-package com.g7.soft.pureDot.util
+package com.g7.soft.pureDot.utils
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData

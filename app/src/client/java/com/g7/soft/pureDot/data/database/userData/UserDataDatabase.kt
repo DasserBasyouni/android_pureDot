@@ -34,7 +34,7 @@ class UserDataDatabase(context: Context) {
 
 
     suspend fun updateTokenId(value: String?) {
-        dataStore.updateData { data -> data.toBuilder().setTokenId(value).build() }
+        dataStore.updateData { data -> data.toBuilder().setTokenId(value ?: "").build() }
     }
 
     suspend fun updateEmailOrPhoneNumber(value: String?) {

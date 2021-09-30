@@ -15,7 +15,7 @@ import com.g7.soft.pureDot.repo.WalletRepository
 import com.g7.soft.pureDot.ui.screen.home.HomeFragment
 import com.g7.soft.pureDot.ui.screen.myOrders.MyOrdersFragment
 import com.g7.soft.pureDot.ui.screen.myWallet.MyWalletTransactionsFragment
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -162,6 +162,14 @@ class PaginationDataSource<T>(
                     initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)
                     callback?.onResult((it.data ?: listOf()) as List<T>, pageKey)
 
+                    // set selected order
+                    if (viewModel.selectedOrder.value == null)
+                        viewModel.selectedOrder.value =
+                            it.data?.firstOrNull { order ->
+                                order.firstOrder?.deliveryStatus != null
+                                        && order.firstOrder.deliveryStatus != ApiConstant.OrderDeliveryStatus.NEW.value
+                            }
+
                     if (isInitialLoad)
                         viewModel.ordersLcee.value!!.response.value = it
 
@@ -180,7 +188,7 @@ class PaginationDataSource<T>(
             ProjectDialogUtils.showSimpleMessage(
                 fragment.requireContext(),
                 ApiConstant.Status.getMessageResId(apiErrorStatus),
-                R.drawable.ic_secure_shield
+                drawableResId = R.drawable.ic_secure_shield
             )
     }
 }

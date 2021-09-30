@@ -12,9 +12,24 @@ plugins {
 // Semantic Versioning 2.0.0 {@link 'https://semver.org/'}
 def versionMajor = 0
 def versionMinor = 0
-def versionPatch = 26
+def versionPatch = 38
 
 android {
+    signingConfigs {
+        test {
+            storeFile file('D:\\Projects\\PureDot\\sensitive\\anroidTempKey\\testKey.jks')
+            storePassword 'testKey'
+            keyPassword 'testKey'
+            keyAlias 'key0'
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
@@ -27,6 +42,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+        signingConfig signingConfigs.test
     }
     buildFeatures {
         dataBinding true
@@ -85,7 +101,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.8.0')
 
     // android x: core & ui
-    implementation 'androidx.core:core-ktx:1.6.0' // to have clean code of hiding/show status bar, reference: https://stackoverflow.com/a/64828067/5873832
+    implementation 'androidx.core:core-ktx:1.6.0'
+    // to have clean code of hiding/show status bar, reference: https://stackoverflow.com/a/64828067/5873832
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation "com.google.android.material:material:1.4.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -113,6 +130,8 @@ dependencies {
     // network: moshi
     implementation "com.squareup.moshi:moshi-kotlin:1.9.3"
     implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
+    // network: override okHttp
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
 
     // functionality
     implementation "androidx.multidex:multidex:2.0.1"
@@ -122,17 +141,20 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // user interface: essentials
-    implementation 'com.github.smarteist:autoimageslider:1.3.7' // upper version are not showing indicator for unknown reason
+    implementation 'com.github.smarteist:autoimageslider:1.3.7'
+    // upper version are not showing indicator for unknown reason
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    //implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'androidx.work:work-runtime-ktx:2.5.0'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
     // mapBox
-    //implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.2'
-    implementation 'com.mapbox.maps:android:10.0.0-rc.5'
-    implementation "com.mapbox.navigation:android:2.0.0-beta.21"// optimize this and use core?
+    clientImplementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.2'
+    clientImplementation 'com.mapbox.mapboxsdk:mapbox-sdk-services:6.0.0-alpha.2'
+    driverImplementation 'com.mapbox.maps:android:10.0.0-rc.5'
+    driverImplementation "com.mapbox.navigation:android:2.0.0-beta.21"// optimize this and use core?
     //implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.6'
 
     // user interface: helpers
@@ -149,10 +171,26 @@ dependencies {
 
     // logging & analytics
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-core:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-attr:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-build-config:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-crash:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-disk:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-geiger-counter:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-measurement:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-phoenix:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-recorder:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-shared-preferences:0.9.33'
+    debugImplementation 'com.willowtreeapps.hyperion:hyperion-timber:0.9.33'
+    releaseImplementation 'com.willowtreeapps.hyperion:hyperion-core-no-op:0.9.33'
 
-    implementation  'com.fxn769:pix:1.5.6'
+    implementation 'com.fxn769:pix:1.5.6'
+
+    // payment gateway
+    implementation 'com.mastercard.gateway:gateway-android:1.1.4'
 
     //Room persistence database
     def room_version = "2.3.0"
@@ -189,3 +227,4 @@ protobuf {
 }
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-kapt'

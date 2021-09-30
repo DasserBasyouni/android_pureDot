@@ -3,18 +3,18 @@ package com.g7.soft.pureDot.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemWorkingHourHeaderBinding
 import com.g7.soft.pureDot.model.WorkingDayModel
-import com.g7.soft.pureDot.model.WorkingTimesModel
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.workingHours.WorkingHoursFragment
 
 
 class WorkingHoursHeaderAdapter(
     private val fragment: WorkingHoursFragment,
-    private val groupedData: WorkingTimesModel?
+    private val workingDays: List<WorkingDayModel>?
 ) :
     RecyclerView.Adapter<WorkingHoursHeaderAdapter.ViewHolder>() {
 
@@ -22,20 +22,20 @@ class WorkingHoursHeaderAdapter(
         ViewHolder.from(viewGroup)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getDayData(position), fragment, this)
+        holder.bind(workingDays?.get(position), fragment, this)
 
-    override fun getItemCount(): Int = 7
+    override fun getItemCount(): Int = workingDays?.size ?: 0
 
-    // todo api note: ids of workingHourModel can't be repeated
-    private fun getDayData(position: Int): WorkingDayModel? = when (position) {
-        0 -> groupedData?.saturday
-        1 -> groupedData?.sunday
-        2 -> groupedData?.monday
-        3 -> groupedData?.tuesday
-        4 -> groupedData?.wednesday
-        5 -> groupedData?.thursday
-        6 -> groupedData?.friday
-        else -> null
+
+    fun getWorkingDays(llm: LinearLayoutManager): List<WorkingDayModel>? {
+        workingDays?.forEachIndexed { index, _ ->
+            val view = llm.findViewByPosition(index)
+            val innerRv = view?.findViewById<RecyclerView>(R.id.timesRv)
+
+            workingDays[index].times = (innerRv?.adapter as WorkingHoursInnerAdapter)
+                .getWorkingHours(innerRv.layoutManager as LinearLayoutManager)
+        }
+        return workingDays
     }
 
 
@@ -46,6 +46,7 @@ class WorkingHoursHeaderAdapter(
             fragment: WorkingHoursFragment,
             adapter: WorkingHoursHeaderAdapter,
         ) {
+            binding.isExpanded = fragment.viewModel.expandedIndex.value == adapterPosition
             binding.dataModel = dataModel
             binding.adapterPosition = adapterPosition
             binding.executePendingBindings()
@@ -57,7 +58,10 @@ class WorkingHoursHeaderAdapter(
             // add decoration divider
             binding.timesRv.addItemDecoration(
                 DividerItemDecorator(
-                    ContextCompat.getDrawable(fragment.requireContext(), R.drawable.reviews_divider_layer)!!
+                    ContextCompat.getDrawable(
+                        fragment.requireContext(),
+                        R.drawable.reviews_divider_layer
+                    )!!
                 )
             )
 
@@ -68,14 +72,21 @@ class WorkingHoursHeaderAdapter(
 
             // setup onClick
             binding.root.setOnClickListener {
-                fragment.viewModel.workingHoursResponse.value?.data?.setIsExpanded(adapterPosition)
+                val expandedIndex = fragment.viewModel.expandedIndex.value
+
+                if (expandedIndex != adapterPosition)
+                    fragment.viewModel.expandedIndex.value = adapterPosition
+                else
+                    fragment.viewModel.expandedIndex.value = null
+
+                if (expandedIndex != null)
+                adapter.notifyItemChanged(expandedIndex)
                 adapter.notifyItemChanged(adapterPosition)
             }
             binding.addTimeTv.setOnClickListener {
                 timesAdapter.addNewTime()
             }
         }
-
 
 
         companion object {
@@ -89,6 +100,4 @@ class WorkingHoursHeaderAdapter(
             )
         }
     }
-
-
 }

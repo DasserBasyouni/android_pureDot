@@ -8,7 +8,7 @@ import com.g7.soft.pureDot.model.ApiShopOrderItemModel
 import com.g7.soft.pureDot.model.ApiShopOrderModel
 import com.g7.soft.pureDot.network.Fetcher
 import com.g7.soft.pureDot.network.NetworkRequestHandler
-import com.g7.soft.pureDot.util.LogEventUtils
+import com.g7.soft.pureDot.utils.LogEventUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -273,13 +273,13 @@ class CartRepository(private val langTag: String) {
 
     fun checkoutIsPaid(
         tokenId: String?,
-        orderId: String?,
+        masterOrderId: String?,
         isPaid: Boolean?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.checkoutIsPaid(
                 tokenId = tokenId,
-                orderId = orderId,
+                orderId = masterOrderId,
                 isPaid = isPaid,
             )
         }))

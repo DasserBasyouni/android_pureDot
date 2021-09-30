@@ -9,6 +9,7 @@ import com.g7.soft.pureDot.model.*
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.GeneralRepository
 import com.g7.soft.pureDot.repo.UserRepository
+import com.g7.soft.pureDot.utils.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -35,6 +36,12 @@ class ProfileEditViewModel(
     val dateOfBirthCalendar =
         MutableLiveData<Calendar?>().apply { this.value = Calendar.getInstance() }
     val selectedGenderPosition = MutableLiveData<Int?>().apply { this.value = 0 }
+    val isMale
+        get() = when (selectedGenderPosition.value) {
+            1 -> true
+            2 -> false
+            else -> null
+        }
 
     val selectedCountryPosition = MutableLiveData<Int?>().apply { this.value = 0 }
     val selectedCountry
@@ -112,6 +119,20 @@ class ProfileEditViewModel(
         }
 
         emit(NetworkRequestResponse.loading())
+
+        // validate inputs
+        ValidationUtils().setFirstName(firstName.value)
+            .setLastName(lastName.value)
+            .setPhoneNumber(phoneNumber.value)
+            .setEmail(email.value)
+            .setCity(selectedCity)
+            .setZipCode(selectedZipCode, signUpFields?.haveZipCode)
+            .setIsMale(isMale)
+            .getError()?.let {
+                emit(NetworkRequestResponse.invalidInputData(validationError = it))
+                return@liveData
+            }
+
         emitSource(
             UserRepository(langTag).editUserData(
                 tokenId = tokenId,

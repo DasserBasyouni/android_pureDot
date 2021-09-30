@@ -1,5 +1,6 @@
 package com.g7.soft.pureDot.constant
 
+import android.content.Context
 import com.g7.soft.pureDot.R
 
 
@@ -76,6 +77,16 @@ class ApiConstant {
         ORDER_IS_OUT(2006);
 
         companion object {
+            fun getSpinnerData(context: Context) = arrayOf(
+                context.getString(R.string.select_status),
+                context.getString(R.string.label_new),
+                context.getString(R.string.confirmed),
+                context.getString(R.string.being_shipping),
+                context.getString(R.string.picked),
+                context.getString(R.string.delivered),
+                context.getString(R.string.canceled),
+            )
+
             fun fromInt(value: Int?) = values().firstOrNull { it.value == value }
 
             fun fromPosition(position: Int?): OrderStatus? {
@@ -154,11 +165,22 @@ class ApiConstant {
     }
 
     enum class TransactionType(val value: Int) {
-        TO_YOUR_ACCOUNT(3001),
+        REDEEM(3001),
+        PAY_FOR_ORDER(3002),
+        RETURN_PRODUCT(3003),
+        TRANSFER(3004),
+        DEPOSIT(3005),
+        REFUND(3006),
+        REFUND_MONEY(3007),
+        DELIVERY_INCOME(3008),
+        SALES(3009),
+        RETURN_ORDER(3010)
+
+        /*TO_YOUR_ACCOUNT(3001),
         WITHDRAW(3004),
         DEPOSIT(3003),
         FROM_YOUR_ACCOUNT(3004),
-        POINTS(3005);
+        POINTS(3005)*/;
 
         companion object {
             fun fromInt(value: Int?) = values().firstOrNull { it.value == value }
@@ -210,18 +232,65 @@ class ApiConstant {
         }
     }
 
+    enum class PaymentType(val value: Int) {
+        ORDER(0),
+        CLIENT_WALLET(1),
+        DRIVER_WALLET(2);
+
+        companion object {
+            fun fromInt(value: Int) = values().firstOrNull { it.value == value }
+        }
+    }
+
+    enum class PaymentMethod(val value: String) {
+        CASH_ON_DELIVERY("CashOnDelivery"),
+        DIGITAL_WALLET("DigitalWallet"),
+        STC_PAY("STCPAY"),
+        MASTER_CARD("MASCRD");
+
+        companion object {
+            fun fromBooleans(
+                isCashOnDelivery: Boolean?,
+                isStcPayChecked: Boolean?,
+                isMasterCardChecked: Boolean?
+            ) = when {
+                isMasterCardChecked == true -> MASTER_CARD
+                isStcPayChecked == true -> STC_PAY
+                isCashOnDelivery == true -> CASH_ON_DELIVERY
+                else -> null
+            }
+
+            fun fromInt(value: String) = values().firstOrNull { it.value == value }
+        }
+    }
 
     companion object {
+
+        /*
+        * Walaa
+        * 0593129847
+        * walaa.elnozahy@gmail.com
+        * 25/08/2021
+        * SA
+        * Mecca
+        * Female
+        * Toyota 2020
+        * accept terms
+        * */
 
         // mock api
         //const val BASE_URL = "https://tests.free.beeceptor.com/api/"
 
         // live
-        //const val BASE_URL = "https://api.puredot.com.sa/api/"
-        //const val IMG_BASE_URL = "https://cp.puredot.com.sa/api/"
+        const val BASE_URL = "https://api.puredot.com.sa/api/"
+        const val IMG_BASE_URL = "https://cp.puredot.com.sa/api/"
+        const val MERCHANT_ID = "3000000963"
+        const val MASTER_CARD_API_VERSION = "60"
 
-        const val BASE_URL = "http://207.38.87.126:2222/api/"
-        const val IMG_BASE_URL = "http://207.38.87.126:3333/"
+        //const val BASE_URL = "http://207.38.87.126:2222/api/"
+        //const val IMG_BASE_URL = "http://207.38.87.126:3333/"
+        //const val MERCHANT_ID = "TEST3000000963"
+        //const val MASTER_CARD_API_VERSION = "61"
 
         const val SOCKET_IO_URL = "https://mars.udacity.com/"
 

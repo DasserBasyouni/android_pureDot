@@ -13,16 +13,33 @@ import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
 import com.g7.soft.pureDot.repo.UserRepository
+import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
 
 class OrderFragment : Fragment() {
+
+    companion object {
+        var refreshData: ((String?) -> Unit)? = null
+        var isRunning = false
+    }
+
 
     internal lateinit var binding: FragmentOrderBinding
     private lateinit var viewModelFactory: OrderViewModelFactory
     internal lateinit var viewModel: OrderViewModel
     private val args: OrderFragmentArgs by navArgs()
 
+
+    override fun onStart() {
+        super.onStart()
+        isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +69,13 @@ class OrderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        refreshData = {
+            lifecycleScope.launch {
+                val tokenId = UserRepository("").getTokenId(requireContext())
+                viewModel.getMasterOrder(requireActivity().currentLocale.toLanguageTag(), tokenId)
+            }
+        }
 
         // setup listeners
         binding.cancelBtn.setOnClickListener {

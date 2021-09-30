@@ -1,6 +1,5 @@
 package com.g7.soft.pureDot.data
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.DataSource
@@ -25,7 +24,7 @@ import com.g7.soft.pureDot.ui.screen.seeAll.reviews.AllReviewsFragment
 import com.g7.soft.pureDot.ui.screen.seeAll.stores.AllStoresFragment
 import com.g7.soft.pureDot.ui.screen.services.ServicesFragment
 import com.g7.soft.pureDot.ui.screen.store.StoreFragment
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -529,7 +528,7 @@ class PaginationDataSource<T>(
             ProjectDialogUtils.showSimpleMessage(
                 fragment.requireContext(),
                 ApiConstant.Status.getMessageResId(apiErrorStatus),
-                R.drawable.ic_secure_shield
+                drawableResId = R.drawable.ic_secure_shield
             )
     }
 }

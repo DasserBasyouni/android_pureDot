@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ValidationUtils
+import com.g7.soft.pureDot.utils.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 
 class LoginViewModel : ViewModel() {
@@ -13,9 +13,7 @@ class LoginViewModel : ViewModel() {
     val emailOrPhoneNumber = MutableLiveData<String?>()
     val password = MutableLiveData<String?>()
 
-    fun login(langTag: String) = liveData(Dispatchers.IO) {
-        val fcmToken: String? = null // todo
-
+    fun login(langTag: String, fcmToken: String) = liveData(Dispatchers.IO) {
         // validate inputs
         ValidationUtils()
             .setPhoneNumberOrEmail(emailOrPhoneNumber.value)

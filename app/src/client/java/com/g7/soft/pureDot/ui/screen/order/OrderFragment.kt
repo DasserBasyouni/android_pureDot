@@ -15,18 +15,33 @@ import com.g7.soft.pureDot.adapter.OrderReviewHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
 
 class OrderFragment : Fragment() {
 
+    companion object {
+        var refreshData: ((String?) -> Unit)? = null
+        var isRunning = false
+    }
+
     internal lateinit var binding: FragmentOrderBinding
     private lateinit var viewModelFactory: OrderViewModelFactory
     internal lateinit var viewModel: OrderViewModel
     private val args: OrderFragmentArgs by navArgs()
 
+
+    override fun onStart() {
+        super.onStart()
+        isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +72,17 @@ class OrderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        refreshData = { orderId ->
+            if (viewModel.orderResponse.value?.data?.orders?.firstOrNull { it.id == orderId } != null)
+                lifecycleScope.launch {
+                    val tokenId = UserRepository("").getTokenId(requireContext())
+                    viewModel.getMasterOrder(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId = tokenId
+                    )
+                }
+        }
 
         // fetch data if needed
         if (args.masterOrder == null)

@@ -21,7 +21,7 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_1.xml" value="0.3798941798941799" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_2.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_3.xml" value="0.275" />
-        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_payment.xml" value="0.275" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_payment.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_favourites.xml" value="0.2328125" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_filter.xml" value="0.2328125" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_home.xml" value="0.275" />
@@ -57,16 +57,22 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_staggered_product_large.xml" value="0.9" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_staggered_product_small.xml" value="0.724390243902439" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/view_search_bar.xml" value="0.37395833333333334" />
-        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_home.xml" value="0.5330363771343727" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/drawable/navigation_puck_icon.xml" value="0.39010416666666664" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_bank_account.xml" value="0.2296875" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_home.xml" value="0.37395833333333334" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_my_orders.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_my_wallet.xml" value="0.20520833333333333" />
-        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_order.xml" value="0.5914844649021864" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_order.xml" value="0.47368421052631576" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_profile.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_profile_edit.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_settings.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_sign_up.xml" value="0.37395833333333334" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_working_hours.xml" value="0.25833333333333336" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/item_my_order.xml" value="0.2109375" />
-        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/item_order.xml" value="0.75" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/item_order.xml" value="0.25833333333333336" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/item_product.xml" value="0.20520833333333333" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/item_working_hour_header.xml" value="0.20520833333333333" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/item_working_hour_inner.xml" value="0.22916666666666666" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/view_side_nav_menu.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable-night/horizontal_cursor.xml" value="0.39010416666666664" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/bg_language_radio_button.xml" value="0.3175925925925926" />
@@ -78,6 +84,7 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/ic_out_for_delivery.xml" value="0.2453125" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/ic_twitter.xml" value="0.39010416666666664" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/ic_wallet_points.xml" value="0.39010416666666664" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/drawable/reviews_divider_layer.xml" value="0.3" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/dialog_complaint_service_rating.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/dialog_rating.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_about_us.xml" value="0.37395833333333334" />
@@ -112,11 +119,12 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_all_reviews.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_cart.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_favourites.xml" value="0.20520833333333333" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_filter.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_home.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_my_account.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_my_wallet.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_order.xml" value="0.37395833333333334" />
-        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_profile.xml" value="0.20520833333333333" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_profile.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_profile_edit.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_sign_up.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_track_order.xml" value="0.20520833333333333" />
@@ -126,6 +134,7 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/item_home_order.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/item_order.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/item_product.xml" value="0.37395833333333334" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/simpleplacepicker/src/main/res/drawable-v24/ic_pin.xml" value="0.39010416666666664" />
         <entry key="..\:/Tools/SDK/android/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.37395833333333334" />
         <entry key="..\:/Tools/SDK/android/platforms/android-30/data/res/layout/simple_spinner_item.xml" value="0.37395833333333334" />
       </map>

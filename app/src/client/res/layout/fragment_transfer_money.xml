@@ -112,7 +112,7 @@
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/emailTil"
+                android:id="@+id/emailOrPhoneNumbetTil"
                 style="@style/ProjectTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cardView11">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/phone_number_or_email"
@@ -137,9 +137,9 @@ style="@style/ProjectTextInputEditText"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="@+id/emailTil"
-                app:layout_constraintStart_toStartOf="@+id/emailTil"
-                app:layout_constraintTop_toBottomOf="@+id/emailTil"
+                app:layout_constraintEnd_toEndOf="@+id/emailOrPhoneNumbetTil"
+                app:layout_constraintStart_toStartOf="@+id/emailOrPhoneNumbetTil"
+                app:layout_constraintTop_toBottomOf="@+id/emailOrPhoneNumbetTil"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_contact" />
 
@@ -149,12 +149,12 @@ style="@style/ProjectTextInputEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="@+id/emailTil"
-                app:layout_constraintStart_toStartOf="@+id/emailTil"
+                app:layout_constraintEnd_toEndOf="@+id/emailOrPhoneNumbetTil"
+                app:layout_constraintStart_toStartOf="@+id/emailOrPhoneNumbetTil"
                 app:layout_constraintTop_toBottomOf="@+id/contactsRv">
 
                 <com.google.android.material.textfield.TextInputEditText
-style="@style/ProjectTextInputEditText"
+                    style="@style/ProjectTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/amount"

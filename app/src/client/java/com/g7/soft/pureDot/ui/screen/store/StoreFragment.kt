@@ -31,12 +31,21 @@ import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.GridSpacingItemDecoration
 import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
+import com.g7.soft.pureDot.ui.screen.order.OrderFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
 import kotlinx.coroutines.launch
 
 class StoreFragment : Fragment() {
+
+
+    companion object {
+        var refreshData: ((String) -> Unit)? = null
+        var isRunning = false
+    }
+
+
     private lateinit var binding: FragmentStoreBinding
     private lateinit var viewModelFactory: StoreViewModelFactory
     internal lateinit var viewModel: StoreViewModel
@@ -44,6 +53,17 @@ class StoreFragment : Fragment() {
         ownerProducer = { requireActivity() }
     )
     private val args: StoreFragmentArgs by navArgs()
+
+
+    override fun onStart() {
+        super.onStart()
+        OrderFragment.isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        OrderFragment.isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +87,22 @@ class StoreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        refreshData = { storeId ->
+            if (storeId == viewModel.store?.id) {
+                // re-get paged data
+                viewModel.categoriesPagedList?.value?.dataSource?.invalidate()
+
+                // fetch data
+                lifecycleScope.launch {
+                    val tokenId = UserRepository("").getTokenId(requireContext())
+                    viewModel.fetchScreenData(
+                        requireActivity().currentLocale.toLanguageTag(),
+                        tokenId
+                    )
+                }
+            }
+        }
 
         // set screen title
         (requireActivity() as MainActivity).toolbar_title.text = args.store.name

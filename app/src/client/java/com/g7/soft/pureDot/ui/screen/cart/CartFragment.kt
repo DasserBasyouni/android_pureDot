@@ -16,6 +16,7 @@ import com.g7.soft.pureDot.adapter.CartHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentCartBinding
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 
@@ -76,6 +77,22 @@ class CartFragment : Fragment() {
 
         // setup click listener
         binding.checkoutBtn.setOnClickListener {
+
+            // validate products availability
+            val firstUnavailableProduct =
+                viewModel.orderResponse.value?.data?.firstOrder?.products?.firstOrNull { it.isAvailable == false }
+            if (firstUnavailableProduct != null) {
+                ProjectDialogUtils.showSimpleMessage(
+                    requireContext(),
+                    message = getString(
+                        R.string.error_unavailable_product_,
+                        firstUnavailableProduct.name
+                    ),
+                    drawableResId = R.drawable.ic_secure_shield
+                )
+                return@setOnClickListener
+            }
+
             val bundle = bundleOf(
                 "masterOrder" to viewModel.orderResponse.value?.data,
                 "productApiShopOrder" to viewModel.apiShopOrders.value?.toTypedArray()

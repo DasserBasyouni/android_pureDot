@@ -16,6 +16,7 @@ import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.launch
 
+
 // todo make this fragment MVVM arch
 class StartFragment : Fragment() {
     private lateinit var binding: FragmentStartBinding
@@ -47,12 +48,16 @@ class StartFragment : Fragment() {
         }
         if (Application.isClientFlavour) {
             binding.continueAsGuestTv.visibility = View.VISIBLE
-            binding.continueAsGuestTv.makeLinks(Pair(getString(R.string.part_guest), View.OnClickListener {
-                lifecycleScope.launch {
-                    UserRepository("").updateIsGuestAccount(requireContext(), true)
-                }
-                findNavController().navigate(R.id.action_startFragment_to_homeFragment)
-            }), doChangeColor = false)
+            binding.continueAsGuestTv.makeLinks(
+                Pair(
+                    getString(R.string.part_guest),
+                    View.OnClickListener {
+                        lifecycleScope.launch {
+                            UserRepository("").updateIsGuestAccount(requireContext(), true)
+                        }
+                        findNavController().navigate(R.id.action_startFragment_to_homeFragment)
+                    }), doChangeColor = false
+            )
         }
     }
 

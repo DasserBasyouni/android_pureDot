@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.ItemSettingsBinding
 import com.g7.soft.pureDot.model.UserDataModel
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 
 
 class SettingsAdapter(private val fragment: Fragment, data: UserDataModel?) :
@@ -31,7 +31,7 @@ class SettingsAdapter(private val fragment: Fragment, data: UserDataModel?) :
         ViewHolder.from(viewGroup)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(list[position], fragment)
+        holder.bind(list[position], fragment, isGuestAccount)
 
     override fun getItemCount(): Int = list.size
 

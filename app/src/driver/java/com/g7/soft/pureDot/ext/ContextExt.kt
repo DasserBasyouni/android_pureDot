@@ -1,6 +1,6 @@
 package com.g7.soft.pureDot.ext
 
-import android.content.Context
+/*import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.core.content.ContextCompat
@@ -13,4 +13,4 @@ fun Context.bitmapDescriptorFromVector(vectorResId:Int): BitmapDescriptor {
     val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
     vectorDrawable.draw(Canvas(bitmap))
     return BitmapDescriptorFactory.fromBitmap(bitmap)
-}
+}*/

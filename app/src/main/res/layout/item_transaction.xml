@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="currency"
             type="String" />
@@ -42,10 +43,10 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/appCompatImageView3"
-                    app:bindTransactionTypeImage="@{dataModel.type}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="8dp"
+                    app:bindTransactionTypeImage="@{dataModel.type}"
                     tools:srcCompat="@drawable/ic_transaction_type_transfer" />
 
             </com.google.android.material.card.MaterialCardView>
@@ -60,7 +61,7 @@
                 android:textColor="@color/greyish_brown"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:bindTransactionTitle="@{dataModel.type}"
+                android:text="@{dataModel.typeName}"
                 app:layout_constraintBottom_toTopOf="@id/appCompatTextView68"
                 app:layout_constraintStart_toEndOf="@+id/materialCardView"
                 app:layout_constraintTop_toTopOf="parent"
@@ -93,8 +94,8 @@
                 android:lineSpacingExtra="2sp"
                 android:textColor="@color/greyish_brown"
                 android:textSize="12sp"
-                app:bindTransactionMessage="@{dataModel.type}"
                 android:textStyle="normal"
+                android:text="@{dataModel.description}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView68"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView68"

@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="2dp"
+        android:animateLayoutChanges="true"
         android:outlineProvider="bounds">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,40 +28,11 @@
             android:layout_height="match_parent"
             tools:background="@android:color/white">
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/pickerMap"
-                class="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.skyfishjy.library.RippleBackground
-                android:id="@+id/ripple_bg"
+            <com.mapbox.mapboxsdk.maps.MapView
+                android:id="@+id/mapView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:rb_color="@color/pumpkin_orange"
-                app:rb_duration="2000"
-                app:rb_radius="14dp"
-                app:rb_rippleAmount="4"
-                app:rb_scale="6">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ic_pin"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/ic_pick_location_pin"
-                    android:translationY="-18dp"
-                    android:visibility="invisible" />
-
-            </com.skyfishjy.library.RippleBackground>
+                app:mapbox_cameraZoom="15" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/navMenuIv"
@@ -94,230 +66,253 @@
             android:id="@+id/bottomSheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_rounded_top_bottom_sheet"
-            android:backgroundTint="@color/semi_white"
             app:behavior_hideable="false"
-            app:behavior_peekHeight="110dp"
+            app:behavior_peekHeight="174dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-            <androidx.core.widget.NestedScrollView
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/select_location_button"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Select a location"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                app:cornerRadius="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="64dp"
+                android:background="@drawable/bg_rounded_top_bottom_sheet"
+                android:backgroundTint="@color/semi_white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:paddingBottomSystemWindowInsets="@{true}">
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/appCompatImageView5"
-                        android:layout_width="172dp"
-                        android:layout_height="5dp"
-                        android:layout_marginTop="16dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/round_expandable_view_line" />
-
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/countriesSpinner"
-                        style="@style/ProjectTheme.Spinner"
-                        android:layout_width="0dp"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@drawable/bg_rounded_spinner"
-                        android:selectedItemPosition="@={viewModel.selectedCountryPosition}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/appCompatImageView5" />
+                        app:paddingBottomSystemWindowInsets="@{true}">
 
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/citiesSpinner"
-                        style="@style/ProjectTheme.Spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_rounded_spinner"
-                        android:selectedItemPosition="@={viewModel.selectedCityPosition}"
-                        app:layout_constraintEnd_toEndOf="@+id/countriesSpinner"
-                        app:layout_constraintStart_toStartOf="@+id/countriesSpinner"
-                        app:layout_constraintTop_toBottomOf="@+id/countriesSpinner" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/appCompatImageView5"
+                            android:layout_width="172dp"
+                            android:layout_height="5dp"
+                            android:layout_marginTop="16dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/round_expandable_view_line" />
 
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/zipCodeSpinner"
-                        style="@style/ProjectTheme.Spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_rounded_spinner"
-                        android:selectedItemPosition="@={viewModel.selectedZipCodePosition}"
-                        app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
-                        app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
-                        app:layout_constraintTop_toBottomOf="@+id/citiesSpinner" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/areaTil"
-                        style="@style/ProjectTextInputLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="@+id/zipCodeSpinner"
-                        app:layout_constraintStart_toStartOf="@+id/zipCodeSpinner"
-                        app:layout_constraintTop_toBottomOf="@+id/zipCodeSpinner">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            style="@style/ProjectTextInputEditText"
-                            android:layout_width="match_parent"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/countriesSpinner"
+                            style="@style/ProjectTheme.Spinner"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:hint="@string/area"
-                            android:imeOptions="actionDone"
-                            android:inputType="text"
-                            android:text="@={viewModel.areaName}" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/bg_rounded_spinner"
+                            android:selectedItemPosition="@={viewModel.selectedCountryPosition}"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appCompatImageView5" />
 
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/streetNameTil"
-                        style="@style/ProjectTextInputLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="@+id/areaTil"
-                        app:layout_constraintStart_toStartOf="@+id/areaTil"
-                        app:layout_constraintTop_toBottomOf="@+id/areaTil">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            style="@style/ProjectTextInputEditText"
-                            android:layout_width="match_parent"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/citiesSpinner"
+                            style="@style/ProjectTheme.Spinner"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:hint="@string/street_name"
-                            android:imeOptions="actionNext"
-                            android:inputType="text"
-                            android:text="@={viewModel.streetName}" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_rounded_spinner"
+                            android:selectedItemPosition="@={viewModel.selectedCityPosition}"
+                            app:layout_constraintEnd_toEndOf="@+id/countriesSpinner"
+                            app:layout_constraintStart_toStartOf="@+id/countriesSpinner"
+                            app:layout_constraintTop_toBottomOf="@+id/countriesSpinner" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/nameTil"
-                        style="@style/ProjectTextInputLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="4dp"
-                        app:layout_constraintEnd_toStartOf="@+id/lastNameTil"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintHorizontal_weight="1"
-                        app:layout_constraintStart_toStartOf="@+id/streetNameTil"
-                        app:layout_constraintTop_toBottomOf="@+id/streetNameTil">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            style="@style/ProjectTextInputEditText"
-                            android:layout_width="match_parent"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/zipCodeSpinner"
+                            style="@style/ProjectTheme.Spinner"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:hint="@string/flat"
-                            android:imeOptions="actionNext"
-                            android:inputType="text"
-                            android:text="@={viewModel.flat}" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_rounded_spinner"
+                            android:selectedItemPosition="@={viewModel.selectedZipCodePosition}"
+                            app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
+                            app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
+                            app:layout_constraintTop_toBottomOf="@+id/citiesSpinner" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/lastNameTil"
-                        style="@style/ProjectTextInputLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginEnd="4dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/nameTil"
-                        app:layout_constraintEnd_toStartOf="@+id/homeNumberTil"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintHorizontal_weight="1"
-                        app:layout_constraintStart_toEndOf="@+id/nameTil"
-                        app:layout_constraintTop_toTopOf="@+id/nameTil">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            style="@style/ProjectTextInputEditText"
-                            android:layout_width="match_parent"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/areaTil"
+                            style="@style/ProjectTextInputLayout"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:hint="@string/floor"
-                            android:imeOptions="actionNext"
-                            android:inputType="textPersonName"
-                            android:text="@={viewModel.floor}" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintEnd_toEndOf="@+id/zipCodeSpinner"
+                            app:layout_constraintStart_toStartOf="@+id/zipCodeSpinner"
+                            app:layout_constraintTop_toBottomOf="@+id/zipCodeSpinner">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/homeNumberTil"
-                        style="@style/ProjectTextInputLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/lastNameTil"
-                        app:layout_constraintEnd_toEndOf="@+id/areaTil"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintHorizontal_weight="2"
-                        app:layout_constraintStart_toEndOf="@+id/lastNameTil"
-                        app:layout_constraintTop_toTopOf="@+id/lastNameTil">
+                            <com.google.android.material.textfield.TextInputEditText
+                                style="@style/ProjectTextInputEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/area"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:text="@={viewModel.areaName}" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            style="@style/ProjectTextInputEditText"
-                            android:layout_width="match_parent"
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/streetNameTil"
+                            style="@style/ProjectTextInputLayout"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:hint="@string/building_number"
-                            android:imeOptions="actionNext"
-                            android:inputType="textPersonName"
-                            android:text="@={viewModel.buildingNumber}" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintEnd_toEndOf="@+id/areaTil"
+                            app:layout_constraintStart_toStartOf="@+id/areaTil"
+                            app:layout_constraintTop_toBottomOf="@+id/areaTil">
 
-                    <androidx.appcompat.widget.AppCompatCheckBox
-                        android:id="@+id/acceptTermsCb"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:checked="@{viewModel.isMainAddress}"
-                        android:fontFamily="sans-serif"
-                        android:lineSpacingExtra="3sp"
-                        android:text="@string/the_main_address"
-                        android:textColor="@color/warm_grey"
-                        android:textSize="14sp"
-                        android:textStyle="normal"
-                        app:layout_constraintEnd_toEndOf="@+id/homeNumberTil"
-                        app:layout_constraintStart_toStartOf="@+id/nameTil"
-                        app:layout_constraintTop_toBottomOf="@+id/homeNumberTil" />
+                            <com.google.android.material.textfield.TextInputEditText
+                                style="@style/ProjectTextInputEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/street_name"
+                                android:imeOptions="actionNext"
+                                android:inputType="text"
+                                android:text="@={viewModel.streetName}" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/saveBtn"
-                        style="@style/ProjectPurpleFilledButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="@string/save"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/cancelBtn"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="@+id/acceptTermsCb"
-                        app:layout_constraintTop_toBottomOf="@+id/acceptTermsCb" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/flatTil"
+                            style="@style/ProjectTextInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="4dp"
+                            app:layout_constraintEnd_toStartOf="@+id/floorTil"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintHorizontal_weight="1"
+                            app:layout_constraintStart_toStartOf="@+id/streetNameTil"
+                            app:layout_constraintTop_toBottomOf="@+id/streetNameTil">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/cancelBtn"
-                        style="@style/ProjectPurpleStrokeButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="@string/cancel"
-                        app:layout_constraintBottom_toBottomOf="@+id/saveBtn"
-                        app:layout_constraintEnd_toEndOf="@+id/acceptTermsCb"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/saveBtn"
-                        app:layout_constraintTop_toTopOf="@+id/saveBtn" />
+                            <com.google.android.material.textfield.TextInputEditText
+                                style="@style/ProjectTextInputEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/flat"
+                                android:imeOptions="actionNext"
+                                android:inputType="text"
+                                android:text="@={viewModel.flat}" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/floorTil"
+                            style="@style/ProjectTextInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/flatTil"
+                            app:layout_constraintEnd_toStartOf="@+id/buildingNumberTil"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintHorizontal_weight="1"
+                            app:layout_constraintStart_toEndOf="@+id/flatTil"
+                            app:layout_constraintTop_toTopOf="@+id/flatTil">
 
-            </androidx.core.widget.NestedScrollView>
+                            <com.google.android.material.textfield.TextInputEditText
+                                style="@style/ProjectTextInputEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/floor"
+                                android:imeOptions="actionNext"
+                                android:inputType="textPersonName"
+                                android:text="@={viewModel.floor}" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/buildingNumberTil"
+                            style="@style/ProjectTextInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/floorTil"
+                            app:layout_constraintEnd_toEndOf="@+id/areaTil"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintHorizontal_weight="2"
+                            app:layout_constraintStart_toEndOf="@+id/floorTil"
+                            app:layout_constraintTop_toTopOf="@+id/floorTil">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                style="@style/ProjectTextInputEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/building_number"
+                                android:imeOptions="actionNext"
+                                android:inputType="textPersonName"
+                                android:text="@={viewModel.buildingNumber}" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/acceptTermsCb"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:checked="@={viewModel.isMainAddress}"
+                            android:fontFamily="sans-serif"
+                            android:lineSpacingExtra="3sp"
+                            android:text="@string/the_main_address"
+                            android:textColor="@color/warm_grey"
+                            android:textSize="14sp"
+                            android:textStyle="normal"
+                            app:layout_constraintEnd_toEndOf="@+id/buildingNumberTil"
+                            app:layout_constraintStart_toStartOf="@+id/flatTil"
+                            app:layout_constraintTop_toBottomOf="@+id/buildingNumberTil" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/saveBtn"
+                            style="@style/ProjectPurpleFilledButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="@string/save"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cancelBtn"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="@+id/acceptTermsCb"
+                            app:layout_constraintTop_toBottomOf="@+id/acceptTermsCb" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/cancelBtn"
+                            style="@style/ProjectPurpleStrokeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/cancel"
+                            app:layout_constraintBottom_toBottomOf="@+id/saveBtn"
+                            app:layout_constraintEnd_toEndOf="@+id/acceptTermsCb"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/saveBtn"
+                            app:layout_constraintTop_toTopOf="@+id/saveBtn" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.core.widget.NestedScrollView>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.g7.soft.pureDot.ui.custom.ChildCoordinatorLayout>

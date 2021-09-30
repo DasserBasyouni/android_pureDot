@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="currency"
+            type="String" />
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:paddingBottom="56dp"
+            tools:background="@android:color/white"
+            tools:context=".ui.screen.MainActivity">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/customerNameTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/ProjectTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/customer_name"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:text="@={viewModel.customerName}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fromDateTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                app:layout_constraintEnd_toEndOf="@+id/customerNameTil"
+                app:layout_constraintStart_toStartOf="@+id/customerNameTil"
+                app:layout_constraintTop_toBottomOf="@+id/customerNameTil">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/ProjectTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/from_date"
+                    android:imeOptions="actionNext"
+                    android:inputType="date"
+                    android:text="@={viewModel.fromDate}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/toDateTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                app:layout_constraintEnd_toEndOf="@+id/fromDateTil"
+                app:layout_constraintStart_toStartOf="@+id/fromDateTil"
+                app:layout_constraintTop_toBottomOf="@+id/fromDateTil">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/ProjectTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/to_date"
+                    android:imeOptions="actionNext"
+                    android:inputType="date"
+                    android:text="@={viewModel.toDate}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/statusSpinner"
+                style="@style/ProjectTheme.Spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_rounded_spinner"
+                android:selectedItemPosition="@={viewModel.selectedStatusPosition}"
+                app:layout_constraintEnd_toEndOf="@+id/toDateTil"
+                app:layout_constraintStart_toStartOf="@+id/toDateTil"
+                app:layout_constraintTop_toBottomOf="@+id/toDateTil" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/orderNumberTil"
+                style="@style/ProjectTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/statusSpinner">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/ProjectTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/order_number"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:text="@={viewModel.orderNumber}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/applyBtn"
+                style="@style/ProjectPurpleFilledButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/apply"
+                app:layout_constraintBottom_toTopOf="@+id/resetFilterTv"
+                app:layout_constraintEnd_toEndOf="@+id/orderNumberTil"
+                app:layout_constraintStart_toStartOf="@+id/orderNumberTil" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/resetFilterTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="?selectableItemBackground"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="3sp"
+                android:padding="8dp"
+                android:text="@string/reset_filter"
+                android:textColor="@color/bluish"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/applyBtn"
+                app:layout_constraintStart_toStartOf="@+id/applyBtn" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

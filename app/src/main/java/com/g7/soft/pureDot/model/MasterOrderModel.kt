@@ -11,15 +11,14 @@ import kotlinx.android.parcel.Parcelize
 data class MasterOrderModel(
     @Json(name = "id") var id: String?,
     @Json(name = "dateTime") val dateTime: Long?,
-    @Json(name = "number") val number: Int?,
+    @Json(name = "number") var number: Int?,
     @Json(name = "isService") val isService: Boolean?,
     //@Json(name = "fromAddress") val fromAddress: String?,
     //@Json(name = "toAddress") val toAddress: String?,
 
-
     @Json(name = "clientImageUrl") val clientImageUrl: String?,
 
-    @Json(name = "clientAddress") val address: AddressModel?,
+    @Json(name = "clientAddress") val clientAddress: AddressModel?,
     @Json(name = "orders") var orders: MutableList<OrderModel>?,
 
     @Json(name = "clientFirstName") val clientFirstName: String?,
@@ -39,7 +38,7 @@ data class MasterOrderModel(
     @Json(name = "vat") val vat: Double?,
     @Json(name = "totalCouponDiscount") val totalCouponDiscount: Double?,
     @Json(name = "commission") val commission: Double?, // in driver and shop versions only
-    @Json(name = "totalOrderCost") val totalOrderCost: Double?,
+    @Json(name = "totalOrderCost") var totalOrderCost: Double?,
 
     @Json(name = "notes") val notes: String?,
 ) : Parcelable {
@@ -51,8 +50,8 @@ data class MasterOrderModel(
     val firstOrder = orders?.first()
     val doShopOwnerHaveAction get() = ApiConstant.OrderStatus.doShopOwnerHaveAction(firstOrder?.status)
 
-    val isCancelable
-        get() = orders != null &&  orders?.filter {
+    val isCancelable: Boolean
+        get() = orders != null && orders?.filter {
             ApiConstant.OrderStatus.fromInt(it.status) == ApiConstant.OrderStatus.NEW
         }?.size == orders?.size
     val isDelivered
@@ -61,6 +60,10 @@ data class MasterOrderModel(
         }?.size == orders?.size
     val productsCount get() = orders?.sumOf { it.products?.size ?: 0 }
 
+    /*// todo change name to nameWithVariations when api ready
+    val productsNamesWithVariations = orders?.map {
+        it.products?.map { product -> product.name }?.joinToString(", ")
+    }?.joinToString(", ")*/
     /*val isDelivered get() = ApiConstant.OrderStatus.fromInt(status) == ApiConstant.OrderStatus.DELIVERED
     val isCancelable get() = ApiConstant.OrderStatus.isCancelable(status)
     val isFullyReviewed get() = products?.firstOrNull { it.userReview == null } == null

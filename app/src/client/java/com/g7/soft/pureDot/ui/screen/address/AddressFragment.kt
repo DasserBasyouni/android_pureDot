@@ -1,31 +1,29 @@
 package com.g7.soft.pureDot.ui.screen.address
 
+
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.IntentSender
-import android.location.Location
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.ResultReceiver
-import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.annotation.NonNull
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.essam.simpleplacepicker.utils.FetchAddressIntentService
-import com.essam.simpleplacepicker.utils.SimplePlacePicker
+import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.constant.ProjectConstant.Companion.BUNDLE_ADDRESS
@@ -38,54 +36,68 @@ import com.g7.soft.pureDot.model.CountryModel
 import com.g7.soft.pureDot.model.ZipCodeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.google.android.gms.common.api.ResolvableApiException
+import com.g7.soft.pureDot.utils.MapBoxUtils
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.mapbox.android.core.permissions.PermissionsListener
+import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.api.geocoding.v5.GeocodingCriteria
+import com.mapbox.api.geocoding.v5.MapboxGeocoding
+import com.mapbox.api.geocoding.v5.models.CarmenFeature
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse
+import com.mapbox.core.exceptions.ServicesException
+import com.mapbox.geojson.Point
+import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.location.LocationComponent
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
+import com.mapbox.mapboxsdk.location.modes.CameraMode
+import com.mapbox.mapboxsdk.location.modes.RenderMode
+import com.mapbox.mapboxsdk.maps.MapView
+import com.mapbox.mapboxsdk.maps.MapboxMap
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
+import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.layers.Layer
+import com.mapbox.mapboxsdk.style.layers.Property.NONE
+import com.mapbox.mapboxsdk.style.layers.Property.VISIBLE
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.fragment_address.view.*
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
-import kotlin.math.hypot
 
 
-open class AddressFragment : Fragment(), OnMapReadyCallback {
-
-    // picker variables
-    //location
-    private var mFusedLocationProviderClient: FusedLocationProviderClient? = null
-    private var mLAstKnownLocation: Location? = null
-    private var locationCallback: LocationCallback? = null
-    private val DEFAULT_ZOOM = 17f
-
-    //views
-    //private var mProgressBar: ProgressBar? = null
-
-    //variables
-    private var addressOutput: String? = null
-    private var addressResultCode = 0
-    private var isSupportedArea = false
-    private lateinit var currentMarkerPosition: LatLng
-
-    //receiving
-    private var mApiKey: String? = ""
-    private var mSupportedArea: Array<String>? = arrayOf()
-    private var mCountry: String? = ""
-    private var mLanguage: String? = "en"
-
+open class AddressFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
     private lateinit var binding: FragmentAddressBinding
+    private lateinit var viewModelFactory: AddressViewModelFactory
     internal lateinit var viewModel: AddressViewModel
-    private var googleMap: GoogleMap? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private val args: AddressFragmentArgs by navArgs()
 
+    // picker
+    private val DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID"
+    private var mapView: MapView? = null
+    private lateinit var mapboxMap: MapboxMap
+    private lateinit var permissionsManager: PermissionsManager
+    private var hoveringMarker: ImageView? = null
+    private var droppedMarkerLayer: Layer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        // setup map instance
+        Mapbox.getInstance(requireContext(), MapBoxUtils.getMapboxAccessToken(requireContext()))
+
         binding = DataBindingUtil.inflate(
             layoutInflater,
             R.layout.fragment_address,
@@ -93,7 +105,8 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
             false
         )
 
-        viewModel = ViewModelProvider(this).get(AddressViewModel::class.java)
+        viewModelFactory = AddressViewModelFactory(userData = args.userData)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(AddressViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -145,19 +158,18 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
         }
         binding.saveBtn.setOnClickListener {
             lifecycleScope.launch {
-                val tokenId =
-                    UserRepository("").getTokenId(requireContext())
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
                 viewModel.addAddress(
                     langTag = requireActivity().currentLocale.toLanguageTag(),
                     tokenId = tokenId,
-                    latitude = currentMarkerPosition.latitude,
-                    longitude = currentMarkerPosition.longitude
+                    latitude = viewModel.locationLatLng?.value?.latitude,
+                    longitude = viewModel.locationLatLng?.value?.longitude
                 ).observeApiResponse(this@AddressFragment, {
                     requireActivity().supportFragmentManager.setFragmentResult(
                         ProjectConstant.RESULTS_ADD_ADDRESS, bundleOf(
                             BUNDLE_ADDRESS to AddressModel(
-                                id = it?.id,
+                                id = it,
                                 flat = viewModel.flat.value,
                                 floor = viewModel.floor.value,
                                 buildingNumber = viewModel.buildingNumber.value,
@@ -165,24 +177,38 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
                                 areaName = viewModel.areaName.value,
                                 isMainAddress = viewModel.isMainAddress.value,
                                 cityId = viewModel.selectedCity?.id,
-                                latitude = currentMarkerPosition.latitude?.toString(),
-                                longitude = currentMarkerPosition.longitude?.toString(),
+                                latitude = viewModel.locationLatLng?.value?.latitude?.toString(),
+                                longitude = viewModel.locationLatLng?.value?.longitude?.toString(),
                                 zipCodeId = viewModel.selectedZipCode?.id,
                             )
                         )
                     )
 
                     findNavController().navigateUp()
+                }, validationObserve = {
+                    binding.areaTil.error =
+                        if (it == ProjectConstant.Companion.ValidationError.EMPTY_AREA)
+                            getString(R.string.error_empty_area) else null
+
+                    binding.streetNameTil.error =
+                        if (it == ProjectConstant.Companion.ValidationError.EMPTY_STREET_NAME)
+                            getString(R.string.error_empty_street_name) else null
+
+                    binding.flatTil.error =
+                        if (it == ProjectConstant.Companion.ValidationError.EMPTY_FLAT)
+                            getString(R.string.error_empty_flat) else null
+
+                    binding.floorTil.error =
+                        if (it == ProjectConstant.Companion.ValidationError.EMPTY_FLOOR)
+                            getString(R.string.error_empty_floor) else null
+
+                    binding.buildingNumberTil.error =
+                        if (it == ProjectConstant.Companion.ValidationError.EMPTY_BUILDING_NUMBER)
+                            getString(R.string.error_empty_building_number) else null
                 })
             }
         }
-        binding.cancelBtn.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
-        // setup map
-        (childFragmentManager.findFragmentById(R.id.pickerMap) as SupportMapFragment?)
-            ?.getMapAsync(this)
+        binding.cancelBtn.setOnClickListener { findNavController().popBackStack() }
 
         // setup bottom sheet
         bottomSheetBehavior = BottomSheetBehavior.from(binding.root.bottomSheet)
@@ -192,13 +218,14 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
                 val currentHeight: Int = binding.root.height - bottomSheet.height
                 val bottomSheetShiftDown = currentHeight - bottomSheet.top
 
-                googleMap?.setPadding(
+                mapboxMap.uiSettings.setLogoMargins(
+                    8.dpToPx(),
                     0,
-                    24.dpToPx(),
-                    0,
-                    binding.bottomSheet.height + bottomSheetShiftDown
+                    8.dpToPx(),
+                    binding.bottomSheet.height + bottomSheetShiftDown + 8.dpToPx() - 64.dpToPx()
                 )
-                if (viewModel.location?.value != null) {
+
+                /*if (viewModel.location?.value != null) {
                     val cameraPosition = CameraPosition.Builder()
                         .target(
                             LatLng(
@@ -206,96 +233,126 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
                                 viewModel.location!!.value!!.longitude
                             )
                         ) // Sets the center of the map to location user
-                        .zoom(17f) // Sets the zoom
-                        .bearing(90f) // Sets the orientation of the camera to east
-                        .tilt(40f) // Sets the tilt of the camera to 30 degrees
+                        .zoom(17.0) // Sets the zoom
+                        .bearing(90.0) // Sets the orientation of the camera to east
+                        .tilt(40.0) // Sets the tilt of the camera to 30 degrees
                         .build() // Creates a CameraPosition from the builder
-                    googleMap?.animateCamera(
+                    /*googleMap?.animateCamera(
                         CameraUpdateFactory.newCameraPosition(
                             cameraPosition
                         )
-                    )
-                }
+                    )*/ // todo re position map center
+                }*/
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) = Unit
         })
 
         // setup picker
-        Handler().postDelayed({ revealView(binding.icPin) }, 1000)
-        receiveIntent()
-        initMapsAndPlaces()
+        mapView = binding.mapView
+        mapView?.onCreate(savedInstanceState)
+        mapView?.getMapAsync(this)
     }
 
-    @SuppressLint("MissingPermission")
-    override fun onMapReady(googleMap: GoogleMap) {
-        this.googleMap = googleMap
+    override fun onMapReady(mapboxMap: MapboxMap) {
+        this@AddressFragment.mapboxMap = mapboxMap
 
-        googleMap.isMyLocationEnabled = true
-        //enable location button
-        googleMap.uiSettings.isMyLocationButtonEnabled = true
-        googleMap.uiSettings.isCompassEnabled = false
+        mapboxMap.uiSettings.setLogoMargins(
+            8.dpToPx(),
+            0,
+            8.dpToPx(),
+            110.dpToPx() + 8.dpToPx()
+        )
 
-        //googleMap.uiSettings.isScrollGesturesEnabled = false
-        //googleMap.uiSettings.isMapToolbarEnabled = false
+        mapboxMap.setStyle(
+            Style.MAPBOX_STREETS
+        ) { style ->
+            enableLocationPlugin(style)
 
-        //move location button to the required position and adjust params such margin
-        /*if (binding.pickerMap.findViewById<View?>("1".toInt()) != null) {
-            val locationButton =
-                (binding.pickerMap.findViewById<View>("1".toInt()).parent as View).findViewById<View>(
-                    "2".toInt()
-                )
-            val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
-            layoutParams.setMargins(0, 0, 60, 500)
-        }*/
+            // Toast instructing user to tap on the mapboxMap
+            Toast.makeText(
+                requireContext(), getString(R.string.move_map_instruction), Toast.LENGTH_SHORT
+            ).show()
 
-        googleMap.setPadding(0, 24.dpToPx(), 0, 110.dpToPx())
+            // When user is still picking a location, we hover a marker above the mapboxMap in the center.
+            // This is done by using an image view with the default marker found in the SDK. You can
+            // swap out for your own marker image, just make sure it matches up with the dropped marker.
+            hoveringMarker = ImageView(requireContext())
+            hoveringMarker?.setImageResource(R.drawable.ic_pin)
+            val params = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER
+            )
+            hoveringMarker?.layoutParams = params
+            mapView!!.addView(hoveringMarker)
 
-        val locationRequest = LocationRequest.create()
-        locationRequest.interval = 1000
-        locationRequest.fastestInterval = 5000
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-        val settingsClient = LocationServices.getSettingsClient(requireActivity())
-        val task = settingsClient.checkLocationSettings(builder.build())
+            // Initialize, but don't show, a SymbolLayer for the marker icon which will represent a selected location.
+            initDroppedMarker(style)
 
-        //if task is successful means the gps is enabled so go and get device location amd move the camera to that location
-        task.addOnSuccessListener { deviceLocation }
+            // Button for user to drop marker or to pick marker back up.
+            binding.selectLocationButton.setOnClickListener {
+                if (hoveringMarker?.visibility == View.VISIBLE) {
+                    // Use the map target's coordinates to make a reverse geocoding search
+                    val mapTargetLatLng = mapboxMap.cameraPosition.target
 
-        //if task failed means gps is disabled so ask user to enable gps
-        task.addOnFailureListener { e ->
-            if (e is ResolvableApiException) {
-                try {
-                    e.startResolutionForResult(requireActivity(), 51)
-                } catch (e1: IntentSender.SendIntentException) {
-                    e1.printStackTrace()
+                    viewModel.locationLatLng?.value =
+                        LatLng(mapTargetLatLng.latitude, mapTargetLatLng.longitude)
+
+                    // Hide the hovering red hovering ImageView marker
+                    hoveringMarker?.visibility = View.INVISIBLE
+
+                    // Transform the appearance of the button to become the cancel button
+                    binding.selectLocationButton.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.driverRed)
+                    )
+                    binding.selectLocationButton.text =
+                        getString(R.string.location_picker_select_location_button_cancel)
+
+                    // Show the SymbolLayer icon to represent the selected map location
+                    if (style.getLayer(DROPPED_MARKER_LAYER_ID) != null) {
+                        val source =
+                            style.getSourceAs<GeoJsonSource>("dropped-marker-source-id")
+                        source?.setGeoJson(
+                            Point.fromLngLat(
+                                mapTargetLatLng.longitude,
+                                mapTargetLatLng.latitude
+                            )
+                        )
+                        droppedMarkerLayer = style.getLayer(DROPPED_MARKER_LAYER_ID)
+                        if (droppedMarkerLayer != null) {
+                            droppedMarkerLayer!!.setProperties(visibility(VISIBLE))
+                        }
+                    }
+
+                    // Use the map camera target's coordinates to make a reverse geocoding search
+                    reverseGeocode(
+                        Point.fromLngLat(
+                            mapTargetLatLng.longitude,
+                            mapTargetLatLng.latitude
+                        )
+                    )
+                } else {
+                    viewModel.locationLatLng?.value = null
+
+                    // Switch the button appearance back to select a location.
+                    binding.selectLocationButton.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.warm_purple)
+                    )
+                    binding.selectLocationButton.text =
+                        getString(R.string.location_picker_select_location_button_select)
+
+                    // Show the red hovering ImageView marker
+                    hoveringMarker?.visibility = View.VISIBLE
+
+                    // Hide the selected location SymbolLayer
+                    droppedMarkerLayer = style.getLayer(DROPPED_MARKER_LAYER_ID)
+                    if (droppedMarkerLayer != null) {
+                        droppedMarkerLayer?.setProperties(visibility(NONE))
+                    }
                 }
             }
         }
-        googleMap.setOnMyLocationButtonClickListener {
-            false
-        }
-        googleMap.setOnCameraIdleListener {
-            binding.icPin.visibility = View.GONE
-            //mProgressBar!!.visibility = View.VISIBLE
-            Timber.i("changing address")
-            //                ToDo : you can use retrofit for this network call instead of using services
-            //hint: services is just for doing background tasks when the app is closed no need to use services to update ui
-            //best way to do network calls and then update user ui is Retrofit .. consider it
-            startIntentService()
-        }
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 51) {
-            if (resultCode == AppCompatActivity.RESULT_OK) {
-                deviceLocation
-            }
-        }
-    }//remove location updates in order not to continues check location unnecessarily
 
 
     private fun <T> setupSpinner(
@@ -354,166 +411,170 @@ open class AddressFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun initDroppedMarker(@NonNull loadedMapStyle: Style) {
+        // Add the marker image to map
+        val drawable: Drawable? = ResourcesCompat.getDrawable(resources, R.drawable.ic_pin, null)
+        val mBitmap = BitmapUtils.getBitmapFromDrawable(drawable)
+        loadedMapStyle.addImage(
+            "dropped-icon-image", mBitmap!!
+        )
+        loadedMapStyle.addSource(GeoJsonSource("dropped-marker-source-id"))
+        loadedMapStyle.addLayer(
+            SymbolLayer(
+                DROPPED_MARKER_LAYER_ID,
+                "dropped-marker-source-id"
+            ).withProperties(
+                iconImage("dropped-icon-image"),
+                visibility(NONE),
+                iconAllowOverlap(true),
+                iconIgnorePlacement(true)
+            )
+        )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView!!.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView!!.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView!!.onStop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView!!.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        mapView!!.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView!!.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView!!.onLowMemory()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        permissionsManager!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onExplanationNeeded(permissionsToExplain: List<String?>?) {
+        Toast.makeText(
+            requireContext(),
+            R.string.user_location_permission_explanation,
+            Toast.LENGTH_LONG
+        )
+            .show()
+    }
+
+    override fun onPermissionResult(granted: Boolean) {
+        if (granted && mapboxMap != null) {
+            val style: Style? = mapboxMap.style
+            if (style != null) {
+                enableLocationPlugin(style)
+            }
+        } else {
+            Toast.makeText(
+                requireContext(),
+                R.string.user_location_permission_not_granted,
+                Toast.LENGTH_LONG
+            )
+                .show()
+            findNavController().popBackStack()
+        }
+    }
 
     /**
-     * is triggered whenever we want to fetch device location
-     * in order to get device's location we use FusedLocationProviderClient object that gives us the last location
-     * if the task of getting last location is successful and not equal to null ,
-     * apply this location to mLastLocation instance and move the camera to this location
-     * if the task is not successful create new LocationRequest and LocationCallback instances and update lastKnownLocation with location result
+     * This method is used to reverse geocode where the user has dropped the marker.
+     *
+     * @param point The location to use for the search
      */
-    @get:SuppressLint("MissingPermission")
-    private val deviceLocation: Unit
-        get() {
-            mFusedLocationProviderClient!!.lastLocation
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        mLAstKnownLocation = task.result
-                        if (mLAstKnownLocation != null) {
-                            googleMap!!.moveCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    LatLng(
-                                        mLAstKnownLocation!!.latitude,
-                                        mLAstKnownLocation!!.longitude
-                                    ), DEFAULT_ZOOM
-                                )
-                            )
-                        } else {
-                            val locationRequest = LocationRequest.create()
-                            locationRequest.interval = 1000
-                            locationRequest.fastestInterval = 5000
-                            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                            locationCallback = object : LocationCallback() {
-                                override fun onLocationResult(locationResult: LocationResult) {
-                                    super.onLocationResult(locationResult)
-                                    if (mLAstKnownLocation == null) return
-                                    mLAstKnownLocation = locationResult.lastLocation
-                                    googleMap!!.moveCamera(
-                                        CameraUpdateFactory.newLatLngZoom(
-                                            LatLng(
-                                                mLAstKnownLocation!!.latitude,
-                                                mLAstKnownLocation!!.longitude
-                                            ), DEFAULT_ZOOM
-                                        )
-                                    )
-                                    //remove location updates in order not to continues check location unnecessarily
-                                    if (locationCallback != null)
-                                        mFusedLocationProviderClient!!.removeLocationUpdates(
-                                            locationCallback!!
-                                        )
+    private fun reverseGeocode(point: Point) {
+        try {
+            val client: MapboxGeocoding = MapboxGeocoding.builder()
+                .accessToken(MapBoxUtils.getMapboxAccessToken(requireContext()))
+                .query(Point.fromLngLat(point.longitude(), point.latitude()))
+                .geocodingTypes(GeocodingCriteria.TYPE_ADDRESS)
+                .build()
+            client.enqueueCall(object : Callback<GeocodingResponse?> {
+                override fun onResponse(
+                    call: Call<GeocodingResponse?>?,
+                    response: Response<GeocodingResponse?>
+                ) {
+                    if (response.body() != null) {
+                        val results: List<CarmenFeature>? = response.body()?.features()
+                        if (!results.isNullOrEmpty()) {
+                            val feature = results[0]
+
+                            // If the geocoder returns a result, we take the first in the list and show a Toast with the place name.
+                            mapboxMap.getStyle { style ->
+                                if (style.getLayer(DROPPED_MARKER_LAYER_ID) != null) {
+                                    viewModel.areaName.value = feature.placeName()
+                                    viewModel.streetName.value = feature.address()
+                                    /*Toast.makeText(
+                                        requireContext(), String.format(
+                                            getString(R.string.location_picker_place_name_result),
+                                            feature.placeName()
+                                        ), Toast.LENGTH_SHORT
+                                    ).show()*/
                                 }
                             }
-
-                            val looper = Looper.myLooper()
-                            if (locationCallback != null && looper != null)
-                                mFusedLocationProviderClient!!.requestLocationUpdates(
-                                    locationRequest,
-                                    locationCallback!!,
-                                    looper
-                                )
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.location_picker_dropped_marker_snippet_no_results),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Unable to get last location ",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                 }
-        }
 
-    protected fun startIntentService() {
-        currentMarkerPosition = googleMap!!.cameraPosition.target
-        val resultReceiver = AddressResultReceiver(Handler())
-        val intent = Intent(requireContext(), FetchAddressIntentService::class.java)
-        intent.putExtra(SimplePlacePicker.RECEIVER, resultReceiver)
-        intent.putExtra(SimplePlacePicker.LOCATION_LAT_EXTRA, currentMarkerPosition.latitude)
-        intent.putExtra(SimplePlacePicker.LOCATION_LNG_EXTRA, currentMarkerPosition.longitude)
-        intent.putExtra(SimplePlacePicker.LANGUAGE, mLanguage)
-        requireActivity().startService(intent)
-    }
-
-    private fun updateUi() {
-        // todo display address
-        //mDisplayAddressTextView!!.visibility = View.VISIBLE
-        //mProgressBar!!.visibility = View.GONE
-        googleMap!!.clear()
-        if (addressResultCode == SimplePlacePicker.SUCCESS_RESULT) {
-            //check for supported area
-            if (isSupportedArea(mSupportedArea)) {
-                //supported
-                addressOutput = addressOutput!!.replace("Unnamed Road,", "")
-                addressOutput = addressOutput!!.replace("Unnamed Road،", "")
-                addressOutput = addressOutput!!.replace("Unnamed Road New,", "")
-                binding.icPin.visibility = View.VISIBLE
-                isSupportedArea = true
-                //mDisplayAddressTextView!!.text = addressOutput
-            } else {
-                //not supported
-                binding.icPin.visibility = View.GONE
-                isSupportedArea = false
-                //mDisplayAddressTextView!!.text = getString(R.string.not_support_area)
-            }
-        } else if (addressResultCode == SimplePlacePicker.FAILURE_RESULT) {
-            binding.icPin.visibility = View.GONE
-            //mDisplayAddressTextView!!.text = addressOutput
+                override fun onFailure(call: Call<GeocodingResponse?>?, throwable: Throwable) {
+                    Timber.e("Geocoding Failure: %s", throwable.message)
+                }
+            })
+        } catch (servicesException: ServicesException) {
+            Timber.e("Error geocoding: %s", servicesException.toString())
+            servicesException.printStackTrace()
         }
     }
 
-    private fun isSupportedArea(supportedAreas: Array<String>?): Boolean {
-        if (supportedAreas!!.isEmpty()) return true
+    @SuppressLint("MissingPermission")
+    private fun enableLocationPlugin(loadedMapStyle: Style) {
+        // Check if permissions are enabled and if not request
+        if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
 
-        var isSupported = false
-        for (area in supportedAreas) {
-            if (addressOutput!!.contains(area)) {
-                isSupported = true
-                break
-            }
-        }
-        return isSupported
-    }
+            // Get an instance of the component. Adding in LocationComponentOptions is also an optional
+            // parameter
+            val locationComponent: LocationComponent = mapboxMap.locationComponent
+            locationComponent.activateLocationComponent(
+                LocationComponentActivationOptions.builder(requireContext(), loadedMapStyle).build()
+            )
+            locationComponent.isLocationComponentEnabled = true
 
-    private fun initViews() {
-
-    }
-
-    private fun receiveIntent() {
-        mApiKey = getString(R.string.google_api_key)
-        mLanguage = requireActivity().currentLocale.toLanguageTag()
-        // todo add country and supportedAreas if needed variables: mCountry, mSupportedArea
-    }
-
-    private fun initMapsAndPlaces() {
-        mFusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireActivity())
-        //Places.initialize(requireContext(), mApiKey!!)
-        (childFragmentManager.findFragmentById(R.id.pickerMap) as SupportMapFragment?)
-            ?.getMapAsync(this)
-        //binding.pickerMap = (childFragmentManager.findFragmentById(R.id.pickerMap) as SupportMapFragment?)?.view todo test
-    }
-
-    private fun revealView(view: View) {
-        val cx = view.width / 2
-        val cy = view.height / 2
-        val finalRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
-        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, 0f, finalRadius)
-        view.visibility = View.VISIBLE
-        anim.start()
-    }
-
-
-    internal inner class AddressResultReceiver(handler: Handler?) : ResultReceiver(handler) {
-        override fun onReceiveResult(resultCode: Int, resultData: Bundle) {
-            Log.e("Z_", "onReceiveResult")
-            addressResultCode = resultCode
-
-            // Display the address string
-            // or an error message sent from the intent service.
-            addressOutput = resultData.getString(SimplePlacePicker.RESULT_DATA_KEY)
-            if (addressOutput == null) {
-                addressOutput = ""
-            }
-            updateUi()
+            // Set the component's camera mode
+            locationComponent.cameraMode = CameraMode.TRACKING
+            locationComponent.renderMode = RenderMode.NORMAL
+        } else {
+            permissionsManager = PermissionsManager(this)
+            permissionsManager.requestLocationPermissions(requireActivity())
         }
     }
 }

@@ -27,7 +27,7 @@ import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.ui.screen.MainActivity
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.client.activity_main.*
@@ -146,6 +146,10 @@ class ServiceFragment : Fragment() {
                     .observeApiResponse(this@ServiceFragment, {
                         viewModel.serviceDetailsResponse.value?.data?.userReview = it
                         binding.invalidateAll()
+                    }, validationObserve = {
+                        binding.messageTil.error =
+                            if (it == ProjectConstant.Companion.ValidationError.EMPTY_MESSAGE)
+                                getString(R.string.error_empty_message) else null
                     })
             }
         }
@@ -161,7 +165,7 @@ class ServiceFragment : Fragment() {
                 ProjectDialogUtils.showSimpleMessage(
                     requireContext(),
                     R.string.branch_is_required,
-                    R.drawable.ic_secure_shield
+                    drawableResId = R.drawable.ic_secure_shield
                 )
             else if (viewModel.serviceDetailsResponse.value?.data?.variations != null
                 && viewModel.selectedVariations.value?.size
@@ -170,7 +174,7 @@ class ServiceFragment : Fragment() {
                 ProjectDialogUtils.showSimpleMessage(
                     requireContext(),
                     R.string.variations_are_required,
-                    R.drawable.ic_secure_shield
+                    drawableResId = R.drawable.ic_secure_shield
                 )
             else
                 lifecycleScope.launch {

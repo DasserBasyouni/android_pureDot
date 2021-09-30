@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
@@ -19,10 +20,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.ActivityMainBinding
-import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
 import com.g7.soft.pureDot.ui.screen.checkout.CheckoutFragment
-import com.g7.soft.pureDot.util.UiUtils
+import com.g7.soft.pureDot.ui.screen.filter.FilterViewModel
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.UiUtils
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
 
 
@@ -39,6 +42,7 @@ class MainActivity : LocaleAwareCompatActivity() {
     internal lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration // with this or without menu+upButton bug still the same so we can remove the line?
     private val filterViewModel: FilterViewModel by viewModels()
+    private var firstTimeExitPopup = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +68,8 @@ class MainActivity : LocaleAwareCompatActivity() {
         // fix non-working observer of search include layout
         binding.root.findViewById<EditText>(R.id.appCompatEditText).addTextChangedListener(object :
             TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
@@ -86,7 +91,11 @@ class MainActivity : LocaleAwareCompatActivity() {
                 destination.id,
                 this,
                 scrollLockedDestinationIds = arrayListOf(R.id.addressFragment),
-                fullScreenDestinationIds = arrayListOf(R.id.splashFragment, R.id.startFragment, R.id.addressFragment),
+                fullScreenDestinationIds = arrayListOf(
+                    R.id.splashFragment,
+                    R.id.startFragment,
+                    R.id.addressFragment
+                ),
                 loginDestinationIds = arrayListOf(R.id.loginFragment),
                 transparentDestinationIds = arrayListOf(
                     R.id.forgetPasswordFragment,
@@ -199,6 +208,33 @@ class MainActivity : LocaleAwareCompatActivity() {
 
             }
         }
+
+        // navigate to notification onClick if needed
+        val intentBundle = intent.extras?.getBundle(ProjectConstant.BUNDLE_NOTIFICATION)
+        if (intentBundle != null) {
+            val orderId = intentBundle.getString("orderId")
+            val orderNumber = intentBundle.getInt("orderNumber")
+            val productId = intentBundle.getString("productId")
+            val storeId = intentBundle.getString("storeId")
+
+            when {
+                orderId != null -> navController.navigate(
+                    R.id.trackOrderFragment,
+                    bundleOf(
+                        "orderId" to orderId,
+                        "orderNumber" to orderNumber,
+                    )
+                )
+                productId != null -> navController.navigate(
+                    R.id.productFragment,
+                    bundleOf("productId" to productId)
+                )
+                storeId != null -> navController.navigate(
+                    R.id.storeFragment,
+                    bundleOf("shopId" to storeId)
+                )
+            }
+        }
     }
 
     override fun onSupportNavigateUp() =
@@ -209,12 +245,18 @@ class MainActivity : LocaleAwareCompatActivity() {
                 || super.onOptionsItemSelected(item)
 
     override fun onBackPressed() {
-        if (findNavController(R.id.navHostFragment).currentDestination?.id == R.id.checkoutFragment) {
-            val currentFragment =
-                supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()
-            (currentFragment as CheckoutFragment).doBackPressed()
-        } else
-            super.onBackPressed()
+        when {
+            findNavController(R.id.navHostFragment).currentDestination?.id == R.id.checkoutFragment -> {
+                val currentFragment =
+                    supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()
+                (currentFragment as CheckoutFragment).doBackPressed()
+            }
+            firstTimeExitPopup -> {
+                firstTimeExitPopup = false
+                ProjectDialogUtils.onExitApp(this) { firstTimeExitPopup = true }
+            }
+            else -> super.onBackPressed()
+        }
     }
 
 

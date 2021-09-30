@@ -17,9 +17,27 @@ import com.g7.soft.pureDot.repo.UserRepository
 import kotlinx.coroutines.launch
 
 class MyOrdersFragment : Fragment() {
+
+    companion object {
+        var refreshData: (() -> Unit)? = null
+        var isRunning = false
+    }
+
+
     private lateinit var binding: FragmentMyOrdersBinding
     internal lateinit var viewModelFactory: MyOrdersViewModelFactory
     internal lateinit var viewModel: MyOrdersViewModel
+
+
+    override fun onStart() {
+        super.onStart()
+        isRunning = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isRunning = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +65,10 @@ class MyOrdersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        refreshData = {
+            viewModel.ordersPagedList?.value?.dataSource?.invalidate()
+        }
 
         // setup pagination
         viewModel.ordersPagedList =

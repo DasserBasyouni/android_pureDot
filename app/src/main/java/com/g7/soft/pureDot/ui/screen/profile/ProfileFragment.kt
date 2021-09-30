@@ -14,7 +14,7 @@ import com.g7.soft.pureDot.databinding.FragmentProfileBinding
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 
 class ProfileFragment : Fragment() {
-    private lateinit var binding: FragmentProfileBinding
+    internal lateinit var binding: FragmentProfileBinding
     internal lateinit var viewModel: ProfileViewModel
 
     override fun onCreateView(
@@ -41,7 +41,7 @@ class ProfileFragment : Fragment() {
         ProfileFragmentFlavour().observe(this)
         viewModel.userDataResponse.observe(viewLifecycleOwner, {
             viewModel.userDataLcee.value!!.response.value = it
-            binding.settingsRv.adapter = ProfileFragmentFlavour().getProfileAdapter(this, it)
+            ProfileFragmentFlavour().setupAdapters(this, it)
         })
 
         // add decoration divider

@@ -27,9 +27,10 @@ open class OrderRepositoryFlavour(private val langTag: String) {
         email: String? = null,
         phone: String? = null,
         notes: String? = null,
-        apiShopOrders: List<ApiShopOrderModel>?
-
+        apiShopOrders: List<ApiShopOrderModel>?,
+        paymentMethod: String? = null
     ) = liveData(Dispatchers.IO) {
+
         val jsonObject = JSONObject()
         jsonObject.put("tokenId", tokenId)
         jsonObject.put("addressId", addressId)
@@ -39,6 +40,7 @@ open class OrderRepositoryFlavour(private val langTag: String) {
         jsonObject.put("serviceId", serviceId)
         jsonObject.put("servants", servantsCount ?: 0)
         jsonObject.put("couponCode", couponCode)
+        jsonObject.put("paymentType", paymentMethod)
         /*jsonObject.put("firstName", firstName)
         jsonObject.put("lastName", lastName)
         jsonObject.put("email", email)
@@ -89,9 +91,10 @@ open class OrderRepositoryFlavour(private val langTag: String) {
         email: String? = null,
         phoneNumber: String? = null,
         notes: String? = null,
-        apiShopOrders: List<ApiShopOrderModel>?
-
+        apiShopOrders: List<ApiShopOrderModel>?,
+        paymentMethod: String?
     ) = liveData(Dispatchers.IO) {
+
         val jsonObject = JSONObject()
         jsonObject.put("tokenId", tokenId)
         jsonObject.put("addressId", addressId)
@@ -106,6 +109,7 @@ open class OrderRepositoryFlavour(private val langTag: String) {
         jsonObject.put("email", email)
         jsonObject.put("phone", phoneNumber)
         jsonObject.put("notes", notes)
+        jsonObject.put("paymentType", paymentMethod)
 
         jsonObject.put("shopOrders", JSONArray().apply {
             for (apiShopOrder in apiShopOrders ?: listOf())
@@ -222,7 +226,6 @@ open class OrderRepositoryFlavour(private val langTag: String) {
             return@handle Fetcher().getInstance(langTag)?.getShippingMethods()
         }))
     }
-
 
     fun getMasterOrder(tokenId: String?, id: String?) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {

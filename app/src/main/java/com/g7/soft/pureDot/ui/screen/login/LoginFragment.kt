@@ -17,8 +17,11 @@ import com.g7.soft.pureDot.databinding.FragmentLoginBinding
 import com.g7.soft.pureDot.ext.makeLinks
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.zeugmasolutions.localehelper.currentLocale
+import timber.log.Timber
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -46,44 +49,54 @@ class LoginFragment : Fragment() {
 
         // setup listeners
         binding.loginBtn.setOnClickListener {
-            viewModel.login(requireActivity().currentLocale.toLanguageTag())
-                .observeApiResponse(this, {
-                    if (it?.tokenId != null) {
-                        UserRepository("").saveUserData(
-                            requireContext(),
-                            it,
-                            viewModel.password.value
-                        )
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Timber.w("Fetching FCM registration token failed")
+                    Timber.w(task.exception)
+                    return@OnCompleteListener
+                }
 
-                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                    } else
-                        ProjectDialogUtils.showSimpleMessage(
-                            requireContext(),
-                            R.string.something_went_wrong,
-                            R.drawable.ic_secure_shield
-                        )
-                }, validationObserve = {
-                    binding.emailOrPhoneNumberTil.error =
-                        if (it == ValidationError.EMPTY_PHONE_NUMBER_OR_EMAIL)
-                            getString(R.string.error_empty_phone_number_or_email) else null
+                val fcmToken = task.result
 
-                    binding.passwordTil.error = when (it) {
-                        ValidationError.EMPTY_PASSWORD -> getString(R.string.error_empty_password)
-                        ValidationError.INVALID_PASSWORD -> getString(R.string.error_invalid_password)
-                        else -> null
-                    }
-                },
-                    apiStatusToObserve = arrayOf(ApiConstant.Status.NOT_VERIFIED),
-                    chosenApiStatusObserve = {
-                        val bundle = bundleOf(
-                            "isPasswordReset" to false,
-                            "emailOrPhoneNumber" to viewModel.emailOrPhoneNumber.value
-                        )
-                        findNavController().navigate(
-                            R.id.action_loginFragment_to_phoneVerificationFragment, bundle
-                        )
+                viewModel.login(requireActivity().currentLocale.toLanguageTag(), fcmToken)
+                    .observeApiResponse(this, {
+                        if (it?.tokenId != null) {
+                            UserRepository("").saveUserData(
+                                requireContext(),
+                                it,
+                                viewModel.password.value
+                            )
 
-                    })
+                            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                        } else
+                            ProjectDialogUtils.showSimpleMessage(
+                                requireContext(),
+                                messageResId = R.string.something_went_wrong,
+                                drawableResId = R.drawable.ic_secure_shield
+                            )
+                    }, validationObserve = {
+                        binding.emailOrPhoneNumberTil.error =
+                            if (it == ValidationError.EMPTY_PHONE_NUMBER_OR_EMAIL)
+                                getString(R.string.error_empty_phone_number_or_email) else null
+
+                        binding.passwordTil.error = when (it) {
+                            ValidationError.EMPTY_PASSWORD -> getString(R.string.error_empty_password)
+                            ValidationError.INVALID_PASSWORD -> getString(R.string.error_invalid_password)
+                            else -> null
+                        }
+                    },
+                        apiStatusToObserve = arrayOf(ApiConstant.Status.NOT_VERIFIED),
+                        chosenApiStatusObserve = {
+                            val bundle = bundleOf(
+                                "isPasswordReset" to false,
+                                "emailOrPhoneNumber" to viewModel.emailOrPhoneNumber.value
+                            )
+                            findNavController().navigate(
+                                R.id.action_loginFragment_to_phoneVerificationFragment, bundle
+                            )
+
+                        })
+            })
         }
         binding.forgetPasswordTv.makeLinks(
             Pair(

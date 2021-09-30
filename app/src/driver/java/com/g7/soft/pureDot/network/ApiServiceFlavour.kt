@@ -3,8 +3,9 @@ package com.g7.soft.pureDot.network
 import com.g7.soft.pureDot.model.ApiResponseModel
 import com.g7.soft.pureDot.model.DriverAvailabilityModel
 import com.g7.soft.pureDot.model.MasterOrderModel
-import com.g7.soft.pureDot.model.WorkingHourModel
+import com.g7.soft.pureDot.model.WorkingDayModel
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 
@@ -54,6 +55,13 @@ interface ApiServiceFlavour {
 
     // order
     @FormUrlEncoded
+    @POST("driver/getMasterOrder")
+    suspend fun getMasterOrder(
+        @Field("tokenId") tokenId: String?,
+        @Field("orderId") id: String?
+    ): ApiResponseModel<MasterOrderModel>?
+
+    @FormUrlEncoded
     @POST("driver/getMyOrders")
     suspend fun getMyOrders(
         @Field("tokenId") tokenId: String?,
@@ -95,17 +103,8 @@ interface ApiServiceFlavour {
     @POST("driver/getWorkingHours")
     suspend fun getWorkingHours(
         @Field("tokenId") tokenId: String?,
-    ): ApiResponseModel<List<WorkingHourModel>>?
+    ): ApiResponseModel<List<WorkingDayModel>>?
 
-    @FormUrlEncoded
     @POST("driver/addEditWorkingHours")
-    suspend fun addEditWorkingHours(
-        @Field("tokenId") tokenId: String?,
-        @Field("saturday") saturday: List<WorkingHourModel>?,
-        @Field("sunday") sunday: List<WorkingHourModel>?,
-        @Field("monday") monday: List<WorkingHourModel>?,
-        @Field("tuesday") tuesday: List<WorkingHourModel>?,
-        @Field("wednesday") wednesday: List<WorkingHourModel>?,
-        @Field("thursday") thursday: List<WorkingHourModel>?,
-    ): ApiResponseModel<*>?
+    suspend fun addEditWorkingHours(@Body body: RequestBody): ApiResponseModel<*>?
 }

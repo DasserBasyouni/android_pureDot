@@ -8,7 +8,7 @@ import com.g7.soft.pureDot.model.ComplaintOrderModel
 import com.g7.soft.pureDot.model.IdNameModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.ComplaintRepository
-import com.g7.soft.pureDot.util.ValidationUtils
+import com.g7.soft.pureDot.utils.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 
 class SubmitComplainViewModel : ViewModel() {
@@ -62,7 +62,7 @@ class SubmitComplainViewModel : ViewModel() {
         // validate inputs
         ValidationUtils()
             .setComplaintTitle(title.value)
-            .setPassword(description.value)
+            .setComplaintDescription(description.value)
             .setSelectedRelatedOrder(selectedRelatedOrder)
             .setSelectedCategory(selectedCategory)
             .getError()?.let {

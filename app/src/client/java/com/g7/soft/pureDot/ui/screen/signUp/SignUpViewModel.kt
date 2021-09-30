@@ -12,7 +12,7 @@ import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.GeneralRepository
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.ValidationUtils
+import com.g7.soft.pureDot.utils.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 
 // TODO IMP ADD VALIDATION LAYER ON INPUTS FOR THE WHOLE APP
@@ -89,9 +89,7 @@ class SignUpViewModel : ViewModel() {
         }
     }
 
-    fun register(langTag: String) = liveData(Dispatchers.IO) {
-        val fcmToken: String? = null // todo
-
+    fun register(langTag: String, fcmToken: String) = liveData(Dispatchers.IO) {
         // validate inputs
         ValidationUtils().setFirstName(firstName.value)
             .setLastName(lastName.value)

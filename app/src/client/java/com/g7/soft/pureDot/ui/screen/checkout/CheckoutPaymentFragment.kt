@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.g7.soft.pureDot.R
+import com.g7.soft.pureDot.constant.ProjectConstant.Companion.ValidationError
 import com.g7.soft.pureDot.databinding.FragmentCheckoutPaymentBinding
+import com.g7.soft.pureDot.utils.ValidationUtils
 import com.kofigyan.stateprogressbar.StateProgressBar
 
 
@@ -58,6 +60,42 @@ class CheckoutPaymentFragment(private val viewModel: CheckoutViewModel) : Fragme
             binding.stcPayIv.isChecked = false
         }
         binding.nextBtn.setOnClickListener {
+            if (viewModel.isMasterCardChecked.value == true) {
+                // validate inputs
+                ValidationUtils()
+                    .setNameOnCard(viewModel.masterCardNameOnCard.value)
+                    .setCardNumber(viewModel.masterCardNumber.value)
+                    .setCardSecurityCode(viewModel.masterCardSecurityCode.value)
+                    .setCardExpiryMonth(viewModel.masterCardExpiryMonth.value)
+                    .setCardExpiryYear(viewModel.masterCardExpiryYear.value)
+                    .getError()?.let {
+                        binding.nameOnCardTil.error =
+                            if (it == ValidationError.EMPTY_NAME_ON_CARD)
+                                getString(R.string.error_empty_name_on_card) else null
+
+                        binding.cardNumberTil.error =
+                            if (it == ValidationError.EMPTY_CARD_NUMBER)
+                                getString(R.string.error_empty_card_number) else null
+
+                        binding.cardSecurityCodeTil.error =
+                            if (it == ValidationError.EMPTY_CARD_SECURITY_CODE)
+                                getString(R.string.error_empty_security_code) else null
+
+                        binding.cardExpiryMonthTil.error =
+                            when (it) {
+                                ValidationError.EMPTY_CARD_EXPIRY_MONTH -> getString(R.string.error_empty_expiry_month)
+                                ValidationError.INVALID_CARD_EXPIRY_MONTH -> getString(R.string.error_invalid_expiry_month)
+                                else -> null
+                            }
+
+                        binding.cardExpiryYearTil.error =
+                            if (it == ValidationError.EMPTY_CARD_EXPIRY_YEAR)
+                                getString(R.string.error_empty_expiry_year) else null
+
+                        return@setOnClickListener
+                    }
+            }
+
             viewModel.currentStateNumber.value =
                 if (viewModel.masterOrder?.isService == true) StateProgressBar.StateNumber.THREE
                 else StateProgressBar.StateNumber.FOUR

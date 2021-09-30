@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatSpinner
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -19,8 +20,8 @@ import com.g7.soft.pureDot.databinding.FragmentCheckout1Binding
 import com.g7.soft.pureDot.model.AddressModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.UserRepository
-import com.g7.soft.pureDot.util.PermissionsHelper
-import com.g7.soft.pureDot.util.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.PermissionsHelper
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.kofigyan.stateprogressbar.StateProgressBar
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -85,7 +86,8 @@ class CheckoutDetailsFragment(private val viewModel: CheckoutViewModel) : Fragme
                             viewModel.addressesResponse.value?.data?.add(address)
                     }
                 }
-                findNavController().navigate(R.id.addressFragment)
+                val bundle = bundleOf("userData" to viewModel.userDataResponse.value?.data)
+                findNavController().navigate(R.id.addressFragment, bundle)
             })
         }
         binding.nextBtn.setOnClickListener {
@@ -95,7 +97,7 @@ class CheckoutDetailsFragment(private val viewModel: CheckoutViewModel) : Fragme
                 ProjectDialogUtils.showSimpleMessage(
                     requireContext(),
                     R.string.address_is_required,
-                    R.drawable.ic_secure_shield
+                    drawableResId = R.drawable.ic_secure_shield
                 )
         }
     }

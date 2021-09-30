@@ -332,7 +332,7 @@
     <string name="order_is_ready">Order Is Ready</string>
     <string name="order_is_out">Order Is Out</string>
     <string name="order_details">Order Details</string>
-    <string name="being_shipping">Being Shipping</string>
+    <string name="being_shipping">Being Shipped</string>
     <string name="picked">Picked</string>
     <string name="msg_can_not_return">Can not return item</string>
     <string name="msg_can_not_accept">Can not accept</string>
@@ -345,7 +345,7 @@
     <string name="error_invalid_password">"Password is at least 8 numbers, contains numbers, special characters, upper and lower cases</string>
     <string name="error_non_identical_passwords">Non identical passwords</string>
     <string name="error_accept_terms">Accepting terms is required</string>
-    <string name="error_empty_verification_code">Verification is required</string>
+    <string name="error_empty_verification_code">Verification code is required</string>
     <string name="error_invalid_verification_code">Invalid verification code</string>
     <string name="error_invalid_email">Invalid email</string>
     <string name="error_empty_rating">Rating is required</string>
@@ -355,4 +355,48 @@
     <string name="error_empty_related_order">Related order is required</string>
     <string name="error_empty_category">Category is required</string>
     <string name="error_comment">Comment is required</string>
+    <string name="location_picker_place_name_result" translatable="false">Place name: %1$s</string>
+    <string name="location_picker_dropped_marker_snippet_no_results">No results</string>
+    <string name="user_location_permission_not_granted">You didn\'t grant location permissions</string>
+    <string name="user_location_permission_explanation">This app needs location permissions in order to show its functionality</string>
+    <string name="move_map_instruction">Move map to place\nmarker at desired location then tap Select a location</string>
+    <string name="location_picker_select_location_button_cancel">Cancel</string>
+    <string name="location_picker_select_location_button_select">Select a location</string>
+    <string name="error_empty_area">Area is required</string>
+    <string name="error_empty_street_name">Street name is required</string>
+    <string name="error_empty_building_number">Building number is required</string>
+    <string name="error_empty_floor">Floor is required</string>
+    <string name="error_empty_flat">Flat is required</string>
+    <string name="error_empty_message">Message is required</string>
+    <string name="error_empty_amount">Amount is required</string>
+    <string name="branch_details">Branch Details</string>
+    <string name="branch_name">Branch Name</string>
+    <string name="branch_country">Branch Country</string>
+    <string name="branch_city">Branch City</string>
+    <string name="branch_category">Branch Category</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
+    <string name="order_number">Order Number</string>
+    <string name="select_status">Select Status</string>
+    <string name="error_invalid_from_time">Invalid from time</string>
+    <string name="error_invalid_to_time">Invalid to time</string>
+    <string name="error_invalid_time_range">Invalid time range</string>
+    <string name="error_empty_bank_name">Bank name is required</string>
+    <string name="error_empty_iban">IBAN is required</string>
+    <string name="msg_sure_exit_app">Are you sure you want exit the app?</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="error_unavailable_product_">product %s is no longer available</string>
+    <string name="name_on_card">Name on Card</string>
+    <string name="number">Number</string>
+    <string name="security_code">Security Code</string>
+    <string name="expiry_month">Expiry Month</string>
+    <string name="expiry_year">Expiry Year</string>
+    <string name="error_empty_name_on_card">Empty Name on Card</string>
+    <string name="error_empty_card_number">Empty Card Number</string>
+    <string name="error_empty_security_code">Empty Security Code</string>
+    <string name="error_empty_expiry_month">Empty Expiry Month</string>
+    <string name="error_invalid_expiry_month">Invalid Expiry Month</string>
+    <string name="error_empty_expiry_year">Empty Expiry Year</string>
+    <string name="error_payment_failed">Payment Failed</string>
 </resources>

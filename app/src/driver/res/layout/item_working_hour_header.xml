@@ -7,6 +7,9 @@
 
         <import type="android.view.View" />
 
+        <variable
+            name="isExpanded"
+            type="Boolean" />
 
         <variable
             name="dataModel"
@@ -43,10 +46,10 @@
                 android:id="@+id/appCompatTextView29"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@{dataModel.isExpanded ? null : @drawable/ic_right_arrow}"
+                android:drawableEnd="@{isExpanded ? null : @drawable/ic_right_arrow}"
                 android:fontFamily="sans-serif"
                 android:paddingVertical="12dp"
-                android:textColor="@{dataModel.isExpanded ? @color/bluish : @color/textColor}"
+                android:textColor="@{isExpanded ? @color/bluish : @color/textColor}"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:bindDayName="@{adapterPosition}"
@@ -62,7 +65,7 @@
                 android:checked="@={dataModel.isEnableLiveData}"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="3sp"
-                android:visibility="@{dataModel.isExpanded ? View.VISIBLE : View.GONE}"
+                android:visibility="@{isExpanded ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,7 +74,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                android:visibility="@{dataModel.isExpanded ? View.VISIBLE : View.GONE}"
+                android:visibility="@{isExpanded ? View.VISIBLE : View.GONE}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -94,7 +97,7 @@
                 android:textColor="@color/bluish"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:visibility="@{dataModel.isExpanded ? View.VISIBLE : View.GONE}"
+                android:visibility="@{isExpanded ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/timesRv" />

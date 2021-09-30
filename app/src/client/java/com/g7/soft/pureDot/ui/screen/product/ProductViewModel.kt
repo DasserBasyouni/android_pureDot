@@ -9,12 +9,13 @@ import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.CartRepository
 import com.g7.soft.pureDot.repo.ProductRepository
+import com.g7.soft.pureDot.utils.ValidationUtils
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 
 class ProductViewModel(
     val product: ProductModel?,
-    private val productId: String?
+    internal val productId: String?
 ) : ViewModel() {
 
     val selectedBranchPosition = MutableLiveData<Int?>().apply { this.value = 0 }
@@ -113,6 +114,15 @@ class ProductViewModel(
     fun addReview(langTag: String, tokenId: String?) =
         liveData(Dispatchers.IO) {
             emit(NetworkRequestResponse.loading())
+
+            // validate inputs
+            ValidationUtils()
+                .setComment(reviewComment.value)
+                .setRating(reviewRating.value)
+                .getError()?.let {
+                    emit(NetworkRequestResponse.invalidInputData(validationError = it))
+                    return@liveData
+                }
 
             emitSource(
                 ProductRepository(langTag).addReview(

@@ -26,7 +26,10 @@ class ProfileFragmentFlavour {
                     val tokenId =
                         UserRepository("").getTokenId(fragment.requireContext())
 
-                    fragment.viewModel.getUserData(fragment.requireActivity().currentLocale.toLanguageTag(), tokenId)
+                    fragment.viewModel.getUserData(
+                        fragment.requireActivity().currentLocale.toLanguageTag(),
+                        tokenId
+                    )
                 }
             }
         })
@@ -35,10 +38,26 @@ class ProfileFragmentFlavour {
     fun getProfileAdapter(
         fragment: ProfileFragment,
         networkRequestResponse: NetworkRequestResponse<UserDataModel?>
-    ) = ProfileAdapter(fragment, networkRequestResponse.data, fragment.viewModel.signUpFieldsResponse.value?.data)
+    ) = ProfileAdapter(
+        fragment,
+        networkRequestResponse.data,
+        fragment.viewModel.signUpFieldsResponse.value?.data
+    )
 
     fun getProfileEditBundle(viewModel: ProfileViewModel): Bundle = bundleOf(
         "userData" to viewModel.userDataResponse.value?.data,
         "signUpFields" to viewModel.signUpFieldsResponse.value?.data
     )
+
+
+    fun setupAdapters(
+        fragment: ProfileFragment,
+        networkRequestResponse: NetworkRequestResponse<UserDataModel?>
+    ) {
+        fragment.binding.settingsRv.adapter = ProfileAdapter(
+            fragment,
+            networkRequestResponse.data,
+            fragment.viewModel.signUpFieldsResponse.value?.data
+        )
+    }
 }

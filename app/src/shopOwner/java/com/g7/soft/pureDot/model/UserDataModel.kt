@@ -14,7 +14,7 @@ data class UserDataModel(
     @Json(name = "isMale") val isMale: Boolean?,
     @Json(name = "imageUrl") val imageUrl: String?,
     @Json(name = "points") val points: Int?,
-    @Json(name = "credit") val credit: Double?,
+    @Json(name = "balance") val credit: Double?,
     @Json(name = "email") val email: String?,
     @Json(name = "countryCode") val countryCode: String?,
     @Json(name = "country") val country: CountryModel?,

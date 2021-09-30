@@ -14,9 +14,12 @@ import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.databinding.FragmentChangeLanguageBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 
 
@@ -56,7 +59,6 @@ class ChangeLanguageFragment : Fragment() {
 
         // listen
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-
             lifecycleScope.launch {
                 val isEnglish = checkedId == R.id.englishRb
                 val isGuestAccount = UserRepository("").getIsGuestAccount(requireContext())
@@ -64,15 +66,23 @@ class ChangeLanguageFragment : Fragment() {
                 if (isGuestAccount)
                     changeLocaleTo(isEnglish)
                 else {
-                    val fcmToken = "" // todo
-                    viewModel.changeLanguage(
-                        requireActivity().currentLocale.toLanguageTag(),
-                        fcmToken,
-                        ApiConstant.Language.fromIsEnglish(isEnglish).value
-                    )
-                        .observeApiResponse(this@ChangeLanguageFragment, {
+                    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            Timber.w("Fetching FCM registration token failed")
+                            Timber.w(task.exception)
+                            return@OnCompleteListener
+                        }
+
+                        val fcmToken = task.result
+
+                        viewModel.changeLanguage(
+                            requireActivity().currentLocale.toLanguageTag(),
+                            fcmToken,
+                            ApiConstant.Language.fromIsEnglish(isEnglish).value
+                        ).observeApiResponse(this@ChangeLanguageFragment, {
                             changeLocaleTo(isEnglish)
                         })
+                    })
                 }
             }
         }

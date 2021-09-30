@@ -18,8 +18,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.ext.toFormattedDateTime
-import com.g7.soft.pureDot.util.LogEventUtils
-import com.g7.soft.pureDot.util.UiUtils
+import com.g7.soft.pureDot.utils.LogEventUtils
+import com.g7.soft.pureDot.utils.UiUtils
 import com.google.android.material.textfield.TextInputEditText
 import com.kofigyan.stateprogressbar.StateProgressBar
 import java.io.File
@@ -349,7 +349,7 @@ fun bindNotificationStatus(imageView: ImageView, isRead: Boolean?) {
     )
 }
 
-@BindingAdapter("bindTransactionMessage")
+/*@BindingAdapter("bindTransactionMessage")
 fun bindTransactionMessage(textView: TextView, type: Int?) {
     type ?: LogEventUtils.logApiError("bindTransactionMessage: null type").run { return }
 
@@ -378,21 +378,21 @@ fun bindTransactionTitle(textView: TextView, type: Int?) {
     }
 
     if (textResId != null) textView.text = textView.context.getString(textResId)
-}
+}*/
 
 @BindingAdapter("bindTransactionTypeImage")
 fun bindTransactionTypeImage(imageView: ImageView, type: Int?) {
     type ?: LogEventUtils.logApiError("bindTransactionTypeImage: null type").run { return }
 
-    val imageResId = when (ApiConstant.TransactionType.fromInt(type)) {
-        ApiConstant.TransactionType.FROM_YOUR_ACCOUNT, ApiConstant.TransactionType.TO_YOUR_ACCOUNT -> R.drawable.ic_transaction_type_transfer
-        ApiConstant.TransactionType.WITHDRAW -> R.drawable.ic_transaction_type_withdraw
-        ApiConstant.TransactionType.DEPOSIT -> R.drawable.ic_transaction_type_deposit
-        ApiConstant.TransactionType.POINTS -> R.drawable.ic_transaction_type_points
+    /*val imageResId = when (ApiConstant.TransactionType.fromInt(type)) {
+        TransactionType.FROM_YOUR_ACCOUNT, TransactionType.TO_YOUR_ACCOUNT -> R.drawable.ic_transaction_type_transfer
+        TransactionType.WITHDRAW -> R.drawable.ic_transaction_type_withdraw
+        TransactionType.DEPOSIT -> R.drawable.ic_transaction_type_deposit
+        TransactionType.POINTS -> R.drawable.ic_transaction_type_points
         null -> null
     }
 
-    if (imageResId != null) imageView.setImageResource(imageResId)
+    if (imageResId != null) imageView.setImageResource(imageResId)*/
 }
 
 @BindingAdapter("bindComplainStatus")
