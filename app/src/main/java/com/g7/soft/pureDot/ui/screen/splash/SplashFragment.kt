@@ -63,7 +63,7 @@ class SplashFragment : Fragment() {
             if (!tokenId.isNullOrEmpty() || isGuestAccount)
                 FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                     if (!task.isSuccessful) {
-                        Timber.w("Fetching FCM registration token failed",)
+                        Timber.w("Fetching FCM registration token failed")
                         Timber.w(task.exception)
                         return@OnCompleteListener
                     }
@@ -86,8 +86,8 @@ class SplashFragment : Fragment() {
                             ApiConstant.Status.ACCOUNT_NOT_FOUND,
                             ApiConstant.Status.WRONG_PASSWORD,
                         ),
-                        chosenApiStatusObserve = {
-                            if (it == ApiConstant.Status.NOT_VERIFIED) {
+                        chosenApiStatusObserve = { status, _ ->
+                            if (status == ApiConstant.Status.NOT_VERIFIED) {
                                 val bundle = bundleOf(
                                     "isPasswordReset" to false,
                                     "emailOrPhoneNumber" to emailOrPhoneNumber

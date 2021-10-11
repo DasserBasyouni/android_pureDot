@@ -5,8 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class CheckoutResponseModel(
-    @Json(name = "orderId") val masterOrderId: String?,
-    @Json(name = "orderNumber") val orderNumber: Int?,
-    @Json(name = "discription") val description: String?,
-    @Json(name = "orderAmount") val orderAmount: Double?,
+    @Json(name = "orderModel") val orderModel: MasterOrderModel?,
+    @Json(name = "orderMinimumCharge") val orderMinimumCharge: Double?,
+    @Json(name = "successModel") val checkoutSuccessResponse: CheckoutSuccessResponseModel?,
 )

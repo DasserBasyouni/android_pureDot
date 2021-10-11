@@ -13,9 +13,11 @@ import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ProductsAdapter
 import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ApiConstant.OrderStatus.Companion.getShopOwnerNextStatus
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
+import com.g7.soft.pureDot.utils.FlavourProjectDialogUtils
 import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -87,20 +89,52 @@ class OrderFragment : Fragment() {
 
             // setup listeners
             binding.actionBtn.setOnClickListener {
-                lifecycleScope.launch {
-                    val tokenId = UserRepository("").getTokenId(requireContext())
+                val newStatus =
+                    getShopOwnerNextStatus(viewModel.orderResponse.value?.data?.firstOrder?.status)?.value
 
-                    viewModel.changeOrderStatus(
-                        requireActivity().currentLocale.toLanguageTag(),
-                        tokenId = tokenId
-                    ).observeApiResponse(this@OrderFragment, {
-                        viewModel.orderResponse.value?.data?.firstOrder?.status =
-                            ApiConstant.OrderStatus.getShopOwnerNextStatus(viewModel.orderResponse.value?.data?.firstOrder?.status)?.value
-                        binding.invalidateAll()
-                    })
-                }
+                if (newStatus == ApiConstant.OrderStatus.BEING_SHIPPED.value)
+                    FlavourProjectDialogUtils.showPackageSettings(
+                        requireContext(),
+                        positiveCallback = { length, width, height, weight, description ->
+                            changeOrderStatus(
+                                newStatus = newStatus,
+                                length = length,
+                                width = width,
+                                height = height,
+                                weight = weight,
+                                description = description
+                            )
+                        })
+                else
+                    changeOrderStatus(newStatus)
             }
         })
+    }
+
+    private fun changeOrderStatus(
+        newStatus: Int?,
+        length: String? = null,
+        width: String? = null,
+        height: String? = null,
+        weight: String? = null,
+        description: String? = null
+    ) {
+        lifecycleScope.launch {
+            val tokenId = UserRepository("").getTokenId(requireContext())
+
+            viewModel.changeOrderStatus(
+                requireActivity().currentLocale.toLanguageTag(),
+                tokenId = tokenId,
+                packageLength = length,
+                packageWidth = width,
+                packageHeight = height,
+                packageWeight = weight,
+                packageDescription = description
+            ).observeApiResponse(this@OrderFragment, {
+                viewModel.orderResponse.value?.data?.firstOrder?.status = newStatus
+                binding.invalidateAll()
+            })
+        }
     }
 
 

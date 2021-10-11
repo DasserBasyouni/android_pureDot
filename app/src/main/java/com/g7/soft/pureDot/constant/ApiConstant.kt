@@ -25,13 +25,14 @@ class ApiConstant {
         CAN_NOT_RETURN(1018),
         CAN_NOT_ACCEPT(1019),
         ORDER_STATUS_CHANGED(1020),
-        ORDER_LIMIT(1021);
+        ORDER_LIMIT(1021),
+        SHIPMENT_ERROR(1022);
 
         companion object {
             fun fromInt(value: Int) = values().first { it.value == value }
 
             fun getMessageResId(status: Status?): Int = when (status) {
-                SUCCESS, NULL_STATUS, ERROR, WRONG_AUTHENTICATION, null -> R.string.something_went_wrong
+                SUCCESS, NULL_STATUS, ERROR, WRONG_AUTHENTICATION,  null -> R.string.something_went_wrong
                 EMAIL_EXIST -> R.string.email_exists
                 MOBILE_EXIST -> R.string.mobile_exists
                 WRONG_PASSWORD -> R.string.wrong_password
@@ -44,7 +45,8 @@ class ApiConstant {
                 CAN_NOT_RETURN -> R.string.msg_can_not_return
                 CAN_NOT_ACCEPT -> R.string.msg_can_not_accept
                 ORDER_STATUS_CHANGED -> R.string.msg_status_already_changed
-                ORDER_LIMIT -> R.string.msg_order_does_not_meet_min
+                ORDER_LIMIT -> R.string.msg_order_does_not_meet_min_
+                SHIPMENT_ERROR -> R.string.msg_shipment_error
             }
         }
     }
@@ -266,33 +268,20 @@ class ApiConstant {
 
     companion object {
 
-        /*
-        * Walaa
-        * 0593129847
-        * walaa.elnozahy@gmail.com
-        * 25/08/2021
-        * SA
-        * Mecca
-        * Female
-        * Toyota 2020
-        * accept terms
-        * */
+        const val isDevelopmentApi = true
 
         // mock api
         //const val BASE_URL = "https://tests.free.beeceptor.com/api/"
 
         // live
-        const val BASE_URL = "https://api.puredot.com.sa/api/"
-        const val IMG_BASE_URL = "https://cp.puredot.com.sa/api/"
-        const val MERCHANT_ID = "3000000963"
-        const val MASTER_CARD_API_VERSION = "60"
+        val BASE_URL = if (isDevelopmentApi)
+            "http://207.38.87.126:2222/api/" else "https://api.puredot.com.sa/api/"
+        val IMG_BASE_URL = if (isDevelopmentApi)
+            "http://207.38.87.126:3333" else "https://cp.puredot.com.sa"
+        val MERCHANT_ID = if (isDevelopmentApi) "TEST3000000963" else "3000000963"
+        val MASTER_CARD_API_VERSION = if (isDevelopmentApi) "61" else "60"
 
-        //const val BASE_URL = "http://207.38.87.126:2222/api/"
-        //const val IMG_BASE_URL = "http://207.38.87.126:3333/"
-        //const val MERCHANT_ID = "TEST3000000963"
-        //const val MASTER_CARD_API_VERSION = "61"
-
-        const val SOCKET_IO_URL = "https://mars.udacity.com/"
+        //const val SOCKET_IO_URL = "https://mars.udacity.com/"
 
     }
 }

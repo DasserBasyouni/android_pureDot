@@ -31,7 +31,7 @@ class SettingsAdapter(private val fragment: Fragment, data: UserDataModel?) :
         ViewHolder.from(viewGroup)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(list[position], fragment, isGuestAccount)
+        holder.bind(list[position], fragment)
 
     override fun getItemCount(): Int = list.size
 

@@ -17,7 +17,7 @@ class LoginViewModel : ViewModel() {
         // validate inputs
         ValidationUtils()
             .setPhoneNumberOrEmail(emailOrPhoneNumber.value)
-            .setPassword(password.value)
+            .setPassword(password.value, validateEmptyOnly = true)
             .getError()?.let {
                 emit(NetworkRequestResponse.invalidInputData(validationError = it))
                 return@liveData

@@ -51,6 +51,7 @@ class CheckoutPaymentFragment(private val viewModel: CheckoutViewModel) : Fragme
 
             // reset other methods
             binding.masterCardIv.isChecked = false
+            viewModel.isMasterCardChecked.value = false
         }
         binding.masterCardIv.setOnClickListener {
             binding.masterCardIv.isChecked = true
@@ -58,43 +59,57 @@ class CheckoutPaymentFragment(private val viewModel: CheckoutViewModel) : Fragme
 
             // reset other methods
             binding.stcPayIv.isChecked = false
+            viewModel.isStcPayChecked.value = false
         }
         binding.nextBtn.setOnClickListener {
-            if (viewModel.isMasterCardChecked.value == true) {
-                // validate inputs
-                ValidationUtils()
-                    .setNameOnCard(viewModel.masterCardNameOnCard.value)
-                    .setCardNumber(viewModel.masterCardNumber.value)
-                    .setCardSecurityCode(viewModel.masterCardSecurityCode.value)
-                    .setCardExpiryMonth(viewModel.masterCardExpiryMonth.value)
-                    .setCardExpiryYear(viewModel.masterCardExpiryYear.value)
-                    .getError()?.let {
-                        binding.nameOnCardTil.error =
-                            if (it == ValidationError.EMPTY_NAME_ON_CARD)
-                                getString(R.string.error_empty_name_on_card) else null
 
-                        binding.cardNumberTil.error =
-                            if (it == ValidationError.EMPTY_CARD_NUMBER)
-                                getString(R.string.error_empty_card_number) else null
+            // validate inputs
+            if (viewModel.isCashOnDelivery.value != true)
+                if (viewModel.isMasterCardChecked.value == true) {
+                    ValidationUtils()
+                        .setNameOnCard(viewModel.masterCardNameOnCard.value)
+                        .setCardNumber(viewModel.masterCardNumber.value)
+                        .setCardSecurityCode(viewModel.masterCardSecurityCode.value)
+                        .setCardExpiryMonth(viewModel.masterCardExpiryMonth.value)
+                        .setCardExpiryYear(viewModel.masterCardExpiryYear.value)
+                        .getError()?.let {
+                            binding.nameOnCardTil.error =
+                                if (it == ValidationError.EMPTY_NAME_ON_CARD)
+                                    getString(R.string.error_empty_name_on_card) else null
 
-                        binding.cardSecurityCodeTil.error =
-                            if (it == ValidationError.EMPTY_CARD_SECURITY_CODE)
-                                getString(R.string.error_empty_security_code) else null
+                            binding.cardNumberTil.error =
+                                if (it == ValidationError.EMPTY_CARD_NUMBER)
+                                    getString(R.string.error_empty_card_number) else null
 
-                        binding.cardExpiryMonthTil.error =
-                            when (it) {
-                                ValidationError.EMPTY_CARD_EXPIRY_MONTH -> getString(R.string.error_empty_expiry_month)
-                                ValidationError.INVALID_CARD_EXPIRY_MONTH -> getString(R.string.error_invalid_expiry_month)
-                                else -> null
-                            }
+                            binding.cardSecurityCodeTil.error =
+                                if (it == ValidationError.EMPTY_CARD_SECURITY_CODE)
+                                    getString(R.string.error_empty_security_code) else null
 
-                        binding.cardExpiryYearTil.error =
-                            if (it == ValidationError.EMPTY_CARD_EXPIRY_YEAR)
-                                getString(R.string.error_empty_expiry_year) else null
+                            binding.cardExpiryMonthTil.error =
+                                when (it) {
+                                    ValidationError.EMPTY_CARD_EXPIRY_MONTH -> getString(R.string.error_empty_expiry_month)
+                                    ValidationError.INVALID_CARD_EXPIRY_MONTH -> getString(R.string.error_invalid_expiry_month)
+                                    else -> null
+                                }
 
-                        return@setOnClickListener
-                    }
-            }
+                            binding.cardExpiryYearTil.error =
+                                if (it == ValidationError.EMPTY_CARD_EXPIRY_YEAR)
+                                    getString(R.string.error_empty_expiry_year) else null
+
+                            return@setOnClickListener
+                        }
+
+                } else if (viewModel.isStcPayChecked.value == true) {
+                    ValidationUtils()
+                        .setPhoneNumber(viewModel.stcPhoneNumber.value)
+                        .getError()?.let {
+                            binding.stcPhoneNumberTil.error =
+                                if (it == ValidationError.EMPTY_PHONE_NUMBER)
+                                    getString(R.string.error_empty_phone_number) else null
+
+                            return@setOnClickListener
+                        }
+                }
 
             viewModel.currentStateNumber.value =
                 if (viewModel.masterOrder?.isService == true) StateProgressBar.StateNumber.THREE

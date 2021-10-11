@@ -15,11 +15,13 @@ import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ProductCartReviewHeaderAdapter
 import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentCheckout3Binding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.CartRepository
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.utils.ProjectDialogUtils
+import com.g7.soft.pureDot.utils.ValidationUtils
 import com.kofigyan.stateprogressbar.StateProgressBar
 import com.mastercard.gateway.android.sdk.Gateway
 import com.mastercard.gateway.android.sdk.GatewayCallback
@@ -65,10 +67,24 @@ class CheckoutConfirmationFragment(
         }
 
         // setup observables
+        viewModel.stcPayAuthResponse.observeApiResponse(this, {
+            ProjectDialogUtils.showStcPaymentConfirmation(
+                requireContext(),
+                positiveCallback = { stcMobileOtp ->
+                    viewModel.stcMobileOtp.value = stcMobileOtp
+
+                    viewModel.confirmStcPay(requireActivity().currentLocale.toLanguageTag())
+                        .observeApiResponse(this@CheckoutConfirmationFragment, {
+                            processedPaymentSuccess()
+                        })
+                })
+        })
         viewModel.masterOrderResponse.observe(viewLifecycleOwner, {
             viewModel.orderLcee.value!!.response.value = it
         })
         viewModel.masterOrderResponse.observe(viewLifecycleOwner, {
+            viewModel.orderLcee.value!!.response.value = it
+
             binding.couponTil.editText?.setCompoundDrawablesRelative(
                 null,
                 null,
@@ -80,14 +96,40 @@ class CheckoutConfirmationFragment(
         })
 
         // setup listeners
-        /*binding.couponTil.editText?.setOnFocusChangeListener { _, hasFocus ->
-            Log.e("Z_", "hasFocus: $hasFocus")
-            if (hasFocus) {
-                Toast.makeText(requireContext(), "Got the focus", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(requireContext(), "Lost the focus", Toast.LENGTH_LONG).show()
+        binding.addRemoveCouponBtn.setOnClickListener {
+            val isCouponApplied = viewModel.isCouponApplied.value == true
+
+            // validate inputs
+            ValidationUtils()
+                .setCouponCode(viewModel.couponCode.value)
+                .getError()?.let {
+                    binding.couponTil.error =
+                        if (!isCouponApplied && it == ProjectConstant.Companion.ValidationError.EMPTY_COUPON_CODE)
+                            getString(R.string.error_empty_coupon_code) else null
+
+                    return@setOnClickListener
+                }
+
+            if (isCouponApplied) {
+                viewModel.couponCode.value = null
+                viewModel.isCouponApplied.value = false
+            } else
+                viewModel.isCouponApplied.value = true
+
+            binding.couponTil.error = null
+            binding.couponTil.isErrorEnabled = false
+
+            lifecycleScope.launch {
+                val tokenId = UserRepository("").getTokenId(requireContext())
+
+                viewModel.checkCartItems(
+                    requireActivity().currentLocale.toLanguageTag(),
+                    tokenId = tokenId
+                )
             }
-        }*/
+
+            changeCouponButton(isCouponApplied)
+        }
         binding.paymentMethodCv.setOnClickListener {
             viewModel.currentStateNumber.value = StateProgressBar.StateNumber.THREE
         }
@@ -111,42 +153,99 @@ class CheckoutConfirmationFragment(
                 viewModel.checkout(
                     requireActivity().currentLocale.toLanguageTag(),
                     tokenId = tokenId
-                ).observeApiResponse(this@CheckoutConfirmationFragment, {
+                ).observeApiResponse(
+                    this@CheckoutConfirmationFragment,
+                    {
+                        viewModel.masterOrderResponse.value?.data?.id =
+                            it?.checkoutSuccessResponse?.masterOrderId
+                        viewModel.masterOrderResponse.value?.data?.number =
+                            it?.checkoutSuccessResponse?.orderNumber
+                        viewModel.masterOrderResponse.value?.data?.totalOrderCost =
+                            it?.checkoutSuccessResponse?.orderAmount
 
-                    viewModel.masterOrderResponse.value?.data?.id = it?.masterOrderId
-                    viewModel.masterOrderResponse.value?.data?.number = it?.orderNumber
-                    viewModel.masterOrderResponse.value?.data?.totalOrderCost = it?.orderAmount
+                        when {
+                            viewModel.isCashOnDelivery.value == true -> {
+                                CartRepository("").clearCart(lifecycleScope, requireContext())
 
-                    if (viewModel.isCashOnDelivery.value == true) {
-                        CartRepository("").clearCart(lifecycleScope, requireContext())
+                                ProjectDialogUtils.showSimpleMessage(
+                                    context = requireContext(),
+                                    messageResId = R.string.order_placed_successfully,
+                                    drawableResId = R.drawable.ic_successfully,
+                                    positiveBtnTextResId = R.string.track_order
+                                ) {
+                                    val bundle =
+                                        bundleOf("masterOrderId" to viewModel.masterOrderResponse.value?.data?.id)
+                                    findNavController().navigate(
+                                        R.id.action_checkoutFragment_to_orderFragment, bundle
+                                    )
+                                }
 
-                        ProjectDialogUtils.showSimpleMessage(
-                            context = requireContext(),
-                            messageResId = R.string.order_placed_successfully,
-                            drawableResId = R.drawable.ic_successfully,
-                            positiveBtnTextResId = R.string.track_order
-                        ) {
-                            val bundle =
-                                bundleOf("masterOrderId" to viewModel.masterOrderResponse.value?.data?.id)
-                            findNavController().navigate(
-                                R.id.action_checkoutFragment_to_orderFragment, bundle
-                            )
+                            }
+                            viewModel.isStcPayChecked.value == true -> {
+                                viewModel.authenticateStcPay(
+                                    requireActivity().currentLocale.toLanguageTag(),
+                                    it?.checkoutSuccessResponse?.description
+                                )
+                            }
+                            viewModel.isMasterCardChecked.value == true -> {
+                                viewModel.createMasterCardSession(
+                                    requireActivity().currentLocale.toLanguageTag(),
+                                    it?.checkoutSuccessResponse?.description
+                                ).observeApiResponse(
+                                    this@CheckoutConfirmationFragment,
+                                    { sessionModel ->
+                                        processedMasterCardPayment(tokenId, sessionModel?.id)
+                                    })
+                            }
                         }
-                    } else {
-                        viewModel.createMasterCardSession(
-                            requireActivity().currentLocale.toLanguageTag(),
-                            it?.description
-                        ).observeApiResponse(this@CheckoutConfirmationFragment, { sessionModel ->
-                            processedPayment(tokenId, sessionModel?.id)
-                        })
+                    },
+                    apiStatusToObserve = arrayOf(
+                        ApiConstant.Status.ORDER_LIMIT,
+                        ApiConstant.Status.INVALID_CART_ITEMS
+                    ),
+                    chosenApiStatusObserve = { status, data ->
+                        if (status == ApiConstant.Status.ORDER_LIMIT)
+                            ProjectDialogUtils.showSimpleMessage(
+                                requireContext(),
+                                message = getString(
+                                    R.string.msg_order_does_not_meet_min_,
+                                    data?.orderMinimumCharge
+                                ),
+                                drawableResId = R.drawable.ic_secure_shield
+                            )
+                        else if (status == ApiConstant.Status.INVALID_CART_ITEMS) {
+                            val firstUnavailableProduct =
+                                data?.orderModel?.firstOrder?.products?.firstOrNull { it.isAvailable == false }
+
+                            if (firstUnavailableProduct != null) {
+                                ProjectDialogUtils.showSimpleMessage(
+                                    requireContext(),
+                                    message = getString(
+                                        R.string.error_unavailable_product_,
+                                        firstUnavailableProduct.name
+                                    ),
+                                    drawableResId = R.drawable.ic_secure_shield
+                                )
+                            }
+                        }
                     }
-                })
+                )
             }
         }
     }
 
+    private fun changeCouponButton(isCouponApplied: Boolean) {
+        binding.addRemoveCouponBtn.backgroundTintList = ContextCompat.getColorStateList(
+            requireContext(),
+            if (isCouponApplied) {
+                R.color.bluish
+            } else {
+                R.color.driverRed
+            }
+        )
+    }
 
-    private fun processedPayment(tokenId: String?, sessionId: String?) {
+    private fun processedMasterCardPayment(tokenId: String?, sessionId: String?) {
         val gateway = Gateway()
         gateway.merchantId = ApiConstant.MERCHANT_ID
         gateway.region = Gateway.Region.ASIA_PACIFIC
@@ -191,21 +290,7 @@ class CheckoutConfirmationFragment(
                         isPaid = isPaid
                     ).observeApiResponse(this@CheckoutConfirmationFragment, {
                         if (isPaid) {
-                            CartRepository("").clearCart(lifecycleScope, requireContext())
-
-                            ProjectDialogUtils.showSimpleMessage(
-                                context = requireContext(),
-                                messageResId = R.string.order_placed_successfully,
-                                drawableResId = R.drawable.ic_successfully,
-                                positiveBtnTextResId = R.string.track_order
-                            ) {
-                                val bundle =
-                                    bundleOf("masterOrderId" to viewModel.masterOrderResponse.value?.data?.id)
-                                findNavController().navigate(
-                                    R.id.action_checkoutFragment_to_orderFragment,
-                                    bundle
-                                )
-                            }
+                            processedPaymentSuccess()
                         } else {
                             ProjectDialogUtils.showSimpleMessage(
                                 context = requireContext(),
@@ -216,5 +301,23 @@ class CheckoutConfirmationFragment(
                     })
                 }
             })
+    }
+
+    private fun processedPaymentSuccess() {
+        CartRepository("").clearCart(lifecycleScope, requireContext())
+
+        ProjectDialogUtils.showSimpleMessage(
+            context = requireContext(),
+            messageResId = R.string.order_placed_successfully,
+            drawableResId = R.drawable.ic_successfully,
+            positiveBtnTextResId = R.string.track_order
+        ) {
+            val bundle =
+                bundleOf("masterOrderId" to viewModel.masterOrderResponse.value?.data?.id)
+            findNavController().navigate(
+                R.id.action_checkoutFragment_to_orderFragment,
+                bundle
+            )
+        }
     }
 }

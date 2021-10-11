@@ -25,6 +25,7 @@ import com.g7.soft.pureDot.model.ReviewModel
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.bindPriceWithCurrency
 import com.g7.soft.pureDot.ui.screen.complain.ComplainFragment
+import com.google.android.material.textfield.TextInputLayout
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.android.synthetic.main.dialog_complaint_service_rating.*
 import kotlinx.android.synthetic.main.dialog_rating.disableClicksIv
@@ -290,6 +291,49 @@ class ProjectDialogUtils : FlavourProjectDialogUtils() {
 
             //dialog.findViewById<FrameLayout>(R.id.dialogFl).setOnClickListener { dialog.dismiss() }
         }
+
+        fun showStcPaymentConfirmation(
+            context: Context,
+            positiveCallback: (verificationCode: String?) -> Unit
+        ) {
+            val dialog = Dialog(context)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.dialog_stc_payment)
+
+            dialog.findViewById<Button>(R.id.positiveBtn).setOnClickListener {
+                val stcOtpTil = dialog.findViewById<TextInputLayout>(R.id.verificationCodeTIl)
+                val stcOtpCode = stcOtpTil?.editText?.text?.toString()
+
+                // validate inputs
+                ValidationUtils()
+                    .setStcOtpCode(stcOtpCode)
+                    .getError()?.let {
+                        stcOtpTil.error =
+                            if (it == ProjectConstant.Companion.ValidationError.EMPTY_STC_OTP_CODE)
+                                context.getString(R.string.error_empty_stc_otp_code) else null
+
+                        return@setOnClickListener
+                    }
+
+                positiveCallback.invoke(stcOtpCode)
+                dialog.dismiss()
+            }
+
+            dialog.findViewById<Button>(R.id.negativeBtn).setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+
+            dialog.window?.setLayout(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.MATCH_PARENT
+            )
+        }
+
 
         // App Essentials
         /*fun showInternetNoConnectionDialog(activity: KoodActivity, retryRunnable: Runnable){

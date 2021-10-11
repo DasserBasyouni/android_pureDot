@@ -18,7 +18,7 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
     validationObserve: (suspend (validationError: ProjectConstant.Companion.ValidationError?) -> Unit)? = null,
     doLoading: Boolean = true,
     apiStatusToObserve: Array<ApiConstant.Status>? = null,
-    chosenApiStatusObserve: (suspend (status: ApiConstant.Status) -> Unit)? = null
+    chosenApiStatusObserve: (suspend (status: ApiConstant.Status, data: T?) -> Unit)? = null
 ) {
     this.observe(fragment, {
         Log.e("Z_", "here - ${it.status} - ${it.apiErrorStatus} - ${it.exception} - ${it.validationError}")
@@ -59,7 +59,7 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
                         }
                         apiStatusToObserve?.contains(it.apiErrorStatus) == true -> {
                             fragment.lifecycleScope.launch {
-                                chosenApiStatusObserve?.let { function -> function(it.apiErrorStatus) }
+                                chosenApiStatusObserve?.let { function -> function(it.apiErrorStatus, it.data) }
                             }
                         }
                         else ->

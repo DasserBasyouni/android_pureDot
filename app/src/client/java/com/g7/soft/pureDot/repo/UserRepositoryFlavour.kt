@@ -16,16 +16,21 @@ open class UserRepositoryFlavour(private val langTag: String) {
     suspend fun getIsGuestAccount(context: Context): Boolean =
         UserDataDatabase.getInstance(context).userDataFlow.first().isGuestAccount
 
+    suspend fun getFirstName(context: Context): String =
+        UserDataDatabase.getInstance(context).userDataFlow.first().firstName
+
     suspend fun updateIsGuestAccount(context: Context, value: Boolean?) =
         UserDataDatabase.getInstance(context).updateIsGuestAccount(value)
 
     suspend fun saveUserDataFlavour(context: Context, userData: UserDataModel?, password: String?) =
         UserDataDatabase.getInstance(context).also {
+            it.updateFirstName(userData?.firstName)
             it.updateIsGuestAccount(false)
         }
 
     suspend fun clearUserDataFlavour(context: Context) =
         UserDataDatabase.getInstance(context).also {
+            it.updateFirstName(null)
             it.updateIsGuestAccount(null)
         }
 

@@ -34,7 +34,7 @@
             android:id="@+id/tv_count"
             android:layout_width="wrap_content"
             android:layout_height="16dp"
-            android:layout_gravity="top|end|right"
+            android:layout_gravity="top|end|end"
             android:layout_marginTop="4dp"
             android:gravity="center"
             android:includeFontPadding="false"

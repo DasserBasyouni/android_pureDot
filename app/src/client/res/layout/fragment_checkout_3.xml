@@ -241,8 +241,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:layout_marginEnd="4dp"
                         android:visibility="@{viewModel.orderLcee.contentVisibility}"
-                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView40"
+                        app:layout_constraintEnd_toStartOf="@+id/addRemoveCouponBtn"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView40"
                         app:layout_constraintTop_toBottomOf="@+id/appCompatTextView40">
 
@@ -255,6 +256,19 @@
                             android:inputType="text"
                             android:text="@={viewModel.couponCode}" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/addRemoveCouponBtn"
+                        style="@style/ProjectPurpleFilledButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{viewModel.orderLcee.contentVisibility}"
+                        android:layout_marginStart="4dp"
+                        android:text="@{viewModel.isCouponApplied == true ? @string/remove : @string/add}"
+                        app:backgroundTint="@color/bluish"
+                        app:layout_constraintBottom_toBottomOf="@+id/couponTil"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/couponTil" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

@@ -11,14 +11,24 @@ class OrderRepository(private val langTag: String) : OrderRepositoryFlavour(lang
         tokenId: String?,
         orderId: String?,
         status: Int?,
-        isReturn: Boolean?
+        isReturn: Boolean?,
+        packageLength: String? = null,
+        packageWidth: String? = null,
+        packageHeight: String? = null,
+        packageWeight: String? = null,
+        packageDescription: String? = null
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.changeOrderStatus(
                 tokenId = tokenId,
                 orderId = orderId,
                 status = status,
-                isReturn = isReturn
+                isReturn = isReturn,
+                packageLength = packageLength,
+                packageWidth = packageWidth,
+                packageHeight = packageHeight,
+                packageWeight = packageWeight,
+                packageDescription = packageDescription
             )
         }))
     }

@@ -31,6 +31,24 @@ class ValidationUtils {
         return this
     }
 
+    fun setStcOtpCode(text: String?): ValidationUtils {
+        if (validationError == null)
+            validationError = when {
+                text.isNullOrEmpty() -> EMPTY_STC_OTP_CODE
+                else -> null
+            }
+        return this
+    }
+
+    fun setCouponCode(text: String?): ValidationUtils {
+        if (validationError == null)
+            validationError = when {
+                text.isNullOrEmpty() -> EMPTY_COUPON_CODE
+                else -> null
+            }
+        return this
+    }
+
     fun setPhoneNumber(text: String?): ValidationUtils {
         if (validationError == null)
             validationError = when {
@@ -101,7 +119,7 @@ class ValidationUtils {
         if (validationError == null)
             validationError = when {
                 text.isNullOrEmpty() -> EMPTY_VERIFICATION_CODE
-                !text.minLength(5) -> INVALID_VERIFICATION_CODE
+                !text.minLength(4) -> INVALID_VERIFICATION_CODE
                 else -> null
             }
         return this
@@ -418,6 +436,51 @@ class ValidationUtils {
                     } != null
                 } != null -> INVALID_TIME_RANGE
 
+                else -> null
+            }
+        return this
+    }
+
+    fun setLength(text: String?): ValidationUtils {
+        if (validationError == null)
+            validationError = when {
+                text.isNullOrEmpty() -> EMPTY_LENGTH
+                else -> null
+            }
+        return this
+    }
+
+    fun setWidth(text: String?): ValidationUtils {
+        if (validationError == null)
+            validationError = when {
+                text.isNullOrEmpty() -> EMPTY_WIDTH
+                else -> null
+            }
+        return this
+    }
+
+    fun setHeight(text: String?): ValidationUtils {
+        if (validationError == null)
+            validationError = when {
+                text.isNullOrEmpty() -> EMPTY_HEIGHT
+                else -> null
+            }
+        return this
+    }
+
+    fun setWeight(text: String?): ValidationUtils {
+        if (validationError == null)
+            validationError = when {
+                text.isNullOrEmpty() -> EMPTY_WEIGHT
+                else -> null
+            }
+        return this
+    }
+
+    fun setDescription(text: String?): ValidationUtils {
+        if (validationError == null)
+            validationError = when {
+                text.isNullOrEmpty() -> EMPTY_DESCRIPTION
                 else -> null
             }
         return this

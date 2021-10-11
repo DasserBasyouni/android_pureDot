@@ -80,6 +80,8 @@
 
         <com.poovam.pinedittextfield.SquarePinField
             android:id="@+id/squarePinField"
+            android:background="@color/driverRed"
+            android:backgroundTint="@color/driverRed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"

@@ -16,7 +16,7 @@ class ProjectConstant {
         const val BUNDLE_NOTIFICATION = "notification"
 
 
-        const val REQUEST_CODE_PERSONAL_CALCULATOR = 100
+        const val REQUEST_ENABLE_LOCATION_SETTINGS = 100
         const val REQUEST_CODE_SUBMIT_REVIEW = 200
         const val RESULTS_CODE_GPS_PERMISSION = 1237
         const val RESULTS_ADD_ADDRESS = "400"
@@ -34,6 +34,8 @@ class ProjectConstant {
 
         enum class ValidationError {
             EMPTY_PHONE_NUMBER,
+            EMPTY_STC_OTP_CODE,
+            EMPTY_COUPON_CODE,
             EMPTY_PASSWORD,
             INVALID_PASSWORD,
             EMPTY_PHONE_NUMBER_OR_EMAIL,
@@ -47,6 +49,7 @@ class ProjectConstant {
             EMPTY_LAST_NAME,
             EMPTY_EMAIL,
             INVALID_EMAIL,
+
             //UNSELECTED_ADDRESS,
             EMPTY_COMPLAINT_TITLE,
             EMPTY_COMPLAINT_DESCRIPTION,
@@ -62,6 +65,7 @@ class ProjectConstant {
             EMPTY_FLAT,
             EMPTY_FLOOR,
             EMPTY_BUILDING_NUMBER,
+
             //EMPTY_ADDRESS,
             EMPTY_DATE_OF_BIRTH,
             EMPTY_CAR_BRAND,
@@ -82,10 +86,16 @@ class ProjectConstant {
             EMPTY_CARD_EXPIRY_MONTH,
             INVALID_CARD_EXPIRY_MONTH,
             EMPTY_CARD_EXPIRY_YEAR,
-            INVALID_CARD_EXPIRY_YEAR;
+            INVALID_CARD_EXPIRY_YEAR,
+            EMPTY_LENGTH,
+            EMPTY_WIDTH,
+            EMPTY_HEIGHT,
+            EMPTY_WEIGHT,
+            EMPTY_DESCRIPTION;
 
             // don't change null of some fields here, as that will make a popup appears + the editText validation in every screen
             fun toMessageResId() = when (this) {
+                EMPTY_COUPON_CODE -> null
                 EMPTY_CITY -> R.string.error_empty_city
                 EMPTY_ZIP_CODE -> R.string.error_empty_zip_code
                 EMPTY_PASSWORD -> null //R.string.error_empty_password
@@ -136,6 +146,12 @@ class ProjectConstant {
                 INVALID_CARD_EXPIRY_MONTH -> null
                 EMPTY_CARD_EXPIRY_YEAR -> null
                 INVALID_CARD_EXPIRY_YEAR -> null
+                EMPTY_STC_OTP_CODE -> null
+                EMPTY_LENGTH -> null
+                EMPTY_WIDTH -> null
+                EMPTY_HEIGHT -> null
+                EMPTY_WEIGHT -> null
+                EMPTY_DESCRIPTION -> null
             }
         }
 

@@ -86,7 +86,7 @@ class LoginFragment : Fragment() {
                         }
                     },
                         apiStatusToObserve = arrayOf(ApiConstant.Status.NOT_VERIFIED),
-                        chosenApiStatusObserve = {
+                        chosenApiStatusObserve = { _, _ ->
                             val bundle = bundleOf(
                                 "isPasswordReset" to false,
                                 "emailOrPhoneNumber" to viewModel.emailOrPhoneNumber.value

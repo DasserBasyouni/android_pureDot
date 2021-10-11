@@ -43,6 +43,10 @@ class UserDataDatabase(context: Context) {
         }
     }
 
+    suspend fun updateFirstName(value: String?) {
+        dataStore.updateData { data -> data.toBuilder().setFirstName(value ?: "").build() }
+    }
+
     suspend fun updatePassword(value: String?) {
         dataStore.updateData { data -> data.toBuilder().setPassword(value ?: "").build() }
     }

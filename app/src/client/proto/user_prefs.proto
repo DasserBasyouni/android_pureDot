@@ -6,10 +6,11 @@ option java_multiple_files = true;
 message UserData {
   string tokenId = 1;
   string emailOrPhoneNumber = 2;
-  string password = 3;
-  string currencySymbol = 4;
-  string fcmToken = 5;
-  string language = 6;
-  bool doNotify = 7;
-  bool isGuestAccount = 8;
+  string firstName = 3;
+  string password = 4;
+  string currencySymbol = 5;
+  string fcmToken = 6;
+  string language = 7;
+  bool doNotify = 8;
+  bool isGuestAccount = 9;
 }

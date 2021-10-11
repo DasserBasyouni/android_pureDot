@@ -4,6 +4,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ApiConstant.OrderStatus.Companion.getShopOwnerNextStatus
 import com.g7.soft.pureDot.model.MasterOrderModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
@@ -49,14 +50,27 @@ class OrderViewModel(val masterOrder: MasterOrderModel?) : ViewModel() {
         )
     }
 
-    fun changeOrderStatus(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
+    fun changeOrderStatus(
+        langTag: String,
+        tokenId: String?,
+        packageLength: String? = null,
+        packageWidth: String? = null,
+        packageHeight: String? = null,
+        packageWeight: String? = null,
+        packageDescription: String? = null
+    ) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
             OrderRepository(langTag).changeOrderStatus(
                 tokenId = tokenId,
                 orderId = masterOrder?.firstOrder?.id,
-                status = ApiConstant.OrderStatus.getShopOwnerNextStatus(masterOrder?.firstOrder?.status)?.value,
+                status = getShopOwnerNextStatus(masterOrder?.firstOrder?.status)?.value,
                 isReturn = masterOrder?.firstOrder?.isReturn,
+                packageLength = packageLength,
+                packageWidth = packageWidth,
+                packageHeight = packageHeight,
+                packageWeight = packageWeight,
+                packageDescription = packageDescription
             )
         )
     }

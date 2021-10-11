@@ -1,14 +1,18 @@
 package com.g7.soft.pureDot.ui.screen.home
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -26,6 +30,7 @@ import com.g7.soft.pureDot.adapter.ProductsAdapter
 import com.g7.soft.pureDot.adapter.SideNavMenuAdapter
 import com.g7.soft.pureDot.constant.ApiConstant.OrderDeliveryStatus
 import com.g7.soft.pureDot.constant.ProjectConstant
+import com.g7.soft.pureDot.constant.ProjectConstant.Companion.REQUEST_ENABLE_LOCATION_SETTINGS
 import com.g7.soft.pureDot.data.PaginationDataSource
 import com.g7.soft.pureDot.databinding.FragmentHomeBinding
 import com.g7.soft.pureDot.ext.dpToPx
@@ -95,7 +100,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-
+//import com.mapbox.navigation.core.trip.service.MapboxTripService
 
 open class HomeFragment : Fragment() {
 
@@ -104,6 +109,14 @@ open class HomeFragment : Fragment() {
         var isRunning = false
     }
 
+    val resolutionForResult = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { activityResult ->
+        if (activityResult.resultCode == Activity.RESULT_OK)
+            setupTheScreen()
+        else
+            requireActivity().finish()
+    }
 
     internal lateinit var binding: FragmentHomeBinding
     internal lateinit var viewModelFactory: HomeViewModelFactory
@@ -352,7 +365,6 @@ open class HomeFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -361,7 +373,26 @@ open class HomeFragment : Fragment() {
             viewModel.ordersPagedList?.value?.dataSource?.invalidate()
         }
 
+        /*val mapboxTripNotification = MapboxTripNotification(
+            context, NavigationOptions.Builder()
+                .distanceFormatter(mapboxDistanceFormatterObject)
+                .timeFormatType(TimeFormatType.TWELVE_HOURS)
+                .build()
+        )
+        val mapboxTripService = MapboxTripService(requireContext(), mapboxTripNotification, null)*/
+
+
         // initialize Mapbox Navigation
+        /*val options1: MapboxNavigationOptions =
+            MapboxNavigationOptions.builder().navigationNotification(mCustomNavigationNotification)
+                .maneuverZoneRadius(70)
+                .build()
+        val options: NavigationViewOptions = NavigationViewOptions.builder()
+            .directionsRoute(currentRoute)
+            .directionsLanguage(Locale.getDefault())
+            .navigationOptions(options1)
+            .awsPoolId(null).shouldSimulateRoute(simulateRoute).build()*/
+
         mapboxNavigation = MapboxNavigation(
             NavigationOptions.Builder(requireContext())
                 .accessToken(getMapboxAccessTokenFromResources())
@@ -376,7 +407,88 @@ open class HomeFragment : Fragment() {
             viewportDataSource
         )
 
-        PermissionsHelper.requestLocationPermission(requireContext(), {
+        setupTheScreen()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mapView.onDestroy()
+        if (::mapboxNavigation.isInitialized)
+            mapboxNavigation.onDestroy()
+        if (::speechAPI.isInitialized)
+            speechAPI.cancel()
+        if (::voiceInstructionsPlayer.isInitialized)
+            voiceInstructionsPlayer.shutdown()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        binding.mapView.onLowMemory()
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.e("Z_", "onActivityResult")
+        Log.e("Z_", "$requestCode, $resultCode")
+
+        if (requestCode == REQUEST_ENABLE_LOCATION_SETTINGS)
+            setupTheScreen()
+    }
+
+
+    fun closeSideNavigationMenu(onFinishRunnable: Runnable? = null) {
+        binding.screenClickableIv.visibility = View.GONE
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding.root as ConstraintLayout)
+
+        constraintSet.constrainWidth(binding.coordinatorLayout.id, 0)
+
+        constraintSet.connect(
+            binding.coordinatorLayout.id,
+            ConstraintSet.START,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.START,
+            0
+        )
+        constraintSet.setMargin(
+            binding.coordinatorLayout.id, ConstraintSet.TOP, 0
+        )
+        constraintSet.setMargin(binding.coordinatorLayout.id, ConstraintSet.BOTTOM, 0)
+
+        val transition = ChangeBounds()
+        transition.addListener(object : Transition.TransitionListener {
+            override fun onTransitionEnd(transition: Transition) {
+                onFinishRunnable?.run()
+            }
+
+            override fun onTransitionResume(transition: Transition) = Unit
+
+            override fun onTransitionPause(transition: Transition) = Unit
+
+            override fun onTransitionCancel(transition: Transition) = Unit
+
+            override fun onTransitionStart(transition: Transition) = Unit
+        })
+
+        TransitionManager.beginDelayedTransition(binding.constraintLayout, transition)
+
+        constraintSet.applyTo(binding.root as ConstraintLayout)
+
+        viewModel.isSideNavMenuOpened.value = false
+    }
+
+    fun doBackPressed() {
+        if (viewModel.selectedOrder.value != null)
+            viewModel.selectedOrder.value = null
+        else
+            (requireActivity() as MainActivity).superOnBackPressed()
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun setupTheScreen() {
+        PermissionsHelper.requestLocationPermission(requireContext(), resolutionForResult, {
             setupSideNavigationMenu()
             setupObservables()
             fetchData()
@@ -539,70 +651,6 @@ open class HomeFragment : Fragment() {
         })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.mapView.onDestroy()
-        mapboxNavigation.onDestroy()
-        speechAPI.cancel()
-        voiceInstructionsPlayer.shutdown()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        binding.mapView.onLowMemory()
-    }
-
-
-    fun closeSideNavigationMenu(onFinishRunnable: Runnable? = null) {
-        binding.screenClickableIv.visibility = View.GONE
-
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(binding.root as ConstraintLayout)
-
-        constraintSet.constrainWidth(binding.coordinatorLayout.id, 0)
-
-        constraintSet.connect(
-            binding.coordinatorLayout.id,
-            ConstraintSet.START,
-            ConstraintSet.PARENT_ID,
-            ConstraintSet.START,
-            0
-        )
-        constraintSet.setMargin(
-            binding.coordinatorLayout.id, ConstraintSet.TOP, 0
-        )
-        constraintSet.setMargin(binding.coordinatorLayout.id, ConstraintSet.BOTTOM, 0)
-
-        val transition = ChangeBounds()
-        transition.addListener(object : Transition.TransitionListener {
-            override fun onTransitionEnd(transition: Transition) {
-                onFinishRunnable?.run()
-            }
-
-            override fun onTransitionResume(transition: Transition) = Unit
-
-            override fun onTransitionPause(transition: Transition) = Unit
-
-            override fun onTransitionCancel(transition: Transition) = Unit
-
-            override fun onTransitionStart(transition: Transition) = Unit
-        })
-
-        TransitionManager.beginDelayedTransition(binding.constraintLayout, transition)
-
-        constraintSet.applyTo(binding.root as ConstraintLayout)
-
-        viewModel.isSideNavMenuOpened.value = false
-    }
-
-    fun doBackPressed() {
-        if (viewModel.selectedOrder.value != null)
-            viewModel.selectedOrder.value = null
-        else
-            (requireActivity() as MainActivity).superOnBackPressed()
-    }
-
-
     private fun findRoute(destination1: Point, destination2: Point) {
         val origin = navigationLocationProvider.lastLocation?.let {
             Point.fromLngLat(it.longitude, it.latitude)
@@ -612,7 +660,7 @@ open class HomeFragment : Fragment() {
                 .applyDefaultNavigationOptions()
                 .applyLanguageAndVoiceUnitOptions(requireContext())
                 //.accessToken(getMapboxAccessTokenFromResources())
-                .coordinatesList(listOf(origin, destination1, destination2))
+                .coordinatesList(listOf(origin, destination1, destination2)) // TODO Eng. Omnia
                 .geometries(GEOMETRY_POLYLINE6)
                 .profile(PROFILE_DRIVING)
                 .build(),
@@ -638,7 +686,7 @@ open class HomeFragment : Fragment() {
 
     private fun setRouteAndStartNavigation(route: DirectionsRoute, routerOrigin: RouterOrigin) {
         // set route
-        mapboxNavigation.setRoutes(listOf(route))
+        mapboxNavigation.setRoutes(listOf(route)) // TODO Eng. Omnia
 
         // show UI elements
         binding.soundButton.visibility = View.VISIBLE
@@ -648,7 +696,7 @@ open class HomeFragment : Fragment() {
         binding.soundButton.unmuteAndExtend(2000L)
 
         // move the camera to overview when new route is available
-        navigationCamera.requestNavigationCameraToOverview()
+        navigationCamera.requestNavigationCameraToOverview() // TODO Eng. Omnia
     }
 
     private fun clearRouteAndStopNavigation() {
@@ -693,7 +741,7 @@ open class HomeFragment : Fragment() {
             val mapBottomMargin: Int
 
             if (it == true) {
-                navigationCamera.requestNavigationCameraToFollowing()
+                navigationCamera.requestNavigationCameraToFollowing() // TODO Eng. Omnia
                 logoBottomMargin = 146.dpToPx().toFloat()
                 mapBottomMargin = 0.dpToPx()
             } else {

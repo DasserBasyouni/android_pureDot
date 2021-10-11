@@ -68,16 +68,16 @@ fun bindShippingMethodsRadioButtons(
 ) {
     radioGroup.removeAllViews()
 
+    val context = radioGroup.context
+
+    // add delivery app
+    if (shippingMethods != null)
+        radioGroup.addView((getStyleRadioButton(context)).apply {
+            this.text = context.getString(R.string.delivery_app)
+        })
+
+    // add api shipping methods
     for (shippingMethod in shippingMethods ?: listOf()) {
-        val context = radioGroup.context
-
-        // add delivery app
-        if (shippingMethod == shippingMethods?.getOrNull(0))
-            radioGroup.addView((getStyleRadioButton(context)).apply {
-                this.text = context.getString(R.string.delivery_app)
-            })
-
-        // add api shipping methods
         radioGroup.addView((getStyleRadioButton(context)).apply {
             this.text = shippingMethod.name
             this.tag = shippingMethod.id

@@ -53,4 +53,6 @@ open class UserRepositoryFlavour(private val langTag: String) {
         }))
     }
 
+    fun getFirstName(context: Context) = ""
+
 }

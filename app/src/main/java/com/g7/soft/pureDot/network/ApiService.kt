@@ -119,6 +119,11 @@ interface ApiService : ApiServiceFlavour {
         @Field("orderId") orderId: String?,
         @Field("status") status: Int?,
         @Field("isReturn") isReturn: Boolean?,
+        @Field("packageLength") packageLength: String? = null,
+        @Field("packageWidth") packageWidth: String? = null,
+        @Field("packageHeight") packageHeight: String? = null,
+        @Field("packageWeight") packageWeight: String? = null,
+        @Field("packageDescription") packageDescription: String? = null
     ): ApiResponseModel<*>?
 
     // wallet

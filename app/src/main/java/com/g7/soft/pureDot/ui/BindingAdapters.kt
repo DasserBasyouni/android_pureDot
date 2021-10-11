@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ApiConstant.TransactionType
 import com.g7.soft.pureDot.ext.toFormattedDateTime
 import com.g7.soft.pureDot.utils.LogEventUtils
 import com.g7.soft.pureDot.utils.UiUtils
@@ -384,15 +385,15 @@ fun bindTransactionTitle(textView: TextView, type: Int?) {
 fun bindTransactionTypeImage(imageView: ImageView, type: Int?) {
     type ?: LogEventUtils.logApiError("bindTransactionTypeImage: null type").run { return }
 
-    /*val imageResId = when (ApiConstant.TransactionType.fromInt(type)) {
-        TransactionType.FROM_YOUR_ACCOUNT, TransactionType.TO_YOUR_ACCOUNT -> R.drawable.ic_transaction_type_transfer
-        TransactionType.WITHDRAW -> R.drawable.ic_transaction_type_withdraw
-        TransactionType.DEPOSIT -> R.drawable.ic_transaction_type_deposit
-        TransactionType.POINTS -> R.drawable.ic_transaction_type_points
+    val imageResId = when (TransactionType.fromInt(type)) {
+        TransactionType.RETURN_ORDER, TransactionType.PAY_FOR_ORDER -> R.drawable.ic_transaction_type_transfer
+        TransactionType.REDEEM, TransactionType.DEPOSIT, TransactionType.RETURN_PRODUCT, TransactionType.DELIVERY_INCOME, TransactionType.SALES -> R.drawable.ic_transaction_type_deposit
+        TransactionType.TRANSFER, TransactionType.REFUND_MONEY, TransactionType.REFUND -> R.drawable.ic_transaction_type_withdraw
+        //TransactionType.POINTS -> R.drawable.ic_transaction_type_points
         null -> null
     }
 
-    if (imageResId != null) imageView.setImageResource(imageResId)*/
+    if (imageResId != null) imageView.setImageResource(imageResId)
 }
 
 @BindingAdapter("bindComplainStatus")

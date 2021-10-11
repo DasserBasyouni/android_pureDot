@@ -1,6 +1,8 @@
 package com.g7.soft.pureDot.ui.screen
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
@@ -17,6 +19,9 @@ import com.g7.soft.pureDot.databinding.ActivityMainBinding
 import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.g7.soft.pureDot.utils.UiUtils
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
+
+
+
 
 
 class MainActivity : LocaleAwareCompatActivity() {
@@ -117,6 +122,12 @@ class MainActivity : LocaleAwareCompatActivity() {
             //viewModel.lastBackStackSize.value = controller.backStack.size
             //title = "test"
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.e("Z_", "onActivityResult 2")
+        Log.e("Z_", "22: $requestCode, $resultCode")
     }
 
     override fun onSupportNavigateUp() =

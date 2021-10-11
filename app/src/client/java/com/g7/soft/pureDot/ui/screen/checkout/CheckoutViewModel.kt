@@ -176,13 +176,14 @@ class CheckoutViewModel(
     val masterCardExpiryMonth = MutableLiveData<String?>()
     val masterCardExpiryYear = MutableLiveData<String?>()
 
-    val stcMobileNumber = MutableLiveData<String?>()
+    val stcPhoneNumber = MutableLiveData<String?>()
     val stcMobileOtp = MutableLiveData<String?>()
 
     val stcPayAuthResponse = MediatorLiveData<NetworkRequestResponse<StcPayAuthModel>>()
 
 
     // checkout 4
+    val isCouponApplied = MutableLiveData<Boolean?>().apply { this.value = false }
     val selectedAddress
         get() = addressesResponse.value?.data?.getOrNull(
             (selectedAddressPosition.value ?: 0) - 1
@@ -241,7 +242,7 @@ class CheckoutViewModel(
         stcPayAuthResponse.apply {
             addSource(
                 PaymentRepository(langTag).authenticateStcPay(
-                    mobile = stcMobileNumber.value,
+                    mobile = stcPhoneNumber.value,
                     masterOrderNumber = masterOrderResponse.value?.data?.number,
                     masterOrderId = masterOrderResponse.value?.data?.id,
                     orderAmount = masterOrderResponse.value?.data?.totalOrderCost,

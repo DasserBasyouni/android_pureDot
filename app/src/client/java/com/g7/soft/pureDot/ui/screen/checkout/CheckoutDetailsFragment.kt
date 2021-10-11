@@ -1,11 +1,13 @@
 package com.g7.soft.pureDot.ui.screen.checkout
 
+import android.app.Activity
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
@@ -30,7 +32,14 @@ import kotlinx.coroutines.launch
 class CheckoutDetailsFragment(private val viewModel: CheckoutViewModel) : Fragment() {
 
     private lateinit var binding: FragmentCheckout1Binding
-
+    private val resolutionForResult = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { activityResult ->
+        if (activityResult.resultCode == Activity.RESULT_OK)
+            binding.addNewLocation.performClick()
+        else
+            requireActivity().finish()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,7 +84,7 @@ class CheckoutDetailsFragment(private val viewModel: CheckoutViewModel) : Fragme
 
         // setup listeners
         binding.addNewLocation.setOnClickListener {
-            PermissionsHelper.requestLocationPermission(requireContext(), grantedRunnable = {
+            PermissionsHelper.requestLocationPermission(requireContext(), resolutionForResult, grantedRunnable = {
                 requireActivity().supportFragmentManager.setFragmentResultListener(
                     RESULTS_ADD_ADDRESS, viewLifecycleOwner
                 ) { key, bundle ->
@@ -118,7 +127,7 @@ class CheckoutDetailsFragment(private val viewModel: CheckoutViewModel) : Fragme
             }
             ProjectConstant.Companion.Status.SUCCESS -> {
                 val modelsList = networkResponse.data
-                val dataList = modelsList?.mapNotNull { it.streetName }?.toTypedArray()
+                val dataList = modelsList?.mapNotNull { it.areaName }?.toTypedArray()
 
                 spinner.isEnabled = true
                 arrayListOf(initialText).apply {

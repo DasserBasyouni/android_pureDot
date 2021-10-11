@@ -24,11 +24,14 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.ext.dpToPx
+import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.screen.MainActivity
 import com.google.android.material.appbar.AppBarLayout
+import kotlinx.coroutines.launch
 
 
 // keep eyes on upcoming fix: @link: https://stackoverflow.com/questions/62643517/immersive-fullscreen-on-android-11
@@ -348,10 +351,13 @@ class UiUtils(private val window: Window, private val view: View) {
                     binding.collapsingToolbarLayout.layoutParams.height = 250.dpToPx()
                     binding.appBarLayout.setBackgroundResource(R.drawable.app_gradient_scrim_round)
 
-                    // todo
-                    binding.root.findViewById<View>(R.id.toolbarHomeContent)?.rootView?.findViewById<TextView>(
-                        R.id.welcomeTv
-                    )?.text = "Welcome, Retaj!"
+                    activity.lifecycleScope.launch {
+                        val firstName = UserRepository("").getFirstName(activity)
+
+                        binding.root.findViewById<View>(R.id.toolbarHomeContent)?.rootView?.findViewById<TextView>(
+                            R.id.welcomeTv
+                        )?.text = activity.getString(R.string.conc_welcome_, firstName)
+                    }
 
                     binding.appBarLayout.visibility = View.VISIBLE
                     binding.appBarLayout.requestLayout()
