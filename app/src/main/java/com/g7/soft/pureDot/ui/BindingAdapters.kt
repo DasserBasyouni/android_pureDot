@@ -76,6 +76,7 @@ fun bindApiImageUrl(imageView: ImageView, url: String?) {
     "bindCurrency",
     "bindDiscountPercentage",
     "bindPrePriceText",
+    "bindPostPriceText",
     requireAll = false
 )
 fun bindPriceWithCurrency(
@@ -83,28 +84,36 @@ fun bindPriceWithCurrency(
     price: Double?,
     currency: String?,
     discountPercentage: Float? = null,
-    preText: String? = null
+    preText: String? = null,
+    postText: String? = null
 ) {
     price ?: LogEventUtils.logApiError("bindPriceWithCurrency: null price").run { return }
     currency ?: LogEventUtils.logApiError("bindPriceWithCurrency: null currency")
         .run { return }
 
 
-    if (preText != null)
-        textView.text = textView.context.getString(
+    when {
+        preText != null -> textView.text = textView.context.getString(
             R.string.conc_two_strings, preText, textView.context.getString(
                 R.string.format_price_with_currency,
                 price.times(discountPercentage ?: 1f),
                 currency
             )
         )
-    else
-        textView.text =
+        postText != null -> textView.text = textView.context.getString(
+            R.string.conc_two_strings, textView.context.getString(
+                R.string.format_price_with_currency,
+                price.times(discountPercentage ?: 1f),
+                currency
+            ), postText
+        )
+        else -> textView.text =
             textView.context.getString(
                 R.string.format_price_with_currency,
                 price.times(discountPercentage ?: 1f),
                 currency
             )
+    }
 
 }
 
@@ -314,8 +323,8 @@ fun bindOrderDeliveryActionText(button: Button, orderDeliveryStatus: Int?) {
     val textResId = when (ApiConstant.OrderDeliveryStatus.fromInt(orderDeliveryStatus)) {
         ApiConstant.OrderDeliveryStatus.NEW -> R.string.accept
         ApiConstant.OrderDeliveryStatus.ACCEPTED -> R.string.start_head_to_the_shop
-        ApiConstant.OrderDeliveryStatus.STARTED -> R.string.arrived_to_shop
-        ApiConstant.OrderDeliveryStatus.PICKED -> R.string.picked_up_the_item
+        ApiConstant.OrderDeliveryStatus.STARTED -> R.string.picked_up_the_item
+        ApiConstant.OrderDeliveryStatus.PICKED -> R.string.arrived_to_customer
         ApiConstant.OrderDeliveryStatus.ARRIVED -> R.string.delivered_to_customer
         ApiConstant.OrderDeliveryStatus.DELIVERED -> R.string.done
         else -> null

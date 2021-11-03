@@ -248,7 +248,7 @@ interface ApiServiceFlavour {
     ): ApiResponseModel<List<OrderTrackingModel>>?
 
     @POST("client/getShippingMethods") // todo add to mock api
-    suspend fun getShippingMethods(): ApiResponseModel<List<ShippingMethodModel>>?
+    suspend fun getShippingMethods(@Body body: RequestBody): ApiResponseModel<List<ShippingMethodModel>>?
 
     @FormUrlEncoded
     @POST("orders/calculateRefundShipping")
@@ -267,6 +267,9 @@ interface ApiServiceFlavour {
         @Field("shippingCost") shippingCost: Double?,
         @Field("commission") commission: Double?,
         @Field("vat") vat: Double?,
+        @Field("driverEarning") driverEarning: Double?,
+        @Field("driverVat") driverVat: Double?,
+        @Field("deliveryCommissionVat") deliveryCommissionVat: Double?,
     ): ApiResponseModel<*>?
 
     // service
@@ -326,22 +329,15 @@ interface ApiServiceFlavour {
     ): ApiResponseModel<*>?
 
     @FormUrlEncoded
-    @POST("client/suggestContact")
+    @POST("client/GetTransferCustomer")
     suspend fun suggestContact(
         @Field("tokenId") tokenId: String?,
         @Field("emailOrPhoneNumber") emailOrPhoneNumber: String?,
-    ): ApiResponseModel<MutableList<ContactModel>>?
+    ): ApiResponseModel<ContactModel?>?
 
     @FormUrlEncoded
     @POST("client/replacePoints")
     suspend fun replacePoints(
-        @Field("tokenId") tokenId: String?,
-        @Field("amount") amount: Int?,
-    ): ApiResponseModel<*>?
-
-    @FormUrlEncoded // todo add to mock api
-    @POST("client/addMoney")
-    suspend fun addMoney(
         @Field("tokenId") tokenId: String?,
         @Field("amount") amount: Int?,
     ): ApiResponseModel<*>?

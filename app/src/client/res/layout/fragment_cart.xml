@@ -102,12 +102,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
                 android:text="@string/proceed_to_checkout"
                 android:visibility="@{viewModel.orderLcee.contentVisibility}"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/clearCartBtn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearCartBtn"
+                style="@style/ProjectPurpleStrokeButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="@{viewModel.orderLcee.contentVisibility}"
+                android:text="@string/clear_cart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/checkoutBtn"
+                app:layout_constraintStart_toStartOf="@+id/checkoutBtn"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.phoneVerification
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.Application
@@ -21,6 +23,7 @@ import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
+import kotlinx.coroutines.launch
 
 class PhoneVerificationFragment : Fragment() {
     private lateinit var binding: FragmentPhoneVerificationBinding
@@ -42,6 +45,7 @@ class PhoneVerificationFragment : Fragment() {
 
         viewModelFactory = PhoneVerificationViewModelFactory(
             isPasswordReset = args.isPasswordReset,
+            isWalletVerification = args.isWalletVerification,
             emailOrPhoneNumber = args.emailOrPhoneNumber
         )
         viewModel =
@@ -86,8 +90,12 @@ class PhoneVerificationFragment : Fragment() {
 
         // setup listeners
         binding.squarePinField.addTextChangedListener {
-            if (it?.length == 4)
-                viewModel.verify(requireActivity().currentLocale.toLanguageTag())
+            if (it?.length == 4) {
+                lifecycleScope.launch {
+                    val tokenId = UserRepository("").getTokenId(requireContext())
+                    viewModel.verify(requireActivity().currentLocale.toLanguageTag(), tokenId)
+                }
+            }
         }
 
         binding.actionBtn.setOnClickListener {
@@ -101,6 +109,8 @@ class PhoneVerificationFragment : Fragment() {
                             viewModel.password.value
                         )
 
+                        Log.e("Z_", "userTokenId2: ${userData?.tokenId}")
+
                         ProjectDialogUtils.showSimpleMessage(
                             requireContext(), R.string.msg_password_reset,
                             drawableResId = R.drawable.ic_secure_shield,
@@ -109,21 +119,40 @@ class PhoneVerificationFragment : Fragment() {
                         ) {
                             findNavController().navigate(R.id.action_phoneVerificationFragment_to_homeFragment)
                         }
+                    }, validationObserve = {
+                        binding.passwordTil.error = when (it) {
+                            ValidationError.EMPTY_PASSWORD -> getString(R.string.error_empty_password)
+                            ValidationError.INVALID_PASSWORD -> getString(R.string.error_invalid_password)
+                            else -> null
+                        }
+
+                        binding.confirmPasswordTil.error =
+                            if (it == ValidationError.NON_IDENTICAL_PASSWORD)
+                                getString(R.string.error_non_identical_passwords) else null
                     })
             } else {
                 PhoneVerificationFragmentFlavour().signUpSuccessfulAction(this)
             }
         }
 
-        binding.resendCodeTv.makeLinks(Pair(getString(R.string.resent_code), View.OnClickListener {
-            viewModel.resendCode(requireActivity().currentLocale.toLanguageTag())
-                .observeApiResponse(
-                    this,
-                    {
-                        viewModel.startCountDownTimer()
-                    },
-                )
-        }), doChangeColor = false)
+        lifecycleScope.launch {
+            val tokenId = UserRepository("").getTokenId(requireContext())
+
+            binding.resendCodeTv.makeLinks(
+                Pair(getString(R.string.resent_code),
+                    View.OnClickListener {
+                        viewModel.resendCode(
+                            requireActivity().currentLocale.toLanguageTag(),
+                            tokenId
+                        ).observeApiResponse(
+                            this@PhoneVerificationFragment,
+                            {
+                                viewModel.startCountDownTimer()
+                            },
+                        )
+                    }), doChangeColor = false
+            )
+        }
     }
 
 

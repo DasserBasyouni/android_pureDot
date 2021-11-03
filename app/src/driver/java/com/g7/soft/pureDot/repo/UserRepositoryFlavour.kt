@@ -1,6 +1,7 @@
 package com.g7.soft.pureDot.repo
 
 import android.content.Context
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.data.database.userData.UserDataDatabase
 import com.g7.soft.pureDot.model.UserDataModel
@@ -28,7 +29,7 @@ open class UserRepositoryFlavour(private val langTag: String) {
 
         }
 
-    suspend fun clearUserDataFlavour(context: Context) =
+    suspend fun clearUserDataFlavour(lifecycleScope: LifecycleCoroutineScope, context: Context) =
         UserDataDatabase.getInstance(context).also {
 
         }

@@ -60,7 +60,10 @@ class OrderReviewHeaderAdapter(
 
                 if (areTotalPricesVisible) {
                     binding.order = dataModel
-                    binding.vat = dataModel?.vat
+                    binding.itemsVat = dataModel?.itemsVat
+                    binding.shippingCost = dataModel?.shippingCost
+                    binding.deliveryVat = dataModel?.deliveryVat
+                    binding.coupon = dataModel?.couponDiscount
                     binding.subTotal = dataModel?.subTotal
                     binding.currency = currencySymbol
                 }

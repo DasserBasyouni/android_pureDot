@@ -77,14 +77,6 @@ interface ApiServiceFlavour {
         @Field("pageNumber") pageNumber: Int?,
     ): ApiResponseModel<MutableList<MasterOrderModel>>?
 
-    // wallet
-    @FormUrlEncoded // todo add to mock api
-    @POST("driver/addMoney")
-    suspend fun addMoney(
-        @Field("tokenId") tokenId: String?,
-        @Field("amount") amount: Int?,
-    ): ApiResponseModel<*>?
-
     // Availability
     @FormUrlEncoded
     @POST("driver/checkAvailability")
@@ -107,4 +99,13 @@ interface ApiServiceFlavour {
 
     @POST("driver/addEditWorkingHours")
     suspend fun addEditWorkingHours(@Body body: RequestBody): ApiResponseModel<*>?
+
+    @FormUrlEncoded // todo add in mock api
+    @POST("driver/setLocation")
+    suspend fun setCurrentLocation(
+        @Field("tokenId") tokenId: String?,
+        @Field("latitude") latitude: Double?,
+        @Field("longitude") longitude: Double?,
+        @Field("areaName") areaName: String?,
+    ): ApiResponseModel<*>?
 }

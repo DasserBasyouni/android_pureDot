@@ -19,4 +19,7 @@ data class AddressModel(
     @Json(name = "longitude") val longitude: String?,
     @Json(name = "cityId") val cityId: String?,
     @Json(name = "zipCodeId") val zipCodeId: String?,
-) : Parcelable
+    @Json(name = "cityName") val cityName: String?,
+) : Parcelable{
+    val addressName = "$cityName $areaName $streetName"
+}

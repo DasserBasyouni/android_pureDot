@@ -6,6 +6,7 @@ import com.g7.soft.pureDot.data.database.product.ProductCart
 import com.g7.soft.pureDot.data.database.product.ProductCartDatabase
 import com.g7.soft.pureDot.model.ApiShopOrderItemModel
 import com.g7.soft.pureDot.model.ApiShopOrderModel
+import com.g7.soft.pureDot.model.IdNameModel
 import com.g7.soft.pureDot.network.Fetcher
 import com.g7.soft.pureDot.network.NetworkRequestHandler
 import com.g7.soft.pureDot.utils.LogEventUtils
@@ -235,6 +236,28 @@ class CartRepository(private val langTag: String) {
                 .run { return@launch }
 
             dao.deleteALl()
+        }
+    }
+
+
+    fun isSameBranchOrEmpty(
+        lifecycleScope: CoroutineScope,
+        context: Context,
+        selectedBranch: IdNameModel?,
+        onComplete: (isSameBranch: Boolean) -> Unit
+    ) {
+        lifecycleScope.launch {
+            val dao = ProductCartDatabase.getDatabase(context)?.cartDao()
+
+            dao ?: LogEventUtils.logApiError("CartRepository.isSameBranchOrEmpty: null dao")
+                .run { return@launch }
+
+            val productsInCart = dao.getAll()
+            val returnValue =
+                (productsInCart.isNullOrEmpty()
+                        || productsInCart.firstNotNullOf { it?.apiShopOrder?.branchId == selectedBranch?.id })
+
+            onComplete.invoke(returnValue)
         }
     }
 

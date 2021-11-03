@@ -3,6 +3,7 @@ package com.g7.soft.pureDot.ui.screen
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -216,6 +217,7 @@ class MainActivity : LocaleAwareCompatActivity() {
             val orderNumber = intentBundle.getInt("orderNumber")
             val productId = intentBundle.getString("productId")
             val storeId = intentBundle.getString("storeId")
+            Log.e("Z_", "$orderId, $orderNumber, $productId, $storeId")
 
             when {
                 orderId != null -> navController.navigate(
@@ -251,7 +253,7 @@ class MainActivity : LocaleAwareCompatActivity() {
                     supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()
                 (currentFragment as CheckoutFragment).doBackPressed()
             }
-            firstTimeExitPopup -> {
+            firstTimeExitPopup && findNavController(R.id.navHostFragment).currentDestination?.id == R.id.homeFragment -> {
                 firstTimeExitPopup = false
                 ProjectDialogUtils.onExitApp(this) { firstTimeExitPopup = true }
             }

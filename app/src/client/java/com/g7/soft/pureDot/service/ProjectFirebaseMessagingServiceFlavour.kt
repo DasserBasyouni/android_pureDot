@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
 import android.text.TextUtils
@@ -18,9 +19,15 @@ import com.g7.soft.pureDot.ui.screen.order.OrderFragment
 import com.g7.soft.pureDot.ui.screen.product.ProductFragment
 import com.g7.soft.pureDot.ui.screen.store.StoreFragment
 import com.g7.soft.pureDot.ui.screen.trackOrder.TrackOrderFragment
+import timber.log.Timber
+import java.util.*
 
 
 class ProjectFirebaseMessagingServiceFlavour {
+
+    private var ringTone: Ringtone? = null
+
+
     fun onMessageReceived(context: ProjectFirebaseMessagingService, data: Map<String, String>) {
         val storeId = data["storeId"]
         val productId = data["productId"]
@@ -57,7 +64,9 @@ class ProjectFirebaseMessagingServiceFlavour {
                 ProductFragment.refreshData?.invoke(productId)
             orderId != null && OrderFragment.isRunning -> OrderFragment.refreshData?.invoke(orderId)
             orderId != null && MyOrdersFragment.isRunning -> MyOrdersFragment.refreshData?.invoke()
-            orderId != null && TrackOrderFragment.isRunning -> TrackOrderFragment.refreshData?.invoke(orderId)
+            orderId != null && TrackOrderFragment.isRunning -> TrackOrderFragment.refreshData?.invoke(
+                orderId
+            )
         }
     }
 
@@ -94,8 +103,12 @@ class ProjectFirebaseMessagingServiceFlavour {
             .setContentTitle(title)
             .setContentText(messageBody)
             .setAutoCancel(true)
-            .setSound(defaultSoundUri)
+            //.setDefaults(Notification.DEFAULT_SOUND)
             .setContentIntent(pendingIntent)
+        /*.setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
+        .setDefaults(
+            Notification.DEFAULT_SOUND
+        )*/
 
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -104,12 +117,32 @@ class ProjectFirebaseMessagingServiceFlavour {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "Channel human readable title",
+                context.getString(R.string.notification),
                 NotificationManager.IMPORTANCE_DEFAULT
             )
+
+            /*val audioAttributes = AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build()*/
+            //channel.setSound(defaultSoundUri, audioAttributes)
+            //channel.enableVibration(true)
+            //channel.vibrationPattern = longArrayOf(1000, 1000, 1000, 1000, 1000)
+
             notificationManager.createNotificationChannel(channel)
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
+        val uniqueNotificationId = ((Date().time / 1000L) % Integer.MAX_VALUE).toInt()
+        notificationManager.notify(uniqueNotificationId, notificationBuilder.build())
+
+        // un-clean fix @link: https://stackoverflow.com/questions/4441334/how-to-play-an-android-notification-sound
+
+        if (ringTone == null)
+            ringTone = RingtoneManager.getRingtone(context, defaultSoundUri)
+        try {
+            ringTone?.play()
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 }

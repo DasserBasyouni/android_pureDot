@@ -4,7 +4,8 @@ import android.util.Log
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.constant.ProjectConstant.Companion.ValidationError.*
 import com.g7.soft.pureDot.model.*
-import com.wajahatkarim3.easyvalidation.core.view_ktx.*
+import com.wajahatkarim3.easyvalidation.core.view_ktx.minLength
+import com.wajahatkarim3.easyvalidation.core.view_ktx.validEmail
 import java.sql.Timestamp
 
 
@@ -62,9 +63,9 @@ class ValidationUtils {
         if (validationError == null)
             validationError = when {
                 text.isNullOrEmpty() -> EMPTY_PASSWORD
-                !validateEmptyOnly && (!text.minLength(8) || !text.atleastOneNumber()
+                /*!validateEmptyOnly && (!text.minLength(8) || !text.atleastOneNumber()
                         || !text.atleastOneLowerCase() || !text.atleastOneUpperCase()
-                        || !text.atleastOneSpecialCharacters()) -> INVALID_PASSWORD
+                        || !text.atleastOneSpecialCharacters()) -> INVALID_PASSWORD*/
                 else -> null
             }
         return this

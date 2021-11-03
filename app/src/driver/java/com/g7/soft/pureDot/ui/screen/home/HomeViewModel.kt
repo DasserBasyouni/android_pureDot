@@ -18,7 +18,7 @@ class HomeViewModel(internal val tokenId: String?) : ViewModel() {
     val isSideNavMenuOpened = MediatorLiveData<Boolean>().apply { this.value = false }
     val location = MutableLiveData<Location?>()
 
-    var isFirstFetchData = false
+    var isFirstFetchData = true
     val isAvailable = MutableLiveData<Boolean?>()
 
     val availabilityResponse = MediatorLiveData<NetworkRequestResponse<DriverAvailabilityModel>>()
@@ -37,7 +37,7 @@ class HomeViewModel(internal val tokenId: String?) : ViewModel() {
 
     init {
         availabilityResponse.value = null
-        isFirstFetchData = false
+        isFirstFetchData = true
     }
 
     fun fetchData(langTag: String, tokenId: String?) {
@@ -99,5 +99,18 @@ class HomeViewModel(internal val tokenId: String?) : ViewModel() {
                 )
             )
         }
+
+    /*fun setCurrentLocation(
+        langTag: String,
+        tokenId: String?,
+        lat: Double,
+        lng: Double,
+        areaName: String?,
+    ) = liveData(Dispatchers.IO) {
+        emit(NetworkRequestResponse.loading())
+
+        // fetch request
+        emitSource(OrderRepository(langTag).setCurrentLocation(tokenId, lat, lng, areaName))
+    }*/
 
 }

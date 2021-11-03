@@ -120,9 +120,9 @@ class AddressViewModel(private val userData: UserDataModel?) : ViewModel() {
                 .setZipCode(selectedZipCode)
                 .setArea(areaName.value)
                 .setStreetName(streetName.value)
-                .setFlat(flat.value)
-                .setFloor(floor.value)
-                .setBuildingNumber(buildingNumber.value)
+                //.setFlat(flat.value)
+                //.setFloor(floor.value)
+                //.setBuildingNumber(buildingNumber.value)
                 .getError()?.let {
                     emit(NetworkRequestResponse.invalidInputData(validationError = it))
                     return@liveData

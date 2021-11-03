@@ -74,7 +74,7 @@ class StoreFragment : Fragment() {
 
         viewModelFactory = StoreViewModelFactory(
             store = args.store,
-            shopId = args.shopId,
+            shopId = args.store?.id ?: args.shopId,
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(StoreViewModel::class.java)
 
@@ -104,8 +104,9 @@ class StoreFragment : Fragment() {
             }
         }
 
+        // todo cover case in which storeId is only available so name is not available (getStoreData then duplicate the line belwo)
         // set screen title
-        (requireActivity() as MainActivity).toolbar_title.text = args.store.name
+        (requireActivity() as MainActivity).toolbar_title.text = args.store?.name
 
         // setup pagination
         viewModel.categoriesPagedList =
@@ -124,7 +125,7 @@ class StoreFragment : Fragment() {
         }
 
         // setup observers
-        val categoriesAdapter = PagedCategoriesAdapter(this, isGrid = true)
+        val categoriesAdapter = PagedCategoriesAdapter(this, isGrid = true, shopId = (args.store?.id ?: args.shopId))
         binding.categoriesRv.adapter = categoriesAdapter
         viewModel.categoriesPagedList?.observe(viewLifecycleOwner, {
             categoriesAdapter.submitList(it)
@@ -166,14 +167,14 @@ class StoreFragment : Fragment() {
         binding.latestOffersSeeAllTv.setOnClickListener {
             val bundle = bundleOf(
                 "sliderType" to ApiConstant.SliderOfferType.INNER_LATEST_OFFERS,
-                "storeId" to args.store.id
+                "storeId" to (args.store?.id ?: args.shopId)
             )
             findNavController().navigate(R.id.allProductsFragment, bundle)
         }
         binding.latestProductsSellAllTv.setOnClickListener {
             val bundle = bundleOf(
                 "sliderType" to ApiConstant.SliderOfferType.INNER_LATEST_PRODUCTS,
-                "storeId" to args.store.id
+                "storeId" to (args.store?.id ?: args.shopId)
             )
             findNavController().navigate(R.id.allProductsFragment, bundle)
         }
@@ -209,6 +210,11 @@ class StoreFragment : Fragment() {
 
 
     private fun navigateToAllProductsSearch() {
+        if (args.shopId != null) {
+            filterViewModel.resetFilter()
+            filterViewModel.selectedStoresIds = mutableListOf(args.shopId!!)
+        }
+
         val bundle = bundleOf(
             "sliderType" to ApiConstant.SliderOfferType.SEARCH_RESULTS,
         )

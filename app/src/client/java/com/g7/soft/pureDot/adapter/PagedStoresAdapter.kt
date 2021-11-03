@@ -14,7 +14,10 @@ import com.g7.soft.pureDot.model.StoreModel
 import com.g7.soft.pureDot.ui.screen.filter.FilterFragment
 
 
-class PagedStoresAdapter(private val fragment: Fragment, private val isSelectable: Boolean = false) :
+class PagedStoresAdapter(
+    private val fragment: Fragment,
+    private val isSelectable: Boolean = false
+) :
     PagedListAdapter<StoreModel, PagedStoresAdapter.ViewHolder>(PagedStoresDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder =
@@ -34,10 +37,14 @@ class PagedStoresAdapter(private val fragment: Fragment, private val isSelectabl
             binding.dataModel = dataModel
             binding.executePendingBindings()
 
+            if (isSelectable && fragment is FilterFragment)
+                binding.root.isSelected =
+                    fragment.viewModel.selectedStoresIds.contains(dataModel?.id)
+
             binding.root.setOnClickListener {
                 if (isSelectable) {
                     binding.root.isSelected = !binding.root.isSelected
-                    if (fragment is FilterFragment){
+                    if (fragment is FilterFragment) {
                         val categoryId = dataModel?.id
                         categoryId?.let {
                             if (binding.root.isSelected)
@@ -46,7 +53,7 @@ class PagedStoresAdapter(private val fragment: Fragment, private val isSelectabl
                                 fragment.viewModel.selectedStoresIds.remove(dataModel.id)
                         }
                     }
-                }else {
+                } else {
                     val bundle = bundleOf("store" to dataModel)
                     fragment.findNavController().navigate(R.id.storeFragment, bundle)
                 }

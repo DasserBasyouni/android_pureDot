@@ -16,7 +16,19 @@
             type="Double" />
 
         <variable
-            name="vat"
+            name="itemsVat"
+            type="Double" />
+
+        <variable
+            name="shippingCost"
+            type="Double" />
+
+        <variable
+            name="deliveryVat"
+            type="Double" />
+
+        <variable
+            name="coupon"
             type="Double" />
 
         <variable
@@ -118,13 +130,55 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
-            android:text="@string/vat"
+            android:text="@string/items_vat"
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="@{vat == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{itemsVat == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="@+id/appCompatTextView28"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView28" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView29"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/shipping_cost"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{shippingCost == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="@+id/recyclerView"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView23" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/delivery_vat"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{deliveryVat == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView29"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView29" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView33"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/coupon"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{coupon == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView30"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView30" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appCompatTextView26"
@@ -151,11 +205,59 @@
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="@{vat == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{itemsVat == null ? View.GONE : View.VISIBLE}"
             app:bindCurrency="@{currency}"
-            app:bindPrice="@{vat}"
+            app:bindPrice="@{itemsVat}"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView26"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView26"
+            tools:text="10 SAR" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView31"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{shippingCost == null ? View.GONE : View.VISIBLE}"
+            app:bindCurrency="@{currency}"
+            app:bindPrice="@{shippingCost}"
+            app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView29"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/appCompatTextView29"
+            tools:text="100 SAR" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView34"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{deliveryVat == null ? View.GONE : View.VISIBLE}"
+            app:bindCurrency="@{currency}"
+            app:bindPrice="@{deliveryVat}"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView31"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView31"
+            tools:text="10 SAR" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{coupon == null ? View.GONE : View.VISIBLE}"
+            app:bindCurrency="@{currency}"
+            app:bindPrice="@{coupon}"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView34"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView34"
             tools:text="10 SAR" />
 
         <!--<androidx.appcompat.widget.AppCompatTextView
@@ -205,7 +307,7 @@
             app:cornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView23"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView33"
             app:strokeColor="@color/warm_purple"
             tools:text="@string/track_order" />
 

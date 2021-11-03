@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class NotificationModel(
-    @Json(name = "id") val id: Int?,
+    @Json(name = "id") val id: String?,
     @Json(name = "dateTime") val dateTime: Long?,
     @Json(name = "text") val text: String?,
     @Json(name = "isRead") val isRead: Boolean?,

@@ -1,6 +1,7 @@
 package com.g7.soft.pureDot.repo
 
 import android.content.Context
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.data.database.userData.UserDataDatabase
 import com.g7.soft.pureDot.model.UserDataModel
@@ -28,11 +29,13 @@ open class UserRepositoryFlavour(private val langTag: String) {
             it.updateIsGuestAccount(false)
         }
 
-    suspend fun clearUserDataFlavour(context: Context) =
-        UserDataDatabase.getInstance(context).also {
+    suspend fun clearUserDataFlavour(lifecycleScope: LifecycleCoroutineScope, context: Context): UserDataDatabase {
+        CartRepository("").clearCart(lifecycleScope, context)
+        return UserDataDatabase.getInstance(context).also {
             it.updateFirstName(null)
             it.updateIsGuestAccount(null)
         }
+    }
 
     fun signUp(
         fcmToken: String?,

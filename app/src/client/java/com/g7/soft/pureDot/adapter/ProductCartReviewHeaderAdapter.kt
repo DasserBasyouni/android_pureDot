@@ -1,5 +1,6 @@
 package com.g7.soft.pureDot.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -38,8 +39,11 @@ class ProductCartReviewHeaderAdapter(
             fragment.lifecycleScope.launch {
                 val currencySymbol = UserRepository("").getCurrencySymbol(fragment.requireContext())
 
-                binding.vat = dataModel?.vat
+                Log.e("Z_", "shippingCost: ${dataModel?.shippingCost}")
                 binding.subTotal = dataModel?.subTotal
+                binding.itemsVat = dataModel?.itemsVat
+                binding.shippingCost = dataModel?.shippingCost
+                binding.deliveryVat = dataModel?.deliveryVat
                 binding.currency = currencySymbol
                 binding.storeName = dataModel?.shop?.name
                 binding.executePendingBindings()

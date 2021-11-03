@@ -76,7 +76,7 @@ class SideNavMenuAdapter(private val fragment: HomeFragment) :
                                 R.string.question_sure_logout,
                                 positiveRunnable = {
                                     fragment.lifecycleScope.launch {
-                                        UserRepository("").clearUserData(fragment.requireContext())
+                                        UserRepository("").clearUserData(fragment.lifecycleScope, fragment.requireContext())
                                         fragment.findNavController()
                                             .navigate(R.id.action_homeFragment_to_startFragment)
                                     }

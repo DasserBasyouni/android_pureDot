@@ -16,7 +16,7 @@ class SettingsAdapter(private val fragment: Fragment, data: UserDataModel?) :
 
     val list = listOf(
         Pair(R.drawable.ic_wallet, R.string.my_wallet),
-        Pair(R.drawable.ic_my_order, R.string.change_password), // todo
+        Pair(R.drawable.ic_change_password, R.string.change_password), // todo
         Pair(R.drawable.ic_settings_locale, R.string.change_language),
         Pair(R.drawable.ic_customer_support, R.string.customer_support),
         Pair(R.drawable.ic_contact_us, R.string.contact_us),

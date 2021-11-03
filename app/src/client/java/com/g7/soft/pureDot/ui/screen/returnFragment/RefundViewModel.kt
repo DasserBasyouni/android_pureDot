@@ -18,7 +18,7 @@ class RefundViewModel(val masterOrder: MasterOrderModel?, val selectedProduct: P
 
     val shippingMethodsResponse =
         MediatorLiveData<NetworkRequestResponse<List<ShippingMethodModel>?>?>()
-    val shippingMethodsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
+    val shippingMethodsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel(allowEmpty = true) }
 
     val selectedShippingMethodId = MutableLiveData<String?>()
     val haveSelectedShippingMethod = MutableLiveData<Boolean?>()
@@ -52,6 +52,9 @@ class RefundViewModel(val masterOrder: MasterOrderModel?, val selectedProduct: P
                 shippingCost = shippingCostResponse.value?.data?.shippingCost,
                 commission = shippingCostResponse.value?.data?.commission,
                 vat = shippingCostResponse.value?.data?.vat,
+                driverEarning = shippingCostResponse.value?.data?.driverEarning,
+                driverVat = shippingCostResponse.value?.data?.driverVat,
+                deliveryCommissionVat = shippingCostResponse.value?.data?.deliveryCommissionVat,
                 shippingMethod = selectedShippingMethodId.value
             )
         )
@@ -60,7 +63,14 @@ class RefundViewModel(val masterOrder: MasterOrderModel?, val selectedProduct: P
     fun getShippingMethods(langTag: String) {
         shippingMethodsResponse.value = NetworkRequestResponse.loading()
         shippingMethodsResponse.apply {
-            this.addSource(OrderRepository(langTag).getShippingMethods()) {
+            this.addSource(
+                OrderRepository(langTag).getShippingMethods(
+                    addressId = masterOrder?.clientAddress?.id,
+                    branchesIds = listOfNotNull(masterOrder?.orders?.firstOrNull {
+                        it.products?.contains(selectedProduct) == true
+                    }?.branch?.id)
+                )
+            ) {
                 shippingMethodsResponse.value = it
             }
         }

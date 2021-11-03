@@ -10,18 +10,21 @@ import com.g7.soft.pureDot.model.UserDataModel
 import com.g7.soft.pureDot.model.project.LceeModel
 import com.g7.soft.pureDot.network.response.NetworkRequestResponse
 import com.g7.soft.pureDot.repo.UserRepository
+import com.g7.soft.pureDot.repo.WalletRepository
 import com.g7.soft.pureDot.utils.ValidationUtils
 import com.g7.soft.pureDot.utils.combine
 import kotlinx.coroutines.Dispatchers
 
 class PhoneVerificationViewModel(
     val isPasswordReset: Boolean,
-    private val emailOrPhoneNumber: String?
+    val isWalletVerification: Boolean,
+    private val emailOrPhoneNumber: String?,
 ) :
     ViewModel() {
 
     val verificationCode = MutableLiveData<String?>()
     val password = MutableLiveData<String?>()
+    val confirmPassword = MutableLiveData<String?>()
 
     val verificationResponse = MediatorLiveData<NetworkRequestResponse<UserDataModel?>>()
     val verificationLcee = MediatorLiveData<LceeModel>().apply {
@@ -84,7 +87,7 @@ class PhoneVerificationViewModel(
     }
 
 
-    fun verify(langTag: String) {
+    fun verify(langTag: String, tokenId: String?) {
         verificationResponse.value = NetworkRequestResponse.loading()
 
         // validate inputs
@@ -96,31 +99,55 @@ class PhoneVerificationViewModel(
             }
 
         verificationResponse.apply {
-            this.addSource(
-                UserRepository(langTag).verify(
-                    emailOrPhoneNumber = emailOrPhoneNumber,
-                    verificationCode = verificationCode.value
-                )
-            ) {
-                if (it.status == ProjectConstant.Companion.Status.SUCCESS)
-                    timer.cancel()
+            if (isWalletVerification)
+                this.addSource(
+                    WalletRepository(langTag).verifyMoneyTransfer(
+                        tokenId = tokenId,
+                        verificationCode = verificationCode.value
+                    )
+                ) {
+                    if (it.status == ProjectConstant.Companion.Status.SUCCESS)
+                        timer.cancel()
 
-                verificationResponse.value = it
-            }
+                    verificationResponse.value = it
+                }
+            else
+                this.addSource(
+                    UserRepository(langTag).verify(
+                        emailOrPhoneNumber = emailOrPhoneNumber,
+                        verificationCode = verificationCode.value
+                    )
+                ) {
+                    if (it.status == ProjectConstant.Companion.Status.SUCCESS)
+                        timer.cancel()
+
+                    verificationResponse.value = it
+                }
         }
     }
 
-    fun resendCode(langTag: String) = liveData(Dispatchers.IO) {
+    fun resendCode(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
-            com.g7.soft.pureDot.repo.UserRepository(langTag).resendVerification(
-                emailOrPhoneNumber = emailOrPhoneNumber
-            )
+            if (isWalletVerification)
+                UserRepository(langTag).resendVerification(emailOrPhoneNumber = emailOrPhoneNumber)
+            else
+                WalletRepository(langTag).sendVerificationMoneyTransfer(tokenId = tokenId)
         )
     }
 
     fun changePassword(langTag: String) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
+
+        // validate inputs
+        ValidationUtils()
+            .setPassword(password.value)
+            .setPasswordRepeat(password.value, confirmPassword.value)
+            .getError()?.let {
+                emit(NetworkRequestResponse.invalidInputData(validationError = it))
+                return@liveData
+            }
+
         emitSource(
             UserRepository(langTag).resetPassword(
                 emailOrPhoneNumber = emailOrPhoneNumber,

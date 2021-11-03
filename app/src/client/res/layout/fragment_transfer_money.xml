@@ -148,7 +148,7 @@
                 style="@style/ProjectTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 app:layout_constraintEnd_toEndOf="@+id/emailOrPhoneNumbetTil"
                 app:layout_constraintStart_toStartOf="@+id/emailOrPhoneNumbetTil"
                 app:layout_constraintTop_toBottomOf="@+id/contactsRv">

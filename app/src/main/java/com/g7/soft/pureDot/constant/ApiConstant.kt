@@ -26,7 +26,8 @@ class ApiConstant {
         CAN_NOT_ACCEPT(1019),
         ORDER_STATUS_CHANGED(1020),
         ORDER_LIMIT(1021),
-        SHIPMENT_ERROR(1022);
+        SHIPMENT_ERROR(1022),
+        WALLET_LIMIT(1023);
 
         companion object {
             fun fromInt(value: Int) = values().first { it.value == value }
@@ -47,6 +48,7 @@ class ApiConstant {
                 ORDER_STATUS_CHANGED -> R.string.msg_status_already_changed
                 ORDER_LIMIT -> R.string.msg_order_does_not_meet_min_
                 SHIPMENT_ERROR -> R.string.msg_shipment_error
+                WALLET_LIMIT -> R.string.insufficient_amount
             }
         }
     }
@@ -254,11 +256,13 @@ class ApiConstant {
             fun fromBooleans(
                 isCashOnDelivery: Boolean?,
                 isStcPayChecked: Boolean?,
-                isMasterCardChecked: Boolean?
+                isMasterCardChecked: Boolean?,
+                isDigitalWallet: Boolean?
             ) = when {
+                isCashOnDelivery == true -> CASH_ON_DELIVERY
+                isDigitalWallet == true -> DIGITAL_WALLET
                 isMasterCardChecked == true -> MASTER_CARD
                 isStcPayChecked == true -> STC_PAY
-                isCashOnDelivery == true -> CASH_ON_DELIVERY
                 else -> null
             }
 
@@ -268,7 +272,7 @@ class ApiConstant {
 
     companion object {
 
-        const val isDevelopmentApi = true
+        const val isDevelopmentApi = false
 
         // mock api
         //const val BASE_URL = "https://tests.free.beeceptor.com/api/"

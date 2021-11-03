@@ -27,7 +27,6 @@ object PermissionsHelper {
         grantedRunnable: Runnable = Runnable { /* todo default runner if needed*/ },
         deniedRunnable: Runnable = Runnable { /* todo default runner if needed*/ }
     ) {
-        Log.e("Z_", "requestLocationPermission")
         val locationRequest = LocationRequest.create().apply {
             interval = 10000
             fastestInterval = 5000
@@ -39,7 +38,6 @@ object PermissionsHelper {
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
 
         task.addOnSuccessListener {
-            Log.e("Z_", "addOnSuccessListener")
             Dexter.withContext(context)
                 .withPermissions(
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -56,10 +54,11 @@ object PermissionsHelper {
                         permissions: List<PermissionRequest>,
                         token: PermissionToken
                     ) {
-                        //token.continuePermissionRequest()
+                        token.continuePermissionRequest()
                     }
                 }).check()
         }
+        // todo handle: com.google.android.gms.common.api.ApiException: 17: API: LocationServices.API is not available on this device. Connection failed with: ConnectionResult{statusCode=SERVICE_INVALID, resolution=null, message=null}
         task.addOnFailureListener { exception ->
             Log.e("Z_", "addOnFailureListener $exception")
             if (exception is ResolvableApiException) {

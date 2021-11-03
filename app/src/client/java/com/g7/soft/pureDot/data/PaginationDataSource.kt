@@ -352,7 +352,7 @@ class PaginationDataSource<T>(
                     pageNumber = if (isInitialLoad) 1 else params?.key,
                     itemsPerPage = itemsPerPage,
                     searchText = null,
-                    shopId = null,
+                    shopId = viewModel.store?.id,
                 ).observe(fragment, {
                     initCallback?.onResult((it.data?.data ?: listOf()) as List<T>, null, 2)
                     callback?.onResult((it.data?.data ?: listOf()) as List<T>, pageKey)
@@ -377,7 +377,7 @@ class PaginationDataSource<T>(
                     categoriesIds = listOfNotNull(viewModel.category?.id),
                     fromPrice = null,
                     toPrice = null,
-                    storesIds = null,
+                    storesIds = listOfNotNull(viewModel.shopId),
                     minStars = null,
                 ).observe(fragment, {
                     initCallback?.onResult((it.data ?: listOf()) as List<T>, null, 2)

@@ -82,6 +82,7 @@
                             android:lineSpacingExtra="3sp"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="4dp"
+                            app:bindPostPriceText="@{@string/vat_included}"
                             android:textColor="#ffffff"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -90,7 +91,7 @@
                             app:bindPrice="@{viewModel.costResponse.data}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:text="230 SAR" />
+                            tools:text="230 SAR Vat Included" />
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/sliderOffersLceeLayoutCv"

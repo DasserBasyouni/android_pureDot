@@ -36,7 +36,10 @@ class CartHeaderAdapter(
 
                 binding.storeName = dataModel.shop?.name
                 binding.subTotal = dataModel.subTotal
-                binding.vat = dataModel.vat
+                binding.itemsVat = dataModel.itemsVat
+                binding.shippingCost = dataModel.shippingCost
+                binding.deliveryVat = dataModel.deliveryVat
+                binding.coupon = dataModel.couponDiscount
                 binding.currency = currencySymbol
                 binding.executePendingBindings()
             }

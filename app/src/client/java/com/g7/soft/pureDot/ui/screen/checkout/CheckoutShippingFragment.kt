@@ -61,12 +61,10 @@ class CheckoutShippingFragment(
         })
         viewModel.masterOrderResponse.observe(viewLifecycleOwner, {
             viewModel.orderLcee.value!!.response.value = it
+            setupAdapter()
         })
 
-        // setup adapter
-        ProductCartReviewHeaderAdapter(this, viewModel.masterOrder?.orders).let { adapter ->
-            binding.cartReviewItemsRv.adapter = adapter
-        }
+        setupAdapter()
 
         // setup listeners
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -85,6 +83,14 @@ class CheckoutShippingFragment(
                     R.string.shipping_method_is_required,
                     drawableResId = R.drawable.ic_secure_shield
                 )
+        }
+    }
+
+    private fun setupAdapter() {
+        ProductCartReviewHeaderAdapter(
+            this, viewModel.masterOrderResponse.value?.data?.orders
+        ).let { adapter ->
+            binding.cartReviewItemsRv.adapter = adapter
         }
     }
 

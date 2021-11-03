@@ -13,6 +13,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.NotificationsAdapter
 import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentNotificationBinding
+import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.utils.ProjectDialogUtils
@@ -49,12 +50,16 @@ class NotificationFragment : Fragment() {
 
         // fetch data
         lifecycleScope.launch {
-            val tokenId =
-                UserRepository("").getTokenId(requireContext())
+            val tokenId = UserRepository("").getTokenId(requireContext())
+
             viewModel.getNotifications(requireActivity().currentLocale.toLanguageTag(), tokenId)
+            viewModel.getUserData(requireActivity().currentLocale.toLanguageTag(), tokenId)
         }
 
         // setup observers
+        viewModel.userDataResponse.observeApiResponse(this, {
+            viewModel.doNotify.value = it?.doNotify
+        })
         val notificationAdapter = NotificationsAdapter(this)
         binding.notificationsRv.adapter = notificationAdapter
         viewModel.notificationsResponse.observe(viewLifecycleOwner, {
@@ -72,8 +77,7 @@ class NotificationFragment : Fragment() {
         // setup click listener
         viewModel.doNotify.observe(viewLifecycleOwner, {
             lifecycleScope.launch {
-                val tokenId =
-                    UserRepository("").getTokenId(requireContext())
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
                 viewModel.doNotify(
                     requireActivity().currentLocale.toLanguageTag(),

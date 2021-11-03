@@ -61,8 +61,8 @@ class ProfileFragment : Fragment() {
         binding.root.findViewById<View>(R.id.bankAccountTv)?.setOnClickListener {
             findNavController().navigate(R.id.bankAccountFragment)
         }
-        binding.root.findViewById<View>(R.id.workingHoursTv)?.setOnClickListener {
+        /*binding.root.findViewById<View>(R.id.workingHoursTv)?.setOnClickListener {
             findNavController().navigate(R.id.workingHoursFragment)
-        }
+        }*/
     }
 }

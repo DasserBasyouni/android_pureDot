@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.databinding.FragmentAboutUsBinding
+import com.g7.soft.pureDot.ui.screen.MainActivity
+
 
 class AboutUsFragment : Fragment() {
     private lateinit var binding: FragmentAboutUsBinding
@@ -33,6 +35,9 @@ class AboutUsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.nestedScrollView.scrollTo(0, 0)
+        (requireActivity() as MainActivity).binding.nestedScrollView.scrollTo(0, 0)
 
         binding.twitterIb.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/Puredot2030")))

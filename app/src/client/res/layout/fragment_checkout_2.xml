@@ -161,7 +161,7 @@
                         android:textStyle="normal"
                         app:bindCurrency="@{currency}"
                         app:bindPrePriceText="@{@string/shipping_cost_}"
-                        app:bindPrice="@{viewModel.masterOrderResponse.data.shippingCost}"
+                        app:bindPrice="@{viewModel.masterOrderResponse.data.totalShippingCost}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/appCompatImageView10"

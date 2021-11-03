@@ -17,6 +17,7 @@ import com.g7.soft.pureDot.repo.UserRepository
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
+import com.zeugmasolutions.localehelper.Locales
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -90,7 +91,7 @@ class ChangeLanguageFragment : Fragment() {
 
 
     private fun changeLocaleTo(isEnglish: Boolean) = (activity as LocaleAwareCompatActivity).let {
-        val locale = if (isEnglish) Locale("en") else Locale("ar")
+        val locale = if (isEnglish) Locales.English else Locales.Arabic
         if (it.currentLocale != locale) {
             it.updateLocale(locale)
             findNavController().popBackStack()

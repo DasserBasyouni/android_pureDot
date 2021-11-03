@@ -50,6 +50,7 @@ class CategoryFragment : Fragment() {
 
         viewModelFactory = CategoryViewModelFactory(
             category = args.category,
+            shopId = args.shopId,
         )
         viewModel = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
 
@@ -142,6 +143,11 @@ class CategoryFragment : Fragment() {
 
 
     private fun navigateToAllProductsSearch() {
+        if (args.category.id != null) {
+            filterViewModel.resetFilter()
+            filterViewModel.selectedCategoriesIds = mutableListOf(args.category.id!!)
+        }
+
         val bundle = bundleOf(
             "sliderType" to ApiConstant.SliderOfferType.SEARCH_RESULTS,
         )

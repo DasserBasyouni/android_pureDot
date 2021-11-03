@@ -24,13 +24,16 @@ data class OrderModel(
     @Json(name = "products") val products: MutableList<ProductModel>?,
     @Json(name = "userReview") var userReview: OrderReviewModel?,
 
+
     @Json(name = "status") var status: Int?,
     @Json(name = "deliveryStatus") var deliveryStatus: Int?,
 
+    @Json(name = "totalCouponDiscount") val couponDiscount: Double?,
+    @Json(name = "commission") val commission: Double?, // in driver and shop versions only
     @Json(name = "shippingCost") val shippingCost: Double?,
-    @Json(name = "commission") val commission: Double?,
+    @Json(name = "shopVat") val itemsVat: Double?,
     @Json(name = "subTotal") val subTotal: Double?,
-    @Json(name = "vat") val vat: Double?,
+    @Json(name = "deliverylVat") val deliveryVat: Double?,
     @Json(name = "totalOrderCost") val totalOrderCost: Double?,
 
     ) : Parcelable {

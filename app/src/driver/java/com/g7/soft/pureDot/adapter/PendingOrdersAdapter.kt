@@ -51,9 +51,10 @@ class PendingOrdersAdapter(private val fragment: HomeFragment) :
             }
 
             binding.acceptBtn.setOnClickListener {
-                fragment.lifecycleScope.launch {
-                    val tokenId =
-                        UserRepository("").getTokenId(fragment.requireContext())
+                fragment.viewModel.selectedOrder.value = dataModel
+                fragment.binding.positiveBtn.performClick()
+                /*fragment.lifecycleScope.launch {
+                    val tokenId = UserRepository("").getTokenId(fragment.requireContext())
 
                     fragment.viewModel.changeOrderStatus(
                         langTag = fragment.requireActivity().currentLocale.toLanguageTag(),
@@ -62,16 +63,17 @@ class PendingOrdersAdapter(private val fragment: HomeFragment) :
                         status = ApiConstant.OrderDeliveryStatus.ACCEPTED.value,
                         isReturn = dataModel?.firstOrder?.isReturn
                     ).observeApiResponse(fragment, {
+                        /*dataModel?.firstOrder?.deliveryStatus =
+                            ApiConstant.OrderDeliveryStatus.ACCEPTED.value*/
                         fragment.viewModel.selectedOrder.value = dataModel
                         fragment.binding.positiveBtn.performClick()
-                        fragment.viewModel.ordersPagedList?.value?.dataSource?.invalidate()
+                        //fragment.viewModel.ordersPagedList?.value?.dataSource?.invalidate()
                     })
-                }
+                }*/
             }
             binding.rejectBtn.setOnClickListener {
                 fragment.lifecycleScope.launch {
-                    val tokenId =
-                        UserRepository("").getTokenId(fragment.requireContext())
+                    val tokenId = UserRepository("").getTokenId(fragment.requireContext())
 
                     fragment.viewModel.changeOrderStatus(
                         langTag = fragment.requireActivity().currentLocale.toLanguageTag(),

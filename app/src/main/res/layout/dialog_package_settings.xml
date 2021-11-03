@@ -100,7 +100,7 @@
             app:layout_constraintEnd_toEndOf="@+id/lengthTil"
             app:layout_constraintStart_toStartOf="@+id/lengthTil"
             app:layout_constraintTop_toBottomOf="@+id/heightTil"
-            app:suffixText="@string/cm">
+            app:suffixText="@string/kg">
 
             <com.google.android.material.textfield.TextInputEditText
                 style="@style/ProjectTextInputEditText"

@@ -101,6 +101,9 @@
             app:popUpTo="@id/nav_root"
             app:popUpToInclusive="true"
             app:destination="@id/homeFragment" />
+        <argument
+            android:name="isWalletVerification"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -217,4 +220,9 @@
         android:name="com.g7.soft.pureDot.ui.screen.changeLanguage.ChangeLanguageFragment"
         android:label="@string/change_language"
         tools:layout="@layout/fragment_change_language" />
+    <fragment
+        android:id="@+id/addMoneyFragment"
+        android:name="com.g7.soft.pureDot.ui.screen.addMoney.AddMoneyFragment"
+        android:label="@string/add_money"
+        tools:layout="@layout/fragment_add_money" />
 </navigation>

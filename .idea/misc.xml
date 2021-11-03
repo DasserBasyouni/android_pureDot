@@ -19,7 +19,7 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_category.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout.xml" value="0.2328125" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_1.xml" value="0.3798941798941799" />
-        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_2.xml" value="0.275" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_2.xml" value="0.22777777777777777" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_3.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_checkout_payment.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/fragment_favourites.xml" value="0.2328125" />
@@ -58,10 +58,11 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/item_staggered_product_small.xml" value="0.724390243902439" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/client/res/layout/view_search_bar.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/drawable/navigation_puck_icon.xml" value="0.39010416666666664" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/activity_main.xml" value="0.3682051282051282" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_bank_account.xml" value="0.2296875" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_home.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_my_orders.xml" value="0.37395833333333334" />
-        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_my_wallet.xml" value="0.20520833333333333" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_my_wallet.xml" value="0.3416666666666667" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_order.xml" value="0.47368421052631576" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_profile.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/driver/res/layout/fragment_profile_edit.xml" value="0.37395833333333334" />
@@ -93,6 +94,7 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/dialog_simple.xml" value="0.2328125" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/dialog_stc_payment.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_about_us.xml" value="0.37395833333333334" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_add_money.xml" value="0.21041666666666667" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_change_language.xml" value="0.3558974358974359" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_change_password.xml" value="0.25833333333333336" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_complain.xml" value="0.37395833333333334" />
@@ -103,6 +105,7 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_notification.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_phone_verification.xml" value="0.33" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_submit_complain.xml" value="0.37395833333333334" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/fragment_terms.xml" value="0.3682051282051282" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/item_black_white_chip.xml" value="0.275" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/item_home_order_radio_button.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/item_product_grid_view.xml" value="0.37395833333333334" />
@@ -121,7 +124,8 @@
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/view_date_picker.xml" value="0.37395833333333334" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/layout/view_search_bar.xml" value="0.2328125" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/main/res/xml/network_security_config.xml" value="0.2328125" />
-        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/activity_main.xml" value="0.432808155699722" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/drawable/checkable_stroke_payment_method.xml" value="0.3841025641025641" />
+        <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_all_reviews.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_cart.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/PureDot/android_pureDot/app/src/shopOwner/res/layout/fragment_favourites.xml" value="0.20520833333333333" />
@@ -146,5 +150,5 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK" />
 </project>

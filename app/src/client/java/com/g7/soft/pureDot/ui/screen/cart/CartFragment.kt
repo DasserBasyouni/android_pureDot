@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.CartHeaderAdapter
 import com.g7.soft.pureDot.databinding.FragmentCartBinding
+import com.g7.soft.pureDot.repo.CartRepository
 import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.ui.DividerItemDecorator
 import com.g7.soft.pureDot.utils.ProjectDialogUtils
@@ -98,6 +99,12 @@ class CartFragment : Fragment() {
                 "productApiShopOrder" to viewModel.apiShopOrders.value?.toTypedArray()
             )
             findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment, bundle)
+        }
+
+        binding.clearCartBtn.setOnClickListener {
+            CartRepository("").clearCart(lifecycleScope, requireContext())
+            viewModel.orderResponse.value = viewModel.orderResponse.value.also { it?.data?.orders = null }
+            viewModel.orderLcee.value = viewModel.orderLcee.value.also { it?.response?.value = null }
         }
     }
 

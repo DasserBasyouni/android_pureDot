@@ -50,8 +50,9 @@ interface ApiService : ApiServiceFlavour {
     ): ApiResponseModel<UserDataModel>?
 
     @FormUrlEncoded
-    @POST("client/resetPassword")
+    @POST("{flavour}/resetPassword")
     suspend fun resetPassword(
+        @Path("flavour") flavour: String = BuildConfig.FLAVOR,
         @Field("emailOrPhoneNumber") emailOrPhoneNumber: String?,
         @Field("password") password: String?,
     ): ApiResponseModel<UserDataModel>?
@@ -128,6 +129,17 @@ interface ApiService : ApiServiceFlavour {
 
     // wallet
     @FormUrlEncoded
+    @POST("client/SendTransferMoneyVerification")
+    suspend fun sendVerificationMoneyTransfer(@Field("tokenId") tokenId: String?): ApiResponseModel<*>?
+
+    @FormUrlEncoded
+    @POST("client/VerifyTransferMoneyVerification")
+    suspend fun verifyMoneyTransfer(
+        @Field("tokenId") tokenId: String?,
+        @Field("verificationCode") verificationCode: String?,
+    ): ApiResponseModel<UserDataModel?>?
+
+    @FormUrlEncoded
     @POST("{flavour}/getWalletData")
     suspend fun getWalletData(
         @Path("flavour") flavour: String = BuildConfig.FLAVOR,
@@ -142,6 +154,25 @@ interface ApiService : ApiServiceFlavour {
         @Field("pageNumber") pageNumber: Int?,
         @Field("itemsPerPage") itemsPerPage: Int?,
     ): ApiResponseModel<List<TransactionModel>>?
+
+    @FormUrlEncoded // todo add to mock api
+    @POST("{flavour}/addMoney")
+    suspend fun addMoney(
+        @Path("flavour") flavour: String = BuildConfig.FLAVOR,
+        @Field("tokenId") tokenId: String?,
+        @Field("amount") amount: Int?,
+    ): ApiResponseModel<CheckoutSuccessResponseModel>?
+
+    @FormUrlEncoded
+    @POST("{flavour}/addMoneyIsPaid")
+    suspend fun addMoneyIsPaid(
+        @Path("flavour") flavour: String = BuildConfig.FLAVOR,
+        @Field("tokenId") tokenId: String?,
+        @Field("orderId") masterOrderId: String?,
+        @Field("isPaid") isPaid: Boolean?,
+        @Field("amount") amount: Double?,
+        @Field("payType") paymentMethod: String?,
+    ): ApiResponseModel<*>?
 
     // notifications
     @FormUrlEncoded

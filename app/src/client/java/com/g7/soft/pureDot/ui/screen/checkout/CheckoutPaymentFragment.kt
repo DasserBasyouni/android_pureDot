@@ -42,6 +42,7 @@ class CheckoutPaymentFragment(private val viewModel: CheckoutViewModel) : Fragme
         // observe payment method
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             viewModel.isCashOnDelivery.value = checkedId == R.id.cashOnDelivery
+            viewModel.isDigitalWallet.value = checkedId == R.id.digitalWalletRb
         }
 
         // setup listeners
@@ -64,7 +65,7 @@ class CheckoutPaymentFragment(private val viewModel: CheckoutViewModel) : Fragme
         binding.nextBtn.setOnClickListener {
 
             // validate inputs
-            if (viewModel.isCashOnDelivery.value != true)
+            if (viewModel.isCashOnDelivery.value != true && viewModel.isDigitalWallet.value != true)
                 if (viewModel.isMasterCardChecked.value == true) {
                     ValidationUtils()
                         .setNameOnCard(viewModel.masterCardNameOnCard.value)

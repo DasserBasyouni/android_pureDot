@@ -180,6 +180,7 @@ open class AddressFragment : Fragment(), OnMapReadyCallback, PermissionsListener
                                 latitude = viewModel.locationLatLng?.value?.latitude?.toString(),
                                 longitude = viewModel.locationLatLng?.value?.longitude?.toString(),
                                 zipCodeId = viewModel.selectedZipCode?.id,
+                                cityName = viewModel.selectedCity?.name
                             )
                         )
                     )
@@ -537,11 +538,11 @@ open class AddressFragment : Fragment(), OnMapReadyCallback, PermissionsListener
                                 }
                             }
                         } else {
-                            Toast.makeText(
+                            /*Toast.makeText(
                                 requireContext(),
                                 getString(R.string.location_picker_dropped_marker_snippet_no_results),
                                 Toast.LENGTH_SHORT
-                            ).show()
+                            ).show()*/
                         }
                     }
                 }

@@ -76,7 +76,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:bindCurrency="@{currency}"
-                app:bindPrice="@{dataModel.commission}"
+                app:bindPrice="@{dataModel.firstOrder.commission}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="200 SAR" />

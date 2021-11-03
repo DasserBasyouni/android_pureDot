@@ -187,7 +187,7 @@ class MainActivity : LocaleAwareCompatActivity() {
             (currentFragment as CheckoutFragment).doBackPressed()
         } else*/
         when {
-            firstTimeExitPopup -> {
+            firstTimeExitPopup && findNavController(R.id.navHostFragment).currentDestination?.id == R.id.homeFragment -> {
                 firstTimeExitPopup = false
                 ProjectDialogUtils.onExitApp(this) { firstTimeExitPopup = true }
             }

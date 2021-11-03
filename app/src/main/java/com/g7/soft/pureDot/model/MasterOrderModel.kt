@@ -33,14 +33,21 @@ data class MasterOrderModel(
     @Json(name = "serviceDate") val serviceDate: Long?,
     @Json(name = "servantsTotalCost") val servantsTotalCost: Double?,
 
-    @Json(name = "shippingCost") val shippingCost: Double?,
     @Json(name = "subTotal") val subTotal: Double?,
-    @Json(name = "vat") val vat: Double?,
+    @Json(name = "shopVat") val totalItemsVat: Double?,
+    @Json(name = "shippingCost") val totalShippingCost: Double?,
+    @Json(name = "deliverylVat") val totalDeliveryVat: Double?,
+
+
     @Json(name = "totalCouponDiscount") val totalCouponDiscount: Double?,
-    @Json(name = "commission") val commission: Double?, // in driver and shop versions only
     @Json(name = "totalOrderCost") var totalOrderCost: Double?,
 
     @Json(name = "notes") val notes: String?,
+
+    @Json(name = "isDeliveryApp") val isDeliveryApp: Boolean?,
+    @Json(name = "paymentDetails") val paymentDetails: String?,
+    @Json(name = "allowCashOnDelivery") val allowCashOnDelivery: Boolean?,
+    @Json(name = "allowDigitalWallet") val allowDigitalWallet: Boolean?,
 ) : Parcelable {
     //val currency get() = orders?.first()?.currency
     /*val subTotalCost get() = orders?.sumOf { it.subTotal ?: 0.0 }

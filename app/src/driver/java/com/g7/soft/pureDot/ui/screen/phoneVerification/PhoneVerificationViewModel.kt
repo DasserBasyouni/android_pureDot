@@ -13,11 +13,16 @@ import com.g7.soft.pureDot.repo.UserRepository
 import com.g7.soft.pureDot.utils.combine
 import kotlinx.coroutines.Dispatchers
 
-class PhoneVerificationViewModel(val isPasswordReset: Boolean, private val emailOrPhoneNumber: String?) :
+class PhoneVerificationViewModel(
+    val isPasswordReset: Boolean,
+    private val emailOrPhoneNumber: String?,
+    val isWalletVerification: Boolean
+) :
     ViewModel() {
 
     val verificationCode = MutableLiveData<String?>()
     val password = MutableLiveData<String?>()
+    val confirmPassword = MutableLiveData<String?>()
 
     val verificationResponse = MediatorLiveData<NetworkRequestResponse<UserDataModel>>()
     val verificationLcee = MediatorLiveData<LceeModel>().apply {
@@ -80,7 +85,7 @@ class PhoneVerificationViewModel(val isPasswordReset: Boolean, private val email
     }
 
 
-    fun verify(langTag: String) {
+    fun verify(langTag: String, tokenId: String?) {
         verificationResponse.value = NetworkRequestResponse.loading()
         verificationResponse.apply {
             this.addSource(
@@ -96,7 +101,7 @@ class PhoneVerificationViewModel(val isPasswordReset: Boolean, private val email
         }
     }
 
-    fun resendCode(langTag: String) = liveData(Dispatchers.IO) {
+    fun resendCode(langTag: String, tokenId: String?) = liveData(Dispatchers.IO) {
         emit(NetworkRequestResponse.loading())
         emitSource(
             UserRepository(langTag).resendVerification(

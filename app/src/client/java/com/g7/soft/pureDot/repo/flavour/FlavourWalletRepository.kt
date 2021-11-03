@@ -31,18 +31,6 @@ open class FlavourWalletRepository(private val langTag: String) {
         }))
     }
 
-    fun addMoney(
-        tokenId: String?,
-        amount: Int?,
-    ) = liveData(Dispatchers.IO) {
-        emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.addMoney(
-                tokenId = tokenId,
-                amount = amount
-            )
-        }))
-    }
-
     fun transferMoney(
         tokenId: String?,
         emailOrPhoneNumber: String?,

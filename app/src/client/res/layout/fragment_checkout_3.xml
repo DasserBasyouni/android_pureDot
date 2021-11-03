@@ -124,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.isCashOnDelivery ? @string/cash_on_delivery : @string/online_payment}"
+                        android:text="@{viewModel.isCashOnDelivery ? @string/cash_on_delivery : viewModel.isDigitalWallet() ? @string/digital_wallet : @string/online_payment}"
                         android:textColor="@color/warm_grey"
                         android:textSize="14sp"
                         android:textStyle="normal"

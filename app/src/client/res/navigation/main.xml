@@ -100,6 +100,9 @@
             android:name="isPasswordReset"
             app:argType="boolean" />
         <argument
+            android:name="isWalletVerification"
+            app:argType="boolean" />
+        <argument
             android:name="emailOrPhoneNumber"
             app:argType="string"
             app:nullable="true" />
@@ -163,7 +166,9 @@
         tools:layout="@layout/fragment_store">
         <argument
             android:name="store"
-            app:argType="com.g7.soft.pureDot.model.StoreModel" />
+            app:argType="com.g7.soft.pureDot.model.StoreModel"
+            app:nullable="true"
+            android:defaultValue="@null" />
         <argument
             android:name="shopId"
             android:defaultValue="@null"
@@ -177,7 +182,9 @@
         tools:layout="@layout/fragment_product">
         <argument
             android:name="item"
-            app:argType="com.g7.soft.pureDot.model.ProductModel" />
+            app:argType="com.g7.soft.pureDot.model.ProductModel"
+            app:nullable="true"
+            android:defaultValue="@null" />
         <argument
             android:name="productId"
             android:defaultValue="@null"
@@ -192,6 +199,11 @@
         <argument
             android:name="category"
             app:argType="com.g7.soft.pureDot.model.CategoryModel" />
+        <argument
+            android:name="shopId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/allReviewsFragment"

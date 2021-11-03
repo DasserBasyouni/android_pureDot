@@ -16,7 +16,7 @@ import com.g7.soft.pureDot.repo.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 
-class CategoryViewModel(val category: CategoryModel?) : ViewModel() {
+class CategoryViewModel(val category: CategoryModel?, val shopId: String?) : ViewModel() {
 
     /*val storesLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
     val storesResponse = MediatorLiveData<NetworkRequestResponse<DataWithCountModel<List<StoreModel>>>>()*/

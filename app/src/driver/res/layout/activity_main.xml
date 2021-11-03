@@ -83,25 +83,25 @@
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/bluish"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:lineSpacingExtra="3sp"
                         android:layout_gravity="start"
-                        android:id="@+id/toolbar_title" />
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:textColor="@color/bluish"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/cancelBtn"
                         android:layout_width="wrap_content"
-                        android:visibility="gone"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|center_horizontal"
+                        android:layout_marginEnd="16dp"
                         android:text="@string/cancel"
                         android:textAllCaps="false"
-                        android:layout_marginEnd="16dp"
+                        android:visibility="gone"
                         app:backgroundTint="@color/warm_purple"
                         app:cornerRadius="32dp" />
 

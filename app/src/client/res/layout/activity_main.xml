@@ -101,14 +101,13 @@
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/bluish"
                         android:fontFamily="sans-serif"
                         android:textStyle="bold"
                         android:textSize="16sp"
                         android:lineSpacingExtra="3sp"
-                        android:layout_gravity="start"
                         android:id="@+id/toolbar_title" />
 
                     <com.google.android.material.button.MaterialButton

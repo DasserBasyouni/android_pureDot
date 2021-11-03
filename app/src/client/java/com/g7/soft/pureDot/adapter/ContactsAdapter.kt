@@ -2,15 +2,15 @@ package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.g7.soft.pureDot.databinding.ItemContactBinding
 import com.g7.soft.pureDot.model.ContactModel
+import com.g7.soft.pureDot.ui.screen.transferMoney.TransferMoneyFragment
 
 
-class ContactsAdapter(private val fragment: Fragment) :
+class ContactsAdapter(private val fragment: TransferMoneyFragment) :
     ListAdapter<ContactModel, ContactsAdapter.ViewHolder>(ContactsDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder = ViewHolder.from(viewGroup)
@@ -27,13 +27,14 @@ class ContactsAdapter(private val fragment: Fragment) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             dataModel: ContactModel,
-            fragment: Fragment,
+            fragment: TransferMoneyFragment,
         ) {
             binding.dataModel = dataModel
             binding.executePendingBindings()
 
             binding.removeTv.setOnClickListener {
-                // todo
+                fragment.viewModel.contactsResponse.value = null
+                fragment.viewModel.emailOrPhoneNumber.value = null
             }
         }
 

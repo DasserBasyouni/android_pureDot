@@ -1,6 +1,7 @@
 package com.g7.soft.pureDot.ui.screen.splash
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,7 +80,7 @@ class SplashFragment : Fragment() {
                         {
                             UserRepository("").saveUserData(requireContext(), it, password)
                             findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
-
+                            Log.e("Z_", "userTokenId: ${it?.tokenId}")
                         },
                         apiStatusToObserve = arrayOf(
                             ApiConstant.Status.NOT_VERIFIED,
@@ -90,6 +91,7 @@ class SplashFragment : Fragment() {
                             if (status == ApiConstant.Status.NOT_VERIFIED) {
                                 val bundle = bundleOf(
                                     "isPasswordReset" to false,
+                                    "isWalletVerification" to false,
                                     "emailOrPhoneNumber" to emailOrPhoneNumber
                                 )
                                 findNavController().navigate(
@@ -97,7 +99,7 @@ class SplashFragment : Fragment() {
                                     bundle
                                 )
                             } else {
-                                UserRepository("").clearUserData(requireContext())
+                                UserRepository("").clearUserData(lifecycleScope, requireContext())
                                 findNavController().navigate(R.id.action_splashFragment_to_startFragment)
                             }
                         })

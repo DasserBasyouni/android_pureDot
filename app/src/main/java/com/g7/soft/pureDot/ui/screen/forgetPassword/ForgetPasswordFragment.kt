@@ -18,6 +18,7 @@ class ForgetPasswordFragment : Fragment() {
     private lateinit var binding: FragmentForgetPasswordBinding
     private lateinit var viewModel: ForgetPasswordViewModel
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,8 +48,9 @@ class ForgetPasswordFragment : Fragment() {
                 .observeApiResponse(this, {
                     findNavController().navigate(
                         ForgetPasswordFragmentDirections.actionForgetPasswordFragmentToPhoneVerificationFragment(
-                            true,
-                            viewModel.emailOrPhoneNumber.value
+                            isPasswordReset = true,
+                            isWalletVerification = false,
+                            emailOrPhoneNumber = viewModel.emailOrPhoneNumber.value
                         )
                     )
                 }, validationObserve = {

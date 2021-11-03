@@ -21,9 +21,6 @@ import com.g7.soft.pureDot.utils.UiUtils
 import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity
 
 
-
-
-
 class MainActivity : LocaleAwareCompatActivity() {
 
     internal lateinit var binding: ActivityMainBinding
@@ -45,7 +42,11 @@ class MainActivity : LocaleAwareCompatActivity() {
         val navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
-        binding.collapsingToolbarLayout.setupWithNavController(binding.toolbar, navController, appBarConfiguration)
+        binding.collapsingToolbarLayout.setupWithNavController(
+            binding.toolbar,
+            navController,
+            appBarConfiguration
+        )
         /*NavigationUI.setupActionBarWithNavController(
             this@MainActivity,
             navController,
@@ -65,9 +66,14 @@ class MainActivity : LocaleAwareCompatActivity() {
                 destination.id,
                 this,
                 scrollLockedDestinationIds = arrayListOf(R.id.homeFragment),
-                fullScreenDestinationIds = arrayListOf(R.id.splashFragment, R.id.startFragment, R.id.homeFragment),
+                fullScreenDestinationIds = arrayListOf(
+                    R.id.splashFragment,
+                    R.id.startFragment,
+                    R.id.homeFragment
+                ),
                 loginDestinationIds = arrayListOf(R.id.loginFragment),
                 transparentDestinationIds = arrayListOf(
+                    R.id.addMoneyFragment,
                     R.id.forgetPasswordFragment,
                     R.id.phoneVerificationFragment,
                     R.id.contactUsFragment,
@@ -79,6 +85,7 @@ class MainActivity : LocaleAwareCompatActivity() {
                     R.id.termsFragment,
                     R.id.customerServiceFragment,
                     R.id.complainFragment,
+                    R.id.submitComplainFragment,
                     R.id.workingHoursFragment,
                     R.id.myWalletFragment,
                     R.id.bankAccountFragment,
@@ -99,7 +106,7 @@ class MainActivity : LocaleAwareCompatActivity() {
             binding.toolbar.requestLayout()
             binding.collapsingToolbarLayout.requestLayout()
             binding.collapsingToolbarLayout.requestLayout()
-           // binding.nestedScrollView.requestLayout()
+            // binding.nestedScrollView.requestLayout()
             binding.navHostFragment.requestLayout()
             binding.bottomNavigation.requestLayout()
 
@@ -138,13 +145,13 @@ class MainActivity : LocaleAwareCompatActivity() {
                 || super.onOptionsItemSelected(item)
 
     override fun onBackPressed() {
-        when {
+        return when {
             /*findNavController(R.id.navHostFragment).currentDestination?.id == R.id.homeFragment -> {
                 val currentFragment =
                     supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()
                 (currentFragment as HomeFragment).doBackPressed()
             }*/
-            firstTimeExitPopup -> {
+            firstTimeExitPopup && findNavController(R.id.navHostFragment).currentDestination?.id == R.id.homeFragment -> {
                 firstTimeExitPopup = false
                 ProjectDialogUtils.onExitApp(this) { firstTimeExitPopup = true }
             }

@@ -70,6 +70,9 @@
             android:name="emailOrPhoneNumber"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="isWalletVerification"
+            app:argType="boolean"/>
         <action
             android:id="@+id/action_phoneVerificationFragment_to_homeFragment"
             app:destination="@id/homeFragment"

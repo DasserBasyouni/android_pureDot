@@ -112,7 +112,8 @@ class SignUpFragment : Fragment() {
 
                             findNavController().navigate(
                                 SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
-                                    false,
+                                    isPasswordReset = false,
+                                    isWalletVerification = false,
                                     viewModel.phoneNumber.value
                                 )
                             )

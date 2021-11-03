@@ -1,5 +1,6 @@
 package com.g7.soft.pureDot.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -19,7 +20,8 @@ import com.g7.soft.pureDot.ui.screen.filter.FilterFragment
 class PagedCategoriesAdapter(
     private val fragment: Fragment,
     private val isGrid: Boolean = false,
-    private val isSelectable: Boolean  = false
+    private val isSelectable: Boolean = false,
+    private val shopId: String? = null
 ) :
     PagedListAdapter<CategoryModel, PagedCategoriesAdapter.ViewHolder>(PagedCategoriesDiffCallback()) {
 
@@ -27,7 +29,7 @@ class PagedCategoriesAdapter(
         ViewHolder.from(viewGroup, isGrid)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getItem(position), fragment, isSelectable)
+        holder.bind(getItem(position), fragment, isSelectable, shopId)
 
 
     class ViewHolder private constructor(private val binding: ViewDataBinding) :
@@ -36,6 +38,7 @@ class PagedCategoriesAdapter(
             dataModel: CategoryModel?,
             fragment: Fragment,
             isSelectable: Boolean,
+            shopId: String?,
         ) {
             if (binding is ItemCategoryListViewBinding)
                 binding.dataModel = dataModel
@@ -44,10 +47,14 @@ class PagedCategoriesAdapter(
 
             binding.executePendingBindings()
 
+            if (isSelectable && fragment is FilterFragment)
+                binding.root.isSelected =
+                    fragment.viewModel.selectedCategoriesIds.contains(dataModel?.id)
+
             binding.root.setOnClickListener {
                 if (isSelectable) {
                     binding.root.isSelected = !binding.root.isSelected
-                    if (fragment is FilterFragment){
+                    if (fragment is FilterFragment) {
                         val categoryId = dataModel?.id
                         categoryId?.let {
                             if (binding.root.isSelected)
@@ -57,7 +64,8 @@ class PagedCategoriesAdapter(
                         }
                     }
                 } else {
-                    val bundle = bundleOf("category" to dataModel)
+                    Log.e("ZZ_", "shopId: $shopId")
+                    val bundle = bundleOf("category" to dataModel, "shopId" to shopId)
                     fragment.findNavController().navigate(R.id.categoryFragment, bundle)
                 }
             }

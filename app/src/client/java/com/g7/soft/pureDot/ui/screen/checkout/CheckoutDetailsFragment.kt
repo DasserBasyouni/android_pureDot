@@ -127,7 +127,7 @@ class CheckoutDetailsFragment(private val viewModel: CheckoutViewModel) : Fragme
             }
             ProjectConstant.Companion.Status.SUCCESS -> {
                 val modelsList = networkResponse.data
-                val dataList = modelsList?.mapNotNull { it.areaName }?.toTypedArray()
+                val dataList = modelsList?.map { it.addressName }?.toTypedArray()
 
                 spinner.isEnabled = true
                 arrayListOf(initialText).apply {

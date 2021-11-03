@@ -52,8 +52,12 @@ class ProjectDialogUtils : FlavourProjectDialogUtils() {
 
 
         fun showLoading(context: Context) {
-            loadingDialog = Dialog(context)
-            loadingDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            val isFirstInit = loadingDialog == null
+
+            if (isFirstInit) {
+                loadingDialog = Dialog(context)
+                loadingDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            }
 
             val progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleLarge)
             progressBar.indeterminateDrawable.colorFilter =
@@ -65,23 +69,27 @@ class ProjectDialogUtils : FlavourProjectDialogUtils() {
                     BlendModeCompat.SRC_ATOP
                 )
 
-            loadingDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            loadingDialog?.setCancelable(false)
-            loadingDialog?.setContentView(progressBar)
+            if (isFirstInit) {
+                loadingDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                loadingDialog?.setCancelable(false)
+                loadingDialog?.setContentView(progressBar)
+            }
 
             loadingDialog?.show()
 
-            loadingDialog?.window?.setLayout(
-                ConstraintLayout.LayoutParams.MATCH_PARENT,
-                ConstraintLayout.LayoutParams.MATCH_PARENT
-            )
-            (progressBar.layoutParams as FrameLayout.LayoutParams).let {
-                it.width = 64.dpToPx()
-                it.height = 64.dpToPx()
-                it.gravity = Gravity.CENTER
-            }
+            if (isFirstInit) {
+                loadingDialog?.window?.setLayout(
+                    ConstraintLayout.LayoutParams.MATCH_PARENT,
+                    ConstraintLayout.LayoutParams.MATCH_PARENT
+                )
+                (progressBar.layoutParams as FrameLayout.LayoutParams).let {
+                    it.width = 64.dpToPx()
+                    it.height = 64.dpToPx()
+                    it.gravity = Gravity.CENTER
+                }
 
-            progressBar.requestLayout()
+                progressBar.requestLayout()
+            }
         }
 
         fun hideLoading(): Unit = if (loadingDialog?.isShowing == true) {

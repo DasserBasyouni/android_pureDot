@@ -1,12 +1,17 @@
 package com.g7.soft.pureDot.ui.screen.home
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
+import android.os.Looper.getMainLooper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +20,19 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.transition.ChangeBounds
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
+import androidx.work.*
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.PendingOrdersAdapter
 import com.g7.soft.pureDot.adapter.ProductsAdapter
@@ -43,13 +52,34 @@ import com.g7.soft.pureDot.ui.screen.order.OrderFragment
 import com.g7.soft.pureDot.utils.MapBoxUtils
 import com.g7.soft.pureDot.utils.PermissionsHelper
 import com.g7.soft.pureDot.utils.ProjectDialogUtils
+import com.g7.soft.pureDot.worker.LocationUploadWorker
+import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.mapbox.android.core.location.LocationEngineCallback
+import com.mapbox.android.core.location.LocationEngineProvider
+import com.mapbox.android.core.location.LocationEngineRequest
+import com.mapbox.android.core.location.LocationEngineResult
+import com.mapbox.android.core.permissions.PermissionsListener
+import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.api.directions.v5.DirectionsCriteria.GEOMETRY_POLYLINE6
 import com.mapbox.api.directions.v5.DirectionsCriteria.PROFILE_DRIVING
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.api.directions.v5.models.RouteOptions
 import com.mapbox.bindgen.Expected
 import com.mapbox.geojson.Point
+import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLngBounds
+import com.mapbox.mapboxsdk.location.LocationComponent
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
+import com.mapbox.mapboxsdk.location.modes.CameraMode
+import com.mapbox.mapboxsdk.location.modes.RenderMode
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.EdgeInsets
 import com.mapbox.maps.MapboxMap
@@ -99,10 +129,19 @@ import kotlinx.android.synthetic.driver.fragment_home.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
+
+
 //import com.mapbox.navigation.core.trip.service.MapboxTripService
 
-open class HomeFragment : Fragment() {
+open class HomeFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
+
+    private var clientSymbol: Symbol? = null
+    private var branchSymbol: Symbol? = null
+    private lateinit var permissionsManager: PermissionsManager
+    //private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     companion object {
         var refreshData: ((String?) -> Unit)? = null
@@ -118,6 +157,9 @@ open class HomeFragment : Fragment() {
             requireActivity().finish()
     }
 
+    private val CLIENT_ICON_ID = "CLIENT_ICON_ID"
+    private val BRANCH_ICON_ID = "BRANCH_ICON_ID"
+
     internal lateinit var binding: FragmentHomeBinding
     internal lateinit var viewModelFactory: HomeViewModelFactory
     internal lateinit var viewModel: HomeViewModel
@@ -125,6 +167,7 @@ open class HomeFragment : Fragment() {
 
     /* ----- Mapbox Maps components ----- */
     private lateinit var mapboxMap: MapboxMap
+    private lateinit var mapboxSdkMapView: com.mapbox.mapboxsdk.maps.MapboxMap
 
     /* ----- Mapbox Navigation components ----- */
     private lateinit var mapboxNavigation: MapboxNavigation
@@ -311,10 +354,16 @@ open class HomeFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.mapboxSdkMapView.onResume()
+        //if (::fusedLocationClient.isInitialized) startLocationUpdates()
+    }
 
     override fun onStart() {
         super.onStart()
         binding.mapView.onStart()
+        binding.mapboxSdkMapView.onStart()
         mapboxNavigation.registerRoutesObserver(routesObserver)
         mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
         mapboxNavigation.registerLocationObserver(locationObserver)
@@ -325,6 +374,7 @@ open class HomeFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         binding.mapView.onStop()
+        binding.mapboxSdkMapView.onStop()
         mapboxNavigation.unregisterRoutesObserver(routesObserver)
         mapboxNavigation.unregisterRouteProgressObserver(routeProgressObserver)
         mapboxNavigation.unregisterLocationObserver(locationObserver)
@@ -332,10 +382,18 @@ open class HomeFragment : Fragment() {
         OrderFragment.isRunning = false
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.mapboxSdkMapView.onSaveInstanceState(outState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // setup map instance (non-navigation one)
+        Mapbox.getInstance(requireContext(), MapBoxUtils.getMapboxAccessToken(requireContext()))
+
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_home,
@@ -408,11 +466,16 @@ open class HomeFragment : Fragment() {
         )
 
         setupTheScreen()
+
+        // setup
+        binding.mapboxSdkMapView.onCreate(savedInstanceState)
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         binding.mapView.onDestroy()
+        binding.mapboxSdkMapView.onDestroy()
         if (::mapboxNavigation.isInitialized)
             mapboxNavigation.onDestroy()
         if (::speechAPI.isInitialized)
@@ -424,8 +487,16 @@ open class HomeFragment : Fragment() {
     override fun onLowMemory() {
         super.onLowMemory()
         binding.mapView.onLowMemory()
+        binding.mapboxSdkMapView.onLowMemory()
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.e("Z_", "onActivityResult")
@@ -435,6 +506,163 @@ open class HomeFragment : Fragment() {
             setupTheScreen()
     }
 
+
+    @SuppressLint("MissingPermission")
+    override fun onMapReady(mapboxMap: com.mapbox.mapboxsdk.maps.MapboxMap) {
+        Log.e("ZZ_", "onMapReady")
+        this@HomeFragment.mapboxSdkMapView = mapboxMap
+
+        mapboxMap.uiSettings.setCompassMargins(8.dpToPx(), 32.dpToPx(), 8.dpToPx(), 0)
+
+        // update current location
+        val DEFAULT_INTERVAL_IN_MILLISECONDS = 15.toLong()
+        val DEFAULT_MAX_WAIT_TIME = 15.toLong()
+        val callback = object : LocationEngineCallback<LocationEngineResult> {
+            override fun onSuccess(result: LocationEngineResult?) {
+                Log.e("ZZ_", "onSuccess")
+                // first time load
+                if (result?.lastLocation != null && viewModel.isFirstFetchData) {
+                    val position: CameraPosition = CameraPosition.Builder()
+                        .target(
+                            LatLng(
+                                result.lastLocation!!.latitude,
+                                result.lastLocation!!.longitude
+                            )
+                        ) // Sets the new camera position
+                        .zoom(17.0) // Sets the zoom
+                        .bearing(180.0) // Rotate the camera
+                        .tilt(30.0) // Set the camera tilt
+                        .build() // Creates a CameraPosition from the builder
+
+                    mapboxMap.animateCamera(
+                        CameraUpdateFactory.newCameraPosition(position), 5000
+                    )
+                }
+
+                viewModel.location.value = result?.lastLocation
+            }
+
+            override fun onFailure(e: java.lang.Exception) {
+                Log.e("ZZ_", "fail: $e")
+                Timber.e(e)
+            }
+        }
+        val locationEngine = LocationEngineProvider.getBestLocationEngine(requireContext())
+        val request = LocationEngineRequest.Builder(DEFAULT_INTERVAL_IN_MILLISECONDS)
+            .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
+            .setMaxWaitTime(DEFAULT_MAX_WAIT_TIME).build()
+        locationEngine.requestLocationUpdates(request, callback, getMainLooper())
+        locationEngine.getLastLocation(callback)
+
+
+        mapboxMap.uiSettings.setLogoMargins(
+            8.dpToPx(),
+            0,
+            8.dpToPx(),
+            110.dpToPx() + 8.dpToPx()
+        )
+
+        mapboxMap.setStyle(
+            com.mapbox.mapboxsdk.maps.Style.MAPBOX_STREETS
+        ) { style ->
+            enableLocationPlugin(style)
+
+            // add assets to map style
+            val clientPinBitmap =
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_pin)?.toBitmap()
+                    ?: return@setStyle
+            val branchPinBitmap =
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_map_pin_branch)
+                    ?.toBitmap()
+                    ?: return@setStyle
+
+            style.addImage(CLIENT_ICON_ID, clientPinBitmap)
+            style.addImage(BRANCH_ICON_ID, branchPinBitmap)
+
+            addMarkersToMap()
+        }
+    }
+
+    private fun addMarkersToMap() {
+        if (clientSymbol != null || branchSymbol != null) return
+
+        val selectedOrder = viewModel.selectedOrder.value ?: return
+        val clientLat = selectedOrder.clientAddress?.latitude?.toDoubleOrNull()
+        val clientLng = selectedOrder.clientAddress?.longitude?.toDoubleOrNull()
+        val branchLat = selectedOrder.firstOrder?.branch?.latitude?.toDoubleOrNull()
+        val branchLng = selectedOrder.firstOrder?.branch?.longitude?.toDoubleOrNull()
+
+        if (branchLat != null && branchLng != null && clientLat != null && clientLng != null) {
+            val clientLatLng = LatLng(clientLat, clientLng)
+            val branchLatLng = LatLng(branchLat, branchLng)
+
+            clientSymbol = addMarker(LatLng(clientLat, clientLng), CLIENT_ICON_ID)
+            branchSymbol = addMarker(LatLng(branchLat, branchLng), BRANCH_ICON_ID)
+
+            if (clientSymbol != null && branchSymbol != null) {
+                val lastKnownLocation =
+                    mapboxSdkMapView.locationComponent.lastKnownLocation ?: return
+                val latLngBounds: LatLngBounds = LatLngBounds.Builder()
+                    .include(
+                        LatLng(
+                            lastKnownLocation.latitude,
+                            lastKnownLocation.longitude
+                        )
+                    ) // Northeast
+                    .include(branchLatLng) // Southwest
+                    .include(clientLatLng)
+                    .build()
+
+                mapboxSdkMapView.easeCamera(
+                    CameraUpdateFactory.newLatLngBounds(latLngBounds, 56.dpToPx()),
+                    5000
+                )
+            }
+        }
+    }
+
+    private fun addMarker(latLng: LatLng, iconId: String): Symbol? {
+        // Create a SymbolManager.
+        val symbolManager = SymbolManager(
+            binding.mapboxSdkMapView, mapboxSdkMapView,
+            mapboxSdkMapView.style ?: return null
+        )
+
+        // Set non-data-driven properties.
+        symbolManager.iconAllowOverlap = true
+        symbolManager.iconIgnorePlacement = true
+
+        val symbolOptions = SymbolOptions()
+            .withLatLng(latLng)
+            .withIconImage(iconId)
+            .withIconSize(1.3f)
+
+        // Create a symbol at the specified location.
+        return symbolManager.create(symbolOptions)
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun enableLocationPlugin(loadedMapStyle: com.mapbox.mapboxsdk.maps.Style) {
+        // Check if permissions are enabled and if not request
+        if (PermissionsManager.areLocationPermissionsGranted(requireContext())) {
+
+            // Get an instance of the component. Adding in LocationComponentOptions is also an optional
+            // parameter
+            val locationComponent: LocationComponent = mapboxSdkMapView.locationComponent
+            locationComponent.activateLocationComponent(
+                LocationComponentActivationOptions.builder(requireContext(), loadedMapStyle).build()
+            )
+            locationComponent.isLocationComponentEnabled = true
+
+            // Set the component's camera mode
+            locationComponent.cameraMode = CameraMode.TRACKING
+            locationComponent.renderMode = RenderMode.NORMAL
+        } else {
+            permissionsManager = PermissionsManager(this)
+            permissionsManager.requestLocationPermissions(requireActivity())
+        }
+    }
 
     fun closeSideNavigationMenu(onFinishRunnable: Runnable? = null) {
         binding.screenClickableIv.visibility = View.GONE
@@ -485,176 +713,237 @@ open class HomeFragment : Fragment() {
             (requireActivity() as MainActivity).superOnBackPressed()
     }
 
+    /*@SuppressLint("MissingPermission")
+    private fun startLocationUpdates() {
+        val locationRequest = LocationRequest.create().apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult?) {
+                    locationResult ?: return
+                    for (location in locationResult.locations) {
+                        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                        var areaName: String? = null
+                        try {
+                            val listAddresses: List<Address>? =
+                                geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                            if (null != listAddresses && listAddresses.isNotEmpty()) {
+                                areaName = listAddresses[0].getAddressLine(0)
+                            }
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+
+                        lifecycleScope.launch {
+                            val tokenId = UserRepository("").getTokenId(requireContext())
+
+                            viewModel.setCurrentLocation(
+                                requireActivity().currentLocale.toLanguageTag(),
+                                tokenId,
+                                location.latitude,
+                                location.longitude,
+                                areaName
+                            )
+                        }
+                    }
+                }
+            },
+            Looper.getMainLooper()
+        )
+    }*/
 
     @SuppressLint("MissingPermission")
     private fun setupTheScreen() {
+        Log.e("Z_", "it: setupTheScreen")
         PermissionsHelper.requestLocationPermission(requireContext(), resolutionForResult, {
+            Log.e("Z_", "it: requestLocationPermission")
+            binding.mapboxSdkMapView.getMapAsync(this)
+            requireContext().startUploadingLocation()
+            //fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+            setupBottomSheet()
             setupSideNavigationMenu()
             setupObservables()
             fetchData()
-            setupBottomSheet()
             setupOnClick()
+        }, deniedRunnable = { requireActivity().finish() })
+    }
 
-            // initialize the location puck
-            binding.mapView.location.apply {
-                this.locationPuck = LocationPuck2D(
-                    bearingImage = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.navigation_puck_icon
+    @SuppressLint("MissingPermission")
+    private fun setupNavigationMap() {
+        // initialize the location puck
+        binding.mapView.location.apply {
+            this.locationPuck = LocationPuck2D(
+                bearingImage = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.navigation_puck_icon
+                )
+            )
+            setLocationProvider(navigationLocationProvider)
+            enabled = true
+        }
+
+        // setup map ui
+        //binding.mapView.get.
+        binding.mapView.logo.marginBottom =
+            (384.dpToPx() - 110.dpToPx() - 204.dpToPx() - 26.dpToPx()).toFloat()
+
+        // setup map bottom padding
+        binding.mapView.setPadding(
+            0,
+            0,
+            0,
+            384.dpToPx() - 110.dpToPx()
+        )
+
+        // move the camera to current location on the first update
+        mapboxNavigation.registerLocationObserver(object : LocationObserver {
+            override fun onRawLocationChanged(rawLocation: Location) {
+                val point = Point.fromLngLat(rawLocation.longitude, rawLocation.latitude)
+                val cameraOptions = CameraOptions.Builder()
+                    .center(point)
+                    .zoom(13.0)
+                    .build()
+                mapboxMap.setCamera(cameraOptions)
+                mapboxNavigation.unregisterLocationObserver(this)
+            }
+
+            override fun onEnhancedLocationChanged(
+                enhancedLocation: Location,
+                keyPoints: List<Location>
+            ) {
+                // not handled
+            }
+        })
+
+        // initialize Navigation Camera
+        binding.mapView.camera.addCameraAnimationsLifecycleListener(
+            NavigationBasicGesturesHandler(navigationCamera)
+        )
+        navigationCamera.registerNavigationCameraStateChangeObserver { navigationCameraState -> // shows/hide the recenter button depending on the camera state
+            when (navigationCameraState) {
+                NavigationCameraState.TRANSITION_TO_FOLLOWING,
+                    //NavigationCameraState.FOLLOWING -> binding.recenter.visibility = View.INVISIBLE
+
+                NavigationCameraState.TRANSITION_TO_OVERVIEW,
+                NavigationCameraState.OVERVIEW,
+                    //NavigationCameraState.IDLE -> binding.recenter.visibility = View.VISIBLE
+                NavigationCameraState.IDLE -> {
+                }
+                NavigationCameraState.FOLLOWING -> {
+                }
+            }
+        }
+        if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            viewportDataSource.overviewPadding = landscapeOverviewPadding
+        } else {
+            viewportDataSource.overviewPadding = overviewPadding
+        }
+        if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            viewportDataSource.followingPadding = landscapeFollowingPadding
+        } else {
+            viewportDataSource.followingPadding = followingPadding
+        }
+
+        // initialize top maneuver view
+        maneuverApi = MapboxManeuverApi(
+            MapboxDistanceFormatter(DistanceFormatterOptions.Builder(requireContext()).build())
+        )
+
+        // initialize bottom progress view
+        tripProgressApi = MapboxTripProgressApi(
+            TripProgressUpdateFormatter.Builder(requireContext())
+                .distanceRemainingFormatter(
+                    DistanceRemainingFormatter(
+                        mapboxNavigation.navigationOptions.distanceFormatterOptions
                     )
                 )
-                setLocationProvider(navigationLocationProvider)
-                enabled = true
-            }
-
-            // setup map ui
-            //binding.mapView.get.
-            binding.mapView.logo.marginBottom =
-                (384.dpToPx() - 110.dpToPx() - 204.dpToPx() - 26.dpToPx()).toFloat()
-
-            // setup map bottom padding
-            binding.mapView.setPadding(
-                0,
-                0,
-                0,
-                384.dpToPx() - 110.dpToPx()
-            )
-
-            // move the camera to current location on the first update
-            mapboxNavigation.registerLocationObserver(object : LocationObserver {
-                override fun onRawLocationChanged(rawLocation: Location) {
-                    val point = Point.fromLngLat(rawLocation.longitude, rawLocation.latitude)
-                    val cameraOptions = CameraOptions.Builder()
-                        .center(point)
-                        .zoom(13.0)
-                        .build()
-                    mapboxMap.setCamera(cameraOptions)
-                    mapboxNavigation.unregisterLocationObserver(this)
-                }
-
-                override fun onEnhancedLocationChanged(
-                    enhancedLocation: Location,
-                    keyPoints: List<Location>
-                ) {
-                    // not handled
-                }
-            })
-
-            // initialize Navigation Camera
-            binding.mapView.camera.addCameraAnimationsLifecycleListener(
-                NavigationBasicGesturesHandler(navigationCamera)
-            )
-            navigationCamera.registerNavigationCameraStateChangeObserver { navigationCameraState -> // shows/hide the recenter button depending on the camera state
-                when (navigationCameraState) {
-                    NavigationCameraState.TRANSITION_TO_FOLLOWING,
-                        //NavigationCameraState.FOLLOWING -> binding.recenter.visibility = View.INVISIBLE
-
-                    NavigationCameraState.TRANSITION_TO_OVERVIEW,
-                    NavigationCameraState.OVERVIEW,
-                        //NavigationCameraState.IDLE -> binding.recenter.visibility = View.VISIBLE
-                    NavigationCameraState.IDLE -> {
-                    }
-                    NavigationCameraState.FOLLOWING -> {
-                    }
-                }
-            }
-            if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                viewportDataSource.overviewPadding = landscapeOverviewPadding
-            } else {
-                viewportDataSource.overviewPadding = overviewPadding
-            }
-            if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                viewportDataSource.followingPadding = landscapeFollowingPadding
-            } else {
-                viewportDataSource.followingPadding = followingPadding
-            }
-
-            // initialize top maneuver view
-            maneuverApi = MapboxManeuverApi(
-                MapboxDistanceFormatter(DistanceFormatterOptions.Builder(requireContext()).build())
-            )
-
-            // initialize bottom progress view
-            tripProgressApi = MapboxTripProgressApi(
-                TripProgressUpdateFormatter.Builder(requireContext())
-                    .distanceRemainingFormatter(
-                        DistanceRemainingFormatter(
-                            mapboxNavigation.navigationOptions.distanceFormatterOptions
-                        )
-                    )
-                    .timeRemainingFormatter(TimeRemainingFormatter(requireContext()))
-                    .percentRouteTraveledFormatter(PercentDistanceTraveledFormatter())
-                    .estimatedTimeToArrivalFormatter(
-                        EstimatedTimeToArrivalFormatter(requireContext(), TimeFormat.NONE_SPECIFIED)
-                    )
-                    .build()
-            )
-
-            // initialize voice instructions
-            speechAPI = MapboxSpeechApi(
-                requireContext(),
-                getMapboxAccessTokenFromResources(),
-                Locale.US.language
-            )
-            voiceInstructionsPlayer = MapboxVoiceInstructionsPlayer(
-                requireContext(),
-                getMapboxAccessTokenFromResources(),
-                Locale.US.language
-            )
-
-            // initialize route line
-            val mapboxRouteLineOptions = MapboxRouteLineOptions.Builder(requireContext())
-                .withRouteLineBelowLayerId("road-label")
+                .timeRemainingFormatter(TimeRemainingFormatter(requireContext()))
+                .percentRouteTraveledFormatter(PercentDistanceTraveledFormatter())
+                .estimatedTimeToArrivalFormatter(
+                    EstimatedTimeToArrivalFormatter(requireContext(), TimeFormat.NONE_SPECIFIED)
+                )
                 .build()
-            routeLineAPI = MapboxRouteLineApi(mapboxRouteLineOptions)
-            routeLineView = MapboxRouteLineView(mapboxRouteLineOptions)
-            val routeArrowOptions = RouteArrowOptions.Builder(requireContext()).build()
-            routeArrowView = MapboxRouteArrowView(routeArrowOptions)
+        )
 
-            // load map style
-            mapboxMap.loadStyleUri(
-                Style.MAPBOX_STREETS
-            ) { // add long click listener that search for a route to the clicked destination
-                /*binding.mapView.gestures.addOnMapLongClickListener { point ->
-                    findRoute(point)
-                    true
-                }*/
-            }
+        // initialize voice instructions
+        speechAPI = MapboxSpeechApi(
+            requireContext(),
+            getMapboxAccessTokenFromResources(),
+            Locale.US.language
+        )
+        voiceInstructionsPlayer = MapboxVoiceInstructionsPlayer(
+            requireContext(),
+            getMapboxAccessTokenFromResources(),
+            Locale.US.language
+        )
 
-            // initialize view interactions
-            binding.stop.setOnClickListener {
-                clearRouteAndStopNavigation()
-                viewModel.isNavigationView.value = false
-            }
-            /*binding.recenter.setOnClickListener {
-                navigationCamera.requestNavigationCameraToFollowing()
+        // initialize route line
+        val mapboxRouteLineOptions = MapboxRouteLineOptions.Builder(requireContext())
+            .withRouteLineBelowLayerId("road-label")
+            .build()
+        routeLineAPI = MapboxRouteLineApi(mapboxRouteLineOptions)
+        routeLineView = MapboxRouteLineView(mapboxRouteLineOptions)
+        val routeArrowOptions = RouteArrowOptions.Builder(requireContext()).build()
+        routeArrowView = MapboxRouteArrowView(routeArrowOptions)
+
+        // load map style
+        mapboxMap.loadStyleUri(
+            Style.MAPBOX_STREETS
+        ) { // add long click listener that search for a route to the clicked destination
+            /*binding.mapView.gestures.addOnMapLongClickListener { point ->
+                findRoute(point)
+                true
             }*/
-            /*binding.routeOverview.setOnClickListener {
-                navigationCamera.requestNavigationCameraToOverview()
-                //binding.recenter.showTextAndExtend(2000L)
-            }*/
-            binding.soundButton.setOnClickListener {
-                // mute/unmute voice instructions
-                isVoiceInstructionsMuted = !isVoiceInstructionsMuted
-                if (isVoiceInstructionsMuted) {
-                    binding.soundButton.muteAndExtend(2000L)
-                    voiceInstructionsPlayer.volume(SpeechVolume(0f))
-                } else {
-                    binding.soundButton.unmuteAndExtend(2000L)
-                    voiceInstructionsPlayer.volume(SpeechVolume(1f))
-                }
-            }
+        }
 
-            // start the trip session to being receiving location updates in free drive
-            // and later when a route is set, also receiving route progress updates
-            mapboxNavigation.startTripSession()
-        })
+        // initialize view interactions
+        binding.stop.setOnClickListener {
+            clearRouteAndStopNavigation()
+            viewModel.isNavigationView.value = false
+        }
+        /*binding.recenter.setOnClickListener {
+            navigationCamera.requestNavigationCameraToFollowing()
+        }*/
+        /*binding.routeOverview.setOnClickListener {
+            navigationCamera.requestNavigationCameraToOverview()
+            //binding.recenter.showTextAndExtend(2000L)
+        }*/
+        binding.soundButton.setOnClickListener {
+            // mute/unmute voice instructions
+            isVoiceInstructionsMuted = !isVoiceInstructionsMuted
+            if (isVoiceInstructionsMuted) {
+                binding.soundButton.muteAndExtend(2000L)
+                voiceInstructionsPlayer.volume(SpeechVolume(0f))
+            } else {
+                binding.soundButton.unmuteAndExtend(2000L)
+                voiceInstructionsPlayer.volume(SpeechVolume(1f))
+            }
+        }
+
+        // start the trip session to being receiving location updates in free drive
+        // and later when a route is set, also receiving route progress updates
+        mapboxNavigation.startTripSession()
     }
 
     private fun findRoute(destination1: Point, destination2: Point) {
-        val origin = navigationLocationProvider.lastLocation?.let {
+        /*val origin = navigationLocationProvider.lastLocation?.let {
+            Point.fromLngLat(it.longitude, it.latitude)
+        } ?: return*/
+        val origin = viewModel.location.value?.let {
             Point.fromLngLat(it.longitude, it.latitude)
         } ?: return
+
+        Log.e(
+            "Z_",
+            "findRoute: $origin $destination1 == [${origin.latitude()}, ${origin.latitude()}] $destination2"
+        )
+
         mapboxNavigation.requestRoutes(
             RouteOptions.builder()
                 .applyDefaultNavigationOptions()
@@ -674,17 +963,18 @@ open class HomeFragment : Fragment() {
                     reasons: List<RouterFailure>,
                     routeOptions: RouteOptions
                 ) {
-                    // no impl
+                    Timber.e("requestRoutes.onFailure")
                 }
 
                 override fun onCanceled(routeOptions: RouteOptions, routerOrigin: RouterOrigin) {
-                    // no impl
+                    Timber.e("requestRoutes.onCanceled")
                 }
             }
         )
     }
 
     private fun setRouteAndStartNavigation(route: DirectionsRoute, routerOrigin: RouterOrigin) {
+        Log.e("Z_", "setRouteAndStartNavigation")
         // set route
         mapboxNavigation.setRoutes(listOf(route)) // TODO Eng. Omnia
 
@@ -744,6 +1034,8 @@ open class HomeFragment : Fragment() {
                 navigationCamera.requestNavigationCameraToFollowing() // TODO Eng. Omnia
                 logoBottomMargin = 146.dpToPx().toFloat()
                 mapBottomMargin = 0.dpToPx()
+                setupNavigationMap()
+                findNavigationViewRoute()
             } else {
                 navigationCamera.requestNavigationCameraToOverview()
                 logoBottomMargin = 24.dpToPx().toFloat()
@@ -764,7 +1056,9 @@ open class HomeFragment : Fragment() {
 
         viewModel.availabilityResponse.observe(viewLifecycleOwner, {
             viewModel.availabilityLcee.value!!.response.value = it
-            binding.isAvailableS.isChecked = it?.data?.isAvailable ?: false
+            if (it?.data?.isAvailable != null && viewModel.isAvailable.value != it.data.isAvailable)
+                viewModel.isAvailable.value = it.data.isAvailable
+            //viewModel.isFirstFetchData = true
         })
 
         // setup pagination
@@ -788,9 +1082,10 @@ open class HomeFragment : Fragment() {
             binding.productsRv.adapter =
                 ProductsAdapter().apply { this.submitList(it?.firstOrder?.products) }
 
-            val isCollapsedSheet =
+            val isCollapsedSheet = true
+            /*val isCollapsedSheet =
                 !(it != null && it.firstOrder?.deliveryStatus != OrderDeliveryStatus.ACCEPTED.value
-                        && it.firstOrder?.deliveryStatus != OrderDeliveryStatus.NEW.value)
+                        && it.firstOrder?.deliveryStatus != OrderDeliveryStatus.NEW.value)*/
 
             // do collapse or not & adjust peekHeight
             val peekHeight: Int
@@ -820,21 +1115,13 @@ open class HomeFragment : Fragment() {
             // draw route
             if (it == null) {
                 clearRouteAndStopNavigation()
+                clientSymbol = null
+                branchSymbol = null
             } else {
-                val clientLat = it.clientAddress?.latitude?.toDoubleOrNull()
-                val clientLng = it.clientAddress?.longitude?.toDoubleOrNull()
-
-                val branchLat = it.firstOrder?.branch?.latitude?.toDoubleOrNull()
-                val branchLng = it.firstOrder?.branch?.longitude?.toDoubleOrNull()
-
-                if (branchLat != null && branchLng != null && clientLat != null && clientLng != null) {
-                    val clientPoint = Point.fromLngLat(clientLat, clientLng)
-                    val branchPoint = Point.fromLngLat(branchLat, branchLng)
-
-                    if (it.firstOrder.isReturn == true)
-                        findRoute(clientPoint, branchPoint)
-                    else
-                        findRoute(branchPoint, clientPoint)
+                if (viewModel.isNavigationView.value == true) {
+                    findNavigationViewRoute()
+                } else {
+                    addMarkersToMap()
                 }
             }
         })
@@ -874,15 +1161,10 @@ open class HomeFragment : Fragment() {
 
         viewModel.isAvailable.observe(viewLifecycleOwner, {
             lifecycleScope.launch {
-                val tokenId =
-                    UserRepository("").getTokenId(requireContext())
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
-                if (!viewModel.isFirstFetchData) {
-                    // fetch pending orders for the first time
-                    getOrRemovePendingOrders(tokenId)
-
-                } else if (viewModel.isFirstFetchData && viewModel.availabilityResponse.value?.status != ProjectConstant.Companion.Status.LOADING) {
-
+                if (viewModel.availabilityResponse.value?.status != ProjectConstant.Companion.Status.LOADING
+                ) {
                     viewModel.changeAvailability(
                         requireActivity().currentLocale.toLanguageTag(),
                         tokenId = tokenId
@@ -891,23 +1173,48 @@ open class HomeFragment : Fragment() {
                         // show loading
                         if (it.status == ProjectConstant.Companion.Status.LOADING)
                             ProjectDialogUtils.showLoading(requireContext())
-                        else
+                        else {
                             ProjectDialogUtils.hideLoading()
-
+                        }
                         // reset the switch if have error
                         if (it.status == ProjectConstant.Companion.Status.API_ERROR
                             || it.status == ProjectConstant.Companion.Status.NETWORK_ERROR
                         ) {
                             // apply availability to switch
-                            binding.isAvailableS.isChecked = !binding.isAvailableS.isChecked
+                            viewModel.isAvailable.value = !viewModel.isAvailable.value!!
 
-                            getOrRemovePendingOrders(tokenId)
+                            viewModel.isFirstFetchData = true
                         }
+                        viewModel.availabilityResponse.value?.data?.isAvailable =
+                            viewModel.isAvailable.value
+                        getOrRemovePendingOrders()
                     })
-                } else if (!viewModel.isFirstFetchData)
-                    viewModel.isFirstFetchData = true
+                }
+                /*if (viewModel.isFirstFetchData) {
+                    viewModel.isFirstFetchData = false
+                }*/
             }
         })
+    }
+
+    private fun findNavigationViewRoute() {
+        val it = viewModel.selectedOrder.value
+
+        val clientLat = it?.clientAddress?.latitude?.toDoubleOrNull()
+        val clientLng = it?.clientAddress?.longitude?.toDoubleOrNull()
+
+        val branchLat = it?.firstOrder?.branch?.latitude?.toDoubleOrNull()
+        val branchLng = it?.firstOrder?.branch?.longitude?.toDoubleOrNull()
+
+        if (branchLat != null && branchLng != null && clientLat != null && clientLng != null) {
+            val clientPoint = Point.fromLngLat(clientLng, clientLat)
+            val branchPoint = Point.fromLngLat(branchLng, branchLat)
+
+            if (it.firstOrder.isReturn == true)
+                findRoute(clientPoint, branchPoint)
+            else
+                findRoute(branchPoint, clientPoint)
+        }
     }
 
     private fun fetchData() {
@@ -995,6 +1302,11 @@ open class HomeFragment : Fragment() {
             // in case action button is "Done"
             if (viewModel.selectedOrder.value?.firstOrder?.deliveryStatusEnum == OrderDeliveryStatus.DELIVERED) {
                 viewModel.selectedOrder.value = null
+
+                // clear markers
+                mapboxSdkMapView.style?.removeImage(CLIENT_ICON_ID)
+                mapboxSdkMapView.style?.removeImage(BRANCH_ICON_ID)
+
                 return@setOnClickListener
             }
 
@@ -1009,8 +1321,7 @@ open class HomeFragment : Fragment() {
                 }
 
             lifecycleScope.launch {
-                val tokenId =
-                    UserRepository("").getTokenId(requireContext())
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
                 viewModel.changeOrderStatus(
                     langTag = requireActivity().currentLocale.toLanguageTag(),
@@ -1029,8 +1340,7 @@ open class HomeFragment : Fragment() {
 
         binding.rejectBtn.setOnClickListener {
             lifecycleScope.launch {
-                val tokenId =
-                    UserRepository("").getTokenId(requireContext())
+                val tokenId = UserRepository("").getTokenId(requireContext())
 
                 viewModel.changeOrderStatus(
                     langTag = requireActivity().currentLocale.toLanguageTag(),
@@ -1078,7 +1388,7 @@ open class HomeFragment : Fragment() {
         binding.screenClickableIv.visibility = View.VISIBLE
     }
 
-    private fun getOrRemovePendingOrders(tokenId: String?) {
+    private fun getOrRemovePendingOrders() {
         if (viewModel.location.value != null) {
             if (viewModel.isAvailable.value == true) {
                 viewModel.ordersPagedList?.value?.dataSource?.invalidate()
@@ -1087,4 +1397,60 @@ open class HomeFragment : Fragment() {
             //viewModel.ordersResponse.value = null
         }
     }
+
+    fun Context.startUploadingLocation() {
+        if (checkLocationPermissions().not()) return
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true)
+            .build()
+
+        val request = PeriodicWorkRequestBuilder<LocationUploadWorker>(15, TimeUnit.MINUTES)
+            .setConstraints(constraints)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.MINUTES)
+            //.addTag("LocationWorkTag")
+            .build()
+
+        WorkManager
+            .getInstance(this)
+            .enqueue(request)
+    }
+
+    private fun Context.checkLocationPermissions() =
+        ActivityCompat.checkSelfPermission(
+            this,
+            ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+
+    override fun onExplanationNeeded(permissionsToExplain: List<String?>?) {
+        Toast.makeText(
+            requireContext(),
+            R.string.user_location_permission_explanation,
+            Toast.LENGTH_LONG
+        )
+            .show()
+    }
+
+    override fun onPermissionResult(granted: Boolean) {
+        if (granted && ::mapboxSdkMapView.isInitialized) {
+            val style: com.mapbox.mapboxsdk.maps.Style? = mapboxSdkMapView.style
+            if (style != null) {
+                enableLocationPlugin(style)
+            }
+        } else {
+            Toast.makeText(
+                requireContext(),
+                R.string.user_location_permission_not_granted,
+                Toast.LENGTH_LONG
+            )
+                .show()
+            findNavController().popBackStack()
+        }
+    }
+
 }

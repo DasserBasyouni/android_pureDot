@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class DriverAvailabilityModel(
-    @Json(name = "isAvailable") val isAvailable: Boolean?,
+    @Json(name = "isAvailable") var isAvailable: Boolean?,
     @Json(name = "currentShift") val currentShift: ShiftModel?,
     @Json(name = "nextShift") val nextShift: ShiftModel?,
 ) {

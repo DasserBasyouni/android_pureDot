@@ -38,6 +38,8 @@ class TrackOrderViewModel(
         null,
         null,
         null,
+        null,
+        null,
     ).isDelivered
 
     val isCancelable = OrderModel(
@@ -53,6 +55,8 @@ class TrackOrderViewModel(
         null,
         null,
         status = orderTrackingResponse.value?.data?.last()?.status,
+        null,
+        null,
         null,
         null,
         null,

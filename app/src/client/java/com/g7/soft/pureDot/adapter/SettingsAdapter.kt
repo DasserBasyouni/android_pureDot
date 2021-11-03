@@ -2,6 +2,7 @@ package com.g7.soft.pureDot.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -112,7 +113,7 @@ class SettingsAdapter(
 
         private fun clearUserDataThenNavigate(fragment: MyAccountFragment) {
             fragment.viewModel.viewModelScope.launch {
-                UserRepository("").clearUserData(fragment.requireContext())
+                UserRepository("").clearUserData(fragment.lifecycleScope, fragment.requireContext())
                 fragment.findNavController()
                     .navigate(R.id.action_myAccountFragment_to_startFragment)
             }

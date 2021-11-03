@@ -111,6 +111,19 @@ class ProductViewModel(
         )
     }
 
+    fun isSameBranchOrEmpty(
+        langTag: String,
+        context: Context,
+        onComplete: (isSameBranch: Boolean) -> Unit
+    ) {
+        CartRepository(langTag).isSameBranchOrEmpty(
+            viewModelScope,
+            context,
+            selectedBranch,
+            onComplete
+        )
+    }
+
     fun addReview(langTag: String, tokenId: String?) =
         liveData(Dispatchers.IO) {
             emit(NetworkRequestResponse.loading())

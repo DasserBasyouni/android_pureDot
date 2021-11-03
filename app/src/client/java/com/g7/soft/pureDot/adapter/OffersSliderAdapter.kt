@@ -12,6 +12,7 @@ import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.constant.ApiConstant
 import com.g7.soft.pureDot.databinding.ItemSliderOfferBinding
 import com.g7.soft.pureDot.model.SliderOfferModel
+import com.g7.soft.pureDot.utils.ProjectDialogUtils
 
 
 class OffersSliderAdapter(private val fragment: Fragment) :
@@ -34,14 +35,21 @@ class OffersSliderAdapter(private val fragment: Fragment) :
             binding.executePendingBindings()
 
             binding.root.setOnClickListener {
-                if (dataModel.redirectType == ApiConstant.RedirectType.OFFER.value || dataModel.redirectType == ApiConstant.RedirectType.PRODUCT.value) {
-                    val bundle = bundleOf("productId" to dataModel.redirectId)
-                    fragment.findNavController().navigate(R.id.productFragment, bundle)
+                if (dataModel.redirectId != null) {
+                    if (dataModel.redirectType == ApiConstant.RedirectType.OFFER.value || dataModel.redirectType == ApiConstant.RedirectType.PRODUCT.value) {
+                        val bundle = bundleOf("productId" to dataModel.redirectId)
+                        fragment.findNavController().navigate(R.id.productFragment, bundle)
 
-                } else if (dataModel.redirectType == ApiConstant.RedirectType.SHOP.value) {
-                    val bundle = bundleOf("shopId" to dataModel.redirectId)
-                    fragment.findNavController().navigate(R.id.storeFragment, bundle)
-                }
+                    } else if (dataModel.redirectType == ApiConstant.RedirectType.SHOP.value) {
+                        val bundle = bundleOf("shopId" to dataModel.redirectId)
+                        fragment.findNavController().navigate(R.id.storeFragment, bundle)
+                    }
+                } else
+                    ProjectDialogUtils.showSimpleMessage(
+                        fragment.requireContext(),
+                        R.string.something_went_wrong,
+                        drawableResId = R.drawable.ic_cancel
+                    )
             }
         }
 

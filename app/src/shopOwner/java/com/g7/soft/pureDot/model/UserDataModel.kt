@@ -24,4 +24,5 @@ data class UserDataModel(
     @Json(name = "branchCountryName") val branchCountryName: String?,
     @Json(name = "branchCityName") val branchCityName: String?,
     @Json(name = "branchCategoryName") val branchCategoryName: String?,
+    @Json(name = "doNotify") val doNotify: Boolean?,
 ) : Parcelable

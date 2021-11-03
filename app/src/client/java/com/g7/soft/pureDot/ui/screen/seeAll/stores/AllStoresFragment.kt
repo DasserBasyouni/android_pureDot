@@ -102,6 +102,8 @@ class AllStoresFragment : Fragment() {
     }
 
     private fun navigateToAllProductsSearch() {
+        filterViewModel.resetFilter()
+
         val bundle = bundleOf(
             "sliderType" to ApiConstant.SliderOfferType.SEARCH_RESULTS,
         )

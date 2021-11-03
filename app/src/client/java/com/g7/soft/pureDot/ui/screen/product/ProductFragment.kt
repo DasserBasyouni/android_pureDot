@@ -37,7 +37,6 @@ import kotlinx.coroutines.launch
 
 class ProductFragment : Fragment() {
 
-
     companion object {
         var refreshData: ((String?) -> Unit)? = null
         var isRunning = false
@@ -98,7 +97,7 @@ class ProductFragment : Fragment() {
         }
 
         // set screen title
-        (requireActivity() as MainActivity).toolbar_title.text = args.item.name
+        (requireActivity() as MainActivity).toolbar_title.text = args.item?.name
 
         // fetch data
         refreshData?.invoke(viewModel.product?.id ?: viewModel.productId)
@@ -126,6 +125,10 @@ class ProductFragment : Fragment() {
                 it,
                 initialText = getString(R.string.select_branch)
             )
+
+
+            // set screen title
+            (requireActivity() as MainActivity).toolbar_title.text = it.data?.name
 
             // get price in case of no variations
             /*if (it.data?.variations.isNullOrEmpty())
@@ -160,7 +163,8 @@ class ProductFragment : Fragment() {
                     binding.wishListCiv.isChecked
                 ) {
                     val isChecked = !binding.wishListCiv.isChecked
-                    args.item.isInWishList = isChecked
+                    args.item?.isInWishList = isChecked
+                    viewModel.productDetailsResponse.value?.data?.isInWishList = isChecked
                     viewModel.product?.isInWishList = isChecked
                     binding.wishListCiv.isChecked = isChecked
                 }
@@ -168,7 +172,7 @@ class ProductFragment : Fragment() {
         }
         binding.reviewsSeeAllTv.setOnClickListener {
             val bundle = bundleOf(
-                "itemId" to args.item.id,
+                "itemId" to (args.item?.id ?: args.productId),
                 "isProduct" to true
             )
             findNavController().navigate(R.id.allReviewsFragment, bundle)
@@ -220,30 +224,45 @@ class ProductFragment : Fragment() {
 
                     if (isGuestAccount)
                         findNavController().navigate(R.id.loginFragment)
-                    else
-                        viewModel.addProductToCart(
-                            requireActivity().currentLocale.toLanguageTag(),
-                            requireContext()
-                        ) {
-                            binding.currency = currencySymbol
-                            viewModel.quantityInCart.value = 1
-                            viewModel.getTotalProductsPriceInCart(
-                                requireActivity().currentLocale.toLanguageTag(),
-                                requireContext(),
-                                onComplete = { totalPrice ->
-                                    ProjectDialogUtils.showCheckoutTopPopup(
+                    else {
+                        viewModel.isSameBranchOrEmpty(
+                            langTag = requireActivity().currentLocale.toLanguageTag(),
+                            context = requireContext(),
+                            onComplete = { isSameBranch ->
+                                if (isSameBranch) {
+                                    viewModel.addProductToCart(
+                                        requireActivity().currentLocale.toLanguageTag(),
+                                        requireContext()
+                                    ) {
+                                        binding.currency = currencySymbol
+                                        viewModel.quantityInCart.value = 1
+                                        viewModel.getTotalProductsPriceInCart(
+                                            requireActivity().currentLocale.toLanguageTag(),
+                                            requireContext(),
+                                            onComplete = { totalPrice ->
+                                                ProjectDialogUtils.showCheckoutTopPopup(
+                                                    requireContext(),
+                                                    itemName = viewModel.product?.name,
+                                                    totalPriceInCart = totalPrice,
+                                                    currency = currencySymbol,
+                                                    positiveBtnOnClick = {
+                                                        findNavController().navigate(R.id.cartFragment)
+                                                    }
+                                                )
+                                            }
+                                        )
+
+                                    }
+                                } else {
+                                    ProjectDialogUtils.showSimpleMessage(
                                         requireContext(),
-                                        itemName = viewModel.product?.name,
-                                        totalPriceInCart = totalPrice,
-                                        currency = currencySymbol,
-                                        positiveBtnOnClick = {
-                                            findNavController().navigate(R.id.cartFragment)
-                                        }
+                                        R.string.error_msg_not_same_branch,
+                                        drawableResId = R.drawable.ic_secure_shield,
                                     )
                                 }
-                            )
-
-                        }
+                            }
+                        )
+                    }
                 }
         }
     }

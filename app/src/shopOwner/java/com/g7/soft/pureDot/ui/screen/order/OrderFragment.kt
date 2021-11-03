@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.ProductsAdapter
-import com.g7.soft.pureDot.constant.ApiConstant
+import com.g7.soft.pureDot.constant.ApiConstant.OrderStatus
 import com.g7.soft.pureDot.constant.ApiConstant.OrderStatus.Companion.getShopOwnerNextStatus
 import com.g7.soft.pureDot.databinding.FragmentOrderBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
@@ -89,10 +89,14 @@ class OrderFragment : Fragment() {
 
             // setup listeners
             binding.actionBtn.setOnClickListener {
-                val newStatus =
-                    getShopOwnerNextStatus(viewModel.orderResponse.value?.data?.firstOrder?.status)?.value
+                val masterOrder = viewModel.orderResponse.value?.data
 
-                if (newStatus == ApiConstant.OrderStatus.BEING_SHIPPED.value)
+                if (masterOrder?.firstOrder?.status == OrderStatus.BEING_SHIPPED.value)
+                    findNavController().navigateUp()
+
+                val newStatus = getShopOwnerNextStatus(masterOrder?.firstOrder?.status)?.value
+
+                if (newStatus == OrderStatus.BEING_SHIPPED.value && masterOrder?.isDeliveryApp == false)
                     FlavourProjectDialogUtils.showPackageSettings(
                         requireContext(),
                         positiveCallback = { length, width, height, weight, description ->

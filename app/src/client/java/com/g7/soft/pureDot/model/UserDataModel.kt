@@ -25,6 +25,7 @@ data class UserDataModel(
     @Json(name = "city") val city: CityModel?,
     @Json(name = "zipCode") val zipCode: ZipCodeModel?,
     @Json(name = "dateOfBirth") val dateOfBirth: Long?,
+    @Json(name = "doNotify") val doNotify: Boolean?,
     //@Json(name = "dailyNeeds") val dailyNeeds: DailyNeedsModel?
 ) : Parcelable {
     val name get() = "$firstName $lastName"

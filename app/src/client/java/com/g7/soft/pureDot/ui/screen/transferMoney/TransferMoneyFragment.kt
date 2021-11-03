@@ -17,6 +17,7 @@ import com.g7.soft.pureDot.constant.ProjectConstant
 import com.g7.soft.pureDot.databinding.FragmentTransferMoneyBinding
 import com.g7.soft.pureDot.ext.observeApiResponse
 import com.g7.soft.pureDot.repo.UserRepository
+import com.g7.soft.pureDot.ui.screen.signUp.SignUpFragmentDirections
 import com.g7.soft.pureDot.utils.ProjectDialogUtils
 import com.zeugmasolutions.localehelper.currentLocale
 import kotlinx.coroutines.launch
@@ -77,21 +78,12 @@ class TransferMoneyFragment : Fragment() {
         binding.contactsRv.adapter = contactsAdapter
         viewModel.contactsResponse.observe(viewLifecycleOwner, {
             viewModel.contactsLcee.value!!.response.value = it
-            contactsAdapter.submitList(it.data)
+            contactsAdapter.submitList(listOfNotNull(it?.data).toMutableList())
         })
 
         // editText listener
         binding.emailOrPhoneNumbetTil.editText?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(
-                s: CharSequence, start: Int,
-                count: Int, after: Int
-            ) = Unit
-
-            override fun onTextChanged(
-                s: CharSequence, start: Int,
-                before: Int, count: Int
-            ) {
+            override fun afterTextChanged(s: Editable) {
                 if (s.isNotEmpty()) {
                     lifecycleScope.launch {
                         val tokenId =
@@ -104,10 +96,24 @@ class TransferMoneyFragment : Fragment() {
                     }
                 }
             }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int, after: Int
+            ) = Unit
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int, before: Int, count: Int
+            ) = Unit
         })
 
         // setup on click
         binding.transferBtn.setOnClickListener {
+            SignUpFragmentDirections.actionSignUpFragmentToPhoneVerificationFragment(
+                isPasswordReset = false,
+                isWalletVerification = true,
+                viewModel.emailOrPhoneNumber.value
+            )
+
             lifecycleScope.launch {
                 val tokenId =
                     UserRepository("").getTokenId(requireContext())

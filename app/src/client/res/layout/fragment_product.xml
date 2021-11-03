@@ -100,11 +100,12 @@
                             android:textStyle="bold"
                             android:visibility="@{viewModel.costLcee.contentVisibility}"
                             app:bindCurrency="@{currency}"
+                            app:bindPostPriceText="@{@string/vat_included}"
                             app:bindPrice="@{viewModel.costResponse.data}"
                             app:layout_constraintBottom_toBottomOf="@+id/wishListCiv"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/wishListCiv"
-                            tools:text="230 SAR" />
+                            tools:text="230 SAR Vat Included" />
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/sliderOffersLceeLayoutCv"

@@ -207,6 +207,9 @@ open class OrderRepositoryFlavour(private val langTag: String) {
         shippingCost: Double?,
         commission: Double?,
         vat: Double?,
+        driverEarning: Double?,
+        driverVat: Double?,
+        deliveryCommissionVat: Double?,
     ) = liveData(Dispatchers.IO) {
         emitSource(NetworkRequestHandler().handle(request = {
             return@handle Fetcher().getInstance(langTag)?.returnItem(
@@ -216,14 +219,25 @@ open class OrderRepositoryFlavour(private val langTag: String) {
                 refundAmount = refundAmount,
                 shippingCost = shippingCost,
                 commission = commission,
-                vat = vat
+                vat = vat,
+                driverEarning = driverEarning,
+                driverVat = driverVat,
+                deliveryCommissionVat = deliveryCommissionVat
             )
         }))
     }
 
-    fun getShippingMethods() = liveData(Dispatchers.IO) {
+    fun getShippingMethods(addressId: String?, branchesIds: List<String>?) = liveData(Dispatchers.IO) {
+        val jsonObject = JSONObject()
+        jsonObject.put("addressId", addressId)
+        jsonObject.put("branchsIds", branchesIds)
+
+        val body = jsonObject.toString()
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        Log.e("ZZ_", "body: ${jsonObject.toString()}")
+
         emitSource(NetworkRequestHandler().handle(request = {
-            return@handle Fetcher().getInstance(langTag)?.getShippingMethods()
+            return@handle Fetcher().getInstance(langTag)?.getShippingMethods(body)
         }))
     }
 

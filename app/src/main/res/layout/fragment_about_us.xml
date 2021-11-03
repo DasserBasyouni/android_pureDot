@@ -12,10 +12,11 @@
 
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        tools:background="@android:color/white"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        tools:background="@android:color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -69,6 +70,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView61"
                 app:srcCompat="@drawable/ic_maroof" />
+
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/twitterIb"
                 android:layout_width="wrap_content"

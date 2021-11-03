@@ -58,13 +58,20 @@ class CheckoutViewModel(
 
     val shippingMethodsResponse =
         MediatorLiveData<NetworkRequestResponse<List<ShippingMethodModel>?>?>()
-    val shippingMethodsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
+    val shippingMethodsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel(allowEmpty = true) }
 
 
     fun getShippingMethods(langTag: String) {
         shippingMethodsResponse.value = NetworkRequestResponse.loading()
         shippingMethodsResponse.apply {
-            this.addSource(OrderRepository(langTag).getShippingMethods()) {
+            this.addSource(
+                OrderRepository(langTag).getShippingMethods(
+                    addressId = masterOrderResponse.value?.data?.clientAddress?.id,
+                    branchesIds = masterOrderResponse.value?.data?.orders?.map { it.branch?.id }
+                        ?.toList()
+                        ?.filterNotNull()
+                )
+            ) {
                 shippingMethodsResponse.value = it
             }
         }
@@ -121,6 +128,7 @@ class CheckoutViewModel(
                     servantsCount = masterOrderResponse.value?.data?.servants,
                     paymentMethod = ApiConstant.PaymentMethod.fromBooleans(
                         isMasterCardChecked = isMasterCardChecked.value,
+                        isDigitalWallet = isDigitalWallet.value,
                         isStcPayChecked = isStcPayChecked.value,
                         isCashOnDelivery = isCashOnDelivery.value,
                     )?.value,
@@ -169,6 +177,7 @@ class CheckoutViewModel(
     val isCashOnDelivery = MutableLiveData<Boolean?>().apply { this.value = true }
     val isStcPayChecked = MutableLiveData<Boolean?>().apply { this.value = true }
     val isMasterCardChecked = MutableLiveData<Boolean?>().apply { this.value = false }
+    val isDigitalWallet = MutableLiveData<Boolean?>().apply { this.value = false }
 
     val masterCardNameOnCard = MutableLiveData<String?>()
     val masterCardNumber = MutableLiveData<String?>()
@@ -211,6 +220,7 @@ class CheckoutViewModel(
                     servantsCount = masterOrderResponse.value?.data?.servants,
                     paymentMethod = ApiConstant.PaymentMethod.fromBooleans(
                         isMasterCardChecked = isMasterCardChecked.value,
+                        isDigitalWallet = isDigitalWallet.value,
                         isStcPayChecked = isStcPayChecked.value,
                         isCashOnDelivery = isCashOnDelivery.value,
                     )?.value,

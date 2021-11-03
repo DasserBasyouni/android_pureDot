@@ -418,4 +418,15 @@
     <string name="error_empty_height">Height is Required</string>
     <string name="error_empty_weight">Weight is Required</string>
     <string name="msg_shipment_error">Shipment Error</string>
+    <string name="vat_included">Vat Included</string>
+    <string name="total_shipping">Total Shipping</string>
+    <string name="total_items_vat">Total Items Vat</string>
+    <string name="total_delivery_vat">Total Delivery Vat</string>
+    <string name="items_vat">Items Vat</string>
+    <string name="delivery_vat">Delivery Vat</string>
+    <string name="insufficient_amount">Insufficient Amount</string>
+    <string name="kg">KG</string>
+    <string name="digital_wallet">Digital Wallet</string>
+    <string name="clear_cart">Clear Cart</string>
+    <string name="error_msg_not_same_branch">Can not make an order from multiple shops</string>
 </resources>

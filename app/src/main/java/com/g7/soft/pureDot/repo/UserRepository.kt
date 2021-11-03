@@ -1,6 +1,7 @@
 package com.g7.soft.pureDot.repo
 
 import android.content.Context
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.liveData
 import com.g7.soft.pureDot.data.database.userData.UserDataDatabase
 import com.g7.soft.pureDot.model.UserDataModel
@@ -52,13 +53,13 @@ class UserRepository(private val langTag: String): UserRepositoryFlavour(langTag
             saveUserDataFlavour(context, userData, password)
         }
 
-    suspend fun clearUserData(context: Context) =
+    suspend fun clearUserData(lifecycleScope: LifecycleCoroutineScope, context: Context) =
         UserDataDatabase.getInstance(context).also {
             it.updateTokenId(null)
             it.updateEmailOrPhoneNumber(null)
             it.updatePassword(null)
             it.updateIsGuestAccount(null)
-            clearUserDataFlavour(context)
+            clearUserDataFlavour(lifecycleScope, context)
         }
 
     fun login(

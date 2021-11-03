@@ -21,7 +21,7 @@ class TransferMoneyViewModel(internal val tokenId: String?) : ViewModel() {
     val walletResponse = MediatorLiveData<NetworkRequestResponse<WalletDataModel>>()
     val walletLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
-    val contactsResponse = MediatorLiveData<NetworkRequestResponse<MutableList<ContactModel>?>>()
+    val contactsResponse = MediatorLiveData<NetworkRequestResponse<ContactModel?>?>()
     val contactsLcee = MediatorLiveData<LceeModel>().apply { this.value = LceeModel() }
 
     fun getWalletData(langTag: String, tokenId: String?) {

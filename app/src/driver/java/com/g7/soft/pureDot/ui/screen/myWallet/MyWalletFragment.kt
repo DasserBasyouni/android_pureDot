@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.g7.soft.pureDot.R
 import com.g7.soft.pureDot.adapter.MyWalletPagerAdapter
 import com.g7.soft.pureDot.databinding.FragmentMyWalletBinding
@@ -74,7 +75,9 @@ class MyWalletFragment : Fragment() {
         }.attach()
 
         // setup onClick
-
+        binding.addMoneyBtn.setOnClickListener {
+            findNavController().navigate(R.id.addMoneyFragment)
+        }
     }
 
 }

@@ -89,6 +89,7 @@ class LoginFragment : Fragment() {
                         chosenApiStatusObserve = { _, _ ->
                             val bundle = bundleOf(
                                 "isPasswordReset" to false,
+                                "isWalletVerification" to false,
                                 "emailOrPhoneNumber" to viewModel.emailOrPhoneNumber.value
                             )
                             findNavController().navigate(

@@ -21,7 +21,7 @@ fun <T> LiveData<NetworkRequestResponse<T>>.observeApiResponse(
     chosenApiStatusObserve: (suspend (status: ApiConstant.Status, data: T?) -> Unit)? = null
 ) {
     this.observe(fragment, {
-        Log.e("Z_", "here - ${it.status} - ${it.apiErrorStatus} - ${it.exception} - ${it.validationError}")
+        Log.e("Z_", "here - ${it?.status} - ${it?.apiErrorStatus} - ${it?.exception} - ${it?.validationError}")
 
         fragment.context?.let { context ->
             when (it.status) {

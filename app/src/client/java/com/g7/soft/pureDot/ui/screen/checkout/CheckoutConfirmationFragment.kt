@@ -61,10 +61,7 @@ class CheckoutConfirmationFragment(
         binding.couponDiscountTv.paintFlags =
             binding.couponDiscountTv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
-        // setup adapter
-        ProductCartReviewHeaderAdapter(this, viewModel.masterOrder?.orders).let { adapter ->
-            binding.cartReviewItemsRv.adapter = adapter
-        }
+        setupAdapter()
 
         // setup observables
         viewModel.stcPayAuthResponse.observeApiResponse(this, {
@@ -75,15 +72,16 @@ class CheckoutConfirmationFragment(
 
                     viewModel.confirmStcPay(requireActivity().currentLocale.toLanguageTag())
                         .observeApiResponse(this@CheckoutConfirmationFragment, {
-                            processedPaymentSuccess()
+                            lifecycleScope.launch {
+                                val tokenId = UserRepository("").getTokenId(requireContext())
+                                submitIsPaid(true, tokenId)
+                            }
                         })
                 })
         })
         viewModel.masterOrderResponse.observe(viewLifecycleOwner, {
             viewModel.orderLcee.value!!.response.value = it
-        })
-        viewModel.masterOrderResponse.observe(viewLifecycleOwner, {
-            viewModel.orderLcee.value!!.response.value = it
+            setupAdapter()
 
             binding.couponTil.editText?.setCompoundDrawablesRelative(
                 null,
@@ -164,7 +162,7 @@ class CheckoutConfirmationFragment(
                             it?.checkoutSuccessResponse?.orderAmount
 
                         when {
-                            viewModel.isCashOnDelivery.value == true -> {
+                            viewModel.isCashOnDelivery.value == true || viewModel.isDigitalWallet.value == true -> {
                                 CartRepository("").clearCart(lifecycleScope, requireContext())
 
                                 ProjectDialogUtils.showSimpleMessage(
@@ -234,6 +232,14 @@ class CheckoutConfirmationFragment(
         }
     }
 
+    private fun setupAdapter() {
+        ProductCartReviewHeaderAdapter(
+            this, viewModel.masterOrderResponse.value?.data?.orders
+        ).let { adapter ->
+            binding.cartReviewItemsRv.adapter = adapter
+        }
+    }
+
     private fun changeCouponButton(isCouponApplied: Boolean) {
         binding.addRemoveCouponBtn.backgroundTintList = ContextCompat.getColorStateList(
             requireContext(),
@@ -275,32 +281,32 @@ class CheckoutConfirmationFragment(
             request,
             object : GatewayCallback {
                 override fun onSuccess(response: GatewayMap?) {
-                    submitIsPaid(true)
+                    submitIsPaid(true, tokenId)
                 }
 
                 override fun onError(throwable: Throwable?) {
-                    submitIsPaid(false)
+                    submitIsPaid(false, tokenId)
                     Timber.e(throwable)
                 }
-
-                private fun submitIsPaid(isPaid: Boolean) {
-                    viewModel.checkoutIsPaid(
-                        requireActivity().currentLocale.toLanguageTag(),
-                        tokenId = tokenId,
-                        isPaid = isPaid
-                    ).observeApiResponse(this@CheckoutConfirmationFragment, {
-                        if (isPaid) {
-                            processedPaymentSuccess()
-                        } else {
-                            ProjectDialogUtils.showSimpleMessage(
-                                context = requireContext(),
-                                messageResId = R.string.error_payment_failed,
-                                drawableResId = R.drawable.ic_secure_shield
-                            )
-                        }
-                    })
-                }
             })
+    }
+
+    private fun submitIsPaid(isPaid: Boolean, tokenId: String?) {
+        viewModel.checkoutIsPaid(
+            requireActivity().currentLocale.toLanguageTag(),
+            tokenId = tokenId,
+            isPaid = isPaid
+        ).observeApiResponse(this@CheckoutConfirmationFragment, {
+            if (isPaid) {
+                processedPaymentSuccess()
+            } else {
+                ProjectDialogUtils.showSimpleMessage(
+                    context = requireContext(),
+                    messageResId = R.string.error_payment_failed,
+                    drawableResId = R.drawable.ic_secure_shield
+                )
+            }
+        })
     }
 
     private fun processedPaymentSuccess() {
