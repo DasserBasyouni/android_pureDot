@@ -17,7 +17,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.product.ProductViewModel" />
+            type="com.g7.soft.puedot.ui.screen.product.ProductViewModel" />
     </data>
 
 
@@ -71,7 +71,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:lceeModel="@{viewModel.productDetailsLcee}" />
 
-                        <com.g7.soft.pureDot.ui.custom.CheckableImageView
+                        <com.g7.soft.puedot.ui.custom.CheckableImageView
                             android:id="@+id/wishListCiv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -304,7 +304,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="16dp"
-                            android:visibility="@{!isGuestAccount &amp;&amp; viewModel.productDetailsResponse.data.userReview == null ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{!isGuestAccount &amp;&amp; viewModel.productDetailsResponse.data.userReview == null &amp;&amp; viewModel.productDetailsResponse.data.canReview == true ? View.VISIBLE : View.GONE}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/reviewsRv">
@@ -328,7 +328,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:progressTint="@color/warm_purple"
                             android:rating="@={viewModel.reviewRating}"
                             android:stepSize="1"
-                            android:visibility="@{!isGuestAccount &amp;&amp; viewModel.productDetailsResponse.data.userReview == null ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{!isGuestAccount &amp;&amp; viewModel.productDetailsResponse.data.userReview == null &amp;&amp; viewModel.productDetailsResponse.data.canReview == true ? View.VISIBLE : View.GONE}"
                             app:layout_constraintEnd_toEndOf="@+id/messageTil"
                             app:layout_constraintStart_toStartOf="@+id/messageTil"
                             app:layout_constraintTop_toBottomOf="@+id/messageTil" />
@@ -346,7 +346,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. " />
                             android:text="@string/send"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:visibility="@{!isGuestAccount &amp;&amp; viewModel.productDetailsResponse.data.userReview == null ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{!isGuestAccount &amp;&amp; viewModel.productDetailsResponse.data.userReview == null &amp;&amp; viewModel.productDetailsResponse.data.canReview == true ? View.VISIBLE : View.GONE}"
                             app:cornerRadius="32dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/messageTil"

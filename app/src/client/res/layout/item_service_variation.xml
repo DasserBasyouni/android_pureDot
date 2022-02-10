@@ -6,11 +6,11 @@
 
         <variable
             name="masterOrder"
-            type="com.g7.soft.pureDot.model.MasterOrderModel" />
+            type="com.g7.soft.puedot.model.MasterOrderModel" />
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.ServiceVariationModel" />
+            type="com.g7.soft.puedot.model.ServiceVariationModel" />
 
     </data>
 

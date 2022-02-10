@@ -9,7 +9,7 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.CommentModel" />
+            type="com.g7.soft.puedot.model.CommentModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

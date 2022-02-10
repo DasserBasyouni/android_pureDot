@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.g7.soft.puedot.client",
+  "variantName": "clientRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 8,
+      "versionName": "0.0.59 - client",
+      "outputFile": "app-client-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

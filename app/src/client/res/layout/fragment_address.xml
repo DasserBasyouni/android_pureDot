@@ -11,11 +11,11 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.address.AddressViewModel" />
+            type="com.g7.soft.puedot.ui.screen.address.AddressViewModel" />
     </data>
 
 
-    <com.g7.soft.pureDot.ui.custom.ChildCoordinatorLayout
+    <com.g7.soft.puedot.ui.custom.ChildCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="2dp"
@@ -114,7 +114,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/round_expandable_view_line" />
 
-                        <androidx.appcompat.widget.AppCompatSpinner
+                        <!--<androidx.appcompat.widget.AppCompatSpinner
                             android:id="@+id/countriesSpinner"
                             style="@style/ProjectTheme.Spinner"
                             android:layout_width="0dp"
@@ -150,17 +150,19 @@
                             android:selectedItemPosition="@={viewModel.selectedZipCodePosition}"
                             app:layout_constraintEnd_toEndOf="@+id/citiesSpinner"
                             app:layout_constraintStart_toStartOf="@+id/citiesSpinner"
-                            app:layout_constraintTop_toBottomOf="@+id/citiesSpinner" />
+                            app:layout_constraintTop_toBottomOf="@+id/citiesSpinner" />-->
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/areaTil"
                             style="@style/ProjectTextInputLayout"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            app:layout_constraintEnd_toEndOf="@+id/zipCodeSpinner"
-                            app:layout_constraintStart_toStartOf="@+id/zipCodeSpinner"
-                            app:layout_constraintTop_toBottomOf="@+id/zipCodeSpinner">
+                            android:layout_marginEnd="16dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView5">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 style="@style/ProjectTextInputEditText"
@@ -173,7 +175,7 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
 
-                        <com.google.android.material.textfield.TextInputLayout
+                        <!--<com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/streetNameTil"
                             style="@style/ProjectTextInputLayout"
                             android:layout_width="0dp"
@@ -261,7 +263,7 @@
                                 android:imeOptions="actionNext"
                                 android:inputType="textPersonName"
                                 android:text="@={viewModel.buildingNumber}" />
-                        </com.google.android.material.textfield.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout> -->
 
                         <androidx.appcompat.widget.AppCompatCheckBox
                             android:id="@+id/acceptTermsCb"
@@ -275,9 +277,9 @@
                             android:textColor="@color/warm_grey"
                             android:textSize="14sp"
                             android:textStyle="normal"
-                            app:layout_constraintEnd_toEndOf="@+id/buildingNumberTil"
-                            app:layout_constraintStart_toStartOf="@+id/flatTil"
-                            app:layout_constraintTop_toBottomOf="@+id/buildingNumberTil" />
+                            app:layout_constraintEnd_toEndOf="@+id/areaTil"
+                            app:layout_constraintStart_toStartOf="@+id/areaTil"
+                            app:layout_constraintTop_toBottomOf="@+id/areaTil" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/saveBtn"
@@ -315,5 +317,5 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.g7.soft.pureDot.ui.custom.ChildCoordinatorLayout>
+    </com.g7.soft.puedot.ui.custom.ChildCoordinatorLayout>
 </layout>

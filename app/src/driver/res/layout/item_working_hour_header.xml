@@ -13,7 +13,7 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.WorkingDayModel" />
+            type="com.g7.soft.puedot.model.WorkingDayModel" />
 
         <variable
             name="adapterPosition"

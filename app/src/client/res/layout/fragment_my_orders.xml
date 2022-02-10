@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.myOrders.MyOrdersViewModel" />
+            type="com.g7.soft.puedot.ui.screen.myOrders.MyOrdersViewModel" />
     </data>
 
 
@@ -23,7 +25,7 @@
             android:paddingBottom="56dp"
             tools:context=".ui.screen.MainActivity">
 
-            <include
+            <!-- <include
                 android:id="@+id/ordersLcee"
                 layout="@layout/layout_lcee"
                 android:layout_width="0dp"
@@ -33,27 +35,37 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:lceeModel="@{viewModel.ordersLcee}" />
+                app:lceeModel="@{viewModel.ordersLcee}" /> -->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/ordersRv"
-                android:layout_width="0dp"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:visibility="@{viewModel.ordersLcee.contentVisibility}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:background="@android:color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/orders" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/return_orders" />
+
+            </com.google.android.material.tabs.TabLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                tools:itemCount="8"
-                tools:listitem="@layout/item_order" />
+                app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

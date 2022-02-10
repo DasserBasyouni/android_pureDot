@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">PurDot</string>
     <string name="log_in">Log in</string>
     <string name="sign_up">Sign Up</string>
     <string name="continue_as_guest">Continue as Guest</string>
@@ -51,8 +50,8 @@
     <string name="submit_request">Submit Request</string>
     <string name="upload_licence">Upload Licence</string>
     <string name="conc_file_size_in_kb" translatable="false">(%dKB)</string>
-    <string name="upload_car_front_with_plate_image">Upload Car Front With Plate Image</string>
-    <string name="upload_car_back_with_plate_image">Upload Car Back With Plate Image</string>
+    <string name="upload_car_front_with_plate_image">Upload Car Front With Plate Photo</string>
+    <string name="upload_car_back_with_plate_image">Upload Car Back With Plate Photo</string>
     <string name="search">Search</string>
     <string name="notification">Notification</string>
     <string name="empty_stores">No stores</string>
@@ -63,6 +62,7 @@
     <string name="empty_services">No services</string>
     <string name="empty_notifications">No notifications</string>
     <string name="empty_orders">No orders</string>
+    <string name="empty_addresses">No addresses</string>
     <string name="categories">Categories</string>
     <string name="see_all">See All</string>
     <string name="conc_see_all">See All (%d)</string>
@@ -121,6 +121,7 @@
     <string name="proceed_to_checkout">Proceed to Checkout</string>
     <string name="shipping_fees_will_be_added">Shipping fees will be added</string>
     <string name="total_">Total:</string>
+    <string name="refund_">Refund:</string>
     <string name="shipping_cost_">Shipping cost:</string>
     <string name="details">Details</string>
     <string name="shipping">Shipping</string>
@@ -138,6 +139,7 @@
     <string name="msg_order_placed">We Have Received Your Order</string>
     <string name="delivered">Delivered</string>
     <string name="delivered_to_customer">Delivered to customer</string>
+    <string name="delivered_to_shop">Delivered to shop</string>
     <string name="out_for_delivery">Out For Delivery</string>
     <string name="conc_estimated_for">Estimated for %s</string>
     <string name="my_account">My Account</string>
@@ -151,6 +153,8 @@
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="logout">Logout</string>
     <string name="conc_order_">Order #%d</string>
+    <string name="conc_return_no_">Return No #%d</string>
+    <string name="conc_associated_order_">Associated order number %d</string>
     <string name="conc_order_id_">Order ID: %d</string>
     <string name="format_order_date_time" translatable="false">dd/MM/yyyy hh:mm a</string>
     <string name="conc_items_in_order">%d items in order</string>
@@ -160,6 +164,7 @@
     <string name="phone_number">Phone Number</string>
     <string name="cancel">Cancel</string>
     <string name="question_sure_cancel">Do you want to cancel the order?</string>
+    <string name="question_sure_reject">Do you want to reject the order?</string>
     <string name="amount_will_be_refunded_to_your_wallet">Amount will be refunded to your wallet.</string>
     <string name="rate_order">Rate order</string>
     <string name="view_rate">View rate</string>
@@ -172,6 +177,7 @@
     <string name="full_name">Full Name</string>
     <string name="date_of_birth">Date Of Birth</string>
     <string name="gender">Gender</string>
+    <string name="select_gender">Select Gender</string>
     <string name="country">Country</string>
     <string name="city">City</string>
     <string name="symbol_password" translatable="false">*******</string>
@@ -224,6 +230,7 @@
     <string name="commission">Commission</string>
     <string name="total">Total</string>
     <string name="start_head_to_the_shop">Start. Head To The Shop</string>
+    <string name="start_head_to_the_customer">Start. Head To The Customer</string>
     <string name="canceled">Canceled</string>
     <string name="working_hours">Working Hours</string>
     <string name="current_password">Current Password</string>
@@ -247,7 +254,7 @@
     <string name="what_do_you_think_of_this_products">What do you think of this products?</string>
     <string name="add_your_review_here">Add your review here…</string>
     <string name="text_do_not_have_account">You don\'t have an account? Register</string>
-    <string name="upload_national_id">Upload National ID</string>
+    <string name="upload_national_id">Upload National ID or Iqama Photo</string>
     <string name="accepted">Accepted</string>
     <string name="the_main_address">The Main Address</string>
     <string name="floor">Floor</string>
@@ -308,6 +315,7 @@
     <string name="delivery_app">Delivery App</string>
     <string name="shipping_method_is_required">Shipping Method is Required</string>
     <string name="coupon_discount">Coupon Discount</string>
+    <string name="discount">Discount</string>
     <string name="question_what_do_you_think_of_this_service">What do you think of this service?</string>
     <string name="can_not_cancel_order">Can not cancel order</string>
     <string name="msg_invalid_cart_items">Your cart have unavailable items</string>
@@ -321,10 +329,10 @@
     <string name="error_empty_date_of_birth">Date of birth is requried</string>
     <string name="error_empty_car_brand">Car brand is required</string>
     <string name="error_empty_is_male">Gender is required</string>
-    <string name="error_empty_licence_image">Licence image is required</string>
-    <string name="error_empty_car_front_image">"Car front image is required "</string>
-    <string name="error_empty_car_back_image">Car back image is required</string>
-    <string name="error_empty_national_id_image">National id image is required</string>
+    <string name="error_empty_licence_image">Licence Photo is required</string>
+    <string name="error_empty_car_front_image">"Car front Photo is required "</string>
+    <string name="error_empty_car_back_image">Car back Photo is required</string>
+    <string name="error_empty_national_id_image">National ID or Iqama Photo is required</string>
     <string name="deliver_to">Deliver To</string>
     <string name="payment_details">Payment Details</string>
     <string name="conc_qty_">Qty: %d</string>
@@ -348,6 +356,7 @@
     <string name="error_empty_verification_code">Verification code is required</string>
     <string name="error_invalid_verification_code">Invalid verification code</string>
     <string name="error_invalid_email">Invalid email</string>
+    <string name="error_invalid_phone_number_or_email">Invalid Phone Number or Email</string>
     <string name="error_empty_rating">Rating is required</string>
     <string name="error_empty_country">Country is required</string>
     <string name="error_empty_title">Title is required</string>
@@ -398,7 +407,7 @@
     <string name="error_empty_expiry_month">Expiry Month is Required</string>
     <string name="error_invalid_expiry_month">Invalid Expiry Month</string>
     <string name="error_empty_expiry_year">Expiry Year is Required</string>
-    <string name="error_payment_failed">"Something went wrong, Payment Faild "</string>
+    <string name="error_payment_failed">"Something went wrong, Payment Failed"</string>
     <string name="enter_verification_code">Enter Verification Code</string>
     <string name="confirm">Confirm</string>
     <string name="verification_code">Verification Code</string>
@@ -429,4 +438,188 @@
     <string name="digital_wallet">Digital Wallet</string>
     <string name="clear_cart">Clear Cart</string>
     <string name="error_msg_not_same_branch">Can not make an order from multiple shops</string>
+    <string name="payment_failed">Payment failed</string>
+    <string name="text_privacy_police">
+This privacy policy explains the basis on which we will deal with any personal data, including but not limited to, payment data, and other data that we collect from you or from other sources or that you provide to us (referred to as "data"). In order to access and use the  website and / or the Pure Dot mobile application (Mobile App) (collectively referred to as the "website"), services and applications (collectively referred to as "services"). The references mentioned in the first person (or similar channels) in this privacy policy are references to the Pure Dot company, and the references "to you" or "the user" are references to you as an individual or legal person, as the case may be.
+
+We understand the importance of this data, and we are committed to protecting and respecting your privacy. Please read the following carefully to understand our data practices. By using our services, you agree to handle the data in accordance with this privacy policy.
+
+What data may we collect from you?
+
+How will we use your data?
+
+To whom can we disclose the data?
+
+How do we store your data?
+
+What protection standards do we apply?
+
+How do you access and modify the data?
+
+What if we change our privacy policy?
+
+How can you contact us?
+
+
+
+First: What data may we collect from you?
+
+We may collect and process the following data:
+
+Data that you provide by filling out forms on the website, including data that was provided when registering to use the site and other joint registrations (for example, logins on social media sites), subscribing to our services, publishing materials, or requesting other services.
+
+The data you provide when entering a competition or promotion through our website, completing a poll or polls, or submitting reviews, testimonials or comments.
+
+The data that you provide to us, or that we may collect from you, when you inform us of any difficulty you face when using our site.
+
+Record of correspondences, in case of contacting us.
+
+General, aggregated, demographic and impersonal data.
+
+If you download or use our mobile application, we may be able to access details about
+
+your location and the location of your mobile phone, including the unique identifier for your device.
+
+Details of the transactions that you have made through our website and details of our processing and delivery of the goods that you have requested.
+
+Details about your computer, including, for example, your IP address, operating system, browser type, as well as data related to your general use of the Internet (for example: by using technology that stores or accesses data on your device, Such as cookies, conversion tracking code, web beacons, etc. (collectively referred to as "cookies")). With a guarantee that this information is not shared with parties or institutions of a commercial nature
+
+Your e-mail address that has been provided to us by third parties who have assured us that they have your consent to share your e-mail address.
+
+Any other data we consider necessary to enhance your experience using the website.
+
+Second: How will we use your data?
+
+We may use data in the following cases:
+
+To provide you with information, products or services that you request from us or we think that you may be interested in them, and where you have agreed to be contacted for such purposes.
+
+To provide you with services based on the location in which you are located, such as advertising, search results and other content intended for you.
+
+To implement the obligations arising from any contracts concluded between you and any other party that uses our site, or between you and us.
+
+To improve our services and to provide better and more customized services.
+
+To ensure that our website content is presented in the most effective way for you and the device that you use to access our site.
+
+To notify you of changes made by our site.
+
+For any other reason we consider necessary to enhance your browsing experience on the site.
+
+To launch incentive programs and meet your requests for these incentives, and / or to allow you to participate in competitions and to notify you in the event of winning.
+
+
+
+Third: To whom can we disclose the data?
+
+Our customer data is a very important part of our business. Therefore, we do not share data except as mentioned below only and with companies that follow practices that have protection advantages, and at a minimum, similar to the advantages of those
+
+practices mentioned in the privacy policy:
+
+Other / Third parties. To provide our services, we may cooperate with other companies affiliated with us or service providers that are not affiliated with us (for example: logistic companies used to deliver products to you, marketing companies, processing payments to conduct transactions over the Internet, etc.). It is possible that these other companies, in order to carry out your transactions, store data in a digital wallet so that your use of our services is more effective.
+
+You understand how important it is for these companies to have access to relevant data to perform their duties. We are keen that these companies do not use the data for other purposes. We may also receive data from these companies (for example: updated delivery data and addresses), for the purpose of using them (for example: to correct our records and deliver goods for a purchase that you make). Through your use of the site, you agree to the transfer, storage, use, and disclosure of data between our affiliates and non-affiliated service providers wherever they are located. Provided that these companies are contractually bound to respect data privacy.
+
+Marketing and promotional offers. We may also use the data to provide you with information about goods and services that you may be interested in, as well as enhance your experience in browsing and using the site, service messages, new features, improvements, special offers and events of interest. We may communicate with you via various channels, including but not limited to emails, web notifications, posts, phone, application messages, and news article transmission cards.
+
+We may allow a third party to use the data, for example: we may provide data to advertisers to help them reach the target audience to enable us to comply with our obligations in front of advertisers (ie: by showing their ads to the target audience).
+
+In addition, to participate in some of our competitions and promotions, you may be required to provide additional data. For example: If you win a competition, you may be asked to provide more personal data to confirm your eligibility and award you. This data is collected by us or by participating sponsors or sellers of promotional offers. Please note that you should review the privacy policies of this third party to see how it uses any data it collects.
+
+Business transfers: In the event that our company or all of our assets are actually under acquisition process, customer data will be one of the assets transferred to the new owner.
+
+Protecting our site and other sites: We disclose the customer’s account and other personal data when we believe that this disclosure is appropriate to comply with laws and law enforcement investigations and to protect the rights, property, or safety of our users or others. This includes exchanging data with other companies and institutions for several reasons, including fraud protection and credit risk reduction.
+
+Please note that our site may contain - from time to time - links to and from the websites of
+
+the networks of companies that we deal with, advertisers and our affiliates. If you enter a link from one of these links please be aware that these sites have their own privacy policies, and that we will not be responsible No liability or claim for these policies. Please check the policies of those websites before submitting any personal data or other information to them.
+
+
+
+Fourth: How do we store your data?
+
+The data that we collect from you may be transferred or stored in a site outside the Kingdom of Saudi Arabia. It can also be processed by a team working outside the Kingdom of Saudi Arabia. However, this team works for us or for one of our suppliers. This team is involved - along with other tasks - in fulfilling your request, processing payment details and providing support services.
+
+We will store the data for as long as necessary in accordance with this privacy policy or if it is required to adhere to any law with purity. The transfer, storage, processing, and use of the data may be carried out by our subsidiary companies or non-affiliated service providers in one or more countries outside the country to which they belong. It is also possible to transfer and store your payment data by our affiliated companies to process payments and provide technical support services.
+
+
+
+Fifth: What are the protection standards that we apply?
+
+We take the necessary technical, commercial, technical, and administrative steps to ensure that the data is handled safely and in line with this privacy policy, in order to protect the data from unauthorized access, change, disclosure or destruction. It is possible for us, for example, to use encrypted electronic technology to protect data while it is sent to our site, in addition to an external electronic firewall, and electronic firewall technology on the host computer of our site so that we can block malicious attacks on the network. Only employees, service providers and agents who need to know the data will be allowed to access them in order to carry out their work.
+
+It is important for you to ensure that your password and the device that you use to access our site are protected in order to avoid any unauthorized access from third parties, or to follow up with the site\'s support team and update the password periodically. It is you and yourselves responsible for keeping your password strictly confidential, for example, make sure to log out after using one of the shared-use devices.
+
+Unfortunately, the transmission of data over the Internet is not completely secure. Despite that, we will do our best to protect the data, but we do not guarantee the protection of the data sent to our site, and you alone bear the consequences of the risk of sending any data.
+
+Sixth: How can you access and modify the data?
+
+You can access a wide range of data related to your account and your dealings with the site
+
+for the purpose of viewing data, and updating it in some cases.
+
+Examples of data you can easily access on the site:
+
+Updated data regarding your most recent purchase orders.
+
+Personal identification data (including name, email, password, correspondence, and personal advertising preferences).
+
+Payment settings (including credit card information).
+
+Email notifications settings.
+
+You may refuse to receive our marketing messages in the future at any time by adjusting your customer\'s messaging preferences, through the unsubscribe link provided in the email correspondence. To shop through the mobile application, you will need to adjust the notification settings in the general section of your mobile phone.
+
+In addition, our system will set cookies when logging into the site and this is to ensure a pleasant and smooth user experience across the site. You can deactivate cookies by changing your browser settings. If you deactivate cookies, this will affect how our site operates and you may not be able to access or use some or all of the functions on the site. For example: Performance cookies collect information about how you use the site - that is, the pages you visit most of the time - which allows us to provide you with targeted and relevant options that enhance your browsing experience and your use of the site.
+
+We may retain a copy of the data for purposes of compliance with laws, especially when you update the information as we keep a copy of the previous data for safekeeping in our records.
+
+
+
+Seventh: What if we changed our privacy policy?
+
+Our business is constantly changing, so our Privacy Policy may be affected and need parallel change. We will publish the current version of this privacy policy on the site and it will remain in effect since it was published on the site or based on the date that we determine on our side as of the effective date.
+
+We may send reminders periodically via e-mail with our notifications and conditions, but you should check with your frequent visit to our site for the latest changes.
+
+You should check the privacy policy regularly. If you continue to use the site after any changes, you agree to this Privacy Policy, as amended.
+
+
+
+Finally: How can you contact us?
+
+If you have any inquiries regarding your data on the site, please contact us or contact the technical support of the site or the following e-mail PureDotcontact.com.sa and inform us of the exact description of your inquiries, and we will respond to them and address them.
+
+
+
+</string>
+    <string name="bank_number">Bank Number</string>
+    <string name="error_empty_bank_number">Bank Number is Required</string>
+    <string name="en" translatable="false">EN</string>
+    <string name="msg_login_to_complete_purchase">You can complete your purchase after creating an account and log in</string>
+    <string name="try_again">Try Again</string>
+    <string name="my_addresses">My Addresses</string>
+    <string name="select_language">Select language</string>
+    <string name="view">View</string>
+    <string name="driver_number">Driver Number</string>
+    <string name="pure_dot_telegram">Pure Dot Telegram</string>
+    <string name="customer_notes">Customer Notes</string>
+    <string name="returned">Returned</string>
+    <string name="being_confirmed">Being Confirmed</string>
+    <string name="question_return_product">Are you sure want return this product?</string>
+    <string name="msg_shop_is_closed_for_return">The store is now closed - the store will open later\nYou can return your product when the store opens</string>
+    <string name="msg_return_confirmation">The delivery cost will be deducted and the remaining amount will be deposited in your wallet after checking the product</string>
+    <string name="notes">Notes</string>
+    <string name="shop_notes">Shop Notes</string>
+    <string name="iqama_or_national_id">National ID or Iqama Number</string>
+    <string name="all_prices_inclusive_of_15_vat">All prices inclusive of 15% VAT</string>
+    <string name="you_still_away">You still away</string>
+    <string name="error_away_from_store">You still away from store</string>
+    <string name="error_away_from_customer">You still away from customer</string>
+    <string name="question_pick_item">Are you sure you picked up the item?</string>
+    <string name="question_arrived_to_shop">Are you sure you Arrived at Shop?</string>
+    <string name="question_arrived_to_customer">Are you sure you Arrived at customer?</string>
+    <string name="order_price">Order Price</string>
+    <string name="conc_km">%.1f KM</string>
+    <string name="delivery_price">Delivery price</string>
 </resources>

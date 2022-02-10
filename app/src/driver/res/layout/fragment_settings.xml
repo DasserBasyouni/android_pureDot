@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.settings.SettingsViewModel" />
+            type="com.g7.soft.puedot.ui.screen.settings.SettingsViewModel" />
     </data>
 
 

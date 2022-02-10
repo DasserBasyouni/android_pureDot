@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.addMoney.AddMoneyViewModel" />
+            type="com.g7.soft.puedot.ui.screen.addMoney.AddMoneyViewModel" />
     </data>
 
 
@@ -50,7 +50,7 @@
                     android:text="@={viewModel.amount}" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.g7.soft.pureDot.ui.custom.CheckableImageView
+            <com.g7.soft.puedot.ui.custom.CheckableImageView
                 android:id="@+id/stcPayIv"
                 android:layout_width="92dp"
                 android:layout_height="45dp"
@@ -64,7 +64,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/amountTil"
                 app:srcCompat="@drawable/checkable_stc_pay" />
 
-            <com.g7.soft.pureDot.ui.custom.CheckableImageView
+            <com.g7.soft.puedot.ui.custom.CheckableImageView
                 android:id="@+id/masterCardIv"
                 android:layout_width="92dp"
                 android:layout_height="45dp"
@@ -74,7 +74,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/amountTil"
                 app:layout_constraintStart_toEndOf="@id/stcPayIv"
                 app:layout_constraintTop_toTopOf="@+id/stcPayIv"
-                app:srcCompat="@drawable/checkable_master_card" />
+                app:srcCompat="@drawable/checkable_credit_card" />
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -98,7 +98,7 @@
                     android:text="@={viewModel.stcPhoneNumber}" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <!-- <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nameOnCardTil"
                 style="@style/ProjectTextInputLayout"
                 android:layout_width="0dp"
@@ -204,7 +204,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="@{viewModel.isMasterCardChecked == true ? View.VISIBLE : View.GONE}"
-                app:constraint_referenced_ids="nameOnCardTil,cardExpiryYearTil,cardNumberTil,cardExpiryMonthTil,cardSecurityCodeTil" />
+                app:constraint_referenced_ids="nameOnCardTil,cardExpiryYearTil,cardNumberTil,cardExpiryMonthTil,cardSecurityCodeTil" /> -->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addMoneyBtn"

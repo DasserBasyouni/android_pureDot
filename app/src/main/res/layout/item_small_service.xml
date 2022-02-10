@@ -9,7 +9,7 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.ServiceModel" />
+            type="com.g7.soft.puedot.model.ServiceModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

@@ -13,9 +13,23 @@
             android:id="@+id/appCompatImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
             android:scaleType="centerCrop"
+            android:visibility="gone"
             app:srcCompat="@drawable/app_background_with_scrim" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/localeBtn"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            app:icon="@drawable/ic_settings_locale"
+            app:iconTint="@color/white"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="En" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/logoIv"
@@ -56,14 +70,14 @@
             android:id="@+id/continueAsGuestTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
+            android:layout_marginBottom="24dp"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
             android:text="@string/continue_as_guest"
             android:textColor="#ffffff"
             android:textSize="16sp"
-            android:layout_marginBottom="24dp"
             android:textStyle="normal"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

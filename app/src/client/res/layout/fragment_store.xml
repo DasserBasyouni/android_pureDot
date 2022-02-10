@@ -7,11 +7,11 @@
 
         <variable
             name="filterViewModel"
-            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
+            type="com.g7.soft.puedot.ui.screen.filter.FilterViewModel" />
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.store.StoreViewModel" />
+            type="com.g7.soft.puedot.ui.screen.store.StoreViewModel" />
     </data>
 
 
@@ -74,7 +74,7 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:bindApiImageUrl="@{viewModel.store.logoImageUrl}"
+                    app:bindApiImageUrl="@{viewModel.storeResponse.data.logoImageUrl}"
                     tools:srcCompat="@tools:sample/avatars" />
 
             </androidx.cardview.widget.CardView>

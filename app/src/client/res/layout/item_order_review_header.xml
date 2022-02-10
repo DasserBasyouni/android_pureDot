@@ -7,6 +7,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.g7.soft.puedot.constant.ApiConstant.OrderStatus" />
+
         <variable
             name="storeName"
             type="String" />
@@ -37,7 +39,7 @@
 
         <variable
             name="order"
-            type="com.g7.soft.pureDot.model.OrderModel" />
+            type="com.g7.soft.puedot.model.OrderModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -158,11 +160,11 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
-            android:text="@string/delivery_vat"
+            android:text="@string/discount"
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="@{deliveryVat == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{order.products == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="@+id/appCompatTextView29"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView29" />
 
@@ -172,11 +174,11 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
-            android:text="@string/coupon"
+            android:text="@string/delivery_vat"
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="@{coupon == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{deliveryVat == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="@+id/appCompatTextView30"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView30" />
 
@@ -221,6 +223,7 @@
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
+            app:bindStrikeText="@{coupon == null ? true : false}"
             android:visibility="@{shippingCost == null ? View.GONE : View.VISIBLE}"
             app:bindCurrency="@{currency}"
             app:bindPrice="@{shippingCost}"
@@ -238,9 +241,9 @@
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="@{deliveryVat == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{coupon == null ? View.GONE : View.VISIBLE}"
             app:bindCurrency="@{currency}"
-            app:bindPrice="@{deliveryVat}"
+            app:bindPrice="@{coupon}"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView31"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView31"
             tools:text="10 SAR" />
@@ -253,9 +256,9 @@
             android:textColor="@color/warm_grey"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="@{coupon == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{deliveryVat == null ? View.GONE : View.VISIBLE}"
             app:bindCurrency="@{currency}"
-            app:bindPrice="@{coupon}"
+            app:bindPrice="@{deliveryVat}"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView34"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView34"
             tools:text="10 SAR" />
@@ -297,13 +300,14 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:fontFamily="sans-serif"
             android:text="@{order.isDelivered == true ? order.userReview == null ? @string/rate_order : @string/view_rate : @string/track_order}"
             android:textAllCaps="false"
             android:textColor="#662f8f"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:visibility="@{order == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{order == null || order.status == OrderStatus.CANCELED.value ? View.GONE : View.VISIBLE}"
             app:cornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

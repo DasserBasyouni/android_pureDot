@@ -10,7 +10,7 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.WorkingHourModel" />
+            type="com.g7.soft.puedot.model.WorkingHourModel" />
 
         <variable
             name="adapterPosition"

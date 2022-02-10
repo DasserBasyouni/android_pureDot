@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="order_status_new">#f11861</color>
+    <color name="order_status_confirmed">#149d14</color>
+    <color name="order_status_being_confirm">#18181d</color>
+    <color name="order_status_being_shipped">#662F8F</color>
+    <color name="order_status_picked">#F77E0B</color>
+    <color name="order_status_delivered">#8ABB2B</color>
+    <color name="order_status_returned">#888888</color>
+    <color name="order_status_canceled">#ED1C24</color>
+
     <color name="warm_purple">#662f8f</color>
     <color name="bluish">#1c75bb</color>
     <color name="greyish_30">#4daaa4a2</color>

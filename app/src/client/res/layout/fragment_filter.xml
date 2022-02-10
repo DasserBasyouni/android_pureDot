@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
+            type="com.g7.soft.puedot.ui.screen.filter.FilterViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView

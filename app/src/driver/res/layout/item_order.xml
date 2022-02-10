@@ -7,6 +7,10 @@
 
         <import type="android.view.View" />
 
+        <import type="com.g7.soft.puedot.constant.ApiConstant.OrderStatus" />
+
+        <import type="com.g7.soft.puedot.constant.ApiConstant.OrderDeliveryStatus" />
+
         <variable
             name="currency"
             type="String" />
@@ -17,9 +21,10 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.MasterOrderModel" />
+            type="com.g7.soft.puedot.model.MasterOrderModel" />
     </data>
 
+    <!-- old design
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView3"
         android:layout_width="match_parent"
@@ -181,5 +186,468 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView> -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:visibility="@{dataModel.firstOrder.isNewDeliveryOrder ? View.VISIBLE : View.GONE}"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:bindOrderDeliveryStatus="@{dataModel.firstOrder.deliveryStatus}"
+                tools:background="@color/bluish"
+                tools:drawableStart="@drawable/ic_order_placed_small"
+                tools:text="Order Placed" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView45"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@{@string/conc_order_(dataModel.firstOrder.number)}"
+            android:textColor="@color/bluish"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{dataModel != null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toStartOf="@+id/cardView6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Order #546" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView46"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="2sp"
+            android:textColor="@color/warm_grey"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:visibility="@{dataModel == null ? View.GONE : View.VISIBLE }"
+            app:bindDate="@{dataModel.dateTime}"
+            app:bindDateFormat="@{@string/format_order_date_time}"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView45"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView45"
+            app:layout_constraintTop_toBottomOf="@+id/cardView6"
+            tools:text="15/8/2020 08:00PM" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/customerNumberTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="3sp"
+            android:text="@{@string/conc_customer_number_(dataModel.clientPhoneNumber)}"
+            android:textColor="@color/greyish_brown"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{dataModel == null &amp;&amp; dataModel.firstOrder.status != OrderStatus.NEW.value ? View.GONE : View.VISIBLE }"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView46"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView46"
+            tools:text="Customer Number: +966148636563563" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView28"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/driverRed"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:bindCurrency="@{currency}"
+            app:bindPrice="@{dataModel.firstOrder.totalOrderCost}"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView46"
+            app:layout_constraintTop_toBottomOf="@+id/customerNumberTv"
+            tools:text="200 SAR" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@id/materialCardView2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView28"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView28"
+            app:strokeColor="@color/divider">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:bindApiImageUrl="@{dataModel.firstOrder.shop.logoImageUrl}" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif"
+            android:text="@{dataModel.firstOrder.shop.name}"
+            android:textColor="@color/textColor"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/cardView6"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView46"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
+            tools:text="@string/shop_name" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/appCompatImageView6"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toBottomOf="@+id/cardView8"
+            app:layout_constraintEnd_toStartOf="@+id/cardView7"
+            app:layout_constraintStart_toEndOf="@+id/cardView5"
+            app:layout_constraintTop_toTopOf="@+id/cardView8"
+            app:srcCompat="@color/divider" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView5"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/divider"
+            app:cardCornerRadius="23dp"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView7"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView7">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                app:srcCompat="@drawable/ic_tiny_car" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView8"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/divider"
+            app:cardCornerRadius="23dp"
+            app:layout_constraintEnd_toStartOf="@+id/cardView7"
+            app:layout_constraintStart_toEndOf="@+id/cardView5"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView7">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                app:bindSrcCompat="@{dataModel.firstOrder.isReturn == true ? @drawable/ic_tiny_location_pin : @drawable/ic_tiny_store }"
+                tools:srcCompat="@drawable/ic_tiny_store" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView7"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            app:cardBackgroundColor="@color/divider"
+            app:cardCornerRadius="23dp"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView7"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView7">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                app:bindSrcCompat="@{dataModel.firstOrder.isReturn == true ? @drawable/ic_tiny_store : @drawable/ic_tiny_location_pin }"
+                tools:srcCompat="@drawable/ic_tiny_car" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="cardView5,appCompatTextView33,appCompatTextView32,cardView8,cardView7,appCompatTextView35,appCompatTextView34,appCompatTextView36"
+            tools:layout_editor_absoluteY="296dp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView33"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="2sp"
+            android:text="@{@string/conc_km(dataModel.firstOrder.isReturn == true ? dataModel.firstOrder.driverToShopDistance : dataModel.firstOrder.shopToCustomerDistance)}"
+            android:textColor="#1c75bb"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toStartOf="@+id/cardView8"
+            app:layout_constraintStart_toStartOf="@+id/appCompatImageView6"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView6"
+            tools:text="5.6 Km" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="2sp"
+            android:text="@{@string/conc_km(dataModel.firstOrder.isReturn == true ? dataModel.firstOrder.shopToCustomerDistance : dataModel.firstOrder.driverToShopDistance)}"
+            android:textColor="#1c75bb"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatImageView6"
+            app:layout_constraintStart_toEndOf="@+id/cardView8"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView6"
+            tools:text="12.56 Km" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView34"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="3sp"
+            android:textColor="#3b3d3f"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toStartOf="@+id/appCompatTextView35"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView5"
+            tools:text="14 Luran, Alexandria, Egypt." />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView35"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:fontFamily="sans-serif"
+
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="3sp"
+            android:text="@{dataModel.firstOrder.isReturn == true ? dataModel.firstOrder.toAddress : dataModel.firstOrder.fromAddress}"
+            android:textColor="#3b3d3f"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toStartOf="@+id/appCompatTextView36"
+            app:layout_constraintStart_toEndOf="@+id/appCompatTextView34"
+            app:layout_constraintTop_toBottomOf="@+id/cardView8"
+            tools:text="20 Moustafa Kamel st., Roushdy, Alexandria, Egypt." />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView36"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="3sp"
+            android:text="@{dataModel.firstOrder.isReturn == true ? dataModel.firstOrder.fromAddress : dataModel.firstOrder.toAddress}"
+            android:textColor="#3b3d3f"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/appCompatTextView35"
+            app:layout_constraintTop_toBottomOf="@+id/cardView7"
+            tools:text="14 Luran, Alexandria, Egypt." />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif"
+            android:text="@string/note"
+            android:textColor="@color/textColor"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/cardView5"
+            app:layout_constraintTop_toBottomOf="@+id/barrier" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView9"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="@{dataModel.firstOrder.notes}"
+            android:textColor="@color/textColor"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView7"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView8"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView8"
+            tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/order_price"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView9" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:bindCurrency="@{currency}"
+            app:bindPrice="@{dataModel.firstOrder.orderPrice}"
+            app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/appCompatTextView16"
+            tools:text="100 SAR" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/delivery_price"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView16"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView16" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:bindCurrency="@{currency}"
+            app:bindPrice="@{dataModel.firstOrder.commission}"
+            app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView17"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView18"
+            app:layout_constraintTop_toTopOf="@+id/appCompatTextView17"
+            tools:text="-10 SAR" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/appCompatImageView9"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView24"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView17"
+            app:layout_constraintTop_toBottomOf="@id/appCompatTextView17"
+            app:srcCompat="@color/driverDivider" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/payment_method"
+            android:textColor="@color/textColor"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/appCompatTextView16"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView9" />
+
+        <!--
+            app:bindCurrency="@{currency}"
+            app:bindPrice="@{dataModel.firstOrder.driverTotal}" -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@{dataModel.paymentDetails}"
+            android:textColor="@color/textColor"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView19"
+            app:layout_constraintEnd_toEndOf="@+id/appCompatTextView18"
+            app:layout_constraintTop_toTopOf="@+id/appCompatTextView19"
+            tools:text="90 SAR" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/positiveBtn"
+            style="@style/ProjectPurpleFilledButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:bindIsReturnOrder="@{dataModel.firstOrder.isReturn}"
+            app:bindOrderDeliveryActionText="@{dataModel.firstOrder.deliveryStatus}"
+            app:layoutMarginEnd="@{dataModel.firstOrder.deliveryStatus == OrderDeliveryStatus.NEW.value ? @dimen/_4dp : @dimen/_16dp}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/rejectBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView19"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="@string/accepted" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/rejectBtn"
+            style="@style/ProjectPurpleStrokeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/reject"
+            android:visibility="@{dataModel.firstOrder.deliveryStatus == OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/positiveBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/positiveBtn"
+            app:layout_constraintTop_toTopOf="@+id/positiveBtn"
+            tools:layout_marginStart="4dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

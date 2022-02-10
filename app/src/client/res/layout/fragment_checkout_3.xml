@@ -13,7 +13,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
+            type="com.g7.soft.puedot.ui.screen.checkout.CheckoutViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -192,7 +192,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView8"
+                android:id="@+id/cardView80"
                 android:layout_width="@dimen/_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -201,6 +201,64 @@
                 app:layout_constraintEnd_toEndOf="@+id/cardView7"
                 app:layout_constraintStart_toStartOf="@+id/cardView7"
                 app:layout_constraintTop_toBottomOf="@+id/cardView7">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView400"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@string/customer_notes"
+                        android:textColor="@color/warm_purple"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:visibility="@{viewModel.orderLcee.contentVisibility}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/notesTil"
+                        style="@style/ProjectTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:visibility="@{viewModel.orderLcee.contentVisibility}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView400"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView400">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            style="@style/ProjectTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="84dp"
+                            android:hint="@string/notes"
+                            android:imeOptions="actionDone"
+                            android:gravity="start"
+                            android:inputType="text"
+                            android:text="@={viewModel.notes}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView8"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="@+id/cardView7"
+                app:layout_constraintStart_toStartOf="@+id/cardView7"
+                app:layout_constraintTop_toBottomOf="@+id/cardView80">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -262,9 +320,9 @@
                         style="@style/ProjectPurpleFilledButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{viewModel.orderLcee.contentVisibility}"
                         android:layout_marginStart="4dp"
                         android:text="@{viewModel.isCouponApplied == true ? @string/remove : @string/add}"
+                        android:visibility="@{viewModel.orderLcee.contentVisibility}"
                         app:backgroundTint="@color/bluish"
                         app:layout_constraintBottom_toBottomOf="@+id/couponTil"
                         app:layout_constraintEnd_toEndOf="parent"

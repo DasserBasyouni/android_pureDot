@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.seeAll.reviews.AllReviewsViewModel" />
+            type="com.g7.soft.puedot.ui.screen.seeAll.reviews.AllReviewsViewModel" />
     </data>
 
 

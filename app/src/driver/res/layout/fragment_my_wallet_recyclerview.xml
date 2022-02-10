@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.myWallet.MyWalletViewModel" />
+            type="com.g7.soft.puedot.ui.screen.myWallet.MyWalletViewModel" />
     </data>
 
 

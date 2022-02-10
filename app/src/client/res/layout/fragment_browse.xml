@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.browse.BrowseViewModel" />
+            type="com.g7.soft.puedot.ui.screen.browse.BrowseViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -65,7 +65,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView5"
-                app:spanCount="3"
+                tools:spanCount="3"
                 tools:itemCount="5"
                 tools:listitem="@layout/item_category_list_view" />
 
@@ -120,6 +120,7 @@
                 android:id="@+id/storesRv"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                tools:spanCount="3"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="46dp"
                 android:clipToPadding="false"

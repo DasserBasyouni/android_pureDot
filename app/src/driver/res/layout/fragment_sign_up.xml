@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.signUp.SignUpViewModel" />
+            type="com.g7.soft.puedot.ui.screen.signUp.SignUpViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -91,6 +91,26 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/iqamaOrNationalIdTil"
+                    style="@style/ProjectTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="@+id/nameTil"
+                    app:layout_constraintStart_toStartOf="@+id/nameTil"
+                    app:layout_constraintTop_toBottomOf="@+id/phoneNumberTil">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        style="@style/ProjectTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/iqama_or_national_id"
+                        android:imeOptions="actionNext"
+                        android:inputType="numberSigned"
+                        android:text="@={viewModel.iqamaOrNationalId}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/emailTil"
                     style="@style/ProjectTextInputLayout"
                     android:layout_width="0dp"
@@ -98,7 +118,7 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintEnd_toEndOf="@+id/phoneNumberTil"
                     app:layout_constraintStart_toStartOf="@+id/phoneNumberTil"
-                    app:layout_constraintTop_toBottomOf="@+id/phoneNumberTil">
+                    app:layout_constraintTop_toBottomOf="@+id/iqamaOrNationalIdTil">
 
                     <com.google.android.material.textfield.TextInputEditText
                         style="@style/ProjectTextInputEditText"

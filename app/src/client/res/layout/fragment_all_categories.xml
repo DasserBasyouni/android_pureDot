@@ -6,11 +6,11 @@
     <data>
         <variable
             name="filterViewModel"
-            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
+            type="com.g7.soft.puedot.ui.screen.filter.FilterViewModel" />
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.seeAll.categories.AllCategoriesViewModel" />
+            type="com.g7.soft.puedot.ui.screen.seeAll.categories.AllCategoriesViewModel" />
     </data>
 
 

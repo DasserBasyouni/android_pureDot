@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="conc_address_">العنوان %1$d</string>
+    <string name="app_name" translatable="false">بيودوت</string>
+    <string name="the_minimum_order_must_be_">الحد الادني للطلب لا يقل عن %1$.2f ر.س</string>
+    <string name="delete">حذف</string>
+    <string name="return_orders">طلبات المرتجع</string>
+</resources>

@@ -7,11 +7,11 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.seeAll.products.AllProductsViewModel" />
+            type="com.g7.soft.puedot.ui.screen.seeAll.products.AllProductsViewModel" />
 
         <variable
             name="filterViewModel"
-            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
+            type="com.g7.soft.puedot.ui.screen.filter.FilterViewModel" />
     </data>
 
 

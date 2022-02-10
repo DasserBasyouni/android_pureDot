@@ -9,7 +9,7 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.ComplainModel" />
+            type="com.g7.soft.puedot.model.ComplainModel" />
     </data>
 
     <androidx.cardview.widget.CardView

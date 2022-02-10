@@ -13,7 +13,7 @@
         
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.order.OrderViewModel" />
+            type="com.g7.soft.puedot.ui.screen.order.OrderViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView

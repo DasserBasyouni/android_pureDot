@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.services.ServicesViewModel" />
+            type="com.g7.soft.puedot.ui.screen.services.ServicesViewModel" />
     </data>
 
 

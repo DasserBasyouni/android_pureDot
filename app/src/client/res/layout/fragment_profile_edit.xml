@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.profileEdit.ProfileEditViewModel" />
+            type="com.g7.soft.puedot.ui.screen.profileEdit.ProfileEditViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView

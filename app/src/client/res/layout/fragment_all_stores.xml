@@ -7,11 +7,11 @@
 
         <variable
             name="filterViewModel"
-            type="com.g7.soft.pureDot.ui.screen.filter.FilterViewModel" />
+            type="com.g7.soft.puedot.ui.screen.filter.FilterViewModel" />
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.seeAll.stores.AllStoresViewModel" />
+            type="com.g7.soft.puedot.ui.screen.seeAll.stores.AllStoresViewModel" />
     </data>
 
 
@@ -52,7 +52,7 @@
                 app:lceeModel="@{viewModel.storesLcee}" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/categoriesRv"
+                android:id="@+id/storesRv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"

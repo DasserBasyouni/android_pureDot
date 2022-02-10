@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.checkout.CheckoutViewModel" />
+            type="com.g7.soft.puedot.ui.screen.checkout.CheckoutViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

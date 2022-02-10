@@ -13,14 +13,14 @@
 
         <variable
             name="masterOrder"
-            type="com.g7.soft.pureDot.model.MasterOrderModel" />
+            type="com.g7.soft.puedot.model.MasterOrderModel" />
         <variable
             name="order"
-            type="com.g7.soft.pureDot.model.OrderModel" />
+            type="com.g7.soft.puedot.model.OrderModel" />
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.ProductModel" />
+            type="com.g7.soft.puedot.model.ProductModel" />
     </data>
 
     <LinearLayout

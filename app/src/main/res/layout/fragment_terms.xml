@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.terms.TermsViewModel" />
+            type="com.g7.soft.puedot.ui.screen.terms.TermsViewModel" />
     </data>
 
 

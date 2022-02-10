@@ -5,13 +5,16 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+
         <variable
             name="currency"
             type="String" />
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.cart.CartViewModel" />
+            type="com.g7.soft.puedot.ui.screen.cart.CartViewModel" />
     </data>
 
 
@@ -41,10 +44,50 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:lceeModel="@{viewModel.orderLcee}" />
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView15"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="@{viewModel.orderResponse.data.isOrderMinimumCharge == true ? View.VISIBLE : View.GONE}"
+                app:cardBackgroundColor="@color/driverRed"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_warning" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="@{@string/the_minimum_order_must_be_(viewModel.orderResponse.data.orderMinimumCharge)}"
+                        android:textColor="@color/white"
+                        tools:text="@string/the_minimum_order_must_be_" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.cardview.widget.CardView>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/cartItemsRv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
                 android:paddingStart="8dp"
@@ -54,7 +97,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView15"
                 app:layout_constraintVertical_bias="0.0"
                 tools:itemCount="2"
                 tools:listitem="@layout/item_cart_header" />
@@ -104,6 +147,7 @@
                 android:layout_marginEnd="16dp"
                 android:text="@string/proceed_to_checkout"
                 android:visibility="@{viewModel.orderLcee.contentVisibility}"
+                app:purpleColouredEnabled="@{viewModel.orderResponse.data.isOrderMinimumCharge == false}"
                 app:layout_constraintBottom_toTopOf="@id/clearCartBtn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -114,11 +158,11 @@
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_marginBottom="16dp"
-                android:visibility="@{viewModel.orderLcee.contentVisibility}"
                 android:text="@string/clear_cart"
+                android:visibility="@{viewModel.orderLcee.contentVisibility}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/checkoutBtn"
-                app:layout_constraintStart_toStartOf="@+id/checkoutBtn"/>
+                app:layout_constraintStart_toStartOf="@+id/checkoutBtn" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

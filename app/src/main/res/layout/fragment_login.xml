@@ -17,7 +17,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.login.LoginViewModel" />
+            type="com.g7.soft.puedot.ui.screen.login.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +42,8 @@
                 style="@style/ProjectTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/username"
+                android:hint="@string/mobile_number"
+                android:inputType="phone"
                 android:imeOptions="actionNext"
                 android:text="@={viewModel.emailOrPhoneNumber}" />
         </com.google.android.material.textfield.TextInputLayout>

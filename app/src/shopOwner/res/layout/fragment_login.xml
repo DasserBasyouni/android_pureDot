@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="isClientApp"
+            type="Boolean" />
+
+        <variable
+            name="isShopOwnerApp"
+            type="Boolean" />
+
+        <variable
+            name="viewModel"
+            type="com.g7.soft.puedot.ui.screen.login.LoginViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="@color/white"
+        app:paddingBottomSystemWindowInsets="@{true}"
+        tools:context=".ui.screen.MainActivity">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailOrPhoneNumberTil"
+            style="@style/ProjectTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/ProjectTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/mobile_number"
+                android:inputType="phone"
+                android:imeOptions="actionNext"
+                android:text="@={viewModel.emailOrPhoneNumber}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordTil"
+            style="@style/ProjectTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/emailOrPhoneNumberTil"
+            app:layout_constraintStart_toStartOf="@+id/emailOrPhoneNumberTil"
+            app:layout_constraintTop_toBottomOf="@+id/emailOrPhoneNumberTil"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/ProjectTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:text="@={viewModel.password}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/loginBtn"
+            style="@style/ProjectPurpleFilledButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/log_in"
+            app:layout_constraintEnd_toEndOf="@+id/passwordTil"
+            app:layout_constraintStart_toStartOf="@+id/passwordTil"
+            app:layout_constraintTop_toBottomOf="@+id/passwordTil" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/forgetPasswordTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/forget_password"
+            android:textColor="?colorPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/loginBtn"
+            app:layout_marginBottomSystemWindowInsets="@{true}" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/registerTextTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/text_do_not_have_account"
+            android:textColor="@{isClientApp ? @color/warm_purple : @color/driverRed}"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:visibility="@{isShopOwnerApp ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/loginBtn"
+            app:layout_constraintStart_toStartOf="@+id/loginBtn"
+            app:layout_constraintTop_toBottomOf="@+id/forgetPasswordTv"
+            app:layout_constraintVertical_bias="0.8" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/localeBtn"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/warm_purple"
+            app:icon="@drawable/ic_settings_locale"
+            app:iconTint="@color/warm_purple"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/forgetPasswordTv"
+            tools:text="English" />
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -11,7 +11,7 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.TransactionModel" />
+            type="com.g7.soft.puedot.model.TransactionModel" />
     </data>
 
     <androidx.cardview.widget.CardView

@@ -13,7 +13,7 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.MasterOrderModel" />
+            type="com.g7.soft.puedot.model.MasterOrderModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

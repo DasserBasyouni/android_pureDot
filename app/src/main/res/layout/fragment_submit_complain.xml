@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.submitComplain.SubmitComplainViewModel" />
+            type="com.g7.soft.puedot.ui.screen.submitComplain.SubmitComplainViewModel" />
     </data>
 
 

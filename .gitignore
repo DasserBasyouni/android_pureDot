@@ -1,4 +1,5 @@
 *.iml
+*.kt
 .gradle
 /local.properties
 /.idea/caches
@@ -13,5 +14,3 @@
 .externalNativeBuild
 .cxx
 local.properties
-*.kt
-!spec/*.kt

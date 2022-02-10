@@ -2,4 +2,6 @@
 <resources>
     <item name="toolbarHomeContent" type="id" />
     <item name="welcomeTv" type="id" />
+    <item name="telegramBtn" type="id" />
+    <item name="maroofIb" type="id" />
 </resources>

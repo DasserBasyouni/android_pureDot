@@ -7,7 +7,7 @@
 
         <variable
             name="lceeModel"
-            type="com.g7.soft.pureDot.model.project.LceeModel" />
+            type="com.g7.soft.puedot.model.project.LceeModel" />
 
         <variable
             name="emptyText"

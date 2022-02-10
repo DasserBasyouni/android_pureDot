@@ -7,11 +7,11 @@
 
         <import type="android.view.View" />
 
-        <import type="com.g7.soft.pureDot.constant.ApiConstant.ComplainStatus" />
+        <import type="com.g7.soft.puedot.constant.ApiConstant.ComplainStatus" />
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.complain.ComplainViewModel" />
+            type="com.g7.soft.puedot.ui.screen.complain.ComplainViewModel" />
     </data>
 
 

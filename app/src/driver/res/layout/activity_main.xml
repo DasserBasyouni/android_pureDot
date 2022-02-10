@@ -111,7 +111,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.g7.soft.pureDot.ui.custom.LockableNestedScrollView
+        <com.g7.soft.puedot.ui.custom.LockableNestedScrollView
             android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -129,7 +129,7 @@
                 app:layout_constraintTop_toBottomOf="parent"
                 app:navGraph="@navigation/main" />
 
-        </com.g7.soft.pureDot.ui.custom.LockableNestedScrollView>
+        </com.g7.soft.puedot.ui.custom.LockableNestedScrollView>
 
         <com.etebarian.meowbottomnavigation.MeowBottomNavigation
             android:id="@+id/bottomNavigation"

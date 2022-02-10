@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.favourite.FavouritesViewModel" />
+            type="com.g7.soft.puedot.ui.screen.favourite.FavouritesViewModel" />
     </data>
 
 

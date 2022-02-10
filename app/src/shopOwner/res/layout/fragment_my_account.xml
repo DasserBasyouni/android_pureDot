@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.g7.soft.pureDot.ui.screen.myAccount.MyAccountViewModel" />
+            type="com.g7.soft.puedot.ui.screen.myAccount.MyAccountViewModel" />
     </data>
 
 
@@ -113,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="@string/edit"
+                android:text="@string/view"
                 android:textAllCaps="false"
                 android:textColor="#ffffff"
                 android:textSize="14sp"

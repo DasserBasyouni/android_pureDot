@@ -9,11 +9,11 @@
 
         <variable
             name="shop"
-            type="com.g7.soft.pureDot.model.StoreModel" />
+            type="com.g7.soft.puedot.model.StoreModel" />
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.ProductModel" />
+            type="com.g7.soft.puedot.model.ProductModel" />
     </data>
 
     <androidx.cardview.widget.CardView

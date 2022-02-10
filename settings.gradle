@@ -1,4 +1,4 @@
-rootProject.name = "PureDot"
+rootProject.name = "PurDot"
 include ':app'
 include ':simpleplacepicker'
 include ':MeowBottomNavigation'

@@ -9,7 +9,7 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.ContactModel" />
+            type="com.g7.soft.puedot.model.ContactModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

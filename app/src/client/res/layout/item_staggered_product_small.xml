@@ -8,8 +8,12 @@
         <import type="android.view.View" />
 
         <variable
+            name="currency"
+            type="String" />
+
+        <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.ProductModel" />
+            type="com.g7.soft.puedot.model.ProductModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -30,18 +34,18 @@
             tools:background="@android:color/white"
             tools:layout_gravity="center">
 
-            <com.g7.soft.pureDot.ui.custom.CheckableImageView
+            <!-- <com.g7.soft.puedot.ui.custom.CheckableImageView
                 android:id="@+id/wishListCiv"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:checked="@{dataModel.isInWishList}"
-                android:layout_marginTop="12dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
                 android:background="?selectableItemBackgroundBorderless"
+                android:checked="@{dataModel.isInWishList}"
                 android:padding="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/checkable_heart" />
+                app:srcCompat="@drawable/checkable_heart" /> -->
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/appCompatImageView3"
@@ -51,10 +55,11 @@
                 app:bindApiImageUrl="@{dataModel.imageUrl}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/wishListCiv"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView25"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="4dp"
@@ -68,9 +73,9 @@
                 android:id="@+id/appCompatTextView8"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="4dp"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="2sp"
@@ -80,19 +85,53 @@
                 android:textColor="#818181"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/appCompatImageView4"
+                app:layout_constraintEnd_toStartOf="@id/appCompatTextView10"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatImageView3"
                 tools:text="Item Name, 100 gm" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="2sp"
+                android:textColor="#fc0606"
+                android:textSize="12sp"
+                android:textStyle="normal"
+                android:visibility="@{(dataModel.discountPercentage == null || dataModel.discountPercentage == 0) ? View.GONE : View.VISIBLE}"
+                app:bindCurrency="@{currency}"
+                app:bindDiscountPercentage="@{dataModel.discountPercentage}"
+                app:bindIsPercentageDiscount="@{dataModel.isPercentageDiscount}"
+                app:bindPrice="@{dataModel.price}"
+                app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/appCompatTextView8"
+                app:layout_constraintTop_toTopOf="@+id/appCompatTextView8"
+                tools:text="10 SAR" />
+
+            <androidx.appcompat.widget.AppCompatRatingBar
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:isIndicator="true"
+                android:rating="@{dataModel.ratting}"
+                android:stepSize="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView8"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView8" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/appCompatImageView4"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
-                android:layout_marginEnd="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 app:bindApiImageUrl="@{dataModel.shop.logoImageUrl}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appCompatTextView8"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
             <!-- <androidx.appcompat.widget.AppCompatTextView

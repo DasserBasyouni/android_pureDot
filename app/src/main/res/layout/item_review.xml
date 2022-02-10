@@ -9,7 +9,7 @@
 
         <variable
             name="dataModel"
-            type="com.g7.soft.pureDot.model.ReviewModel" />
+            type="com.g7.soft.puedot.model.ReviewModel" />
     </data>
 
     <!-- android:paddingBottom="@{dataModel.isMarked ? @dimen/_8dp : @dimen/_0dp}" -->
