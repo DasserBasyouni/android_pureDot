@@ -12,6 +12,10 @@
             type="String" />
 
         <variable
+            name="unitPrice"
+            type="Double" />
+
+        <variable
             name="masterOrder"
             type="com.g7.soft.puedot.model.MasterOrderModel" />
         <variable
@@ -75,7 +79,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:bindCurrency="@{currency}"
-            app:bindPrice="@{dataModel.unitPrice}"
+            app:bindPrice="@{unitPrice ?? dataModel.unitPrice}"
             app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView28"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView24"
             app:layout_constraintTop_toTopOf="@+id/appCompatTextView28"

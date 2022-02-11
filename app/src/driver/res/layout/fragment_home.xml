@@ -260,7 +260,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
                             android:layout_marginEnd="24dp"
-                            android:text="Current Shift: 2:30 PM - 3:30 PM"
+                            tools:text="Current Shift: 2:30 PM - 3:30 PM"
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/upButtonIv"
@@ -357,6 +357,14 @@
                             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView13"
                             tools:text="Order #546" />
 
+                        <androidx.constraintlayout.widget.Barrier
+                            android:id="@+id/orderNumberAndStatusBarrier"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:barrierDirection="bottom"
+                            app:constraint_referenced_ids="appCompatTextView45,cardView6"
+                            tools:layout_editor_absoluteY="8dp" />
+
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/appCompatTextView46"
                             android:layout_width="0dp"
@@ -371,7 +379,7 @@
                             app:bindDateFormat="@{@string/format_order_date_time}"
                             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView45"
                             app:layout_constraintStart_toStartOf="@+id/appCompatTextView45"
-                            app:layout_constraintTop_toBottomOf="@+id/cardView6"
+                            app:layout_constraintTop_toBottomOf="@+id/orderNumberAndStatusBarrier"
                             tools:text="15/8/2020 08:00PM" />
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -381,7 +389,7 @@
                             android:fontFamily="sans-serif"
                             android:gravity="center_horizontal"
                             android:lineSpacingExtra="3sp"
-                            android:visibility="@{viewModel.selectedOrder == null &amp;&amp; viewModel.selectedOrder.firstOrder.status != OrderStatus.NEW.value ? View.GONE : View.VISIBLE }"
+                            android:visibility="@{viewModel.selectedOrder != null &amp;&amp; viewModel.selectedOrder.firstOrder.deliveryStatus != OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE }"
                             android:text="@{@string/conc_customer_number_(viewModel.selectedOrder.clientPhoneNumber)}"
                             android:textColor="@color/greyish_brown"
                             android:textSize="14sp"
@@ -399,7 +407,7 @@
                             android:textSize="16sp"
                             android:textStyle="bold"
                             app:bindCurrency="@{currency}"
-                            app:bindPrice="@{viewModel.selectedOrder.firstOrder.totalOrderCost}"
+                            app:bindPrice="@{viewModel.selectedOrder.totalOrderCost}"
                             app:layout_constraintStart_toStartOf="@+id/appCompatTextView46"
                             app:layout_constraintTop_toBottomOf="@+id/customerNumberTv"
                             tools:text="200 SAR" />
@@ -518,7 +526,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="@{@string/conc_km(viewModel.selectedOrder.firstOrder.isReturn == true ? viewModel.selectedOrder.firstOrder.driverToShopDistance : viewModel.selectedOrder.firstOrder.shopToCustomerDistance)}"
+                            android:text="@{@string/conc_km(viewModel.selectedOrder.firstOrder.isReturn == true ? viewModel.selectedOrder.firstOrder.shopToCustomerDistance : viewModel.selectedOrder.firstOrder.driverToShopDistance)}"
                             android:fontFamily="sans-serif"
                             android:gravity="center_horizontal"
                             android:lineSpacingExtra="2sp"
@@ -537,7 +545,7 @@
                             android:layout_marginTop="4dp"
                             android:fontFamily="sans-serif"
                             android:gravity="center_horizontal"
-                            android:text="@{@string/conc_km(viewModel.selectedOrder.firstOrder.isReturn == true ? viewModel.selectedOrder.firstOrder.shopToCustomerDistance : viewModel.selectedOrder.firstOrder.driverToShopDistance)}"
+                            android:text="@{@string/conc_km(viewModel.selectedOrder.firstOrder.isReturn == true ? viewModel.selectedOrder.firstOrder.driverToShopDistance : viewModel.selectedOrder.firstOrder.shopToCustomerDistance)}"
                             android:lineSpacingExtra="2sp"
                             android:textColor="#1c75bb"
                             android:textSize="12sp"
@@ -670,6 +678,7 @@
                             android:fontFamily="sans-serif"
                             android:text="@string/note"
                             android:textColor="@color/textColor"
+                            android:visibility="@{viewModel.selectedOrder.firstOrder.notes != null &amp;&amp; viewModel.selectedOrder.firstOrder.deliveryStatus != OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE}"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="@+id/cardView5"
@@ -679,6 +688,7 @@
                             android:id="@+id/appCompatTextView9"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:visibility="@{viewModel.selectedOrder.firstOrder.notes != null &amp;&amp; viewModel.selectedOrder.firstOrder.deliveryStatus != OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE}"
                             android:fontFamily="sans-serif"
                             android:text="@{viewModel.selectedOrder.firstOrder.notes}"
                             android:textColor="@color/textColor"
@@ -697,7 +707,7 @@
                             android:text="@string/products"
                             android:textColor="@color/textColor"
                             android:textSize="14sp"
-                            android:visibility="@{viewModel.selectedOrder == null &amp;&amp; viewModel.selectedOrder.firstOrder.status != OrderStatus.NEW.value ? View.GONE : View.VISIBLE }"
+                            android:visibility="@{viewModel.selectedOrder != null &amp;&amp; viewModel.selectedOrder.firstOrder.deliveryStatus != OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE }"
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView7"
                             app:layout_constraintStart_toStartOf="@+id/cardView5"
@@ -708,7 +718,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:visibility="@{viewModel.selectedOrder == null &amp;&amp; viewModel.selectedOrder.firstOrder.status != OrderStatus.NEW.value ? View.GONE : View.VISIBLE }"
+                            android:visibility="@{viewModel.selectedOrder != null &amp;&amp; viewModel.selectedOrder.firstOrder.deliveryStatus != OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE }"
                             android:clipToPadding="false"
                             android:nestedScrollingEnabled="false"
                             android:paddingStart="8dp"
@@ -777,7 +787,7 @@
                             android:textSize="14sp"
                             android:textStyle="bold"
                             app:bindCurrency="@{currency}"
-                            app:bindPrice="@{viewModel.selectedOrder.firstOrder.commission}"
+                            app:bindPrice="@{viewModel.selectedOrder.firstOrder.deliveryPrice}"
                             app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView17"
                             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView18"
                             app:layout_constraintTop_toTopOf="@+id/appCompatTextView17"
@@ -823,7 +833,7 @@
                             app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView19"
                             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView18"
                             app:layout_constraintTop_toTopOf="@+id/appCompatTextView19"
-                            tools:text="90 SAR" />
+                            tools:text="Cash" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/positiveBtn"
@@ -864,7 +874,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:visibility="@{viewModel.selectedOrder != null ? View.VISIBLE : View.GONE}"
-                            app:constraint_referenced_ids="appCompatTextView9,appCompatTextView24,appCompatTextView8,appCompatImageView9,appCompatTextView26,appCompatTextView17,appCompatTextView28,appCompatTextView19,rejectBtn,appCompatTextView18,appCompatTextView16,appCompatImageView6,appCompatTextView36,appCompatTextView7,materialCardView2,cardView5,cardView8,appCompatTextView35,barrier,cardView7,appCompatTextView33,appCompatTextView32,appCompatTextView34" />
+                            app:constraint_referenced_ids="appCompatTextView24,appCompatImageView9,appCompatTextView26,appCompatTextView17,appCompatTextView28,appCompatTextView19,rejectBtn,appCompatTextView18,appCompatTextView16,appCompatImageView6,appCompatTextView36,appCompatTextView7,materialCardView2,cardView5,cardView8,appCompatTextView35,barrier,cardView7,appCompatTextView33,appCompatTextView32,appCompatTextView34" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 

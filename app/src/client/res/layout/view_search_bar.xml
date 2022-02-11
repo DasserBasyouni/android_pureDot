@@ -42,6 +42,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/filterIv"
                 android:layout_width="wrap_content"
+                android:visibility="gone"
                 android:layout_height="0dp"
                 android:background="?selectableItemBackgroundBorderless"
                 app:layout_constraintBottom_toBottomOf="@+id/searchIv"

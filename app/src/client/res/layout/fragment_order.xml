@@ -155,6 +155,20 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView30"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@string/coupon"
+                        android:textColor="@color/warm_grey"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:visibility="@{viewModel.orderResponse.data.totalCouponDiscount == null || viewModel.orderResponse.data.totalCouponDiscount &lt;= 0 ? View.GONE : View.VISIBLE}"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView49"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView49" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -165,7 +179,7 @@
                         android:textSize="14sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView50"
-                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView49" />
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView30" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textView"
@@ -221,6 +235,23 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/appCompatTextView49"
                         tools:text="100 SAR" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView87"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:textColor="@color/warm_grey"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:visibility="@{viewModel.orderResponse.data.totalCouponDiscount == null || viewModel.orderResponse.data.totalCouponDiscount &lt;= 0 ? View.GONE : View.VISIBLE}"
+                        app:bindCurrency="@{currency}"
+                        app:bindPrice="@{viewModel.orderResponse.data.totalCouponDiscount}"
+                        app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView30"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView51"
+                        app:layout_constraintTop_toTopOf="@+id/appCompatTextView30"
+                        tools:text="10 SAR" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatTextView58"
@@ -340,8 +371,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:fontFamily="sans-serif"
+                        android:visibility="@{viewModel.orderResponse.data.firstOrder.driverData.phone != null ? View.VISIBLE : View.GONE}"
                         android:lineSpacingExtra="3sp"
-                        android:text="@string/phone_number"
+                        android:text="@string/driver_phone_number"
                         android:textColor="@color/bluish"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -354,7 +386,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.orderResponse.data.clientPhoneNumber}"
+                        android:visibility="@{viewModel.orderResponse.data.firstOrder.driverData.phone != null ? View.VISIBLE : View.GONE}"
+                        android:text="@{viewModel.orderResponse.data.firstOrder.driverData.phone}"
                         android:textColor="#3b3d3f"
                         android:textSize="14sp"
                         android:textStyle="normal"
@@ -366,56 +399,6 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView100"
-                android:layout_width="@dimen/_0dp"
-                android:visibility="@{viewModel.orderResponse.data.clientNotes == null || viewModel.orderResponse.data.clientNotes.trim().empty ? View.GONE : View.VISIBLE}"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardCornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="@+id/cardView8"
-                app:layout_constraintStart_toStartOf="@+id/cardView8"
-                app:layout_constraintTop_toBottomOf="@+id/cardView10">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="12dp">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/appCompatTextView520"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.orderResponse.data.firstOrder.isReturn == true ? @string/shop_notes : @string/customer_notes}"
-                        android:textColor="@color/bluish"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/appCompatTextView530"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.orderResponse.data.firstOrder.isReturn == true ? viewModel.orderResponse.data.firstOrder.notes : viewModel.orderResponse.data.clientNotes}"
-                        android:textColor="#3b3d3f"
-                        android:textSize="14sp"
-                        android:textStyle="normal"
-                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView520"
-                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView520"
-                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView520"
-                        tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry." />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-
-            <androidx.cardview.widget.CardView
                 android:id="@+id/cardView101"
                 android:layout_width="@dimen/_0dp"
                 android:layout_height="wrap_content"
@@ -424,7 +407,7 @@
                 app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="@+id/cardView8"
                 app:layout_constraintStart_toStartOf="@+id/cardView8"
-                app:layout_constraintTop_toBottomOf="@+id/cardView100">
+                app:layout_constraintTop_toBottomOf="@+id/cardView10">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -451,7 +434,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.orderResponse.data.firstOrder.toAddress ?? viewModel.orderResponse.data.clientAddress.areaName}"
+                        android:text="@{viewModel.orderResponse.data.paymentDetails}"
                         android:textColor="#3b3d3f"
                         android:textSize="14sp"
                         android:textStyle="normal"
@@ -467,7 +450,8 @@
                         android:layout_marginTop="4dp"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@string/phone_number"
+                        android:text="@string/notes"
+                        android:visibility="@{viewModel.orderResponse.data.firstOrder.notes != null ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/bluish"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -476,16 +460,50 @@
                         app:layout_constraintTop_toBottomOf="@+id/appCompatTextView5301" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/appCompatTextView86"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
+                        android:visibility="@{viewModel.orderResponse.data.firstOrder.notes != null ? View.VISIBLE : View.GONE}"
                         android:lineSpacingExtra="3sp"
-                        android:text="@{viewModel.orderResponse.data.clientPhoneNumber}"
+                        android:text="@{viewModel.orderResponse.data.firstOrder.notes}"
                         android:textColor="#3b3d3f"
                         android:textSize="14sp"
                         android:textStyle="normal"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView540"
                         app:layout_constraintStart_toStartOf="@+id/appCompatTextView540"
                         app:layout_constraintTop_toBottomOf="@+id/appCompatTextView540"
+                        tools:text="+965443436778" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView541"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@string/cancel_reason"
+                        android:textColor="@color/bluish"
+                        android:visibility="@{viewModel.orderResponse.data.cancelReason != null ? View.VISIBLE : View.GONE}"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView5201"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView5201"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView86" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:visibility="@{viewModel.orderResponse.data.cancelReason != null ? View.VISIBLE : View.GONE}"
+                        android:text="@{viewModel.orderResponse.data.cancelReason}"
+                        android:textColor="#3b3d3f"
+                        android:textSize="14sp"
+                        android:textStyle="normal"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView541"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView541"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView541"
                         tools:text="+965443436778" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

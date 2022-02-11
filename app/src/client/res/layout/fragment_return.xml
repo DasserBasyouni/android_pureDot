@@ -370,7 +370,7 @@
                             android:textSize="14sp"
                             android:textStyle="bold"
                             app:bindCurrency="@{currency}"
-                            app:bindPrice="@{viewModel.shippingCostResponse.data.driverVat}"
+                            app:bindPrice="@{viewModel.shippingCostResponse.data.totalDeliveryVat}"
                             app:layout_constraintBottom_toBottomOf="@+id/textView13"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/textView13"

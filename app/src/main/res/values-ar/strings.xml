@@ -66,6 +66,7 @@
     <string name="conc_see_all">مشاهدة الكل (%d)</string>
     <string name="latest_offers">احدث العروض</string>
     <string name="conc_offer">%.2f%% خصم</string>
+    <string name="conc_fixed_offer">%.2f %s خصم</string>
     <string name="latest_products">احدث المنتجات </string>
     <string name="best_selling">الاعلي مبيعا</string>
     <string name="select_category">اختيار التصنيف</string>
@@ -556,6 +557,7 @@
     <string name="select_language">اختار اللغة</string>
     <string name="view">عرض</string>
     <string name="driver_number">رقم السائق</string>
+    <string name="driver_phone_number">رقم جوال السائق</string>
     <string name="pure_dot_telegram">تليجرام نقطة النقاء</string>
     <string name="customer_notes">ملاحظات العميل</string>
     <string name="returned">تم الارجاع</string>
@@ -574,6 +576,7 @@
     <string name="error_away_from_store">انت لازلت بعيد عن المتجر</string>
     <string name="error_away_from_customer">نت لازلت بعيد عن العميل</string>
     <string name="order_price">سعر الطلب</string>
-    <string name="conc_km">%f.1 KM</string>
+    <string name="conc_km">%f.2 كم</string>
     <string name="delivery_price">سعر التوصيل</string>
+    <string name="cancel_reason">سبب الالغاء</string>
 </resources>

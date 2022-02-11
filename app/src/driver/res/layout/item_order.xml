@@ -239,6 +239,14 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Order #546" />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/orderNumberAndStatusBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="appCompatTextView45,cardView6"
+            tools:layout_editor_absoluteY="8dp" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appCompatTextView46"
             android:layout_width="0dp"
@@ -253,7 +261,7 @@
             app:bindDateFormat="@{@string/format_order_date_time}"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView45"
             app:layout_constraintStart_toStartOf="@+id/appCompatTextView45"
-            app:layout_constraintTop_toBottomOf="@+id/cardView6"
+            app:layout_constraintTop_toBottomOf="@+id/orderNumberAndStatusBarrier"
             tools:text="15/8/2020 08:00PM" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -267,7 +275,7 @@
             android:textColor="@color/greyish_brown"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:visibility="@{dataModel == null &amp;&amp; dataModel.firstOrder.status != OrderStatus.NEW.value ? View.GONE : View.VISIBLE }"
+            android:visibility="@{dataModel != null &amp;&amp; dataModel.firstOrder.deliveryStatus != OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE }"
             app:layout_constraintStart_toStartOf="@+id/appCompatTextView46"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView46"
             tools:text="Customer Number: +966148636563563" />
@@ -403,7 +411,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2sp"
-            android:text="@{@string/conc_km(dataModel.firstOrder.isReturn == true ? dataModel.firstOrder.driverToShopDistance : dataModel.firstOrder.shopToCustomerDistance)}"
+            android:text="@{@string/conc_km(dataModel.firstOrder.isReturn == true ? dataModel.firstOrder.shopToCustomerDistance : dataModel.firstOrder.driverToShopDistance)}"
             android:textColor="#1c75bb"
             android:textSize="12sp"
             android:textStyle="normal"
@@ -420,7 +428,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="2sp"
-            android:text="@{@string/conc_km(dataModel.firstOrder.isReturn == true ? dataModel.firstOrder.shopToCustomerDistance : dataModel.firstOrder.driverToShopDistance)}"
+            android:text="@{@string/conc_km(dataModel.firstOrder.isReturn == true ? dataModel.firstOrder.driverToShopDistance : dataModel.firstOrder.shopToCustomerDistance)}"
             android:textColor="#1c75bb"
             android:textSize="12sp"
             android:textStyle="normal"
@@ -496,6 +504,7 @@
             android:textColor="@color/textColor"
             android:textSize="14sp"
             android:textStyle="bold"
+            android:visibility="@{dataModel.firstOrder.notes != null &amp;&amp; dataModel.firstOrder.deliveryStatus != OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="@+id/cardView5"
             app:layout_constraintTop_toBottomOf="@+id/barrier" />
 
@@ -507,11 +516,11 @@
             android:text="@{dataModel.firstOrder.notes}"
             android:textColor="@color/textColor"
             android:textSize="12sp"
+            android:visibility="@{dataModel.firstOrder.notes != null &amp;&amp; dataModel.firstOrder.deliveryStatus != OrderDeliveryStatus.NEW.value ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView7"
             app:layout_constraintStart_toStartOf="@+id/appCompatTextView8"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView8"
             tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled" />
-
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appCompatTextView16"
@@ -568,7 +577,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:bindCurrency="@{currency}"
-            app:bindPrice="@{dataModel.firstOrder.commission}"
+            app:bindPrice="@{dataModel.firstOrder.deliveryPrice}"
             app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView17"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView18"
             app:layout_constraintTop_toTopOf="@+id/appCompatTextView17"
@@ -614,7 +623,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView19"
             app:layout_constraintEnd_toEndOf="@+id/appCompatTextView18"
             app:layout_constraintTop_toTopOf="@+id/appCompatTextView19"
-            tools:text="90 SAR" />
+            tools:text="Cash" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/positiveBtn"

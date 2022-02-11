@@ -440,7 +440,7 @@
                         android:layout_marginTop="4dp"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="3sp"
-                        android:text="@string/driver_number"
+                        android:text="@string/driver_phone_number"
                         android:textColor="@color/bluish"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -516,6 +516,54 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView101"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="@{viewModel.orderResponse.data.cancelReason != null ? View.VISIBLE : View.GONE}"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="@+id/cardView8"
+                app:layout_constraintStart_toStartOf="@+id/cardView8"
+                app:layout_constraintTop_toBottomOf="@+id/cardView10">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView541"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@string/shop_notes"
+                        android:textColor="@color/bluish"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:lineSpacingExtra="3sp"
+                        android:text="@{viewModel.orderResponse.data.cancelReason}"
+                        android:textColor="#3b3d3f"
+                        android:textSize="14sp"
+                        android:textStyle="normal"
+                        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView541"
+                        app:layout_constraintStart_toStartOf="@+id/appCompatTextView541"
+                        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView541"
+                        tools:text="notes" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
             <!-- <androidx.appcompat.widget.AppCompatTextView
                  android:id="@+id/appCompatTextView63"
                  android:layout_width="0dp"
@@ -537,10 +585,30 @@
                  tools:text="Total: 500 SAR" /> -->
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/appCompatTextView38"
+                android:id="@+id/couponDiscountTv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-black"
+                android:gravity="center"
+                android:lineSpacingExtra="4sp"
+                android:textAlignment="center"
+                android:textColor="@color/greyish_brown"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                android:visibility="@{viewModel.orderLcee.contentVisibility == View.VISIBLE &amp;&amp; viewModel.orderResponse.data.doHaveDiscount ? View.VISIBLE : View.GONE}"
+                app:bindCurrency="@{currency}"
+                app:bindStrikeText="@{true}"
+                app:bindPrice="@{viewModel.orderResponse.data.netReturnPrice}"
+                app:layout_constraintEnd_toEndOf="@id/cardView8"
+                app:layout_constraintStart_toStartOf="@id/cardView8"
+                app:layout_constraintTop_toBottomOf="@+id/cardView101"
+                tools:text="500 SAR" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView38"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-black"
                 android:gravity="center"
                 android:lineSpacingExtra="4sp"
@@ -549,10 +617,10 @@
                 android:textStyle="normal"
                 app:bindCurrency="@{currency}"
                 app:bindPrePriceText="@{@string/refund_}"
-                app:bindPrice="@{viewModel.orderResponse.data.netReturnPrice}"
+                app:bindPrice="@{viewModel.orderResponse.data.newNetReturnPrice}"
                 app:layout_constraintEnd_toEndOf="@id/cardView8"
                 app:layout_constraintStart_toStartOf="@id/cardView8"
-                app:layout_constraintTop_toBottomOf="@+id/cardView10"
+                app:layout_constraintTop_toBottomOf="@+id/couponDiscountTv"
                 tools:text="Refund: 500 SAR" />
 
             <androidx.constraintlayout.widget.Group

@@ -76,6 +76,38 @@
                 app:layout_constraintTop_toTopOf="@+id/stcPayIv"
                 app:srcCompat="@drawable/checkable_credit_card" />
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewModel.isMasterCardChecked == true ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView22"
+                app:layout_constraintEnd_toStartOf="@id/appCompatImageView22"
+                app:layout_constraintStart_toStartOf="@+id/amountTil"
+                app:layout_constraintTop_toTopOf="@+id/appCompatImageView22"
+                app:srcCompat="@drawable/mada" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewModel.isMasterCardChecked == true ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView23"
+                app:layout_constraintEnd_toStartOf="@id/appCompatImageView23"
+                app:layout_constraintStart_toEndOf="@+id/appCompatImageView21"
+                app:layout_constraintTop_toTopOf="@+id/appCompatImageView23"
+                app:srcCompat="@drawable/visa" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/appCompatImageView23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="@{viewModel.isMasterCardChecked == true ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="@+id/amountTil"
+                app:layout_constraintStart_toEndOf="@+id/appCompatImageView22"
+                app:layout_constraintTop_toBottomOf="@+id/masterCardIv"
+                app:srcCompat="@drawable/mastercard" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/stcPhoneNumberTil"
@@ -86,7 +118,7 @@
                 android:visibility="@{viewModel.isStcPayChecked == true ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="@+id/amountTil"
                 app:layout_constraintStart_toStartOf="@+id/amountTil"
-                app:layout_constraintTop_toBottomOf="@+id/stcPayIv">
+                app:layout_constraintTop_toBottomOf="@+id/appCompatImageView21">
 
                 <com.google.android.material.textfield.TextInputEditText
                     style="@style/ProjectTextInputEditText"

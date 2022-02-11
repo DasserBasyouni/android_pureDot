@@ -72,6 +72,7 @@
     <string name="symbol_plus" translatable="false">+</string>
     <string name="symbol_minus" translatable="false">-</string>
     <string name="conc_offer">%.2f%% Off</string>
+    <string name="conc_fixed_offer">%.2f %s Off</string>
     <string name="conc_quantity_with_measuring_unit" translatable="false">%d %s</string>
     <string name="latest_products">Latest Products</string>
     <string name="best_selling">Best Selling</string>
@@ -602,6 +603,7 @@ If you have any inquiries regarding your data on the site, please contact us or 
     <string name="select_language">Select language</string>
     <string name="view">View</string>
     <string name="driver_number">Driver Number</string>
+    <string name="driver_phone_number">Driver Phone Number</string>
     <string name="pure_dot_telegram">Pure Dot Telegram</string>
     <string name="customer_notes">Customer Notes</string>
     <string name="returned">Returned</string>
@@ -620,6 +622,7 @@ If you have any inquiries regarding your data on the site, please contact us or 
     <string name="question_arrived_to_shop">Are you sure you Arrived at Shop?</string>
     <string name="question_arrived_to_customer">Are you sure you Arrived at customer?</string>
     <string name="order_price">Order Price</string>
-    <string name="conc_km">%.1f KM</string>
+    <string name="conc_km">%.2f KM</string>
     <string name="delivery_price">Delivery price</string>
+    <string name="cancel_reason">Cancel Reason</string>
 </resources>

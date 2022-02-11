@@ -12,7 +12,7 @@ plugins {
 // Semantic Versioning 2.0.0 {@link 'https://semver.org/'}
 def versionMajor = 0
 def versionMinor = 0
-def versionPatch = 60
+def versionPatch = 62
 
 android {
     signingConfigs {
@@ -37,7 +37,7 @@ android {
         applicationId "com.g7.soft.puedot"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 9
+        versionCode 11
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

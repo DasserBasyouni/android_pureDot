@@ -35,7 +35,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:lceeModel="@{viewModel.ordersLcee}" />
+                app:lceeModel="@{viewModel.returnOrdersLcee}" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/orderReturnsRv"
@@ -47,7 +47,7 @@
                 android:paddingTop="16dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
-                android:visibility="@{viewModel.ordersLcee.contentVisibility == View.VISIBLE ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.returnOrdersLcee.contentVisibility == View.VISIBLE ? View.VISIBLE : View.GONE}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

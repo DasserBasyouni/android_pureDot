@@ -100,7 +100,6 @@
                 android:textColor="#fc0606"
                 android:textSize="12sp"
                 android:textStyle="normal"
-                android:visibility="@{(dataModel.discountPercentage == null || dataModel.discountPercentage == 0) ? View.GONE : View.VISIBLE}"
                 app:bindCurrency="@{currency}"
                 app:bindDiscountPercentage="@{dataModel.discountPercentage}"
                 app:bindIsPercentageDiscount="@{dataModel.isPercentageDiscount}"

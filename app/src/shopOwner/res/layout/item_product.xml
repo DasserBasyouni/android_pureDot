@@ -15,7 +15,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="164dp"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="10dp"
         android:layout_marginVertical="8dp"
         tools:layout_gravity="center">
@@ -40,14 +40,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="4sp"
                 android:text="@{dataModel.nameWithVariations}"
                 android:textColor="#4d4c4c"
-                android:textSize="21sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/appCompatTextView12"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/appCompatImageView9"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Item Name" />
@@ -59,13 +58,17 @@
                 android:fontFamily="sans-serif-black"
                 android:lineSpacingExtra="4sp"
                 android:textColor="#662f8f"
-                android:textSize="21sp"
+                android:textSize="16sp"
                 android:textStyle="normal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appCompatTextView11"
+                app:layout_constraintBottom_toBottomOf="@+id/appCompatTextView13"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView11"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/appCompatTextView13"
+                app:layout_constraintTop_toTopOf="@+id/appCompatTextView13"
                 tools:text="500 SAR" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView13"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -73,7 +76,7 @@
                 android:lineSpacingExtra="4sp"
                 android:text="@{@string/conc_qty_(dataModel.quantity)}"
                 android:textColor="#818181"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView11"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView11"
