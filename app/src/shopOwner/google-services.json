@@ -1,40 +1,40 @@
 {
   "project_info": {
-    "project_number": "637246189162",
-    "project_id": "puedot-4f129",
-    "storage_bucket": "puedot-4f129.appspot.com"
+    "project_number": "879505068525",
+    "project_id": "puredot-306e7",
+    "storage_bucket": "puredot-306e7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:637246189162:android:74b53eea043c150efe6413",
+        "mobilesdk_app_id": "1:879505068525:android:ab45a0592e51dc2f9b97e4",
         "android_client_info": {
           "package_name": "com.g7.soft.puedot.client"
         }
       },
       "oauth_client": [
         {
-          "client_id": "637246189162-c4s132oc5fqrnl62n55i9j86pe3rhpn9.apps.googleusercontent.com",
+          "client_id": "879505068525-ejj97n9gog4rnah3qndnerjtmdlmf8ic.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAB9q9weTwLJTFG2uWgdepPibqD-fboW8I"
+          "current_key": "AIzaSyARSWHThm3IT3BqAMFusCn4XhUE9ackB88"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "637246189162-c4s132oc5fqrnl62n55i9j86pe3rhpn9.apps.googleusercontent.com",
+              "client_id": "879505068525-ejj97n9gog4rnah3qndnerjtmdlmf8ic.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "637246189162-ce3hisqjpbbnnqfl7sd70p48diunudej.apps.googleusercontent.com",
+              "client_id": "879505068525-md3os4b53hoh87r4a7pl4jv0ij7sfn94.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "pureDot.net.pueDotClient"
+                "bundle_id": "pureDot.net.pueDotDriver"
               }
             }
           ]
@@ -43,70 +43,34 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:637246189162:android:d683c80bd2955dc0fe6413",
-        "android_client_info": {
-          "package_name": "com.g7.soft.puedot.driver"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "637246189162-c4s132oc5fqrnl62n55i9j86pe3rhpn9.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAB9q9weTwLJTFG2uWgdepPibqD-fboW8I"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "637246189162-c4s132oc5fqrnl62n55i9j86pe3rhpn9.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "637246189162-ce3hisqjpbbnnqfl7sd70p48diunudej.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "pureDot.net.pueDotClient"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:637246189162:android:fa0d9387ffb154a4fe6413",
+        "mobilesdk_app_id": "1:879505068525:android:1b47417beca30ca09b97e4",
         "android_client_info": {
           "package_name": "com.g7.soft.puedot.shopOwner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "637246189162-c4s132oc5fqrnl62n55i9j86pe3rhpn9.apps.googleusercontent.com",
+          "client_id": "879505068525-ejj97n9gog4rnah3qndnerjtmdlmf8ic.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAB9q9weTwLJTFG2uWgdepPibqD-fboW8I"
+          "current_key": "AIzaSyARSWHThm3IT3BqAMFusCn4XhUE9ackB88"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "637246189162-c4s132oc5fqrnl62n55i9j86pe3rhpn9.apps.googleusercontent.com",
+              "client_id": "879505068525-ejj97n9gog4rnah3qndnerjtmdlmf8ic.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "637246189162-ce3hisqjpbbnnqfl7sd70p48diunudej.apps.googleusercontent.com",
+              "client_id": "879505068525-md3os4b53hoh87r4a7pl4jv0ij7sfn94.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "pureDot.net.pueDotClient"
+                "bundle_id": "pureDot.net.pueDotDriver"
               }
             }
           ]

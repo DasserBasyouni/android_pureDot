@@ -171,7 +171,7 @@
     <string name="view_rate">View rate</string>
     <string name="complaint">Complaint</string>
     <string name="complaints">Complaints</string>
-    <string name="format_date_order_tracking" translatable="false">dd MMMM</string>
+    <string name="format_date_order_tracking" translatable="false">yyyy-mm-dd hh:mm aa</string>
     <string name="turn_push_notification_on">Turn Push Notification ON/OFF</string>
     <string name="profile">Profile</string>
     <string name="edit_profile">Edit Profile</string>
