@@ -13,4 +13,5 @@ message UserData {
   string language = 7;
   bool doNotify = 8;
   bool isGuestAccount = 9;
+  string cityId = 10;
 }
