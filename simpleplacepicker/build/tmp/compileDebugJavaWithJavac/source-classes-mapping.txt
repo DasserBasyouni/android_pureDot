@@ -1,2 +1,0 @@
-com/essam/simpleplacepicker/BuildConfig.java
- com.essam.simpleplacepicker.BuildConfig
