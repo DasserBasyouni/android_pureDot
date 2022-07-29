@@ -228,12 +228,28 @@
         android:id="@+id/addMoneyFragment"
         android:name="com.g7.soft.puedot.ui.screen.addMoney.AddMoneyFragment"
         android:label="@string/add_money"
-        tools:layout="@layout/fragment_add_money" />
+        tools:layout="@layout/fragment_add_money" >
+        <action
+            android:id="@+id/action_addMoneyFragment_to_paymentWebViewFragment"
+            app:destination="@id/paymentWebViewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/paymentWebViewFragment"
         tools:layout="@layout/fragment_payment_web_view"
         android:name="com.g7.soft.puedot.ui.screen.paymentWebView.PaymentWebViewFragment"
         android:label="">
+        <argument
+            android:name="isCheckout"
+            app:argType="boolean" />
+        <argument
+            android:name="masterOrderId"
+            app:argType="string"
+            android:defaultValue="@null"
+            app:nullable="true" />
+        <argument
+            android:name="addMoneyAmount"
+            app:argType="float"
+            android:defaultValue="0.0"/>
         <argument
             android:name="paymentUrl"
             app:argType="string"

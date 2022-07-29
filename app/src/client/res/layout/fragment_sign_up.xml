@@ -87,7 +87,7 @@
                 style="@style/ProjectTextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/mobile_number"
+                android:hint="@string/placeholder_mobile_number"
                 android:imeOptions="actionNext"
                 android:inputType="phone"
                 android:text="@={viewModel.phoneNumber}" />

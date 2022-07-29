@@ -296,6 +296,7 @@
     <string name="new_orders">طلبات جديدة</string>
     <string name="pending_orders">طلبات معلقة</string>
     <string name="error_empty_name">مطلوب اضافه الاسم</string>
+    <string name="error_invalid_phone_number">رقم الجوال غير صحيح</string>
     <string name="error_empty_phone_number">مطلوب اضافه رقم الجوال</string>
     <string name="error_empty_phone_number_or_email">مطلوب اضافه رقم الجوال او البريد الالكتروني</string>
     <string name="error_empty_email">مطلوب اضافه البريد الالكتروني</string>

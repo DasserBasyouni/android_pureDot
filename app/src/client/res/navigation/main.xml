@@ -486,6 +486,17 @@
         android:name="com.g7.soft.puedot.ui.screen.paymentWebView.PaymentWebViewFragment"
         android:label="">
         <argument
+            android:name="isCheckout"
+            app:argType="boolean" />
+        <argument
+            android:name="masterOrderId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="addMoneyAmount"
+            android:defaultValue="0.0"
+            app:argType="float"/>
+        <argument
             android:name="paymentUrl"
             app:argType="string"
             app:nullable="true" />

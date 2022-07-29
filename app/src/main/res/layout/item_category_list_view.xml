@@ -41,10 +41,11 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:lines="1"
+            android:lines="2"
             android:ellipsize="end"
             android:gravity="center"
             android:layout_marginTop="8dp"
+            android:maxLines="2"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="3sp"
             android:text="@{dataModel.name}"

@@ -41,8 +41,9 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:lines="1"
+            android:lines="2"
             android:ellipsize="end"
+            android:maxLines="2"
             android:gravity="center"
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif"
